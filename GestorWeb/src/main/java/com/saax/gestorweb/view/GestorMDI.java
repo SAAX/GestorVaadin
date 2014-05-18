@@ -1,4 +1,4 @@
-package com.saax.gestorweb;
+package com.saax.gestorweb.view;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -14,11 +14,11 @@ import com.vaadin.ui.VerticalLayout;
 
 @Theme("mytheme")
 @SuppressWarnings("serial")
-public class MyVaadinUI extends UI
+public class GestorMDI extends UI
 {
 
     @WebServlet(value = "/*", asyncSupported = true)
-    @VaadinServletConfiguration(productionMode = false, ui = MyVaadinUI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
+    @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
     public static class Servlet extends VaadinServlet {
     }
 

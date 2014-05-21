@@ -1,12 +1,10 @@
 package com.saax.gestorweb.util;
 
-import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import javax.sql.DataSource;
 
 /**
  * Web application lifecycle listener.
@@ -15,9 +13,6 @@ import javax.sql.DataSource;
 @WebListener()
 public class GestorServletContextListener implements ServletContextListener {
 
-    @Resource(name = "jdbc/postgres", authenticationType = Resource.AuthenticationType.CONTAINER)
-    DataSource ds;
-    
     /**
      * Inicilizador do contexto
      * Este método é chamado toda vez a aplicação é iniciada no servidor
@@ -27,10 +22,12 @@ public class GestorServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent e) {
 
+        
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("GestorWebPU");
 
         PostgresConnection connection = PostgresConnection.getInstance();
         connection.setEntityManagerFactory(emf);
+        
 
     }
 

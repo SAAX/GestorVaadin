@@ -8,7 +8,6 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -28,11 +27,9 @@ public class GestorMDI extends UI {
 
     // Garante a existencia de apenas uma instancia do recurso de mensagens por sessão
     private ResourceBundle mensagens;
-    
+
     // Objeto de sessão com o usuario logado
     private Usuario usuario;
-    
-    
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
@@ -49,10 +46,10 @@ public class GestorMDI extends UI {
 
     public void carregarDashBoard() {
 
-            // TODO
-        setContent(new Label("TESTE: usuario logado = "+usuario.getNome()));
-
+        // TODO
+        // setContent(new Label("TESTE: usuario logado = "+usuario.getNome()));
     }
+
     
     /**
      * Método disparado ao ser acessada a aplicação
@@ -74,7 +71,7 @@ public class GestorMDI extends UI {
 
         // adiciona a visualização à UI
         setContent(paginaInicialView);
-        
+
         setSizeFull();
 
     }

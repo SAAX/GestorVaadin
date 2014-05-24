@@ -12,6 +12,8 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 
 /**
@@ -59,9 +61,15 @@ public class GestorMDI extends UI {
     @Override
     protected void init(VaadinRequest request) {
 
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Iniciando atendimento de requisição.");
+        
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens para o locale: {0}", request.getLocale());
+
         // obtém o arquivo de mensagens de acordo com o locale do usuário
         mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", request.getLocale());
 
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens carregado");
+        
         // Cria a pagina inical
         PaginaInicialModel paginaInicialModel = new PaginaInicialModel();
         PaginaInicialView paginaInicialView = new PaginaInicialView();
@@ -74,6 +82,7 @@ public class GestorMDI extends UI {
 
         setSizeFull();
 
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Atendimento de requisição concluído.");
     }
 
     /**

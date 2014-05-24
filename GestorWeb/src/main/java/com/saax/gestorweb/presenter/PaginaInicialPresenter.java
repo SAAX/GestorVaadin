@@ -1,9 +1,10 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.CadastroMetasModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.PaginaInicialModel;
-import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.view.CadastroMetasView;
 import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.saax.gestorweb.view.PaginaInicialViewListener;
@@ -63,6 +64,26 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener {
 
     @Override
     public void signUpButtonClicked() {
+
+    }
+    
+
+    /**
+     * Evento disparado ao ser acionado o botão "Login"
+     */
+    @Override
+    public void previewMetasButtonClicked() {
+
+        // Cria o pop up de login (model e view)
+        CadastroMetasModel cadastroMetasModel = new CadastroMetasModel();
+        CadastroMetasView cadastroMetasView = new CadastroMetasView();
+
+        // O presenter liga model e view
+        new CadastroMetasPresenter(cadastroMetasModel, cadastroMetasView);
+
+        // adiciona a visualização à UI
+        UI.getCurrent().addWindow(cadastroMetasView);
+        
 
     }
 

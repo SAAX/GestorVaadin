@@ -1,12 +1,15 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.PaginaInicialModel;
-import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.PaginaInicialPresenter;
+import com.saax.gestorweb.util.CookiesManager;
+import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.UserData;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
@@ -27,24 +30,25 @@ import javax.servlet.annotation.WebServlet;
 @SuppressWarnings("serial")
 public class GestorMDI extends UI {
 
-    // Garante a existencia de apenas uma instancia do recurso de mensagens por sessão
-    private ResourceBundle mensagens;
-
-    // Objeto de sessão com o usuario logado
-    private Usuario usuario;
+  
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
     public static class Servlet extends VaadinServlet {
     }
 
-    public void setUsuarioLogado(Usuario usuario) {
-        this.usuario = usuario;
+    // Dados do usuário da sessão
+    private UserData userData;
+
+    public void setUserData(UserData userData) {
+        this.userData = userData;
     }
 
-    public Usuario getUsuarioLogado() {
-        return usuario;
+    public UserData getUserData() {
+        return userData;
     }
+    
+    
 
     public void carregarDashBoard() {
 
@@ -63,11 +67,22 @@ public class GestorMDI extends UI {
 
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Iniciando atendimento de requisição.");
         
+        userData = new UserData();
+        
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens para o locale: {0}", request.getLocale());
 
         // obtém o arquivo de mensagens de acordo com o locale do usuário
-        mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", request.getLocale());
+        ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", request.getLocale());
+        userData.setMensagens(mensagens);
 
+        //obtém os cookies da sessão
+        CookiesManager cookieManager = new CookiesManager();
+        userData.setCookies(cookieManager);
+        
+        // obtém e armazena as imagens
+        GestorWebImagens gestorWebImagens = new GestorWebImagens();
+        userData.setImagens(gestorWebImagens);
+        
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens carregado");
         
         // Cria a pagina inical
@@ -104,14 +119,5 @@ public class GestorMDI extends UI {
 
     }
 
-    /**
-     * Encapsula acesso ao ResourceBundle de mensagens da sessão
-     *
-     * @return Mensagens ResourceBundle
-     */
-    public ResourceBundle getMensagens() {
-
-        return mensagens;
-    }
 
 }

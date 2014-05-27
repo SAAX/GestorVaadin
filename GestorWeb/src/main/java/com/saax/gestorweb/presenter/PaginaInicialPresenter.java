@@ -25,7 +25,7 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener {
     private final PaginaInicialModel model;
 
     // Referencia ao recurso das mensagens:
-    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     /**
      * Cria o presenter ligando o Model ao View

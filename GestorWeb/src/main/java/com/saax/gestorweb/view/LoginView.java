@@ -1,9 +1,11 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -19,7 +21,7 @@ import java.util.ResourceBundle;
 public class LoginView extends Window {
 
     // Referencia ao recurso das mensagens:
-    ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
@@ -28,7 +30,7 @@ public class LoginView extends Window {
     // componentes visuais da view
     private final TextField loginTextField;
     private final TextField senhaTextField;
-    private final Label labelMensagens;
+    private final CheckBox lembrarLoginCheckBox;
     
     public void setListener(LoginViewListener listener) {
         this.listener = listener;
@@ -52,15 +54,22 @@ public class LoginView extends Window {
         
         // text field: Login
         loginTextField = new TextField(mensagens.getString("LoginView.loginTextField.label"));
+        loginTextField.addValidator(new EmailValidator(
+                mensagens.getString("LoginView.loginTextField.erro.loginNaoInformado")));
         container.addComponent(loginTextField);
+        loginTextField.setValidationVisible(false);
         
         // text field: Senha
         senhaTextField = new TextField(mensagens.getString("LoginView.senhaTextField.label"));
+        senhaTextField.addValidator(new StringLengthValidator(
+                mensagens.getString("LoginView.senhaTextField.erro.senhaNaoInformada"),
+                3, null, false));
         container.addComponent(senhaTextField);
-        
-        // lablel: Mensagens
-        labelMensagens = new Label();
-        container.addComponent(labelMensagens);
+        senhaTextField.setValidationVisible(false);
+
+        // check box : remember-me
+        lembrarLoginCheckBox = new CheckBox(mensagens.getString("LoginView.lembrarLoginCheckBox.label"));
+        container.addComponent(lembrarLoginCheckBox);
         
         // botão para Login
         final Button doLoginButton = new Button(mensagens.getString("LoginView.doLoginButton.label"), new Button.ClickListener() {
@@ -84,10 +93,45 @@ public class LoginView extends Window {
         return senhaTextField.getValue();
     }
 
-    public void apresentaMensagemErro(String message) {
-        labelMensagens.setValue(message);
-        // @TODO: colocar um estilo
-        // labelMensagens.setStyleName(estilo);
+    public CheckBox getLembrarLoginCheckBox() {
+        return lembrarLoginCheckBox;
+    }
+    
+    
+
+   
+
+    /**
+     * Apresenta mensagem de erro no campo de texto de login indicado que o login informado não existe
+     */
+    public void apresentaErroUsuarioNaoExiste() {
+        loginTextField.setComponentError(new UserError(mensagens.getString("LoginView.loginTextField.erro.loginNaoExiste")));        
     }
 
+    /**
+     * Executa os metodos de validações dos campos informados 
+     */
+    public void validate() {
+        
+        senhaTextField.setValidationVisible(true);
+        loginTextField.setValidationVisible(true);
+
+        loginTextField.validate();
+        senhaTextField.validate();
+    }
+
+    public void apresentaErroSenhaInvalida() {
+        senhaTextField.setComponentError(new UserError(mensagens.getString("LoginView.senhaTextField.erro.senhaNaoAutenticou")));        
+        
+    }
+
+    public void setLogin(String login) {
+        loginTextField.setValue(login);
+        senhaTextField.focus();
+    }
+
+    public void setLembrarSessao(boolean b) {
+        lembrarLoginCheckBox.setValue(b);
+    }
+    
 }

@@ -1,12 +1,12 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.server.Sizeable.Unit;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.ResourceBundle;
@@ -20,7 +20,8 @@ import java.util.ResourceBundle;
 public class PaginaInicialView extends HorizontalLayout {
     
     // Referencia ao recurso das mensagens:
-    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getUserData().getImagens();
     
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
@@ -34,6 +35,7 @@ public class PaginaInicialView extends HorizontalLayout {
     VerticalLayout containerDireito;
     // container que armazenará a imagem de fundo
     VerticalLayout containerEsquerdo;
+    
     /**
      * Constroi a pagina inicial da aplicação com as imagens de fundo e os 
      * botões para cadastro / login
@@ -52,11 +54,10 @@ public class PaginaInicialView extends HorizontalLayout {
         containerDireito = new VerticalLayout();
         containerDireito.setHeight(450, Unit.PIXELS);
 
-       
         // @ TODO:
-        Label label = new Label("<h3>Colocar uma imagem aqui</h3>", ContentMode.HTML);
-        containerEsquerdo.addComponent(label);
-        containerEsquerdo.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
+        Image logo = imagens.getPAGINAINICIAL_LOGO();
+        containerEsquerdo.addComponent(logo);
+        containerEsquerdo.setComponentAlignment(logo, Alignment.MIDDLE_CENTER);
         
         
         // botão para SignUP
@@ -109,7 +110,7 @@ public class PaginaInicialView extends HorizontalLayout {
             }
         });
         
-        containerEsquerdo.addComponent(previewMetas);
+        containerDireito.addComponent(previewMetas);
 
     }
 

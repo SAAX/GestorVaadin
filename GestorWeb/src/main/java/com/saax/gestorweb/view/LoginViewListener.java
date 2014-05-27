@@ -8,5 +8,6 @@ package com.saax.gestorweb.view;
 public interface LoginViewListener {
 
     void loginButtonClicked();
+    void loginPopUpAberto();
     
 }

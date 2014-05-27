@@ -1,7 +1,6 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -50,7 +49,7 @@ import java.util.ResourceBundle;
 public class CadastroMetasView extends Window {
 
     // Referencia ao recurso das mensagens:
-    ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas

@@ -38,12 +38,4 @@ public class Cipher {
         return encryptByAlgorithm("MD5", value);
     }
 
-    public static void main(String[] args) throws NoSuchAlgorithmException {
-        Cipher criptografia;
-
-        //Usando MD5
-        criptografia = new Cipher();
-        System.out.println("MDH: " + criptografia.md5Sum("Criptografia MD5 com Java"));
-    }
-
 }

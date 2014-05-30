@@ -100,7 +100,6 @@ public class PaginaInicialView extends HorizontalLayout {
     }
 
     private void adicionaBotaoPreviewCadastroMeta() {
-                // botão para SignUP
         final Button previewMetas = new Button("Preview do Cadastro de Metas", new Button.ClickListener() {
 
             // notifica o listener que o botão foi acionado para que este dê o devido tratamento
@@ -112,7 +111,19 @@ public class PaginaInicialView extends HorizontalLayout {
         
         containerDireito.addComponent(previewMetas);
 
+        final Button previewMetas_OLD = new Button("Preview do Cadastro de Metas (ANTIGO)", new Button.ClickListener() {
+
+            // notifica o listener que o botão foi acionado para que este dê o devido tratamento
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                listener.previewMetas_OldButtonClicked();
+            }
+        });
+        
+        containerDireito.addComponent(previewMetas_OLD);
+
     }
 
+  
     
 }

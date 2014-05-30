@@ -102,9 +102,10 @@ public final class LoginPresenter implements LoginViewListener {
             CookiesManager cookieManager = ((GestorMDI) UI.getCurrent()).getUserData().getCookies();
             cookieManager.destroyCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO);
         }
-        
+
         view.close();
 
+        ((GestorMDI) UI.getCurrent()).carregarDashBoard();        
 
     }
 

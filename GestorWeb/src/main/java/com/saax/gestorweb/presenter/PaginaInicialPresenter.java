@@ -5,6 +5,7 @@ import com.saax.gestorweb.model.CadastroMetasModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.PaginaInicialModel;
 import com.saax.gestorweb.view.CadastroMetasView;
+import com.saax.gestorweb.view.CadastroMetasView_older;
 import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.saax.gestorweb.view.PaginaInicialViewListener;
@@ -57,8 +58,7 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener {
 
         // adiciona a visualização à UI
         UI.getCurrent().addWindow(loginView);
-
-        ((GestorMDI) UI.getCurrent()).carregarDashBoard();
+        
 
     }
 
@@ -80,6 +80,25 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener {
 
         // O presenter liga model e view
         new CadastroMetasPresenter(cadastroMetasModel, cadastroMetasView);
+
+        // adiciona a visualização à UI
+        UI.getCurrent().addWindow(cadastroMetasView);
+        
+
+    }
+
+    /**
+     * Evento disparado ao ser acionado o botão "Login"
+     */
+    @Override
+    public void previewMetas_OldButtonClicked() {
+
+        // Cria o pop up de login (model e view)
+        CadastroMetasModel cadastroMetasModel = new CadastroMetasModel();
+        CadastroMetasView_older cadastroMetasView = new CadastroMetasView_older();
+
+        // O presenter liga model e view
+        new CadastroMetasPresenter_Older(cadastroMetasModel, cadastroMetasView);
 
         // adiciona a visualização à UI
         UI.getCurrent().addWindow(cadastroMetasView);

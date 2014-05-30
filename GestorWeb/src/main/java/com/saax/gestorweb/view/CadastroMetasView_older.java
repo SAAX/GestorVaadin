@@ -34,21 +34,19 @@ import java.util.ResourceBundle;
   *                  - alertaComboBox
   *                  - tempoAlertaComboBox
   *      + accordion (Abas)
-  *         + container1aAbaAccordion (H)
-  *             + containerParticipantes (H=50%)
-  *                 + containerSelecaoParticipantes (V)
-  *                     - responsavelCombo
-  *                     - participantesCombo
-  *                     - addParticipanteButton
-  *                     - removeParticipanteButton
-  *                 - listaParticipantes
-  *             + containerDescricaoMeta (H=50%)
-  *                 - descricaoMeta
+  *         + containerParticipantes (H)
+  *             - responsavelCombo
+  *             + containerSelecaoParticipantes (V)
+  *                 - participantesCombo
+  *                 - addParticipanteButton
+  *                 - removeParticipanteButton
+  *             - listaParticipantes
+  *         - descricaoMeta
   *         + containerTabelaTarefas (Painel)
   *             - tarefasTable
   * @author Rodrigo
   */
-public class CadastroMetasView extends Window {
+public class CadastroMetasView_older extends Window {
 
     // Referencia ao recurso das mensagens:
     ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
@@ -82,7 +80,7 @@ public class CadastroMetasView extends Window {
      * Cria o pop-up de login, com campos para usuário e senha
      *
      */
-    public CadastroMetasView() {
+    public CadastroMetasView_older() {
         super();
 
         // TODO setCaption(mensagens.getString("CadastroMetasView.titulo"));
@@ -211,18 +209,12 @@ public class CadastroMetasView extends Window {
     /**
      * Constrói o container do accordion 
      * Layout:
-     *      + accordion (Abas)
-     *         + container1aAbaAccordion (H)
-     *             + containerParticipantes (H=50%)
-     *                     - responsavelCombo
-     *                     - participantesCombo
-     *                     - addParticipanteButton
-     *                     - removeParticipanteButton
-     *                 - listaParticipantes
-     *             + containerDescricaoMeta (H=50%)
-     *                 - descricaoMeta
-     *         + containerTabelaTarefas (Painel)
+     *      + accordion
+     *         + containerParticipantes (H)
+     *         - descricaoMeta
+     *         + containerTabelaTarefas
      *             - tarefasTable
+     * 
      * @return accordion
      */
     private Accordion buildAccordion(){
@@ -232,39 +224,22 @@ public class CadastroMetasView extends Window {
         // estica o accordion para ocupar todo o espaço restante
         accordion.setSizeFull();
 
-        // Na 1a aba do accordion é colocado um container horizontal para guardar os paineis e participantes e de descrição da meta
-        HorizontalLayout container1aAbaAccordion = new HorizontalLayout();
-        container1aAbaAccordion.setSpacing(true);
-        container1aAbaAccordion.setMargin(true);
-        container1aAbaAccordion.setSizeFull();
-        
-        // 1o. componente colocado no container1aAbaAccordion:
-        // container com os campos para seleção de participantes e responsavel
+        // 1o. componente colocado no accordion: container com os campos para seleção de participantes e responsavel
         HorizontalLayout containerParticipantes = buildContainerParticipantes();
-        containerParticipantes.setSizeFull();
-        container1aAbaAccordion.addComponent(containerParticipantes);
+        accordion.addTab(containerParticipantes, "Responsavel / Participantes", null);
         
-        // 2o. componente colocado no container1aAbaAccordion: descrição da meta
-        HorizontalLayout containerDescricaoMeta = new HorizontalLayout();
-        containerDescricaoMeta.setSizeFull();
         
+        // 2o. componente colocado no accordion: descrição da meta
         descricaoMeta = new RichTextArea("");
+        accordion.addTab(descricaoMeta, "Descrição da Meta", null);
         descricaoMeta.setSizeFull();
-        descricaoMeta.setReadOnly(false);
-        descricaoMeta.setNullRepresentation("Informe a descrição da meta");
-        containerDescricaoMeta.addComponent(descricaoMeta);
-        container1aAbaAccordion.addComponent(containerDescricaoMeta);
-                
-        accordion.addTab(container1aAbaAccordion, "Detalhes", null);
-        
 
-        // 2a. Aba do accordion: tabela de tarefas e subs (dentro de um painel para habilitar o scroll )
+        // 3o. componente colocado no accordion: tabela de tarefas e subs (dentro de um painel para habilitar o scroll )
         containerTabelaTarefas = new Panel();
         containerTabelaTarefas.setSizeFull();
         
         tarefasTable = new Table();
         containerTabelaTarefas.setContent(tarefasTable);
-        tarefasTable.setSizeFull();
         
         tarefasTable.addContainerProperty("Cod", Integer.class, null);
         tarefasTable.addContainerProperty("Nome", String.class, null);
@@ -282,8 +257,8 @@ public class CadastroMetasView extends Window {
     /**
      * Layout:
      *     + containerParticipantes (H)
+     *         - responsavelCombo
      *         + containerSelecaoParticipantes (V)
-     *             - responsavelCombo
      *             - participantesCombo
      *             - addParticipanteButton
      *             - removeParticipanteButton
@@ -292,40 +267,34 @@ public class CadastroMetasView extends Window {
      * @return 
      */
     private HorizontalLayout buildContainerParticipantes() {
-                
-        HorizontalLayout containerParticipantes = new HorizontalLayout();
+                HorizontalLayout containerParticipantes = new HorizontalLayout();
+        containerParticipantes.setSizeUndefined();
         containerParticipantes.setSpacing(true);
-
-        // container para a lista de seleção de participantes + botões
-        VerticalLayout containerSelecaoParticipantes = new VerticalLayout();
-        containerSelecaoParticipantes.setSizeFull();
-        containerSelecaoParticipantes.setSpacing(true);
-        
-        containerParticipantes.addComponent(containerSelecaoParticipantes);
         
         // combo de seleção do responsavel        
         responsavelCombo = new ComboBox("Responsavel");
-        responsavelCombo.setWidth("100%");
-        containerSelecaoParticipantes.addComponent(responsavelCombo);
+        containerParticipantes.addComponent(responsavelCombo);
+
+        // container para a lista de seleção de participantes + botões
+        VerticalLayout containerSelecaoParticipantes = new VerticalLayout();
+        containerSelecaoParticipantes.setSpacing(true);
+        containerParticipantes.addComponent(containerSelecaoParticipantes);
         
         // combo de seleção dos participantes
         participantesCombo = new ComboBox("Participantes");
-        participantesCombo.setWidth("100%");
         containerSelecaoParticipantes.addComponent(participantesCombo);
         
         // botão para adicionar participantes da listagen
         addParticipanteButton = new Button(">>");
         containerSelecaoParticipantes.addComponent(addParticipanteButton);
-        containerSelecaoParticipantes.setComponentAlignment(addParticipanteButton, Alignment.TOP_RIGHT);
         
         // botão para remover participantes da listagen
         removeParticipanteButton = new Button("<<");
         containerSelecaoParticipantes.addComponent(removeParticipanteButton);
-        containerSelecaoParticipantes.setComponentAlignment(removeParticipanteButton, Alignment.TOP_RIGHT);
         
         // lista dos participantes selecionados 
         listaParticipantes = new ListSelect("Participantes");
-        listaParticipantes.setWidth(100, Unit.PERCENTAGE);
+        listaParticipantes.setWidth(100, Unit.PIXELS);
         listaParticipantes.addItem("Joao");
         listaParticipantes.addItem("Antonio");
         listaParticipantes.addItem("Fernando");

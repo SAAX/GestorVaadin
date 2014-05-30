@@ -9,8 +9,8 @@ import com.saax.gestorweb.view.PaginaInicialView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -26,7 +26,7 @@ import javax.servlet.annotation.WebServlet;
  *
  * @author Rodrigo
  */
-@Theme("mytheme")
+@Theme("my-chameleon")
 @SuppressWarnings("serial")
 public class GestorMDI extends UI {
 
@@ -52,8 +52,7 @@ public class GestorMDI extends UI {
 
     public void carregarDashBoard() {
 
-        // TODO
-        // setContent(new Label("TESTE: usuario logado = "+usuario.getNome()));
+        setContent(new Label("TESTE: usuario logado = "+getUserData().getUsuarioLogado().getNome()));
     }
 
     

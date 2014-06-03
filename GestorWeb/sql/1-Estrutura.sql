@@ -1,26 +1,27 @@
-/*
+﻿/*
+
 Script para criação da estrutra do projeto Gestor.
 
 --------------------------------------------------------------------------------
 
-Versão inicial
-
-Autor: 	Rodrigo M.
 Data: 	21/05/2014
+Autor: 	Rodrigo M.
+
+Versão inicial
 
 
 --------------------------------------------------------------------------------
 
-Evolução em 29/05/2014:
+Data: 	02/06/2014
+Autor: 	Rodrigo M.
 
 Criadas entidades: 
     Empresa, 
     UsuarioEmpresa, 
     RelacionamentoEmpresaCliente, 
-    Prioridade, 
-    StatusMeta, 
+    Departamento, 
+    CentroCusto, 
     Meta,
-    ParticipanteMeta
 
 Inseridos dados para teste (mockdata)
 
@@ -104,35 +105,30 @@ CREATE TABLE RelacionamentoEmpresaCliente (
 INSERT INTO RelacionamentoEmpresaCliente (idEmpresaGestora, idEmpresaCliente, contratoAtivo, inicioContrato) 
     VALUES (1, 2, TRUE, CURRENT_DATE);
 
--- Prioridade
-DROP TABLE IF EXISTS Prioridade CASCADE;
-CREATE TABLE Prioridade (
-	idPrioridade SERIAL NOT NULL PRIMARY KEY,
-	Prioridade CHARACTER VARYING (50) NOT NULL,
-	unique (Prioridade)
+-- Departamento
+DROP TABLE IF EXISTS Departamento CASCADE;
+CREATE TABLE Departamento (
+	idDepartamento SERIAL NOT NULL PRIMARY KEY,
+	Departamento CHARACTER VARYING (50) NOT NULL,
+	unique (Departamento)
 ) ;
 
 -- Insert mock data 
-INSERT INTO Prioridade (Prioridade) VALUES ('MINIMA');
-INSERT INTO Prioridade (Prioridade) VALUES ('BAIXA');
-INSERT INTO Prioridade (Prioridade) VALUES ('NORMAL');
-INSERT INTO Prioridade (Prioridade) VALUES ('ALTA');
-INSERT INTO Prioridade (Prioridade) VALUES ('URGENTE');
+INSERT INTO Departamento (Departamento) VALUES ('JURIDICO');
+INSERT INTO Departamento (Departamento) VALUES ('ADMINISTRATIVO');
+INSERT INTO Departamento (Departamento) VALUES ('PESSOAL');
 
--- StatusMeta
-DROP TABLE IF EXISTS StatusMeta CASCADE;
-CREATE TABLE StatusMeta (
-	idStatusMeta SERIAL NOT NULL PRIMARY KEY,
-	StatusMeta CHARACTER VARYING (50) NOT NULL,
-	unique (StatusMeta)
+-- Centro de Custo
+DROP TABLE IF EXISTS CentroCusto CASCADE;
+CREATE TABLE CentroCusto (
+	idCentroCusto SERIAL NOT NULL PRIMARY KEY,
+	CentroCusto CHARACTER VARYING (50) NOT NULL,
+	unique (CentroCusto)
 ) ;
 
 -- Insert mock data 
-INSERT INTO StatusMeta (StatusMeta) VALUES ('Não Iniciada');
-INSERT INTO StatusMeta (StatusMeta) VALUES ('Em Andamento');
-INSERT INTO StatusMeta (StatusMeta) VALUES ('Bloqueada');
-INSERT INTO StatusMeta (StatusMeta) VALUES ('Suspensa');
-INSERT INTO StatusMeta (StatusMeta) VALUES ('Concluída');
+INSERT INTO CentroCusto (CentroCusto) VALUES ('CC1');
+INSERT INTO CentroCusto (CentroCusto) VALUES ('CC2');
 
 -- Meta 
 DROP TABLE IF EXISTS meta CASCADE;
@@ -142,34 +138,23 @@ CREATE TABLE meta (
     nome CHARACTER VARYING (100) NOT NULL,
     descricao TEXT NOT NULL,
     dataInicio DATE NOT NULL,
-    dataFim DATE NOT NULL,
-    idPrioridade BIGINT NOT NULL,
-    idStatusMeta BIGINT NOT NULL,
+    dataFim DATE NOT NULL, 	-- data esperada para o fim da meta, pode ser diferente da data real do termino da mesma
+    dataTermino DATE, 		-- data real do termino da tarefa, portando pode ser nulo
+    idEmpresaCliente BIGINT NOT NULL, 
+    horasEstimadas TIME NOT NULL,
+    horasRealizadas TIME,
     idUsuarioResponsavel BIGINT NOT NULL,
+    idDepartamento BIGINT,
+    idCentroCusto BIGINT,
     FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
-    FOREIGN KEY (idPrioridade) REFERENCES Prioridade(idPrioridade),	
-    FOREIGN KEY (idStatusMeta) REFERENCES StatusMeta(idStatusMeta),	
+    FOREIGN KEY (idEmpresaCliente) REFERENCES Empresa(idEmpresa),	
+    FOREIGN KEY (idDepartamento) REFERENCES Departamento(idDepartamento),	
+    FOREIGN KEY (idCentroCusto) REFERENCES CentroCusto(idCentroCusto),	
     FOREIGN KEY (idUsuarioResponsavel) REFERENCES Usuario(idUsuario)	
 );
 
--- Insert mock data 
-INSERT INTO Meta (idEmpresa, nome, descricao, dataInicio, dataFim, idPrioridade, idStatusMeta, idUsuarioResponsavel)
-    VALUES (1, 'Nome da meta', '<h1>descricao</h1', CURRENT_DATE, CURRENT_DATE+10, 1, 1, 1);
 
 
--- Participantes da Meta
-DROP TABLE IF EXISTS ParticipanteMeta CASCADE;
-CREATE TABLE ParticipanteMeta (
-	idParticipanteMeta SERIAL NOT NULL PRIMARY KEY,
-	idMeta BIGINT NOT NULL,
-	idUsuario BIGINT NOT NULL,
-	FOREIGN KEY (idUsuario) REFERENCES usuario(idUsuario),	
-	FOREIGN KEY (idMeta) REFERENCES Meta(idMeta)
-);
-
--- Insert mock data 
-INSERT INTO ParticipanteMeta (idMeta, idUsuario) VALUES (1, 2);
-INSERT INTO ParticipanteMeta (idMeta, idUsuario) VALUES (1, 3);
 
 -- 100 chars
 -- 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890

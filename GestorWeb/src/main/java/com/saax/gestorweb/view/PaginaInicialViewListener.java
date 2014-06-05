@@ -9,7 +9,5 @@ public interface PaginaInicialViewListener {
    
     void loginButtonClicked();
     void signUpButtonClicked();
-    void previewMetasButtonClicked();
-    void previewMetas_OldButtonClicked();
     
 }

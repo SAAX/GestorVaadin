@@ -3,10 +3,16 @@
   <persistence-unit name="GestorWebPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.saax.gestorweb.model.datamodel.Usuario</class>
+    <class>com.saax.gestorweb.model.datamodel.RelacionamentoEmpresaCliente</class>
+    <class>com.saax.gestorweb.model.datamodel.UsuarioEmpresa</class>
+    <class>com.saax.gestorweb.model.datamodel.Empresa</class>
+    <class>com.saax.gestorweb.model.datamodel.CentroCusto</class>
+    <class>com.saax.gestorweb.model.datamodel.Meta</class>
+    <class>com.saax.gestorweb.model.datamodel.Departamento</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor"/>
-      <property name="javax.persistence.jdbc.password" value="postgres"/>
+      <property name="javax.persistence.jdbc.password" value="43DG19K8712"/>
       <!-- password: postgres / 43DG19K8712 -->
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>

@@ -23,26 +23,20 @@ import java.util.ResourceBundle;
   * containerPrincipal (V)
   *      - nomeMetaTextField
   *      + containerSuperior (V)
-  *          + containerBlocosSuperiores (H) 
-  *              + contaierCamposDeData (V)
-  *                  - dataInicioTextField
-  *                  - dataFimTextField
-  *              + containerStatusPrioridade (V)
-  *                  - prioridadeComboBox
-  *                  - statusComboBox
-  *              + containerCamposAviso (H)
-  *                  - alertaComboBox
-  *                  - tempoAlertaComboBox
+  *          + contaierCamposDeData (H)
+  *              - dataInicioTextField
+  *              - dataFimTextField
+  *              - dataTerminoTextField
   *      + accordion (Abas)
   *         + container1aAbaAccordion (H)
-  *             + containerParticipantes (H=50%)
-  *                 + containerSelecaoParticipantes (V)
-  *                     - responsavelCombo
-  *                     - participantesCombo
-  *                     - addParticipanteButton
-  *                     - removeParticipanteButton
-  *                 - listaParticipantes
-  *             + containerDescricaoMeta (H=50%)
+  *             + containerDetalhes (V) width = 30%
+  *                 - responsavelCombo
+  *                 - empresaClienteCombo
+  *                 - departamentoCombo
+  *                 - centroCustoCombo
+  *                 - horasEstimadasTextField
+  *                 - horasRealizadasTextField
+  *             + containerDescricaoMeta (H) width = 70%
   *                 - descricaoMeta
   *         + containerTabelaTarefas (Painel)
   *             - tarefasTable
@@ -61,16 +55,14 @@ public class CadastroMetasView extends Window {
     private TextField nomeMetaTextField;
     private TextField dataInicioTextField;
     private TextField dataFimTextField;
-    private ComboBox prioridadeComboBox;
-    private ComboBox statusComboBox;
-    private ComboBox alertaComboBox;
-    private ComboBox tempoAlertaComboBox;
+    private TextField dataTerminoTextField;
     private RichTextArea descricaoMeta;
     private ComboBox responsavelCombo;
-    private ListSelect listaParticipantes;
-    private ComboBox participantesCombo;
-    private Button addParticipanteButton;
-    private Button removeParticipanteButton;
+    private ComboBox empresaClienteCombo;
+    private ComboBox departamentoCombo;
+    private ComboBox centroCustoCombo;
+    private TextField horasEstimadasTextField;
+    private TextField horasRealizadasTextField;
     private Panel containerTabelaTarefas;
     private Table tarefasTable;
 
@@ -142,16 +134,10 @@ public class CadastroMetasView extends Window {
      * 
      * Layout:
      *      + containerSuperior (V)
-     *          + containerBlocosSuperiores (H) 
-     *              + contaierCamposDeData (V)
-     *                  - dataInicioTextField
-     *                  - dataFimTextField
-     *              + containerStatusPrioridade (V)
-     *                  - prioridadeComboBox
-     *                  - statusComboBox
-     *              + containerCamposAviso (H)
-     *                  - alertaComboBox
-     *                  - tempoAlertaComboBox
+     *          + contaierCamposDeData (H)
+     *              - dataInicioTextField
+     *              - dataFimTextField
+     *              - dataTerminoTextField
      * @return containerSuperior
      */
     private VerticalLayout buildContainerSuperior(){
@@ -159,51 +145,23 @@ public class CadastroMetasView extends Window {
         VerticalLayout containerSuperior = new VerticalLayout();
         containerSuperior.setSizeUndefined();
 
-        // container horizontal que vai receber todos os blocos de campos do painel superior e vai coloca-los lado a ladao
-        HorizontalLayout containerBlocosSuperiores = new HorizontalLayout();
-        containerBlocosSuperiores.setSizeUndefined(); // ocupa apenas o espaço necessário para os componentes internos
-        containerBlocosSuperiores.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
-        containerSuperior.addComponent(containerBlocosSuperiores);
-
         // Container para armazenar os dois campos de data (interno ao superior)
-        VerticalLayout contaierCamposDeData = new VerticalLayout();
-        contaierCamposDeData.setSizeUndefined(); // ocupa apenas o espaço necessário para os componentes internos
+        HorizontalLayout contaierCamposDeData = new HorizontalLayout();
+        contaierCamposDeData.setSizeFull();
         contaierCamposDeData.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
-        containerBlocosSuperiores.addComponent(contaierCamposDeData); // adiciona o container de datas no superior
+        containerSuperior.addComponent(contaierCamposDeData); // adiciona o container de datas no superior
 
         // TextField: Data de Inicio 
         dataInicioTextField = new TextField("Data Inicio");
         contaierCamposDeData.addComponent(dataInicioTextField);
 
-        dataFimTextField = new TextField("Data Fim");
+        // TextField: Data Fim
+        dataFimTextField = new TextField("Data Fim (Previsto)");
         contaierCamposDeData.addComponent(dataFimTextField);
 
-        // Container para armazenar os dois combos: de prioridade e status (interno ao superior)
-        VerticalLayout containerStatusPrioridade = new VerticalLayout();
-        containerStatusPrioridade.setSizeUndefined(); // ocupa apenas o espaço necessário para os componentes internos
-        containerStatusPrioridade.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
-        containerBlocosSuperiores.addComponent(containerStatusPrioridade); // adiciona o container ao superior
-
-        // Combo: Prioridade
-        prioridadeComboBox = new ComboBox("Prioridade");
-        containerStatusPrioridade.addComponent(prioridadeComboBox);
-
-        statusComboBox = new ComboBox("Status");
-        containerStatusPrioridade.addComponent(statusComboBox);
-
-        // Container para armazenar os dois campos: "me avise em" em "tempo" (interno ao superior)
-        HorizontalLayout containerCamposAviso = new HorizontalLayout();
-        containerCamposAviso.setSizeUndefined(); // ocupa apenas o espaço necessário para os componentes internos
-        containerCamposAviso.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
-        containerBlocosSuperiores.addComponent(containerCamposAviso); // adiciona o container ao superior
-        containerBlocosSuperiores.setComponentAlignment(containerCamposAviso, Alignment.BOTTOM_CENTER); // adiciona o container ao superior
-
-        // Combo: "Me avise em"
-        alertaComboBox = new ComboBox("Me avise em");
-        containerCamposAviso.addComponent(alertaComboBox);
-
-        tempoAlertaComboBox = new ComboBox("");
-        containerCamposAviso.addComponent(tempoAlertaComboBox);
+        // TextField: Data Termino
+        dataTerminoTextField = new TextField("Data Término (Real)");
+        contaierCamposDeData.addComponent(dataTerminoTextField);
 
         return containerSuperior;
     }
@@ -212,14 +170,16 @@ public class CadastroMetasView extends Window {
      * Constrói o container do accordion 
      * Layout:
      *      + accordion (Abas)
+
      *         + container1aAbaAccordion (H)
-     *             + containerParticipantes (H=50%)
-     *                     - responsavelCombo
-     *                     - participantesCombo
-     *                     - addParticipanteButton
-     *                     - removeParticipanteButton
-     *                 - listaParticipantes
-     *             + containerDescricaoMeta (H=50%)
+     *             + containerDetalhes (V) width = 30%
+     *                 - responsavelCombo
+     *                 - empresaClienteCombo
+     *                 - departamentoCombo
+     *                 - centroCustoCombo
+     *                 - horasEstimadasTextField
+     *                 - horasRealizadasTextField
+     *             + containerDescricaoMeta (H) width = 70%
      *                 - descricaoMeta
      *         + containerTabelaTarefas (Painel)
      *             - tarefasTable
@@ -232,28 +192,33 @@ public class CadastroMetasView extends Window {
         // estica o accordion para ocupar todo o espaço restante
         accordion.setSizeFull();
 
-        // Na 1a aba do accordion é colocado um container horizontal para guardar os paineis e participantes e de descrição da meta
+        // Na 1a aba do accordion é colocado um container horizontal para guardar 
+        // os paineis de detalhes e de descrição da meta
         HorizontalLayout container1aAbaAccordion = new HorizontalLayout();
-        container1aAbaAccordion.setSpacing(true);
         container1aAbaAccordion.setMargin(true);
+        container1aAbaAccordion.setSpacing(true);
         container1aAbaAccordion.setSizeFull();
         
         // 1o. componente colocado no container1aAbaAccordion:
-        // container com os campos para seleção de participantes e responsavel
-        HorizontalLayout containerParticipantes = buildContainerParticipantes();
-        containerParticipantes.setSizeFull();
-        container1aAbaAccordion.addComponent(containerParticipantes);
+        // container com os campos de detalhes
+        VerticalLayout containerDetalhes = buildContainerDetalhes();
+        containerDetalhes.setSpacing(true);
+        containerDetalhes.setWidth("200px");
+        container1aAbaAccordion.addComponent(containerDetalhes);
+        container1aAbaAccordion.setExpandRatio(containerDetalhes,0);
         
         // 2o. componente colocado no container1aAbaAccordion: descrição da meta
-        HorizontalLayout containerDescricaoMeta = new HorizontalLayout();
+        VerticalLayout containerDescricaoMeta = new VerticalLayout();
+        containerDescricaoMeta.setSpacing(true);
         containerDescricaoMeta.setSizeFull();
-        
+                
         descricaoMeta = new RichTextArea("");
         descricaoMeta.setSizeFull();
-        descricaoMeta.setReadOnly(false);
         descricaoMeta.setNullRepresentation("Informe a descrição da meta");
+        
         containerDescricaoMeta.addComponent(descricaoMeta);
         container1aAbaAccordion.addComponent(containerDescricaoMeta);
+        container1aAbaAccordion.setExpandRatio(containerDescricaoMeta,1);
                 
         accordion.addTab(container1aAbaAccordion, "Detalhes", null);
         
@@ -269,11 +234,9 @@ public class CadastroMetasView extends Window {
         tarefasTable.addContainerProperty("Cod", Integer.class, null);
         tarefasTable.addContainerProperty("Nome", String.class, null);
         tarefasTable.addContainerProperty("Responsável", String.class, null);
+        tarefasTable.addContainerProperty("Status", String.class, null);
+        tarefasTable.addContainerProperty("Andamento", String.class, null);
 
-        
-        tarefasTable.addItem(new Object[] { 1,"Tarefa 1","Joao"}, 1);
-        tarefasTable.addItem(new Object[] { 2,"Tarefa 2","Antonio"}, 2);
-        
         accordion.addTab(containerTabelaTarefas, "Tarefas / Sub", null);
         
         return accordion;
@@ -281,58 +244,55 @@ public class CadastroMetasView extends Window {
 
     /**
      * Layout:
-     *     + containerParticipantes (H)
-     *         + containerSelecaoParticipantes (V)
-     *             - responsavelCombo
-     *             - participantesCombo
-     *             - addParticipanteButton
-     *             - removeParticipanteButton
-     *         - listaParticipantes
-     * 
+     *             + containerDetalhes (V) width = 30%
+     *                 - responsavelCombo
+     *                 - empresaClienteCombo
+     *                 - departamentoCombo
+     *                 - centroCustoCombo
+     *                 - horasEstimadasTextField
+     *                 - horasRealizadasTextField
      * @return 
      */
-    private HorizontalLayout buildContainerParticipantes() {
+    private VerticalLayout buildContainerDetalhes() {
                 
-        HorizontalLayout containerParticipantes = new HorizontalLayout();
-        containerParticipantes.setSpacing(true);
-
-        // container para a lista de seleção de participantes + botões
-        VerticalLayout containerSelecaoParticipantes = new VerticalLayout();
-        containerSelecaoParticipantes.setSizeFull();
-        containerSelecaoParticipantes.setSpacing(true);
-        
-        containerParticipantes.addComponent(containerSelecaoParticipantes);
+        VerticalLayout containerDetalhes = new VerticalLayout();
         
         // combo de seleção do responsavel        
         responsavelCombo = new ComboBox("Responsavel");
         responsavelCombo.setWidth("100%");
-        containerSelecaoParticipantes.addComponent(responsavelCombo);
+        containerDetalhes.addComponent(responsavelCombo);
         
-        // combo de seleção dos participantes
-        participantesCombo = new ComboBox("Participantes");
-        participantesCombo.setWidth("100%");
-        containerSelecaoParticipantes.addComponent(participantesCombo);
+        // combo de seleção da empresa cliente
+        empresaClienteCombo = new ComboBox("Cliente");
+        empresaClienteCombo.setWidth("100%");
+        containerDetalhes.addComponent(empresaClienteCombo);
         
-        // botão para adicionar participantes da listagen
-        addParticipanteButton = new Button(">>");
-        containerSelecaoParticipantes.addComponent(addParticipanteButton);
-        containerSelecaoParticipantes.setComponentAlignment(addParticipanteButton, Alignment.TOP_RIGHT);
+        // combo de seleção do departamento
+        departamentoCombo = new ComboBox("Departamento");
+        departamentoCombo.setWidth("100%");
+        containerDetalhes.addComponent(departamentoCombo);
         
-        // botão para remover participantes da listagen
-        removeParticipanteButton = new Button("<<");
-        containerSelecaoParticipantes.addComponent(removeParticipanteButton);
-        containerSelecaoParticipantes.setComponentAlignment(removeParticipanteButton, Alignment.TOP_RIGHT);
+        // combo de seleção do Centro de custo
+        centroCustoCombo = new ComboBox("Centro de Custo");
+        centroCustoCombo.setWidth("100%");
+        containerDetalhes.addComponent(centroCustoCombo);
         
-        // lista dos participantes selecionados 
-        listaParticipantes = new ListSelect("Participantes");
-        listaParticipantes.setWidth(100, Unit.PERCENTAGE);
-        listaParticipantes.addItem("Joao");
-        listaParticipantes.addItem("Antonio");
-        listaParticipantes.addItem("Fernando");
+        // bloco horizontal para as horas estimadas e realizadas
+        HorizontalLayout containerHorasEstimadasRealizadas = new HorizontalLayout();
+        containerHorasEstimadasRealizadas.setSpacing(true);
+        containerHorasEstimadasRealizadas.setWidth("100%");
+        containerDetalhes.addComponent(containerHorasEstimadasRealizadas);
         
-        containerParticipantes.addComponent(listaParticipantes);
+        // campo de texto para as horas estimadas
+        horasEstimadasTextField = new TextField("H. Estimadas");
+        containerHorasEstimadasRealizadas.addComponent(horasEstimadasTextField);
+        
+        horasRealizadasTextField = new TextField("H. Realizadas");
+        containerHorasEstimadasRealizadas.addComponent(horasRealizadasTextField);
+        
+        
        
-        return containerParticipantes;
+        return containerDetalhes;
 
     }
     

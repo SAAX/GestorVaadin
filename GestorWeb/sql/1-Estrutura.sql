@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 Script para criação da estrutra do projeto Gestor.
 
@@ -32,6 +32,7 @@ Inseridos dados para teste (mockdata)
 
 
 -- Usuário
+
 DROP TABLE IF EXISTS usuario CASCADE;
 CREATE TABLE usuario (
 	idUsuario SERIAL NOT NULL PRIMARY KEY,
@@ -61,13 +62,6 @@ CREATE TABLE empresa (
 INSERT INTO empresa (nome, cnpj, ativa) VALUES ('SAAX', '12.345.678/0001-00', TRUE);
 INSERT INTO empresa (nome, cnpj, ativa) VALUES ('Algum cliente SAAX', '98.765.432/0001-00', TRUE);
 
--- Empresa atual do usuário
-ALTER TABLE usuario ADD COLUMN idEmpresaAtual BIGINT;
-ALTER TABLE usuario ADD CONSTRAINT usuario_idEmpresaAtual_fkey FOREIGN KEY (idEmpresaAtual) REFERENCES Empresa (idEmpresa);
-
--- Insert mock data 
-UPDATE usuario SET idEmpresaAtual = 1;
-
 -- Relacionamento: Usuario <-> Empresa 
 -- ( supondo que um usuário poderá migrar de empresa )
 DROP TABLE IF EXISTS UsuarioEmpresa CASCADE;
@@ -78,14 +72,15 @@ CREATE TABLE UsuarioEmpresa (
         administrador BOOLEAN NOT NULL,
 	contratacao DATE NOT NULL,
 	desligamento DATE,
+	ativo BOOLEAN NOT NULL,
 	FOREIGN KEY (idUsuario) REFERENCES usuario(idUsuario),	
 	FOREIGN KEY (idEmpresa) REFERENCES empresa(idEmpresa)
 );
 
 -- Insert mock data 
-INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao ) VALUES (1, 1, TRUE, CURRENT_DATE);
-INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao ) VALUES (2, 1, TRUE, CURRENT_DATE);
-INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao ) VALUES (3, 1, TRUE, CURRENT_DATE);
+INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao, ativo ) VALUES (1, 1, TRUE, CURRENT_DATE, TRUE);
+INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao, ativo ) VALUES (2, 1, TRUE, CURRENT_DATE, TRUE);
+INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao, ativo ) VALUES (3, 1, TRUE, CURRENT_DATE, TRUE);
 
 -- Empresas "Cliente"
 -- Relacionamento entre as empresas gestoras (Datacompany) e empresas cliente (Covabra)
@@ -109,26 +104,51 @@ INSERT INTO RelacionamentoEmpresaCliente (idEmpresaGestora, idEmpresaCliente, co
 DROP TABLE IF EXISTS Departamento CASCADE;
 CREATE TABLE Departamento (
 	idDepartamento SERIAL NOT NULL PRIMARY KEY,
+	idEmpresa BIGINT NOT NULL, 
 	Departamento CHARACTER VARYING (50) NOT NULL,
-	unique (Departamento)
+	Ativo BOOLEAN NOT NULL,
+	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
+	unique (idEmpresa,Departamento)
 ) ;
 
 -- Insert mock data 
-INSERT INTO Departamento (Departamento) VALUES ('JURIDICO');
-INSERT INTO Departamento (Departamento) VALUES ('ADMINISTRATIVO');
-INSERT INTO Departamento (Departamento) VALUES ('PESSOAL');
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Financeiro',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Administrativo',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Contábil',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Fiscal',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Controlatoria',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Recursos Humanos',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Jurídico',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Marketing',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Comercial',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Compras',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Vendas',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Operacional',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Almoxarifado',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Estoque',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Qualidade',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'P&D',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Produção',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'Manutenção',true);
+INSERT INTO Departamento (idEmpresa,Departamento,Ativo) VALUES (1,'PCP',true);
+
+
+
 
 -- Centro de Custo
 DROP TABLE IF EXISTS CentroCusto CASCADE;
 CREATE TABLE CentroCusto (
 	idCentroCusto SERIAL NOT NULL PRIMARY KEY,
+	idEmpresa BIGINT NOT NULL, 
 	CentroCusto CHARACTER VARYING (50) NOT NULL,
-	unique (CentroCusto)
+	Ativo BOOLEAN NOT NULL,
+	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
+	unique (idEmpresa,CentroCusto)
 ) ;
 
 -- Insert mock data 
-INSERT INTO CentroCusto (CentroCusto) VALUES ('CC1');
-INSERT INTO CentroCusto (CentroCusto) VALUES ('CC2');
+INSERT INTO CentroCusto (idEmpresa,CentroCusto,Ativo) VALUES (1,'CC1',true);
+INSERT INTO CentroCusto (idEmpresa,CentroCusto,Ativo) VALUES (1,'CC2',true);
 
 -- Meta 
 DROP TABLE IF EXISTS meta CASCADE;

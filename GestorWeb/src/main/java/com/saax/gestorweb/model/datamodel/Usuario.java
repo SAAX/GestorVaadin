@@ -7,7 +7,9 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -32,28 +35,41 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login"),
     @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")})
 public class Usuario implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idusuario")
     private Integer idUsuario;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
     @Column(name = "nome")
     private String nome;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "login")
+    
     private String login;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 32)
     @Column(name = "senha")
     private String senha;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private Collection<UsuarioEmpresa> empresas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioResponsavel")
+    private Collection<Meta> metas;
+    
+    
     public Usuario() {
     }
 
@@ -124,5 +140,22 @@ public class Usuario implements Serializable {
     public String toString() {
         return "com.saax.gestorweb.model.datamodel.Usuario[ idusuario=" + idUsuario + " ]";
     }
+
+    public Collection<UsuarioEmpresa> getEmpresas() {
+        return empresas;
+    }
+
+    public void setEmpresas(Collection<UsuarioEmpresa> empresas) {
+        this.empresas = empresas;
+    }
+
+    public Collection<Meta> getMetas() {
+        return metas;
+    }
+
+    public void setMetas(Collection<Meta> metas) {
+        this.metas = metas;
+    }
+
     
 }

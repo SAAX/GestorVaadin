@@ -1,0 +1,2 @@
+ssh -i Dropbox/SX/instancia_desenv.pem -f ubuntu@54.207.102.98 -L 5432:127.0.0.1:5432 -N
+

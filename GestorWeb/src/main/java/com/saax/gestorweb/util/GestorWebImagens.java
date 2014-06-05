@@ -2,13 +2,14 @@ package com.saax.gestorweb.util;
 
 import com.vaadin.server.ClassResource;
 import com.vaadin.ui.Image;
+import java.io.Serializable;
 
 /**
  * Esta classe é responsável por reunir em um só lugar e armazenar todas as imagens de recursos do sistema
  * com o intuito de evitar recursos espalhados
  * @author Rodrigo
  */
-public class GestorWebImagens {
+public class GestorWebImagens implements Serializable {
     
     // listagem com todas as imagens disponíveis na app
     

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -24,19 +18,25 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Entity bean da tabela Usuario Empresacom as namequerys configuradas.<br><br>
  *
+ * O objetivo desta entidade e armazenar o relacionamento entre Usuario e Empresa<br>
+ * 
+ * Quando o usuário não fizer mais parte de uma empresa o relacionamento ficará inativo<br>
+ * 
  * @author rodrigo
  */
 @Entity
 @Table(name = "usuarioempresa")
 @NamedQueries({
     @NamedQuery(name = "UsuarioEmpresa.findAll", query = "SELECT u FROM UsuarioEmpresa u"),
-    @NamedQuery(name = "UsuarioEmpresa.findByIdusuarioempresa", 
-            query = "SELECT u FROM UsuarioEmpresa u WHERE u.idUsuarioEmpresa = :idusuarioempresa"),
+    @NamedQuery(name = "UsuarioEmpresa.findById", 
+            query = "SELECT u FROM UsuarioEmpresa u WHERE u.id = :id"),
     @NamedQuery(name = "UsuarioEmpresa.findByAdministrador", query = "SELECT u FROM UsuarioEmpresa u WHERE u.administrador = :administrador"),
     @NamedQuery(name = "UsuarioEmpresa.findByContratacao", query = "SELECT u FROM UsuarioEmpresa u WHERE u.contratacao = :contratacao"),
     @NamedQuery(name = "UsuarioEmpresa.findByDesligamento", query = "SELECT u FROM UsuarioEmpresa u WHERE u.desligamento = :desligamento")})
 public class UsuarioEmpresa implements Serializable {
+
     
     private static final long serialVersionUID = 1L;
     
@@ -44,7 +44,7 @@ public class UsuarioEmpresa implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idusuarioempresa")
-    private Integer idUsuarioEmpresa;
+    private Integer id;
     
     @Basic(optional = false)
     @NotNull
@@ -69,25 +69,30 @@ public class UsuarioEmpresa implements Serializable {
     @ManyToOne(optional = false)
     private Usuario usuario;
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ativo")
+    private boolean ativo;
+    
     public UsuarioEmpresa() {
     }
 
     public UsuarioEmpresa(Integer idusuarioempresa) {
-        this.idUsuarioEmpresa = idusuarioempresa;
+        this.id = idusuarioempresa;
     }
 
     public UsuarioEmpresa(Integer idusuarioempresa, boolean administrador, Date contratacao) {
-        this.idUsuarioEmpresa = idusuarioempresa;
+        this.id = idusuarioempresa;
         this.administrador = administrador;
         this.contratacao = contratacao;
     }
 
-    public Integer getIdUsuarioEmpresa() {
-        return idUsuarioEmpresa;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdUsuarioEmpresa(Integer idUsuarioEmpresa) {
-        this.idUsuarioEmpresa = idUsuarioEmpresa;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public boolean getAdministrador() {
@@ -133,7 +138,7 @@ public class UsuarioEmpresa implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idUsuarioEmpresa != null ? idUsuarioEmpresa.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -144,7 +149,7 @@ public class UsuarioEmpresa implements Serializable {
             return false;
         }
         UsuarioEmpresa other = (UsuarioEmpresa) object;
-        if ((this.idUsuarioEmpresa == null && other.idUsuarioEmpresa != null) || (this.idUsuarioEmpresa != null && !this.idUsuarioEmpresa.equals(other.idUsuarioEmpresa))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -152,7 +157,15 @@ public class UsuarioEmpresa implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.UsuarioEmpresa[ idusuarioempresa=" + idUsuarioEmpresa + " ]";
+        return "com.saax.gestorweb.model.datamodel.UsuarioEmpresa[ idusuarioempresa=" + id + " ]";
+    }
+
+    public boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
     
 }

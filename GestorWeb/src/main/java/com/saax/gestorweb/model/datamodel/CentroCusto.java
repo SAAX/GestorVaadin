@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -24,36 +18,44 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * Entity bean da tabela Centro Custo com as namequerys configuradas<br>
+ * O objetivo desta entidade e armazenar os Centros de Custo para indicação nas metas<br>
+ * 
  * @author rodrigo
  */
 @Entity
 @Table(name = "centrocusto")
 @NamedQueries({
     @NamedQuery(name = "CentroCusto.findAll", query = "SELECT c FROM CentroCusto c"),
-    @NamedQuery(name = "CentroCusto.findByIdcentrocusto", query = "SELECT c FROM CentroCusto c WHERE c.idCentroCusto = :idcentrocusto"),
+    @NamedQuery(name = "CentroCusto.findById", query = "SELECT c FROM CentroCusto c WHERE c.id = :id"),
     @NamedQuery(name = "CentroCusto.findByEmpresa", query = "SELECT c FROM CentroCusto c WHERE c.empresa = :empresa"),
     @NamedQuery(name = "CentroCusto.findByCentrocusto", query = "SELECT c FROM CentroCusto c WHERE c.centroCusto = :centrocusto"),
     @NamedQuery(name = "CentroCusto.findByAtivo", query = "SELECT c FROM CentroCusto c WHERE c.ativo = :ativo")})
 public class CentroCusto implements Serializable {
+
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idcentrocusto")
-    private Integer idCentroCusto;
+    private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "centrocusto")
     private String centroCusto;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "ativo")
     private boolean ativo;
+    
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa empresa;
+    
     @OneToMany(mappedBy = "centroCusto")
     private Collection<Meta> metas;
 
@@ -61,16 +63,16 @@ public class CentroCusto implements Serializable {
     }
 
     public CentroCusto(Integer idcentrocusto) {
-        this.idCentroCusto = idcentrocusto;
+        this.id = idcentrocusto;
     }
 
 
-    public Integer getIdCentroCusto() {
-        return idCentroCusto;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdCentroCusto(Integer idcentrocusto) {
-        this.idCentroCusto = idcentrocusto;
+    public void setId(Integer idcentrocusto) {
+        this.id = idcentrocusto;
     }
 
 
@@ -101,7 +103,7 @@ public class CentroCusto implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idCentroCusto != null ? idCentroCusto.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -112,7 +114,7 @@ public class CentroCusto implements Serializable {
             return false;
         }
         CentroCusto other = (CentroCusto) object;
-        if ((this.idCentroCusto == null && other.idCentroCusto != null) || (this.idCentroCusto != null && !this.idCentroCusto.equals(other.idCentroCusto))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -120,7 +122,7 @@ public class CentroCusto implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.CentroCusto[ idcentrocusto=" + idCentroCusto + " ]";
+        return "com.saax.gestorweb.model.datamodel.CentroCusto[ idcentrocusto=" + id + " ]";
     }
 
     public Empresa getEmpresa() {

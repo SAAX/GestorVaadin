@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
@@ -22,12 +16,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
+ * DAO para o entity bean: Departamento <br><br>
+ * 
+ * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
+ * Caso seja necessária alguma customização, estender esta classe<br>
+ * 
  * @author rodrigo
  */
-public class DepartamentoJpaController implements Serializable {
+public class DepartamentoDAO implements Serializable {
 
-    public DepartamentoJpaController(EntityManagerFactory emf) {
+    public DepartamentoDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -46,12 +44,12 @@ public class DepartamentoJpaController implements Serializable {
             em.getTransaction().begin();
             Empresa empresa = departamento.getEmpresa();
             if (empresa != null) {
-                empresa = em.getReference(empresa.getClass(), empresa.getIdEmpresa());
+                empresa = em.getReference(empresa.getClass(), empresa.getId());
                 departamento.setEmpresa(empresa);
             }
             Collection<Meta> attachedMetas = new ArrayList<Meta>();
             for (Meta metasMetaToAttach : departamento.getMetas()) {
-                metasMetaToAttach = em.getReference(metasMetaToAttach.getClass(), metasMetaToAttach.getIdMeta());
+                metasMetaToAttach = em.getReference(metasMetaToAttach.getClass(), metasMetaToAttach.getId());
                 attachedMetas.add(metasMetaToAttach);
             }
             departamento.setMetas(attachedMetas);
@@ -61,12 +59,12 @@ public class DepartamentoJpaController implements Serializable {
                 empresa = em.merge(empresa);
             }
             for (Meta metasMeta : departamento.getMetas()) {
-                Departamento oldIdDepartamentoOfMetasMeta = metasMeta.getDepartamento();
+                Departamento oldDepartamentoOfMetasMeta = metasMeta.getDepartamento();
                 metasMeta.setDepartamento(departamento);
                 metasMeta = em.merge(metasMeta);
-                if (oldIdDepartamentoOfMetasMeta != null) {
-                    oldIdDepartamentoOfMetasMeta.getMetas().remove(metasMeta);
-                    oldIdDepartamentoOfMetasMeta = em.merge(oldIdDepartamentoOfMetasMeta);
+                if (oldDepartamentoOfMetasMeta != null) {
+                    oldDepartamentoOfMetasMeta.getMetas().remove(metasMeta);
+                    oldDepartamentoOfMetasMeta = em.merge(oldDepartamentoOfMetasMeta);
                 }
             }
             em.getTransaction().commit();
@@ -82,18 +80,18 @@ public class DepartamentoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Departamento persistentDepartamento = em.find(Departamento.class, departamento.getIdDepartamento());
+            Departamento persistentDepartamento = em.find(Departamento.class, departamento.getId());
             Empresa empresaOld = persistentDepartamento.getEmpresa();
             Empresa empresaNew = departamento.getEmpresa();
             Collection<Meta> metasOld = persistentDepartamento.getMetas();
             Collection<Meta> metasNew = departamento.getMetas();
             if (empresaNew != null) {
-                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getIdEmpresa());
+                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 departamento.setEmpresa(empresaNew);
             }
             Collection<Meta> attachedMetasNew = new ArrayList<Meta>();
             for (Meta metasNewMetaToAttach : metasNew) {
-                metasNewMetaToAttach = em.getReference(metasNewMetaToAttach.getClass(), metasNewMetaToAttach.getIdMeta());
+                metasNewMetaToAttach = em.getReference(metasNewMetaToAttach.getClass(), metasNewMetaToAttach.getId());
                 attachedMetasNew.add(metasNewMetaToAttach);
             }
             metasNew = attachedMetasNew;
@@ -115,12 +113,12 @@ public class DepartamentoJpaController implements Serializable {
             }
             for (Meta metasNewMeta : metasNew) {
                 if (!metasOld.contains(metasNewMeta)) {
-                    Departamento oldIdDepartamentoOfMetasNewMeta = metasNewMeta.getDepartamento();
+                    Departamento oldDepartamentoOfMetasNewMeta = metasNewMeta.getDepartamento();
                     metasNewMeta.setDepartamento(departamento);
                     metasNewMeta = em.merge(metasNewMeta);
-                    if (oldIdDepartamentoOfMetasNewMeta != null && !oldIdDepartamentoOfMetasNewMeta.equals(departamento)) {
-                        oldIdDepartamentoOfMetasNewMeta.getMetas().remove(metasNewMeta);
-                        oldIdDepartamentoOfMetasNewMeta = em.merge(oldIdDepartamentoOfMetasNewMeta);
+                    if (oldDepartamentoOfMetasNewMeta != null && !oldDepartamentoOfMetasNewMeta.equals(departamento)) {
+                        oldDepartamentoOfMetasNewMeta.getMetas().remove(metasNewMeta);
+                        oldDepartamentoOfMetasNewMeta = em.merge(oldDepartamentoOfMetasNewMeta);
                     }
                 }
             }
@@ -128,7 +126,7 @@ public class DepartamentoJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = departamento.getIdDepartamento();
+                Integer id = departamento.getId();
                 if (findDepartamento(id) == null) {
                     throw new NonexistentEntityException("The departamento with id " + id + " no longer exists.");
                 }
@@ -149,7 +147,7 @@ public class DepartamentoJpaController implements Serializable {
             Departamento departamento;
             try {
                 departamento = em.getReference(Departamento.class, id);
-                departamento.getIdDepartamento();
+                departamento.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The departamento with id " + id + " no longer exists.", enfe);
             }

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -25,6 +19,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Entity bean da tabela Meta com as namequerys configuradas.<br><br>
+ * 
+ * O objetivo desta entidade e armazenar as Metas gerenciadas<br><br>
  *
  * @author rodrigo
  */
@@ -32,7 +29,7 @@ import javax.validation.constraints.Size;
 @Table(name = "meta")
 @NamedQueries({
     @NamedQuery(name = "Meta.findAll", query = "SELECT m FROM Meta m"),
-    @NamedQuery(name = "Meta.findByIdmeta", query = "SELECT m FROM Meta m WHERE m.idMeta = :idmeta"),
+    @NamedQuery(name = "Meta.findById", query = "SELECT m FROM Meta m WHERE m.id= :id"),
     @NamedQuery(name = "Meta.findByNome", query = "SELECT m FROM Meta m WHERE m.nome = :nome"),
     @NamedQuery(name = "Meta.findByDescricao", query = "SELECT m FROM Meta m WHERE m.descricao = :descricao"),
     @NamedQuery(name = "Meta.findByDatainicio", query = "SELECT m FROM Meta m WHERE m.dataInicio = :datainicio"),
@@ -43,12 +40,12 @@ import javax.validation.constraints.Size;
 public class Meta implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+ 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idmeta")
-    private Integer idMeta;
+    private Integer id;
     
     @Basic(optional = false)
     @NotNull
@@ -88,36 +85,35 @@ public class Meta implements Serializable {
     @Temporal(TemporalType.TIME)
     private Date horasRealizadas;
     
-    @JoinColumn(name = "idCentroCusto", referencedColumnName = "idCentroCusto")
+    @JoinColumn(name = "idcentrocusto", referencedColumnName = "idcentrocusto")
     @ManyToOne
     private CentroCusto centroCusto;
     
-    @JoinColumn(name = "idDepartamento", referencedColumnName = "idDepartamento")
+    @JoinColumn(name = "iddepartamento", referencedColumnName = "iddepartamento")
     @ManyToOne
     private Departamento departamento;
     
-    @JoinColumn(name = "idEmpresa", referencedColumnName = "idEmpresa")
+    @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa empresa;
     
-    @JoinColumn(name = "idempresacliente", referencedColumnName = "idEmpresa")
+    @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
     @ManyToOne(optional = false)
-    private Empresa empresaCliente;
+    private EmpresaCliente cliente;
     
     @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario usuarioResponsavel;
+    private Usuario responsavel;
 
-    
     public Meta() {
     }
 
     public Meta(Integer idmeta) {
-        this.idMeta = idmeta;
+        this.id = idmeta;
     }
 
     public Meta(Integer idmeta, String nome, String descricao, Date datainicio, Date datafim, Date horasestimadas) {
-        this.idMeta = idmeta;
+        this.id = idmeta;
         this.nome = nome;
         this.descricao = descricao;
         this.dataInicio = datainicio;
@@ -125,12 +121,12 @@ public class Meta implements Serializable {
         this.horasEstimadas = horasestimadas;
     }
 
-    public Integer getIdMeta() {
-        return idMeta;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdMeta(Integer idMeta) {
-        this.idMeta = idMeta;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -213,26 +209,26 @@ public class Meta implements Serializable {
         this.empresa = empresa;
     }
 
-    public Empresa getEmpresaCliente() {
-        return empresaCliente;
+    public EmpresaCliente getCliente() {
+        return cliente;
     }
 
-    public void setEmpresaCliente(Empresa empresaCliente) {
-        this.empresaCliente = empresaCliente;
+    public void setCliente(EmpresaCliente cliente) {
+        this.cliente = cliente;
     }
 
-    public Usuario getUsuarioResponsavel() {
-        return usuarioResponsavel;
+    public Usuario getResponsavel() {
+        return responsavel;
     }
 
-    public void setUsuarioResponsavel(Usuario usuarioResponsavel) {
-        this.usuarioResponsavel = usuarioResponsavel;
+    public void setResponsavel(Usuario responsavel) {
+        this.responsavel = responsavel;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idMeta != null ? idMeta.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -243,7 +239,7 @@ public class Meta implements Serializable {
             return false;
         }
         Meta other = (Meta) object;
-        if ((this.idMeta == null && other.idMeta != null) || (this.idMeta != null && !this.idMeta.equals(other.idMeta))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -251,7 +247,7 @@ public class Meta implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Meta[ idmeta=" + idMeta + " ]";
+        return "com.saax.gestorweb.model.datamodel.Meta[ idmeta=" + id + " ]";
     }
 
 }

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -23,14 +17,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Entity bean da tabela Usuario com as namequerys configuradas.<br><br>
+ * 
+ * O objetivo desta entidade e armazenar os Usuarios para controle de acesso<br><br>
  *
- * @author Rodrigo
+ * @author rodrigo
  */
 @Entity
 @Table(name = "usuario")
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
-    @NamedQuery(name = "Usuario.findByIdusuario", query = "SELECT u FROM Usuario u WHERE u.idUsuario = :idusuario"),
+    @NamedQuery(name = "Usuario.findById", query = "SELECT u FROM Usuario u WHERE u.id = :id"),
     @NamedQuery(name = "Usuario.findByNome", query = "SELECT u FROM Usuario u WHERE u.nome = :nome"),
     @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login"),
     @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")})
@@ -42,7 +39,7 @@ public class Usuario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idusuario")
-    private Integer idUsuario;
+    private Integer id;
     
     @Basic(optional = false)
     @NotNull
@@ -66,30 +63,30 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private Collection<UsuarioEmpresa> empresas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioResponsavel")
-    private Collection<Meta> metas;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "responsavel")
+    private Collection<Meta> metasResponsaveis;
     
     
     public Usuario() {
     }
 
     public Usuario(Integer idusuario) {
-        this.idUsuario = idusuario;
+        this.id = idusuario;
     }
 
     public Usuario(Integer idusuario, String nome, String login, String senha) {
-        this.idUsuario = idusuario;
+        this.id = idusuario;
         this.nome = nome;
         this.login = login;
         this.senha = senha;
     }
 
-    public Integer getIdUsuario() {
-        return idUsuario;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -119,7 +116,7 @@ public class Usuario implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idUsuario != null ? idUsuario.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -130,7 +127,7 @@ public class Usuario implements Serializable {
             return false;
         }
         Usuario other = (Usuario) object;
-        if ((this.idUsuario == null && other.idUsuario != null) || (this.idUsuario != null && !this.idUsuario.equals(other.idUsuario))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -138,7 +135,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Usuario[ idusuario=" + idUsuario + " ]";
+        return "com.saax.gestorweb.model.datamodel.Usuario[ idusuario=" + id + " ]";
     }
 
     public Collection<UsuarioEmpresa> getEmpresas() {
@@ -149,12 +146,12 @@ public class Usuario implements Serializable {
         this.empresas = empresas;
     }
 
-    public Collection<Meta> getMetas() {
-        return metas;
+    public Collection<Meta> getMetasResponsaveis() {
+        return metasResponsaveis;
     }
 
-    public void setMetas(Collection<Meta> metas) {
-        this.metas = metas;
+    public void setMetasResponsaveis(Collection<Meta> metasResponsaveis) {
+        this.metasResponsaveis = metasResponsaveis;
     }
 
     

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
@@ -15,6 +9,7 @@ import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import java.util.List;
@@ -22,12 +17,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
+ * DAO para o entity bean: Meta <br><br>
+ * 
+ * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
+ * Caso seja necessária alguma customização, estender esta classe<br>
+ * 
  * @author rodrigo
  */
-public class MetaJpaController implements Serializable {
+public class MetaDAO implements Serializable {
 
-    public MetaJpaController(EntityManagerFactory emf) {
+    public MetaDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -43,28 +42,28 @@ public class MetaJpaController implements Serializable {
             em.getTransaction().begin();
             CentroCusto centroCusto = meta.getCentroCusto();
             if (centroCusto != null) {
-                centroCusto = em.getReference(centroCusto.getClass(), centroCusto.getIdCentroCusto());
+                centroCusto = em.getReference(centroCusto.getClass(), centroCusto.getId());
                 meta.setCentroCusto(centroCusto);
             }
             Departamento departamento = meta.getDepartamento();
             if (departamento != null) {
-                departamento = em.getReference(departamento.getClass(), departamento.getIdDepartamento());
+                departamento = em.getReference(departamento.getClass(), departamento.getId());
                 meta.setDepartamento(departamento);
             }
             Empresa empresa = meta.getEmpresa();
             if (empresa != null) {
-                empresa = em.getReference(empresa.getClass(), empresa.getIdEmpresa());
+                empresa = em.getReference(empresa.getClass(), empresa.getId());
                 meta.setEmpresa(empresa);
             }
-            Empresa empresaCliente = meta.getEmpresaCliente();
-            if (empresaCliente != null) {
-                empresaCliente = em.getReference(empresaCliente.getClass(), empresaCliente.getIdEmpresa());
-                meta.setEmpresaCliente(empresaCliente);
+            EmpresaCliente cliente = meta.getCliente();
+            if (cliente != null) {
+                cliente = em.getReference(cliente.getClass(), cliente.getId());
+                meta.setCliente(cliente);
             }
-            Usuario usuarioResponsavel = meta.getUsuarioResponsavel();
-            if (usuarioResponsavel != null) {
-                usuarioResponsavel = em.getReference(usuarioResponsavel.getClass(), usuarioResponsavel.getIdUsuario());
-                meta.setUsuarioResponsavel(usuarioResponsavel);
+            Usuario responsavel = meta.getResponsavel();
+            if (responsavel != null) {
+                responsavel = em.getReference(responsavel.getClass(), responsavel.getId());
+                meta.setResponsavel(responsavel);
             }
             em.persist(meta);
             if (centroCusto != null) {
@@ -76,16 +75,16 @@ public class MetaJpaController implements Serializable {
                 departamento = em.merge(departamento);
             }
             if (empresa != null) {
-                empresa.getMetasProprietarias().add(meta);
+                empresa.getMetas().add(meta);
                 empresa = em.merge(empresa);
             }
-            if (empresaCliente != null) {
-                empresaCliente.getMetasProprietarias().add(meta);
-                empresaCliente = em.merge(empresaCliente);
+            if (cliente != null) {
+                cliente.getMetas().add(meta);
+                cliente = em.merge(cliente);
             }
-            if (usuarioResponsavel != null) {
-                usuarioResponsavel.getMetas().add(meta);
-                usuarioResponsavel = em.merge(usuarioResponsavel);
+            if (responsavel != null) {
+                responsavel.getMetasResponsaveis().add(meta);
+                responsavel = em.merge(responsavel);
             }
             em.getTransaction().commit();
         } finally {
@@ -100,36 +99,36 @@ public class MetaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Meta persistentMeta = em.find(Meta.class, meta.getIdMeta());
+            Meta persistentMeta = em.find(Meta.class, meta.getId());
             CentroCusto centroCustoOld = persistentMeta.getCentroCusto();
             CentroCusto centroCustoNew = meta.getCentroCusto();
             Departamento departamentoOld = persistentMeta.getDepartamento();
             Departamento departamentoNew = meta.getDepartamento();
             Empresa empresaOld = persistentMeta.getEmpresa();
             Empresa empresaNew = meta.getEmpresa();
-            Empresa empresaClienteOld = persistentMeta.getEmpresaCliente();
-            Empresa empresaClienteNew = meta.getEmpresaCliente();
-            Usuario usuarioResponsavelOld = persistentMeta.getUsuarioResponsavel();
-            Usuario usuarioResponsavelNew = meta.getUsuarioResponsavel();
+            EmpresaCliente clienteOld = persistentMeta.getCliente();
+            EmpresaCliente clienteNew = meta.getCliente();
+            Usuario responsavelOld = persistentMeta.getResponsavel();
+            Usuario responsavelNew = meta.getResponsavel();
             if (centroCustoNew != null) {
-                centroCustoNew = em.getReference(centroCustoNew.getClass(), centroCustoNew.getIdCentroCusto());
+                centroCustoNew = em.getReference(centroCustoNew.getClass(), centroCustoNew.getId());
                 meta.setCentroCusto(centroCustoNew);
             }
             if (departamentoNew != null) {
-                departamentoNew = em.getReference(departamentoNew.getClass(), departamentoNew.getIdDepartamento());
+                departamentoNew = em.getReference(departamentoNew.getClass(), departamentoNew.getId());
                 meta.setDepartamento(departamentoNew);
             }
             if (empresaNew != null) {
-                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getIdEmpresa());
+                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 meta.setEmpresa(empresaNew);
             }
-            if (empresaClienteNew != null) {
-                empresaClienteNew = em.getReference(empresaClienteNew.getClass(), empresaClienteNew.getIdEmpresa());
-                meta.setEmpresaCliente(empresaClienteNew);
+            if (clienteNew != null) {
+                clienteNew = em.getReference(clienteNew.getClass(), clienteNew.getId());
+                meta.setCliente(clienteNew);
             }
-            if (usuarioResponsavelNew != null) {
-                usuarioResponsavelNew = em.getReference(usuarioResponsavelNew.getClass(), usuarioResponsavelNew.getIdUsuario());
-                meta.setUsuarioResponsavel(usuarioResponsavelNew);
+            if (responsavelNew != null) {
+                responsavelNew = em.getReference(responsavelNew.getClass(), responsavelNew.getId());
+                meta.setResponsavel(responsavelNew);
             }
             meta = em.merge(meta);
             if (centroCustoOld != null && !centroCustoOld.equals(centroCustoNew)) {
@@ -149,34 +148,34 @@ public class MetaJpaController implements Serializable {
                 departamentoNew = em.merge(departamentoNew);
             }
             if (empresaOld != null && !empresaOld.equals(empresaNew)) {
-                empresaOld.getMetasProprietarias().remove(meta);
+                empresaOld.getMetas().remove(meta);
                 empresaOld = em.merge(empresaOld);
             }
             if (empresaNew != null && !empresaNew.equals(empresaOld)) {
-                empresaNew.getMetasProprietarias().add(meta);
+                empresaNew.getMetas().add(meta);
                 empresaNew = em.merge(empresaNew);
             }
-            if (empresaClienteOld != null && !empresaClienteOld.equals(empresaClienteNew)) {
-                empresaClienteOld.getMetasProprietarias().remove(meta);
-                empresaClienteOld = em.merge(empresaClienteOld);
+            if (clienteOld != null && !clienteOld.equals(clienteNew)) {
+                clienteOld.getMetas().remove(meta);
+                clienteOld = em.merge(clienteOld);
             }
-            if (empresaClienteNew != null && !empresaClienteNew.equals(empresaClienteOld)) {
-                empresaClienteNew.getMetasProprietarias().add(meta);
-                empresaClienteNew = em.merge(empresaClienteNew);
+            if (clienteNew != null && !clienteNew.equals(clienteOld)) {
+                clienteNew.getMetas().add(meta);
+                clienteNew = em.merge(clienteNew);
             }
-            if (usuarioResponsavelOld != null && !usuarioResponsavelOld.equals(usuarioResponsavelNew)) {
-                usuarioResponsavelOld.getMetas().remove(meta);
-                usuarioResponsavelOld = em.merge(usuarioResponsavelOld);
+            if (responsavelOld != null && !responsavelOld.equals(responsavelNew)) {
+                responsavelOld.getMetasResponsaveis().remove(meta);
+                responsavelOld = em.merge(responsavelOld);
             }
-            if (usuarioResponsavelNew != null && !usuarioResponsavelNew.equals(usuarioResponsavelOld)) {
-                usuarioResponsavelNew.getMetas().add(meta);
-                usuarioResponsavelNew = em.merge(usuarioResponsavelNew);
+            if (responsavelNew != null && !responsavelNew.equals(responsavelOld)) {
+                responsavelNew.getMetasResponsaveis().add(meta);
+                responsavelNew = em.merge(responsavelNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = meta.getIdMeta();
+                Integer id = meta.getId();
                 if (findMeta(id) == null) {
                     throw new NonexistentEntityException("The meta with id " + id + " no longer exists.");
                 }
@@ -197,7 +196,7 @@ public class MetaJpaController implements Serializable {
             Meta meta;
             try {
                 meta = em.getReference(Meta.class, id);
-                meta.getIdMeta();
+                meta.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The meta with id " + id + " no longer exists.", enfe);
             }
@@ -213,18 +212,18 @@ public class MetaJpaController implements Serializable {
             }
             Empresa empresa = meta.getEmpresa();
             if (empresa != null) {
-                empresa.getMetasProprietarias().remove(meta);
+                empresa.getMetas().remove(meta);
                 empresa = em.merge(empresa);
             }
-            Empresa empresaCliente = meta.getEmpresaCliente();
-            if (empresaCliente != null) {
-                empresaCliente.getMetasProprietarias().remove(meta);
-                empresaCliente = em.merge(empresaCliente);
+            EmpresaCliente cliente = meta.getCliente();
+            if (cliente != null) {
+                cliente.getMetas().remove(meta);
+                cliente = em.merge(cliente);
             }
-            Usuario usuarioResponsavel = meta.getUsuarioResponsavel();
-            if (usuarioResponsavel != null) {
-                usuarioResponsavel.getMetas().remove(meta);
-                usuarioResponsavel = em.merge(usuarioResponsavel);
+            Usuario responsavel = meta.getResponsavel();
+            if (responsavel != null) {
+                responsavel.getMetasResponsaveis().remove(meta);
+                responsavel = em.merge(responsavel);
             }
             em.remove(meta);
             em.getTransaction().commit();

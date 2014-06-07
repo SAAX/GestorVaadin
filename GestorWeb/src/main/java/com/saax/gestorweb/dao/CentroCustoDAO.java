@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
@@ -22,12 +16,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
+ * DAO para o entity bean: CentroCusto <br><br>
+ * 
+ * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
+ * Caso seja necessária alguma customização, estender esta classe<br>
+ * 
  * @author rodrigo
  */
-public class CentroCustoJpaController implements Serializable {
+public class CentroCustoDAO implements Serializable {
 
-    public CentroCustoJpaController(EntityManagerFactory emf) {
+    public CentroCustoDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -46,12 +44,12 @@ public class CentroCustoJpaController implements Serializable {
             em.getTransaction().begin();
             Empresa empresa = centroCusto.getEmpresa();
             if (empresa != null) {
-                empresa = em.getReference(empresa.getClass(), empresa.getIdEmpresa());
+                empresa = em.getReference(empresa.getClass(), empresa.getId());
                 centroCusto.setEmpresa(empresa);
             }
             Collection<Meta> attachedMetas = new ArrayList<Meta>();
             for (Meta metasMetaToAttach : centroCusto.getMetas()) {
-                metasMetaToAttach = em.getReference(metasMetaToAttach.getClass(), metasMetaToAttach.getIdMeta());
+                metasMetaToAttach = em.getReference(metasMetaToAttach.getClass(), metasMetaToAttach.getId());
                 attachedMetas.add(metasMetaToAttach);
             }
             centroCusto.setMetas(attachedMetas);
@@ -61,12 +59,12 @@ public class CentroCustoJpaController implements Serializable {
                 empresa = em.merge(empresa);
             }
             for (Meta metasMeta : centroCusto.getMetas()) {
-                CentroCusto oldIdCentroCustoOfMetasMeta = metasMeta.getCentroCusto();
+                CentroCusto oldCentroCustoOfMetasMeta = metasMeta.getCentroCusto();
                 metasMeta.setCentroCusto(centroCusto);
                 metasMeta = em.merge(metasMeta);
-                if (oldIdCentroCustoOfMetasMeta != null) {
-                    oldIdCentroCustoOfMetasMeta.getMetas().remove(metasMeta);
-                    oldIdCentroCustoOfMetasMeta = em.merge(oldIdCentroCustoOfMetasMeta);
+                if (oldCentroCustoOfMetasMeta != null) {
+                    oldCentroCustoOfMetasMeta.getMetas().remove(metasMeta);
+                    oldCentroCustoOfMetasMeta = em.merge(oldCentroCustoOfMetasMeta);
                 }
             }
             em.getTransaction().commit();
@@ -82,18 +80,18 @@ public class CentroCustoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            CentroCusto persistentCentroCusto = em.find(CentroCusto.class, centroCusto.getIdCentroCusto());
+            CentroCusto persistentCentroCusto = em.find(CentroCusto.class, centroCusto.getId());
             Empresa empresaOld = persistentCentroCusto.getEmpresa();
             Empresa empresaNew = centroCusto.getEmpresa();
             Collection<Meta> metasOld = persistentCentroCusto.getMetas();
             Collection<Meta> metasNew = centroCusto.getMetas();
             if (empresaNew != null) {
-                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getIdEmpresa());
+                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 centroCusto.setEmpresa(empresaNew);
             }
             Collection<Meta> attachedMetasNew = new ArrayList<Meta>();
             for (Meta metasNewMetaToAttach : metasNew) {
-                metasNewMetaToAttach = em.getReference(metasNewMetaToAttach.getClass(), metasNewMetaToAttach.getIdMeta());
+                metasNewMetaToAttach = em.getReference(metasNewMetaToAttach.getClass(), metasNewMetaToAttach.getId());
                 attachedMetasNew.add(metasNewMetaToAttach);
             }
             metasNew = attachedMetasNew;
@@ -115,12 +113,12 @@ public class CentroCustoJpaController implements Serializable {
             }
             for (Meta metasNewMeta : metasNew) {
                 if (!metasOld.contains(metasNewMeta)) {
-                    CentroCusto oldIdCentroCustoOfMetasNewMeta = metasNewMeta.getCentroCusto();
+                    CentroCusto oldCentroCustoOfMetasNewMeta = metasNewMeta.getCentroCusto();
                     metasNewMeta.setCentroCusto(centroCusto);
                     metasNewMeta = em.merge(metasNewMeta);
-                    if (oldIdCentroCustoOfMetasNewMeta != null && !oldIdCentroCustoOfMetasNewMeta.equals(centroCusto)) {
-                        oldIdCentroCustoOfMetasNewMeta.getMetas().remove(metasNewMeta);
-                        oldIdCentroCustoOfMetasNewMeta = em.merge(oldIdCentroCustoOfMetasNewMeta);
+                    if (oldCentroCustoOfMetasNewMeta != null && !oldCentroCustoOfMetasNewMeta.equals(centroCusto)) {
+                        oldCentroCustoOfMetasNewMeta.getMetas().remove(metasNewMeta);
+                        oldCentroCustoOfMetasNewMeta = em.merge(oldCentroCustoOfMetasNewMeta);
                     }
                 }
             }
@@ -128,7 +126,7 @@ public class CentroCustoJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = centroCusto.getIdCentroCusto();
+                Integer id = centroCusto.getId();
                 if (findCentroCusto(id) == null) {
                     throw new NonexistentEntityException("The centroCusto with id " + id + " no longer exists.");
                 }
@@ -149,7 +147,7 @@ public class CentroCustoJpaController implements Serializable {
             CentroCusto centroCusto;
             try {
                 centroCusto = em.getReference(CentroCusto.class, id);
-                centroCusto.getIdCentroCusto();
+                centroCusto.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The centroCusto with id " + id + " no longer exists.", enfe);
             }

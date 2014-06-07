@@ -1,7 +1,7 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.dao.UsuarioDAOCustom;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.vaadin.ui.UI;
@@ -18,19 +18,19 @@ public class LoginModel {
     // Referencia ao recurso das mensagens:
     private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
     
-    private final UsuarioDAO usuarioDAO;
+    private final UsuarioDAOCustom usuarioDAO;
 
     public LoginModel() {
-        usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        usuarioDAO = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
     }
     
     public boolean verificaLoginExistente(String login) {
-        Usuario u = usuarioDAO.findUsuarioByLogin(login);
+        Usuario u = usuarioDAO.findByLogin(login);
         return (u!=null);
     }
 
     public Usuario getUsuario(String login) {
-        return usuarioDAO.findUsuarioByLogin(login);
+        return usuarioDAO.findByLogin(login);
     }
     
 }

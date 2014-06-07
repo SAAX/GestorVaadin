@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
@@ -20,12 +14,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
+ * DAO para o entity bean: UsuarioEmpresa <br><br>
+ * 
+ * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
+ * Caso seja necessária alguma customização, estender esta classe<br>
+ * 
  * @author rodrigo
  */
-public class UsuarioEmpresaJpaController implements Serializable {
+public class UsuarioEmpresaDAO implements Serializable {
 
-    public UsuarioEmpresaJpaController(EntityManagerFactory emf) {
+    public UsuarioEmpresaDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -41,12 +39,12 @@ public class UsuarioEmpresaJpaController implements Serializable {
             em.getTransaction().begin();
             Empresa empresa = usuarioEmpresa.getEmpresa();
             if (empresa != null) {
-                empresa = em.getReference(empresa.getClass(), empresa.getIdEmpresa());
+                empresa = em.getReference(empresa.getClass(), empresa.getId());
                 usuarioEmpresa.setEmpresa(empresa);
             }
             Usuario usuario = usuarioEmpresa.getUsuario();
             if (usuario != null) {
-                usuario = em.getReference(usuario.getClass(), usuario.getIdUsuario());
+                usuario = em.getReference(usuario.getClass(), usuario.getId());
                 usuarioEmpresa.setUsuario(usuario);
             }
             em.persist(usuarioEmpresa);
@@ -71,17 +69,17 @@ public class UsuarioEmpresaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsuarioEmpresa persistentUsuarioEmpresa = em.find(UsuarioEmpresa.class, usuarioEmpresa.getIdUsuarioEmpresa());
+            UsuarioEmpresa persistentUsuarioEmpresa = em.find(UsuarioEmpresa.class, usuarioEmpresa.getId());
             Empresa empresaOld = persistentUsuarioEmpresa.getEmpresa();
             Empresa empresaNew = usuarioEmpresa.getEmpresa();
             Usuario usuarioOld = persistentUsuarioEmpresa.getUsuario();
             Usuario usuarioNew = usuarioEmpresa.getUsuario();
             if (empresaNew != null) {
-                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getIdEmpresa());
+                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 usuarioEmpresa.setEmpresa(empresaNew);
             }
             if (usuarioNew != null) {
-                usuarioNew = em.getReference(usuarioNew.getClass(), usuarioNew.getIdUsuario());
+                usuarioNew = em.getReference(usuarioNew.getClass(), usuarioNew.getId());
                 usuarioEmpresa.setUsuario(usuarioNew);
             }
             usuarioEmpresa = em.merge(usuarioEmpresa);
@@ -105,7 +103,7 @@ public class UsuarioEmpresaJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = usuarioEmpresa.getIdUsuarioEmpresa();
+                Integer id = usuarioEmpresa.getId();
                 if (findUsuarioEmpresa(id) == null) {
                     throw new NonexistentEntityException("The usuarioEmpresa with id " + id + " no longer exists.");
                 }
@@ -126,7 +124,7 @@ public class UsuarioEmpresaJpaController implements Serializable {
             UsuarioEmpresa usuarioEmpresa;
             try {
                 usuarioEmpresa = em.getReference(UsuarioEmpresa.class, id);
-                usuarioEmpresa.getIdUsuarioEmpresa();
+                usuarioEmpresa.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The usuarioEmpresa with id " + id + " no longer exists.", enfe);
             }

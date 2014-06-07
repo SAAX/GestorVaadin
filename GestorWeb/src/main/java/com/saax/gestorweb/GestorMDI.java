@@ -1,16 +1,18 @@
 package com.saax.gestorweb;
 
+import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.PaginaInicialModel;
+import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.presenter.PaginaInicialPresenter;
 import com.saax.gestorweb.util.CookiesManager;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.UserData;
+import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -52,7 +54,16 @@ public class GestorMDI extends UI {
 
     public void carregarDashBoard() {
 
-        setContent(new Label("TESTE: usuario logado = "+getUserData().getUsuarioLogado().getNome()));
+        // Cria a pagina inical
+        DashboardModel paginaInicialModel = new DashboardModel();
+        DashBoardView paginaInicialView = new DashBoardView();
+
+        // O presenter liga model e view
+        new DashboardPresenter(paginaInicialModel, paginaInicialView);
+
+        // adiciona a visualização à UI
+        setContent(paginaInicialView);
+
     }
 
     

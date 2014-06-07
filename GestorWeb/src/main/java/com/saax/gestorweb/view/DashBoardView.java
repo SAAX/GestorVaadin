@@ -42,12 +42,15 @@ public class DashBoardView extends Panel {
         main.setSizeFull();
 
         setContent(main);
-
+        
         main.addComponent(new Label("TESTE: usuario logado = " + ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado().getNome()));
+        
+        main.addComponent(buildAddMetasButton());
+
+
 
         main.addComponent(buildMetasTable());
         
-        main.addComponent(buildAddMetasButton());
         
     }
     
@@ -87,10 +90,10 @@ public class DashBoardView extends Panel {
         for (Meta meta : metas) {
             metasTable.addItem(
                     new Object[]{
-                        meta.getIdMeta(),
+                        meta.getId(),
                         meta.getNome()
                     },
-                    meta.getIdMeta());
+                    meta.getId());
             
         }
     }

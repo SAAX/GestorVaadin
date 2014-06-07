@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -24,36 +18,45 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * Entity bean da tabela Departamento com as namequerys configuradas<br>
+ * 
+ * O objetivo desta entidade e armazenar os Departamentos para indicação nas metas<br>
+ * 
  * @author rodrigo
  */
 @Entity
 @Table(name = "departamento")
 @NamedQueries({
     @NamedQuery(name = "Departamento.findAll", query = "SELECT d FROM Departamento d"),
-    @NamedQuery(name = "Departamento.findByIddepartamento", query = "SELECT d FROM Departamento d WHERE d.idDepartamento = :iddepartamento"),
+    @NamedQuery(name = "Departamento.findById", query = "SELECT d FROM Departamento d WHERE d.id = :id"),
     @NamedQuery(name = "Departamento.findByEmpresa", query = "SELECT d FROM Departamento d WHERE d.empresa = :empresa"),
     @NamedQuery(name = "Departamento.findByDepartamento", query = "SELECT d FROM Departamento d WHERE d.departamento = :departamento"),
     @NamedQuery(name = "Departamento.findByAtivo", query = "SELECT d FROM Departamento d WHERE d.ativo = :ativo")})
 public class Departamento implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "iddepartamento")
-    private Integer idDepartamento;
+    private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "departamento")
     private String departamento;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "ativo")
     private boolean ativo;
+    
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa empresa;
+    
     @OneToMany(mappedBy = "departamento")
     private Collection<Meta> metas;
 
@@ -61,15 +64,15 @@ public class Departamento implements Serializable {
     }
 
     public Departamento(Integer iddepartamento) {
-        this.idDepartamento = iddepartamento;
+        this.id = iddepartamento;
     }
 
-    public Integer getIdDepartamento() {
-        return idDepartamento;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdDepartamento(Integer idDepartamento) {
-        this.idDepartamento = idDepartamento;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     
@@ -100,7 +103,7 @@ public class Departamento implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idDepartamento != null ? idDepartamento.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -111,7 +114,7 @@ public class Departamento implements Serializable {
             return false;
         }
         Departamento other = (Departamento) object;
-        if ((this.idDepartamento == null && other.idDepartamento != null) || (this.idDepartamento != null && !this.idDepartamento.equals(other.idDepartamento))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -119,7 +122,7 @@ public class Departamento implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Departamento[ iddepartamento=" + idDepartamento + " ]";
+        return "com.saax.gestorweb.model.datamodel.Departamento[ iddepartamento=" + id + " ]";
     }
 
     public Empresa getEmpresa() {

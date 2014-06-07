@@ -285,9 +285,11 @@ public class CadastroMetasView extends Window {
         
         // campo de texto para as horas estimadas
         horasEstimadasTextField = new TextField("H. Estimadas");
+        horasEstimadasTextField.setWidth("50%");
         containerHorasEstimadasRealizadas.addComponent(horasEstimadasTextField);
         
         horasRealizadasTextField = new TextField("H. Realizadas");
+        horasRealizadasTextField.setWidth("50%");
         containerHorasEstimadasRealizadas.addComponent(horasRealizadasTextField);
         
         

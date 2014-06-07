@@ -9,6 +9,9 @@
     <class>com.saax.gestorweb.model.datamodel.CentroCusto</class>
     <class>com.saax.gestorweb.model.datamodel.Meta</class>
     <class>com.saax.gestorweb.model.datamodel.Departamento</class>
+    <class>com.saax.gestorweb.model.datamodel.FilialCliente</class>
+    <class>com.saax.gestorweb.model.datamodel.FilialEmpresa</class>
+    <class>com.saax.gestorweb.model.datamodel.EmpresaCliente</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor"/>

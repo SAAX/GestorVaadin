@@ -29,7 +29,7 @@ import javax.validation.constraints.Size;
 @Table(name = "filialempresa")
 @NamedQueries({
     @NamedQuery(name = "FilialEmpresa.findAll", query = "SELECT f FROM FilialEmpresa f"),
-    @NamedQuery(name = "FilialEmpresa.findByIdfilialempresa", query = "SELECT f FROM FilialEmpresa f WHERE f.idfilialempresa = :idfilialempresa"),
+    @NamedQuery(name = "FilialEmpresa.findByIdfilialempresa", query = "SELECT f FROM FilialEmpresa f WHERE f.id = :idfilialempresa"),
     @NamedQuery(name = "FilialEmpresa.findByNome", query = "SELECT f FROM FilialEmpresa f WHERE f.nome = :nome"),
     @NamedQuery(name = "FilialEmpresa.findByAtiva", query = "SELECT f FROM FilialEmpresa f WHERE f.ativa = :ativa")})
 public class FilialEmpresa implements Serializable {

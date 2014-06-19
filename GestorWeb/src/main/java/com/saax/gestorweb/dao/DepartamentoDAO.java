@@ -23,7 +23,7 @@ import javax.persistence.EntityManagerFactory;
  * 
  * @author rodrigo
  */
-public class DepartamentoDAO implements Serializable {
+class DepartamentoDAO implements Serializable {
 
     public DepartamentoDAO(EntityManagerFactory emf) {
         this.emf = emf;

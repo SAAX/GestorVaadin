@@ -1,33 +1,4 @@
-/*
 
-Script para criação da estrutra do projeto Gestor.
-
---------------------------------------------------------------------------------
-
-Data: 	21/05/2014
-Autor: 	Rodrigo M.
-
-Versão inicial
-
-
---------------------------------------------------------------------------------
-
-Data: 	02/06/2014
-Autor: 	Rodrigo M.
-
-Criadas entidades: 
-    Empresa, 
-    UsuarioEmpresa, 
-    RelacionamentoEmpresaCliente, 
-    Departamento, 
-    CentroCusto, 
-    Meta,
-
-Inseridos dados para teste (mockdata)
-
---------------------------------------------------------------------------------
-
- */
 
 DROP TABLE IF EXISTS RelacionamentoEmpresaCliente CASCADE;
 
@@ -37,16 +8,17 @@ DROP TABLE IF EXISTS RelacionamentoEmpresaCliente CASCADE;
 DROP TABLE IF EXISTS usuario CASCADE;
 CREATE TABLE usuario (
 	idUsuario SERIAL NOT NULL PRIMARY KEY,
-	nome CHARACTER VARYING (200) NOT NULL ,
+	nome CHARACTER VARYING (100) NOT NULL ,
+	sobrenome CHARACTER VARYING (100) NOT NULL ,
 	login CHARACTER VARYING (100) NOT NULL,
 	senha CHARACTER (32) NOT NULL,
 	UNIQUE (login)
 );
 
 -- Insert mock data
-INSERT INTO usuario ( nome, login, senha ) VALUES ('rodrigo', 'rodrigo.ccn2005@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==');
-INSERT INTO usuario ( nome, login, senha ) VALUES ('fernando', 'fernando.saax@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==');
-INSERT INTO usuario ( nome, login, senha ) VALUES ('daniel', 'danielstavale@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==');
+INSERT INTO usuario ( nome, sobrenome, login, senha ) VALUES ('rodrigo', 'moreira','rodrigo.ccn2005@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==');
+INSERT INTO usuario ( nome, sobrenome, login, senha ) VALUES ('fernando', 'stavale','fernando.saax@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==');
+INSERT INTO usuario ( nome, sobrenome, login, senha ) VALUES ('daniel', 'stavale', 'danielstavale@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==');
 
 -- Empresa
 -- Empresa que adquiriu o software: cliente da Saax
@@ -55,6 +27,7 @@ CREATE TABLE empresa (
 	idempresa SERIAL NOT NULL PRIMARY KEY,
         idEmpresaPrincipal BIGINT,
 	nome CHARACTER VARYING (100) NOT NULL ,
+	razaoSocial CHARACTER VARYING (150) NOT NULL ,
 	tipoPessoa CHARACTER (8) NOT NULL, -- Fisica / Juridica
 	cnpj CHARACTER (18),
 	cpf CHARACTER (14),
@@ -65,8 +38,8 @@ CREATE TABLE empresa (
 	UNIQUE (cpf)
 );
 
-INSERT INTO Empresa (tipopessoa, nome, cnpj, ativa) VALUES ('J', 'DataCompany', '12.345.678/0001-00', TRUE);
-INSERT INTO Empresa (tipopessoa, idEmpresaPrincipal, nome, cnpj, ativa) VALUES ('J', 1, 'Empresa da corporação DataCompany', '12.345.678/0001-01', TRUE);
+INSERT INTO Empresa (tipopessoa, nome, razaoSocial, cnpj, ativa) VALUES ('J', 'DataCompany', 'DataCompany LTDA', '12.345.678/0001-00', TRUE);
+INSERT INTO Empresa (tipopessoa, idEmpresaPrincipal, nome, razaoSocial, cnpj, ativa) VALUES ('J', 1, 'Empresa da corporação DataCompany', 'Empresa LTDA', '12.345.678/0001-01', TRUE);
 
 -- FilialEmpresa
 DROP TABLE IF EXISTS FilialEmpresa CASCADE;
@@ -90,18 +63,20 @@ DROP TABLE IF EXISTS EmpresaCliente CASCADE;
 CREATE TABLE EmpresaCliente (
 	idEmpresaCliente SERIAL NOT NULL PRIMARY KEY,
         idEmpresaClientePrincipal BIGINT,
+        idEmpresa BIGINT NOT NULL,
 	nome CHARACTER VARYING (100) NOT NULL ,
+	razaoSocial CHARACTER VARYING (150) NOT NULL ,
 	cnpj CHARACTER (18) NOT NULL,
 	ativa BOOLEAN NOT NULL,
 	FOREIGN KEY (idEmpresaClientePrincipal) REFERENCES EmpresaCliente(idEmpresaCliente),	
-	UNIQUE (nome),
-	UNIQUE (cnpj)
+	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
+	UNIQUE (cnpj, idEmpresa)
 );
 
 -- Insert mock data
-INSERT INTO EmpresaCliente (nome, cnpj, ativa) VALUES ('Cliente 1 - DataCompany', '12.345.678/0001-00', TRUE);
-INSERT INTO EmpresaCliente (nome, cnpj, ativa) VALUES ('Cliente 2 - DataCompany', '12.345.678/0001-01', TRUE);
-INSERT INTO EmpresaCliente (idEmpresaClientePrincipal, nome, cnpj, ativa) VALUES (2, 'Sub Empresa do conglomerado do Cliente 2', '12.345.678/0001-02', TRUE);
+INSERT INTO EmpresaCliente (idEmpresa, nome, razaoSocial, cnpj, ativa) VALUES (1, 'Cliente 1 - DataCompany', 'Cliente 1 LTDA','12.345.678/0001-00', TRUE);
+INSERT INTO EmpresaCliente (idEmpresa, nome, razaoSocial, cnpj, ativa) VALUES (1, 'Cliente 2 - DataCompany', 'Cliente 2 LTDA','12.345.678/0001-01', TRUE);
+INSERT INTO EmpresaCliente (idEmpresa, idEmpresaClientePrincipal, nome, razaoSocial, cnpj, ativa) VALUES (1, 2, 'Sub Empresa do conglomerado do Cliente 2', 'Cliente 1', '12.345.678/0001-02', TRUE);
 
 -- FilialEmpresa
 DROP TABLE IF EXISTS FilialCliente CASCADE;

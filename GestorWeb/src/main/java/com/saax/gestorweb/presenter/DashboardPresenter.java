@@ -61,6 +61,7 @@ public class DashboardPresenter implements DashboardViewListenter {
         // adiciona a visualização à UI
         UI.getCurrent().addWindow(cadastroMetasView);
         
+        
 
     }
 

@@ -1,12 +1,12 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.Departamento;
+import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.vaadin.ui.Accordion;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Table;
@@ -14,6 +14,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 
  /**
@@ -21,7 +23,9 @@ import java.util.ResourceBundle;
   * Cria a view do cadastro de Metas com a estrutura abaixo:
   * 
   * containerPrincipal (V)
-  *      - nomeMetaTextField
+  *      + containerCabecalho
+  *         - empresaCombo
+  *         - nomeMetaTextField
   *      + containerSuperior (V)
   *          + contaierCamposDeData (H)
   *              - dataInicioTextField
@@ -57,6 +61,7 @@ public class CadastroMetasView extends Window {
     private TextField dataFimTextField;
     private TextField dataTerminoTextField;
     private RichTextArea descricaoMeta;
+    private ComboBox empresaCombo;
     private ComboBox responsavelCombo;
     private ComboBox empresaClienteCombo;
     private ComboBox departamentoCombo;
@@ -77,7 +82,7 @@ public class CadastroMetasView extends Window {
     public CadastroMetasView() {
         super();
 
-        // TODO setCaption(mensagens.getString("CadastroMetasView.titulo"));
+        setCaption(mensagens.getString("CadastroMetasView.titulo"));
         setModal(true);
         setWidth(800, Unit.PIXELS);
         setHeight(500, Unit.PIXELS);
@@ -87,13 +92,16 @@ public class CadastroMetasView extends Window {
         setContent(containerPrincipal);
       
         center();
+        
     }
     
     /**
      * Constrói o container principal da view, que terá todos os outros containers dentro
      * Layout:
-     *      + containerPrincipal
-     *          - nomeMetaTextField
+     *      + containerPrincipal (V)
+     *          + containerCabecalho
+     *              - empresaCombo
+     *              - nomeMetaTextField
      *          + containerSuperior
      *          + accordion
      *        
@@ -105,11 +113,24 @@ public class CadastroMetasView extends Window {
         containerPrincipal.setMargin(true);
         containerPrincipal.setSpacing(true);
         containerPrincipal.setSizeFull(); // ocupar todo espaço disponível
+
+        
+        HorizontalLayout containerCabecalho = new HorizontalLayout();
+        containerCabecalho.setSpacing(true);
+        containerCabecalho.setWidth("100%");// ocupar todo espaço disponível na largura
+        
+        // combo de seleção da empresa
+        empresaCombo = new ComboBox("Empresa");
+        containerCabecalho.addComponent(empresaCombo);
+        containerCabecalho.setExpandRatio(empresaCombo,0);
         
         // TextField: Nome da meta 
         nomeMetaTextField = new TextField("Nome da meta");
-        nomeMetaTextField.setWidth("100%");
-        containerPrincipal.addComponent(nomeMetaTextField);
+        nomeMetaTextField.setWidth("100%");// ocupar todo espaço disponível na largura
+        containerCabecalho.addComponent(nomeMetaTextField);
+        containerCabecalho.setExpandRatio(nomeMetaTextField,1);
+        
+        containerPrincipal.addComponent(containerCabecalho);
         
         // O container principal terá uma parte fixa, sempre visivel
         // e outra em abas (accordion)
@@ -122,7 +143,7 @@ public class CadastroMetasView extends Window {
         containerPrincipal.addComponent(accordion);
         
         // configuração para que apenas o accordion expanda verticalmente, deixando o painel superior travado
-        containerPrincipal.setExpandRatio(nomeMetaTextField,0);
+        containerPrincipal.setExpandRatio(containerCabecalho,0);
         containerPrincipal.setExpandRatio(containerSuperior,0);
         containerPrincipal.setExpandRatio(accordion,1);
         
@@ -245,6 +266,7 @@ public class CadastroMetasView extends Window {
     /**
      * Layout:
      *             + containerDetalhes (V) width = 30%
+     *                 - empresaCombo
      *                 - responsavelCombo
      *                 - empresaClienteCombo
      *                 - departamentoCombo
@@ -296,6 +318,58 @@ public class CadastroMetasView extends Window {
        
         return containerDetalhes;
 
+    }
+
+    /**
+     * Carrega o combo de seleção de empresas
+     * @param empresas 
+     */
+    public void carregarComboEmpresas(Collection<Empresa> empresas) {
+        for (Empresa empresa : empresas) {
+            empresaCombo.addItem(empresa.getNome());
+        }
+    }
+
+    /**
+     * Pre selecinada a empresa indicada 
+     * @param empresa a ser selecinada
+     */
+    public void selecionarEmpresa(Empresa empresa) {
+        empresaCombo.select(empresa.getNome());
+    }
+
+    /**
+     * Desabilita o combo de seleção de empresas
+     */
+    public void desabilitarSelecaoEmpresas() {
+        empresaCombo.setEnabled(false);
+    }
+
+    /**
+     * Carrega o combo de seleção de empresas
+     * @param departamentos  
+     */
+    public void carregarComboDepartamentos(List<Departamento> departamentos) {
+        for (Departamento departamento : departamentos) {
+            departamentoCombo.addItem(departamento.getDepartamento());
+        }
+    }
+
+    /**
+     * Exibe uma mensagem no combo de departamentos
+     * @param mensagem 
+     */
+    public void exibirMensagemComboDepartamentos(String mensagem) {
+        departamentoCombo.removeAllItems();
+        departamentoCombo.addItem(mensagem);
+        departamentoCombo.select(mensagem);
+    }
+
+    /**
+     * Desabilita o combo de seleção de departamentos
+     */
+    public void desabilitarSelecaoDepartamentos() {
+        departamentoCombo.setEnabled(false);
     }
     
 

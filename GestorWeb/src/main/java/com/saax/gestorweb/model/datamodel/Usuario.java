@@ -43,9 +43,15 @@ public class Usuario implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 200)
+    @Size(min = 1, max = 100)
     @Column(name = "nome")
     private String nome;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
+    @Column(name = "sobrenome")
+    private String sobrenome;
     
     @Basic(optional = false)
     @NotNull
@@ -74,9 +80,10 @@ public class Usuario implements Serializable {
         this.id = idusuario;
     }
 
-    public Usuario(Integer idusuario, String nome, String login, String senha) {
+    public Usuario(Integer idusuario, String nome, String sobrenome, String login, String senha) {
         this.id = idusuario;
         this.nome = nome;
+        this.sobrenome = sobrenome;
         this.login = login;
         this.senha = senha;
     }
@@ -97,6 +104,14 @@ public class Usuario implements Serializable {
         this.nome = nome;
     }
 
+    public String getSobrenome() {
+        return sobrenome;
+    }
+
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
+    }
+    
     public String getLogin() {
         return login;
     }

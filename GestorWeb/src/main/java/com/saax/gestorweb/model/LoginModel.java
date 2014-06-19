@@ -1,11 +1,8 @@
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.UsuarioDAOCustom;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.PostgresConnection;
-import com.vaadin.ui.UI;
-import java.util.ResourceBundle;
 
 /**
  * Classe de negócios do Login
@@ -16,7 +13,6 @@ import java.util.ResourceBundle;
 public class LoginModel {
 
     // Referencia ao recurso das mensagens:
-    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
     
     private final UsuarioDAOCustom usuarioDAO;
 

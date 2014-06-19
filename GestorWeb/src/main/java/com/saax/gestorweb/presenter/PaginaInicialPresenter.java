@@ -7,6 +7,7 @@ import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.saax.gestorweb.view.PaginaInicialViewListener;
 import com.vaadin.ui.UI;
+import java.io.Serializable;
 import java.util.ResourceBundle;
 
 /**
@@ -16,7 +17,7 @@ import java.util.ResourceBundle;
  *
  * @author Rodrigo
  */
-public class PaginaInicialPresenter implements PaginaInicialViewListener {
+public class PaginaInicialPresenter implements PaginaInicialViewListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
     private final PaginaInicialView view;

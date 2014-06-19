@@ -9,6 +9,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.UserData;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.PaginaInicialView;
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
@@ -30,6 +31,7 @@ import javax.servlet.annotation.WebServlet;
  */
 @Theme("my-chameleon")
 @SuppressWarnings("serial")
+@PreserveOnRefresh
 public class GestorMDI extends UI {
 
   

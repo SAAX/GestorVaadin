@@ -20,6 +20,41 @@ INSERT INTO usuario ( nome, sobrenome, login, senha ) VALUES ('rodrigo', 'moreir
 INSERT INTO usuario ( nome, sobrenome, login, senha ) VALUES ('fernando', 'stavale','fernando.saax@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==');
 INSERT INTO usuario ( nome, sobrenome, login, senha ) VALUES ('daniel', 'stavale', 'danielstavale@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==');
 
+-- Estado
+DROP TABLE IF EXISTS Estado CASCADE;
+CREATE TABLE Estado (
+	idEstado SERIAL NOT NULL PRIMARY KEY,
+        nome CHARACTER VARYING (100) NOT NULL,
+        uf CHARACTER (2) NOT NULL,
+        UNIQUE (uf),
+        UNIQUE (nome)
+);
+
+-- Cidade
+DROP TABLE IF EXISTS Cidade CASCADE;
+CREATE TABLE Cidade (
+	idCidade SERIAL NOT NULL PRIMARY KEY,
+        idEstado BIGINT NOT NULL,
+        nome CHARACTER VARYING (100) NOT NULL,
+        FOREIGN KEY (idEstado) REFERENCES Estado(idEstado),	
+        UNIQUE (nome,idEstado)
+);
+
+
+-- Endereco
+-- Tabela criada para armazenar todos os enderecos
+DROP TABLE IF EXISTS Endereco CASCADE;
+CREATE TABLE Endereco (
+	idEndereco SERIAL NOT NULL PRIMARY KEY,
+        logradouro CHARACTER VARYING (255) NOT NULL ,
+        numero CHARACTER VARYING (10) NOT NULL ,
+        complemento CHARACTER VARYING (20) NOT NULL ,
+        cep CHARACTER (10) NOT NULL ,
+        idCidade BIGINT NOT NULL,
+        FOREIGN KEY (idCidade) REFERENCES Cidade(idCidade)
+        
+);
+
 -- Empresa
 -- Empresa que adquiriu o software: cliente da Saax
 DROP TABLE IF EXISTS empresa CASCADE;
@@ -32,8 +67,10 @@ CREATE TABLE empresa (
 	cnpj CHARACTER (18),
 	cpf CHARACTER (14),
 	ativa BOOLEAN NOT NULL,
+	idEndereco BIGINT,
         FOREIGN KEY (idEmpresaPrincipal) REFERENCES Empresa(idEmpresa),	
-	UNIQUE (nome),
+        FOREIGN KEY (idEndereco) REFERENCES Endereco(idEndereco),	
+	UNIQUE (razaoSocial),
 	UNIQUE (cnpj),
 	UNIQUE (cpf)
 );
@@ -47,6 +84,7 @@ CREATE TABLE FilialEmpresa (
 	idFilialEmpresa SERIAL NOT NULL PRIMARY KEY,
         idEmpresa BIGINT NOT NULL,
 	nome CHARACTER VARYING (100) NOT NULL ,
+        cnpj CHARACTER (18),
 	ativa BOOLEAN NOT NULL,
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
 	UNIQUE (idEmpresa,nome)

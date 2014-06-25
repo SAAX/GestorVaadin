@@ -43,10 +43,10 @@ public class EnderecoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cidade idcidade = endereco.getIdcidade();
+            Cidade idcidade = endereco.getCidade();
             if (idcidade != null) {
-                idcidade = em.getReference(idcidade.getClass(), idcidade.getIdcidade());
-                endereco.setIdcidade(idcidade);
+                idcidade = em.getReference(idcidade.getClass(), idcidade.getIdCidade());
+                endereco.setCidade(idcidade);
             }
             List<Empresa> attachedEmpresaList = new ArrayList<Empresa>();
             for (Empresa empresaListEmpresaToAttach : endereco.getEmpresaList()) {
@@ -81,14 +81,14 @@ public class EnderecoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Endereco persistentEndereco = em.find(Endereco.class, endereco.getIdendereco());
-            Cidade idcidadeOld = persistentEndereco.getIdcidade();
-            Cidade idcidadeNew = endereco.getIdcidade();
+            Endereco persistentEndereco = em.find(Endereco.class, endereco.getIdEndereco());
+            Cidade idcidadeOld = persistentEndereco.getCidade();
+            Cidade idcidadeNew = endereco.getCidade();
             List<Empresa> empresaListOld = persistentEndereco.getEmpresaList();
             List<Empresa> empresaListNew = endereco.getEmpresaList();
             if (idcidadeNew != null) {
-                idcidadeNew = em.getReference(idcidadeNew.getClass(), idcidadeNew.getIdcidade());
-                endereco.setIdcidade(idcidadeNew);
+                idcidadeNew = em.getReference(idcidadeNew.getClass(), idcidadeNew.getIdCidade());
+                endereco.setCidade(idcidadeNew);
             }
             List<Empresa> attachedEmpresaListNew = new ArrayList<Empresa>();
             for (Empresa empresaListNewEmpresaToAttach : empresaListNew) {
@@ -127,7 +127,7 @@ public class EnderecoJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = endereco.getIdendereco();
+                Integer id = endereco.getIdEndereco();
                 if (findEndereco(id) == null) {
                     throw new NonexistentEntityException("The endereco with id " + id + " no longer exists.");
                 }
@@ -148,11 +148,11 @@ public class EnderecoJpaController implements Serializable {
             Endereco endereco;
             try {
                 endereco = em.getReference(Endereco.class, id);
-                endereco.getIdendereco();
+                endereco.getIdEndereco();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The endereco with id " + id + " no longer exists.", enfe);
             }
-            Cidade idcidade = endereco.getIdcidade();
+            Cidade idcidade = endereco.getCidade();
             if (idcidade != null) {
                 idcidade.getEnderecoList().remove(endereco);
                 idcidade = em.merge(idcidade);

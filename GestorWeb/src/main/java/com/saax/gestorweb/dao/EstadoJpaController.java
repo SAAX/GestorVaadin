@@ -45,14 +45,14 @@ public class EstadoJpaController implements Serializable {
             em.getTransaction().begin();
             List<Cidade> attachedCidadeList = new ArrayList<Cidade>();
             for (Cidade cidadeListCidadeToAttach : estado.getCidadeList()) {
-                cidadeListCidadeToAttach = em.getReference(cidadeListCidadeToAttach.getClass(), cidadeListCidadeToAttach.getIdcidade());
+                cidadeListCidadeToAttach = em.getReference(cidadeListCidadeToAttach.getClass(), cidadeListCidadeToAttach.getIdCidade());
                 attachedCidadeList.add(cidadeListCidadeToAttach);
             }
             estado.setCidadeList(attachedCidadeList);
             em.persist(estado);
             for (Cidade cidadeListCidade : estado.getCidadeList()) {
-                Estado oldIdestadoOfCidadeListCidade = cidadeListCidade.getIdestado();
-                cidadeListCidade.setIdestado(estado);
+                Estado oldIdestadoOfCidadeListCidade = cidadeListCidade.getEstado();
+                cidadeListCidade.setEstado(estado);
                 cidadeListCidade = em.merge(cidadeListCidade);
                 if (oldIdestadoOfCidadeListCidade != null) {
                     oldIdestadoOfCidadeListCidade.getCidadeList().remove(cidadeListCidade);
@@ -89,7 +89,7 @@ public class EstadoJpaController implements Serializable {
             }
             List<Cidade> attachedCidadeListNew = new ArrayList<Cidade>();
             for (Cidade cidadeListNewCidadeToAttach : cidadeListNew) {
-                cidadeListNewCidadeToAttach = em.getReference(cidadeListNewCidadeToAttach.getClass(), cidadeListNewCidadeToAttach.getIdcidade());
+                cidadeListNewCidadeToAttach = em.getReference(cidadeListNewCidadeToAttach.getClass(), cidadeListNewCidadeToAttach.getIdCidade());
                 attachedCidadeListNew.add(cidadeListNewCidadeToAttach);
             }
             cidadeListNew = attachedCidadeListNew;
@@ -97,8 +97,8 @@ public class EstadoJpaController implements Serializable {
             estado = em.merge(estado);
             for (Cidade cidadeListNewCidade : cidadeListNew) {
                 if (!cidadeListOld.contains(cidadeListNewCidade)) {
-                    Estado oldIdestadoOfCidadeListNewCidade = cidadeListNewCidade.getIdestado();
-                    cidadeListNewCidade.setIdestado(estado);
+                    Estado oldIdestadoOfCidadeListNewCidade = cidadeListNewCidade.getEstado();
+                    cidadeListNewCidade.setEstado(estado);
                     cidadeListNewCidade = em.merge(cidadeListNewCidade);
                     if (oldIdestadoOfCidadeListNewCidade != null && !oldIdestadoOfCidadeListNewCidade.equals(estado)) {
                         oldIdestadoOfCidadeListNewCidade.getCidadeList().remove(cidadeListNewCidade);

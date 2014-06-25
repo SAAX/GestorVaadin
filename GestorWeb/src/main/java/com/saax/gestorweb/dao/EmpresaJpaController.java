@@ -70,7 +70,7 @@ public class EmpresaJpaController implements Serializable {
             }
             Endereco endereco = empresa.getEndereco();
             if (endereco != null) {
-                endereco = em.getReference(endereco.getClass(), endereco.getIdendereco());
+                endereco = em.getReference(endereco.getClass(), endereco.getIdEndereco());
                 empresa.setEndereco(endereco);
             }
             List<FilialEmpresa> attachedFiliais = new ArrayList<FilialEmpresa>();
@@ -251,7 +251,7 @@ public class EmpresaJpaController implements Serializable {
                 empresa.setEmpresaPrincipal(empresaPrincipalNew);
             }
             if (enderecoNew != null) {
-                enderecoNew = em.getReference(enderecoNew.getClass(), enderecoNew.getIdendereco());
+                enderecoNew = em.getReference(enderecoNew.getClass(), enderecoNew.getIdEndereco());
                 empresa.setEndereco(enderecoNew);
             }
             List<FilialEmpresa> attachedFiliaisNew = new ArrayList<FilialEmpresa>();

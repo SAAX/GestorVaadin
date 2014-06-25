@@ -31,41 +31,49 @@ import javax.validation.constraints.Size;
 @Table(name = "endereco")
 @NamedQueries({
     @NamedQuery(name = "Endereco.findAll", query = "SELECT e FROM Endereco e"),
-    @NamedQuery(name = "Endereco.findByIdendereco", query = "SELECT e FROM Endereco e WHERE e.idendereco = :idendereco"),
+    @NamedQuery(name = "Endereco.findByIdendereco", query = "SELECT e FROM Endereco e WHERE e.idEndereco = :idendereco"),
     @NamedQuery(name = "Endereco.findByLogradouro", query = "SELECT e FROM Endereco e WHERE e.logradouro = :logradouro"),
     @NamedQuery(name = "Endereco.findByNumero", query = "SELECT e FROM Endereco e WHERE e.numero = :numero"),
     @NamedQuery(name = "Endereco.findByComplemento", query = "SELECT e FROM Endereco e WHERE e.complemento = :complemento"),
     @NamedQuery(name = "Endereco.findByCep", query = "SELECT e FROM Endereco e WHERE e.cep = :cep")})
 public class Endereco implements Serializable {
+
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idendereco")
-    private Integer idendereco;
+    private Integer idEndereco;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "logradouro")
     private String logradouro;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
     @Column(name = "numero")
     private String numero;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "complemento")
     private String complemento;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 10)
     @Column(name = "cep")
     private String cep;
+    
     @JoinColumn(name = "idcidade", referencedColumnName = "idcidade")
     @ManyToOne(optional = false)
-    private Cidade idcidade;
+    private Cidade cidade;
+    
     @OneToMany(mappedBy = "endereco")
     private List<Empresa> empresaList;
 
@@ -73,23 +81,23 @@ public class Endereco implements Serializable {
     }
 
     public Endereco(Integer idendereco) {
-        this.idendereco = idendereco;
+        this.idEndereco = idendereco;
     }
 
     public Endereco(Integer idendereco, String logradouro, String numero, String complemento, String cep) {
-        this.idendereco = idendereco;
+        this.idEndereco = idendereco;
         this.logradouro = logradouro;
         this.numero = numero;
         this.complemento = complemento;
         this.cep = cep;
     }
 
-    public Integer getIdendereco() {
-        return idendereco;
+    public Integer getIdEndereco() {
+        return idEndereco;
     }
 
-    public void setIdendereco(Integer idendereco) {
-        this.idendereco = idendereco;
+    public void setIdEndereco(Integer idEndereco) {
+        this.idEndereco = idEndereco;
     }
 
     public String getLogradouro() {
@@ -124,12 +132,12 @@ public class Endereco implements Serializable {
         this.cep = cep;
     }
 
-    public Cidade getIdcidade() {
-        return idcidade;
+    public Cidade getCidade() {
+        return cidade;
     }
 
-    public void setIdcidade(Cidade idcidade) {
-        this.idcidade = idcidade;
+    public void setCidade(Cidade cidade) {
+        this.cidade = cidade;
     }
 
     public List<Empresa> getEmpresaList() {
@@ -143,7 +151,7 @@ public class Endereco implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idendereco != null ? idendereco.hashCode() : 0);
+        hash += (idEndereco != null ? idEndereco.hashCode() : 0);
         return hash;
     }
 
@@ -154,7 +162,7 @@ public class Endereco implements Serializable {
             return false;
         }
         Endereco other = (Endereco) object;
-        if ((this.idendereco == null && other.idendereco != null) || (this.idendereco != null && !this.idendereco.equals(other.idendereco))) {
+        if ((this.idEndereco == null && other.idEndereco != null) || (this.idEndereco != null && !this.idEndereco.equals(other.idEndereco))) {
             return false;
         }
         return true;
@@ -162,7 +170,7 @@ public class Endereco implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Endereco[ idendereco=" + idendereco + " ]";
+        return "com.saax.gestorweb.model.datamodel.Endereco[ idendereco=" + idEndereco + " ]";
     }
     
 }

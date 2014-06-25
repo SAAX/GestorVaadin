@@ -35,41 +35,46 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Cidade.findByIdcidade", query = "SELECT c FROM Cidade c WHERE c.idcidade = :idcidade"),
     @NamedQuery(name = "Cidade.findByNome", query = "SELECT c FROM Cidade c WHERE c.nome = :nome")})
 public class Cidade implements Serializable {
+
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idcidade")
-    private Integer idcidade;
+    private Integer idCidade;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "nome")
     private String nome;
+    
     @JoinColumn(name = "idestado", referencedColumnName = "idestado")
     @ManyToOne(optional = false)
-    private Estado idestado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idcidade")
+    private Estado estado;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cidade")
     private List<Endereco> enderecoList;
 
     public Cidade() {
     }
 
     public Cidade(Integer idcidade) {
-        this.idcidade = idcidade;
+        this.idCidade = idcidade;
     }
 
     public Cidade(Integer idcidade, String nome) {
-        this.idcidade = idcidade;
+        this.idCidade = idcidade;
         this.nome = nome;
     }
 
-    public Integer getIdcidade() {
-        return idcidade;
+    public Integer getIdCidade() {
+        return idCidade;
     }
 
-    public void setIdcidade(Integer idcidade) {
-        this.idcidade = idcidade;
+    public void setIdCidade(Integer idCidade) {
+        this.idCidade = idCidade;
     }
 
     public String getNome() {
@@ -80,12 +85,12 @@ public class Cidade implements Serializable {
         this.nome = nome;
     }
 
-    public Estado getIdestado() {
-        return idestado;
+    public Estado getEstado() {
+        return estado;
     }
 
-    public void setIdestado(Estado idestado) {
-        this.idestado = idestado;
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 
     public List<Endereco> getEnderecoList() {
@@ -99,7 +104,7 @@ public class Cidade implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idcidade != null ? idcidade.hashCode() : 0);
+        hash += (idCidade != null ? idCidade.hashCode() : 0);
         return hash;
     }
 
@@ -110,7 +115,7 @@ public class Cidade implements Serializable {
             return false;
         }
         Cidade other = (Cidade) object;
-        if ((this.idcidade == null && other.idcidade != null) || (this.idcidade != null && !this.idcidade.equals(other.idcidade))) {
+        if ((this.idCidade == null && other.idCidade != null) || (this.idCidade != null && !this.idCidade.equals(other.idCidade))) {
             return false;
         }
         return true;
@@ -118,7 +123,7 @@ public class Cidade implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Cidade[ idcidade=" + idcidade + " ]";
+        return "com.saax.gestorweb.model.datamodel.Cidade[ idcidade=" + idCidade + " ]";
     }
     
 }

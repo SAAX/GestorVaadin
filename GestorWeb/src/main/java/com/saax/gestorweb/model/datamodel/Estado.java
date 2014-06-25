@@ -50,7 +50,7 @@ public class Estado implements Serializable {
     @Size(min = 1, max = 2)
     @Column(name = "uf")
     private String uf;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idestado")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estado")
     private List<Cidade> cidadeList;
 
     public Estado() {

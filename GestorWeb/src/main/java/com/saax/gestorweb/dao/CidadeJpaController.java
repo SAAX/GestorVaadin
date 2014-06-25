@@ -44,14 +44,14 @@ public class CidadeJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Estado idestado = cidade.getIdestado();
+            Estado idestado = cidade.getEstado();
             if (idestado != null) {
                 idestado = em.getReference(idestado.getClass(), idestado.getIdestado());
-                cidade.setIdestado(idestado);
+                cidade.setEstado(idestado);
             }
             List<Endereco> attachedEnderecoList = new ArrayList<Endereco>();
             for (Endereco enderecoListEnderecoToAttach : cidade.getEnderecoList()) {
-                enderecoListEnderecoToAttach = em.getReference(enderecoListEnderecoToAttach.getClass(), enderecoListEnderecoToAttach.getIdendereco());
+                enderecoListEnderecoToAttach = em.getReference(enderecoListEnderecoToAttach.getClass(), enderecoListEnderecoToAttach.getIdEndereco());
                 attachedEnderecoList.add(enderecoListEnderecoToAttach);
             }
             cidade.setEnderecoList(attachedEnderecoList);
@@ -61,8 +61,8 @@ public class CidadeJpaController implements Serializable {
                 idestado = em.merge(idestado);
             }
             for (Endereco enderecoListEndereco : cidade.getEnderecoList()) {
-                Cidade oldIdcidadeOfEnderecoListEndereco = enderecoListEndereco.getIdcidade();
-                enderecoListEndereco.setIdcidade(cidade);
+                Cidade oldIdcidadeOfEnderecoListEndereco = enderecoListEndereco.getCidade();
+                enderecoListEndereco.setCidade(cidade);
                 enderecoListEndereco = em.merge(enderecoListEndereco);
                 if (oldIdcidadeOfEnderecoListEndereco != null) {
                     oldIdcidadeOfEnderecoListEndereco.getEnderecoList().remove(enderecoListEndereco);
@@ -82,9 +82,9 @@ public class CidadeJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cidade persistentCidade = em.find(Cidade.class, cidade.getIdcidade());
-            Estado idestadoOld = persistentCidade.getIdestado();
-            Estado idestadoNew = cidade.getIdestado();
+            Cidade persistentCidade = em.find(Cidade.class, cidade.getIdCidade());
+            Estado idestadoOld = persistentCidade.getEstado();
+            Estado idestadoNew = cidade.getEstado();
             List<Endereco> enderecoListOld = persistentCidade.getEnderecoList();
             List<Endereco> enderecoListNew = cidade.getEnderecoList();
             List<String> illegalOrphanMessages = null;
@@ -101,11 +101,11 @@ public class CidadeJpaController implements Serializable {
             }
             if (idestadoNew != null) {
                 idestadoNew = em.getReference(idestadoNew.getClass(), idestadoNew.getIdestado());
-                cidade.setIdestado(idestadoNew);
+                cidade.setEstado(idestadoNew);
             }
             List<Endereco> attachedEnderecoListNew = new ArrayList<Endereco>();
             for (Endereco enderecoListNewEnderecoToAttach : enderecoListNew) {
-                enderecoListNewEnderecoToAttach = em.getReference(enderecoListNewEnderecoToAttach.getClass(), enderecoListNewEnderecoToAttach.getIdendereco());
+                enderecoListNewEnderecoToAttach = em.getReference(enderecoListNewEnderecoToAttach.getClass(), enderecoListNewEnderecoToAttach.getIdEndereco());
                 attachedEnderecoListNew.add(enderecoListNewEnderecoToAttach);
             }
             enderecoListNew = attachedEnderecoListNew;
@@ -121,8 +121,8 @@ public class CidadeJpaController implements Serializable {
             }
             for (Endereco enderecoListNewEndereco : enderecoListNew) {
                 if (!enderecoListOld.contains(enderecoListNewEndereco)) {
-                    Cidade oldIdcidadeOfEnderecoListNewEndereco = enderecoListNewEndereco.getIdcidade();
-                    enderecoListNewEndereco.setIdcidade(cidade);
+                    Cidade oldIdcidadeOfEnderecoListNewEndereco = enderecoListNewEndereco.getCidade();
+                    enderecoListNewEndereco.setCidade(cidade);
                     enderecoListNewEndereco = em.merge(enderecoListNewEndereco);
                     if (oldIdcidadeOfEnderecoListNewEndereco != null && !oldIdcidadeOfEnderecoListNewEndereco.equals(cidade)) {
                         oldIdcidadeOfEnderecoListNewEndereco.getEnderecoList().remove(enderecoListNewEndereco);
@@ -134,7 +134,7 @@ public class CidadeJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = cidade.getIdcidade();
+                Integer id = cidade.getIdCidade();
                 if (findCidade(id) == null) {
                     throw new NonexistentEntityException("The cidade with id " + id + " no longer exists.");
                 }
@@ -155,7 +155,7 @@ public class CidadeJpaController implements Serializable {
             Cidade cidade;
             try {
                 cidade = em.getReference(Cidade.class, id);
-                cidade.getIdcidade();
+                cidade.getIdCidade();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The cidade with id " + id + " no longer exists.", enfe);
             }
@@ -170,7 +170,7 @@ public class CidadeJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Estado idestado = cidade.getIdestado();
+            Estado idestado = cidade.getEstado();
             if (idestado != null) {
                 idestado.getCidadeList().remove(cidade);
                 idestado = em.merge(idestado);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-  <persistence-unit name="GestorWebPU" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="GestorWebTestPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.saax.gestorweb.model.datamodel.Usuario</class>
     <class>com.saax.gestorweb.model.datamodel.RelacionamentoEmpresaCliente</class>
@@ -8,20 +8,20 @@
     <class>com.saax.gestorweb.model.datamodel.Empresa</class>
     <class>com.saax.gestorweb.model.datamodel.CentroCusto</class>
     <class>com.saax.gestorweb.model.datamodel.Meta</class>
+    <class>com.saax.gestorweb.model.datamodel.Endereco</class>
     <class>com.saax.gestorweb.model.datamodel.Departamento</class>
     <class>com.saax.gestorweb.model.datamodel.FilialCliente</class>
     <class>com.saax.gestorweb.model.datamodel.FilialEmpresa</class>
     <class>com.saax.gestorweb.model.datamodel.EmpresaCliente</class>
     <class>com.saax.gestorweb.model.datamodel.Cidade</class>
-    <class>com.saax.gestorweb.model.datamodel.Endereco</class>
     <class>com.saax.gestorweb.model.datamodel.Estado</class>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor"/>
-      <property name="javax.persistence.jdbc.password" value="43DG19K8712"/>
-      <!-- password: postgres / 43DG19K8712 -->
-      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor_test"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
+      <property name="javax.persistence.jdbc.password" value="43DG19K8712"/>
+      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
     </properties>
   </persistence-unit>
 </persistence>

@@ -57,13 +57,13 @@ CREATE TABLE Endereco (
 
 -- Empresa
 -- Empresa que adquiriu o software: cliente da Saax
-DROP TABLE IF EXISTS empresa CASCADE;
-CREATE TABLE empresa (
-	idempresa SERIAL NOT NULL PRIMARY KEY,
+DROP TABLE IF EXISTS Empresa CASCADE;
+CREATE TABLE Empresa (
+	idEmpresa SERIAL NOT NULL PRIMARY KEY,
         idEmpresaPrincipal BIGINT,
 	nome CHARACTER VARYING (100) NOT NULL ,
 	razaoSocial CHARACTER VARYING (150) NOT NULL ,
-	tipoPessoa CHARACTER (8) NOT NULL, -- Fisica / Juridica
+	tipoPessoa CHARACTER (1) NOT NULL, -- Fisica / Juridica
 	cnpj CHARACTER (18),
 	cpf CHARACTER (14),
 	ativa BOOLEAN NOT NULL,
@@ -100,15 +100,18 @@ INSERT INTO FilialEmpresa (idEmpresa, nome, ativa) VALUES (1, 'DataCompany-RJ', 
 DROP TABLE IF EXISTS EmpresaCliente CASCADE;
 CREATE TABLE EmpresaCliente (
 	idEmpresaCliente SERIAL NOT NULL PRIMARY KEY,
-        idEmpresaClientePrincipal BIGINT,
         idEmpresa BIGINT NOT NULL,
 	nome CHARACTER VARYING (100) NOT NULL ,
 	razaoSocial CHARACTER VARYING (150) NOT NULL ,
-	cnpj CHARACTER (18) NOT NULL,
+	tipoPessoa CHARACTER (1) NOT NULL, -- Fisica / Juridica
+	cnpj CHARACTER (18),
+	cpf CHARACTER (14),
 	ativa BOOLEAN NOT NULL,
+	idEndereco BIGINT,
 	FOREIGN KEY (idEmpresaClientePrincipal) REFERENCES EmpresaCliente(idEmpresaCliente),	
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
 	UNIQUE (cnpj, idEmpresa)
+	UNIQUE (cpf, idEmpresa)
 );
 
 -- Insert mock data

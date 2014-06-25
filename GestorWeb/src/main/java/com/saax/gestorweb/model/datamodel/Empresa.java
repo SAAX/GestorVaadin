@@ -1,7 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,11 +37,13 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Empresa.findAll", query = "SELECT e FROM Empresa e"),
     @NamedQuery(name = "Empresa.findById", query = "SELECT e FROM Empresa e WHERE e.id = :id"),
     @NamedQuery(name = "Empresa.findByNome", query = "SELECT e FROM Empresa e WHERE e.nome = :nome"),
+    @NamedQuery(name = "Empresa.findByRazaoSocial", query = "SELECT e FROM Empresa e WHERE e.razaoSocial = :RazaoSocial"),
     @NamedQuery(name = "Empresa.findByTipopessoa", query = "SELECT e FROM Empresa e WHERE e.tipoPessoa = :tipopessoa"),
     @NamedQuery(name = "Empresa.findByCnpj", query = "SELECT e FROM Empresa e WHERE e.cnpj = :cnpj"),
     @NamedQuery(name = "Empresa.findByCpf", query = "SELECT e FROM Empresa e WHERE e.cpf = :cpf"),
     @NamedQuery(name = "Empresa.findByAtiva", query = "SELECT e FROM Empresa e WHERE e.ativa = :ativa")})
 public class Empresa implements Serializable {
+
 
     private static final long serialVersionUID = 1L;
 
@@ -57,11 +59,6 @@ public class Empresa implements Serializable {
     @Column(name = "nome")
     private String nome;
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 8)
-    @Column(name = "tipopessoa")
-    private String tipoPessoa;
 
     @Size(max = 18)
     @Column(name = "cnpj")
@@ -77,39 +74,47 @@ public class Empresa implements Serializable {
     private boolean ativa;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "matriz")
-    private Collection<FilialEmpresa> filiais;
+    private List<FilialEmpresa> filiais;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
-    private Collection<CentroCusto> centrosDeCusto;
+    private List<CentroCusto> centrosDeCusto;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
-    private Collection<UsuarioEmpresa> usuarios;
+    private List<UsuarioEmpresa> usuarios;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
-    private Collection<Meta> metas;
+    private List<Meta> metas;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
-    private Collection<Departamento> departamentos;
+    private List<Departamento> departamentos;
 
     @OneToMany(mappedBy = "empresaPrincipal")
-    private Collection<Empresa> subEmpresas;
+    private List<Empresa> subEmpresas;
 
     @JoinColumn(name = "idempresaprincipal", referencedColumnName = "idempresa")
     @ManyToOne
     private Empresa empresaPrincipal;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 150)
+    @Column(name = "razaosocial")
+    private String razaoSocial;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "tipopessoa")
+    private Character tipoPessoa;
+    
+    @JoinColumn(name = "idendereco", referencedColumnName = "idendereco")
+    @ManyToOne
+    private Endereco endereco;
 
     public Empresa() {
     }
 
     public Empresa(Integer idempresa) {
         this.id = idempresa;
-    }
-
-    public Empresa(Integer idempresa, String nome, String tipopessoa, boolean ativa) {
-        this.id = idempresa;
-        this.nome = nome;
-        this.tipoPessoa = tipopessoa;
-        this.ativa = ativa;
     }
 
     public Integer getId() {
@@ -128,13 +133,6 @@ public class Empresa implements Serializable {
         this.nome = nome;
     }
 
-    public String getTipoPessoa() {
-        return tipoPessoa;
-    }
-
-    public void setTipoPessoa(String tipoPessoa) {
-        this.tipoPessoa = tipoPessoa;
-    }
 
     public String getCnpj() {
         return cnpj;
@@ -160,51 +158,51 @@ public class Empresa implements Serializable {
         this.ativa = ativa;
     }
 
-    public Collection<FilialEmpresa> getFiliais() {
+    public List<FilialEmpresa> getFiliais() {
         return filiais;
     }
 
-    public void setFiliais(Collection<FilialEmpresa> filiais) {
+    public void setFiliais(List<FilialEmpresa> filiais) {
         this.filiais = filiais;
     }
 
-    public Collection<CentroCusto> getCentrosDeCusto() {
+    public List<CentroCusto> getCentrosDeCusto() {
         return centrosDeCusto;
     }
 
-    public void setCentrosDeCusto(Collection<CentroCusto> centrosDeCusto) {
+    public void setCentrosDeCusto(List<CentroCusto> centrosDeCusto) {
         this.centrosDeCusto = centrosDeCusto;
     }
 
-    public Collection<UsuarioEmpresa> getUsuarios() {
+    public List<UsuarioEmpresa> getUsuarios() {
         return usuarios;
     }
 
-    public void setUsuarios(Collection<UsuarioEmpresa> usuarios) {
+    public void setUsuarios(List<UsuarioEmpresa> usuarios) {
         this.usuarios = usuarios;
     }
 
-    public Collection<Meta> getMetas() {
+    public List<Meta> getMetas() {
         return metas;
     }
 
-    public void setMetas(Collection<Meta> metas) {
+    public void setMetas(List<Meta> metas) {
         this.metas = metas;
     }
 
-    public Collection<Departamento> getDepartamentos() {
+    public List<Departamento> getDepartamentos() {
         return departamentos;
     }
 
-    public void setDepartamentos(Collection<Departamento> departamentos) {
+    public void setDepartamentos(List<Departamento> departamentos) {
         this.departamentos = departamentos;
     }
 
-    public Collection<Empresa> getSubEmpresas() {
+    public List<Empresa> getSubEmpresas() {
         return subEmpresas;
     }
 
-    public void setSubEmpresas(Collection<Empresa> subEmpresas) {
+    public void setSubEmpresas(List<Empresa> subEmpresas) {
         this.subEmpresas = subEmpresas;
     }
 
@@ -236,9 +234,34 @@ public class Empresa implements Serializable {
         return true;
     }
 
+    public String getRazaoSocial() {
+        return razaoSocial;
+    }
+
+    public void setRazaoSocial(String razaoSocial) {
+        this.razaoSocial = razaoSocial;
+    }
+
+    public Character getTipoPessoa() {
+        return tipoPessoa;
+    }
+
+    public void setTipoPessoa(Character tipoPessoa) {
+        this.tipoPessoa = tipoPessoa;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
+
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Empresa[ idempresa=" + id + " ]";
+        return nome;
     }
 
 }

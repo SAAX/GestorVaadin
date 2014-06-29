@@ -17,6 +17,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity bean da tabela Empresa com as namequerys configuradas<br><br>
@@ -24,9 +25,6 @@ import javax.validation.constraints.Size;
  * O objetivo desta entidade e armazenar os nossos Clientes<br><br>
  * 
  * Esta será a classe chave para segmentação dos dados armezenados.<br>
- *
- * ATENÇÃO: Esta classe ainda não está completa, mais campos serão adicionados
- * quando for criado o cadastro de empresas e clientes
  *
  *
  * @author rodrigo
@@ -43,6 +41,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Empresa.findByCpf", query = "SELECT e FROM Empresa e WHERE e.cpf = :cpf"),
     @NamedQuery(name = "Empresa.findByAtiva", query = "SELECT e FROM Empresa e WHERE e.ativa = :ativa")})
 public class Empresa implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    private List<EmpresaCliente> empresaClienteList;
 
 
     private static final long serialVersionUID = 1L;
@@ -262,6 +262,15 @@ public class Empresa implements Serializable {
     @Override
     public String toString() {
         return nome;
+    }
+
+    @XmlTransient
+    public List<EmpresaCliente> getEmpresaClienteList() {
+        return empresaClienteList;
+    }
+
+    public void setEmpresaClienteList(List<EmpresaCliente> empresaClienteList) {
+        this.empresaClienteList = empresaClienteList;
     }
 
 }

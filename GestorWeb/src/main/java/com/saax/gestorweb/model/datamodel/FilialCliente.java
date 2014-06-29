@@ -16,37 +16,39 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * Entity bean da tabela Filial Cliente com as namequerys configuradas<br><br>
+ * Entity bean da tabela FilialCliente com as namequerys configuradas<br><br>
  * 
- * O objetivo desta entidade e armazenar as Filiais dos clientes dos nossos clientes<br><br>
- * 
- * ATENÇÃO: Esta classe ainda não está completa, mais campos serão adicionados 
- * quando for criado o cadastro de empresas e clientes<br>
- * 
+ * O objetivo desta entidade e armazenar as filiais dos nossos Clientes<br><br>
+ *
  * @author rodrigo
  */
 @Entity
 @Table(name = "filialcliente")
 @NamedQueries({
     @NamedQuery(name = "FilialCliente.findAll", query = "SELECT f FROM FilialCliente f"),
-    @NamedQuery(name = "FilialCliente.findByIdfilialcliente", query = "SELECT f FROM FilialCliente f WHERE f.id = :id"),
+    @NamedQuery(name = "FilialCliente.findByIdfilialcliente", query = "SELECT f FROM FilialCliente f WHERE f.idFilialCliente = :idfilialcliente"),
     @NamedQuery(name = "FilialCliente.findByNome", query = "SELECT f FROM FilialCliente f WHERE f.nome = :nome"),
+    @NamedQuery(name = "FilialCliente.findByCnpj", query = "SELECT f FROM FilialCliente f WHERE f.cnpj = :cnpj"),
     @NamedQuery(name = "FilialCliente.findByAtiva", query = "SELECT f FROM FilialCliente f WHERE f.ativa = :ativa")})
 public class FilialCliente implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idfilialcliente")
-    private Integer id;
+    private Integer idFilialCliente;
     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "nome")
     private String nome;
+    
+    @Size(max = 18)
+    @Column(name = "cnpj")
+    private String cnpj;
     
     @Basic(optional = false)
     @NotNull
@@ -55,27 +57,27 @@ public class FilialCliente implements Serializable {
     
     @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
     @ManyToOne(optional = false)
-    private EmpresaCliente matriz;
+    private EmpresaCliente empresaCliente;
 
     public FilialCliente() {
     }
 
     public FilialCliente(Integer idfilialcliente) {
-        this.id = idfilialcliente;
+        this.idFilialCliente = idfilialcliente;
     }
 
     public FilialCliente(Integer idfilialcliente, String nome, boolean ativa) {
-        this.id = idfilialcliente;
+        this.idFilialCliente = idfilialcliente;
         this.nome = nome;
         this.ativa = ativa;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIdFilialCliente() {
+        return idFilialCliente;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdFilialCliente(Integer idFilialCliente) {
+        this.idFilialCliente = idFilialCliente;
     }
 
     public String getNome() {
@@ -86,6 +88,14 @@ public class FilialCliente implements Serializable {
         this.nome = nome;
     }
 
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
+
     public boolean getAtiva() {
         return ativa;
     }
@@ -94,18 +104,18 @@ public class FilialCliente implements Serializable {
         this.ativa = ativa;
     }
 
-    public EmpresaCliente getMatriz() {
-        return matriz;
+    public EmpresaCliente getEmpresaCliente() {
+        return empresaCliente;
     }
 
-    public void setMatriz(EmpresaCliente matriz) {
-        this.matriz = matriz;
+    public void setEmpresaCliente(EmpresaCliente empresaCliente) {
+        this.empresaCliente = empresaCliente;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (idFilialCliente != null ? idFilialCliente.hashCode() : 0);
         return hash;
     }
 
@@ -116,7 +126,7 @@ public class FilialCliente implements Serializable {
             return false;
         }
         FilialCliente other = (FilialCliente) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.idFilialCliente == null && other.idFilialCliente != null) || (this.idFilialCliente != null && !this.idFilialCliente.equals(other.idFilialCliente))) {
             return false;
         }
         return true;
@@ -124,7 +134,7 @@ public class FilialCliente implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.FilialCliente[ idfilialcliente=" + id + " ]";
+        return "com.saax.gestorweb.model.datamodel.FilialCliente[ idfilialcliente=" + idFilialCliente + " ]";
     }
     
 }

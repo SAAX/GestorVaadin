@@ -1,3 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
@@ -7,21 +13,17 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
-import com.saax.gestorweb.model.datamodel.Meta;
-import java.util.ArrayList;
-import java.util.Collection;
+import com.saax.gestorweb.model.datamodel.Endereco;
 import com.saax.gestorweb.model.datamodel.FilialCliente;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * DAO para o entity bean: EmpresaCliente <br><br>
- * 
- * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
- * Caso seja necessária alguma customização, estender esta classe<br>
- * 
+ *
  * @author rodrigo
  */
 public class EmpresaClienteDAO implements Serializable {
@@ -36,72 +38,45 @@ public class EmpresaClienteDAO implements Serializable {
     }
 
     public void create(EmpresaCliente empresaCliente) {
-        if (empresaCliente.getMetas() == null) {
-            empresaCliente.setMetas(new ArrayList<Meta>());
-        }
         if (empresaCliente.getFiliais() == null) {
             empresaCliente.setFiliais(new ArrayList<FilialCliente>());
-        }
-        if (empresaCliente.getSubEmpresas() == null) {
-            empresaCliente.setSubEmpresas(new ArrayList<EmpresaCliente>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            EmpresaCliente empresaPrincipal = empresaCliente.getEmpresaPrincipal();
-            if (empresaPrincipal != null) {
-                empresaPrincipal = em.getReference(empresaPrincipal.getClass(), empresaPrincipal.getId());
-                empresaCliente.setEmpresaPrincipal(empresaPrincipal);
+            Empresa empresa = empresaCliente.getEmpresa();
+            if (empresa != null) {
+                empresa = em.getReference(empresa.getClass(), empresa.getId());
+                empresaCliente.setEmpresa(empresa);
             }
-            Collection<Meta> attachedMetas = new ArrayList<Meta>();
-            for (Meta metasMetaToAttach : empresaCliente.getMetas()) {
-                metasMetaToAttach = em.getReference(metasMetaToAttach.getClass(), metasMetaToAttach.getId());
-                attachedMetas.add(metasMetaToAttach);
+            Endereco endereco = empresaCliente.getEndereco();
+            if (endereco != null) {
+                endereco = em.getReference(endereco.getClass(), endereco.getIdEndereco());
+                empresaCliente.setEndereco(endereco);
             }
-            empresaCliente.setMetas(attachedMetas);
-            Collection<FilialCliente> attachedFiliais = new ArrayList<FilialCliente>();
+            List<FilialCliente> attachedFiliais = new ArrayList<FilialCliente>();
             for (FilialCliente filiaisFilialClienteToAttach : empresaCliente.getFiliais()) {
-                filiaisFilialClienteToAttach = em.getReference(filiaisFilialClienteToAttach.getClass(), filiaisFilialClienteToAttach.getId());
+                filiaisFilialClienteToAttach = em.getReference(filiaisFilialClienteToAttach.getClass(), filiaisFilialClienteToAttach.getIdFilialCliente());
                 attachedFiliais.add(filiaisFilialClienteToAttach);
             }
             empresaCliente.setFiliais(attachedFiliais);
-            Collection<EmpresaCliente> attachedSubEmpresas = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente subEmpresasEmpresaClienteToAttach : empresaCliente.getSubEmpresas()) {
-                subEmpresasEmpresaClienteToAttach = em.getReference(subEmpresasEmpresaClienteToAttach.getClass(), subEmpresasEmpresaClienteToAttach.getId());
-                attachedSubEmpresas.add(subEmpresasEmpresaClienteToAttach);
-            }
-            empresaCliente.setSubEmpresas(attachedSubEmpresas);
             em.persist(empresaCliente);
-            if (empresaPrincipal != null) {
-                empresaPrincipal.getSubEmpresas().add(empresaCliente);
-                empresaPrincipal = em.merge(empresaPrincipal);
+            if (empresa != null) {
+                empresa.getEmpresaClienteList().add(empresaCliente);
+                empresa = em.merge(empresa);
             }
-            for (Meta metasMeta : empresaCliente.getMetas()) {
-                EmpresaCliente oldClienteOfMetasMeta = metasMeta.getCliente();
-                metasMeta.setCliente(empresaCliente);
-                metasMeta = em.merge(metasMeta);
-                if (oldClienteOfMetasMeta != null) {
-                    oldClienteOfMetasMeta.getMetas().remove(metasMeta);
-                    oldClienteOfMetasMeta = em.merge(oldClienteOfMetasMeta);
-                }
+            if (endereco != null) {
+                endereco.getEmpresaClienteList().add(empresaCliente);
+                endereco = em.merge(endereco);
             }
             for (FilialCliente filiaisFilialCliente : empresaCliente.getFiliais()) {
-                EmpresaCliente oldMatrizOfFiliaisFilialCliente = filiaisFilialCliente.getMatriz();
-                filiaisFilialCliente.setMatriz(empresaCliente);
+                EmpresaCliente oldIdempresaclienteOfFiliaisFilialCliente = filiaisFilialCliente.getEmpresaCliente();
+                filiaisFilialCliente.setEmpresaCliente(empresaCliente);
                 filiaisFilialCliente = em.merge(filiaisFilialCliente);
-                if (oldMatrizOfFiliaisFilialCliente != null) {
-                    oldMatrizOfFiliaisFilialCliente.getFiliais().remove(filiaisFilialCliente);
-                    oldMatrizOfFiliaisFilialCliente = em.merge(oldMatrizOfFiliaisFilialCliente);
-                }
-            }
-            for (EmpresaCliente subEmpresasEmpresaCliente : empresaCliente.getSubEmpresas()) {
-                EmpresaCliente oldEmpresaPrincipalOfSubEmpresasEmpresaCliente = subEmpresasEmpresaCliente.getEmpresaPrincipal();
-                subEmpresasEmpresaCliente.setEmpresaPrincipal(empresaCliente);
-                subEmpresasEmpresaCliente = em.merge(subEmpresasEmpresaCliente);
-                if (oldEmpresaPrincipalOfSubEmpresasEmpresaCliente != null) {
-                    oldEmpresaPrincipalOfSubEmpresasEmpresaCliente.getSubEmpresas().remove(subEmpresasEmpresaCliente);
-                    oldEmpresaPrincipalOfSubEmpresasEmpresaCliente = em.merge(oldEmpresaPrincipalOfSubEmpresasEmpresaCliente);
+                if (oldIdempresaclienteOfFiliaisFilialCliente != null) {
+                    oldIdempresaclienteOfFiliaisFilialCliente.getFiliais().remove(filiaisFilialCliente);
+                    oldIdempresaclienteOfFiliaisFilialCliente = em.merge(oldIdempresaclienteOfFiliaisFilialCliente);
                 }
             }
             em.getTransaction().commit();
@@ -117,105 +92,65 @@ public class EmpresaClienteDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            EmpresaCliente persistentEmpresaCliente = em.find(EmpresaCliente.class, empresaCliente.getId());
-            EmpresaCliente empresaPrincipalOld = persistentEmpresaCliente.getEmpresaPrincipal();
-            EmpresaCliente empresaPrincipalNew = empresaCliente.getEmpresaPrincipal();
-            Collection<Meta> metasOld = persistentEmpresaCliente.getMetas();
-            Collection<Meta> metasNew = empresaCliente.getMetas();
-            Collection<FilialCliente> filiaisOld = persistentEmpresaCliente.getFiliais();
-            Collection<FilialCliente> filiaisNew = empresaCliente.getFiliais();
-            Collection<EmpresaCliente> subEmpresasOld = persistentEmpresaCliente.getSubEmpresas();
-            Collection<EmpresaCliente> subEmpresasNew = empresaCliente.getSubEmpresas();
+            EmpresaCliente persistentEmpresaCliente = em.find(EmpresaCliente.class, empresaCliente.getIdEmpresaCliente());
+            Empresa empresaOld = persistentEmpresaCliente.getEmpresa();
+            Empresa empresaNew = empresaCliente.getEmpresa();
+            Endereco enderecoOld = persistentEmpresaCliente.getEndereco();
+            Endereco enderecoNew = empresaCliente.getEndereco();
+            List<FilialCliente> filiaisOld = persistentEmpresaCliente.getFiliais();
+            List<FilialCliente> filiaisNew = empresaCliente.getFiliais();
             List<String> illegalOrphanMessages = null;
-            for (Meta metasOldMeta : metasOld) {
-                if (!metasNew.contains(metasOldMeta)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Meta " + metasOldMeta + " since its cliente field is not nullable.");
-                }
-            }
             for (FilialCliente filiaisOldFilialCliente : filiaisOld) {
                 if (!filiaisNew.contains(filiaisOldFilialCliente)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain FilialCliente " + filiaisOldFilialCliente + " since its matriz field is not nullable.");
+                    illegalOrphanMessages.add("You must retain FilialCliente " + filiaisOldFilialCliente + " since its idempresacliente field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (empresaPrincipalNew != null) {
-                empresaPrincipalNew = em.getReference(empresaPrincipalNew.getClass(), empresaPrincipalNew.getId());
-                empresaCliente.setEmpresaPrincipal(empresaPrincipalNew);
+            if (empresaNew != null) {
+                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
+                empresaCliente.setEmpresa(empresaNew);
             }
-            Collection<Meta> attachedMetasNew = new ArrayList<Meta>();
-            for (Meta metasNewMetaToAttach : metasNew) {
-                metasNewMetaToAttach = em.getReference(metasNewMetaToAttach.getClass(), metasNewMetaToAttach.getId());
-                attachedMetasNew.add(metasNewMetaToAttach);
+            if (enderecoNew != null) {
+                enderecoNew = em.getReference(enderecoNew.getClass(), enderecoNew.getIdEndereco());
+                empresaCliente.setEndereco(enderecoNew);
             }
-            metasNew = attachedMetasNew;
-            empresaCliente.setMetas(metasNew);
-            Collection<FilialCliente> attachedFiliaisNew = new ArrayList<FilialCliente>();
+            List<FilialCliente> attachedFiliaisNew = new ArrayList<FilialCliente>();
             for (FilialCliente filiaisNewFilialClienteToAttach : filiaisNew) {
-                filiaisNewFilialClienteToAttach = em.getReference(filiaisNewFilialClienteToAttach.getClass(), filiaisNewFilialClienteToAttach.getId());
+                filiaisNewFilialClienteToAttach = em.getReference(filiaisNewFilialClienteToAttach.getClass(), filiaisNewFilialClienteToAttach.getIdFilialCliente());
                 attachedFiliaisNew.add(filiaisNewFilialClienteToAttach);
             }
             filiaisNew = attachedFiliaisNew;
             empresaCliente.setFiliais(filiaisNew);
-            Collection<EmpresaCliente> attachedSubEmpresasNew = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente subEmpresasNewEmpresaClienteToAttach : subEmpresasNew) {
-                subEmpresasNewEmpresaClienteToAttach = em.getReference(subEmpresasNewEmpresaClienteToAttach.getClass(), subEmpresasNewEmpresaClienteToAttach.getId());
-                attachedSubEmpresasNew.add(subEmpresasNewEmpresaClienteToAttach);
-            }
-            subEmpresasNew = attachedSubEmpresasNew;
-            empresaCliente.setSubEmpresas(subEmpresasNew);
             empresaCliente = em.merge(empresaCliente);
-            if (empresaPrincipalOld != null && !empresaPrincipalOld.equals(empresaPrincipalNew)) {
-                empresaPrincipalOld.getSubEmpresas().remove(empresaCliente);
-                empresaPrincipalOld = em.merge(empresaPrincipalOld);
+            if (empresaOld != null && !empresaOld.equals(empresaNew)) {
+                empresaOld.getEmpresaClienteList().remove(empresaCliente);
+                empresaOld = em.merge(empresaOld);
             }
-            if (empresaPrincipalNew != null && !empresaPrincipalNew.equals(empresaPrincipalOld)) {
-                empresaPrincipalNew.getSubEmpresas().add(empresaCliente);
-                empresaPrincipalNew = em.merge(empresaPrincipalNew);
+            if (empresaNew != null && !empresaNew.equals(empresaOld)) {
+                empresaNew.getEmpresaClienteList().add(empresaCliente);
+                empresaNew = em.merge(empresaNew);
             }
-            for (Meta metasNewMeta : metasNew) {
-                if (!metasOld.contains(metasNewMeta)) {
-                    EmpresaCliente oldClienteOfMetasNewMeta = metasNewMeta.getCliente();
-                    metasNewMeta.setCliente(empresaCliente);
-                    metasNewMeta = em.merge(metasNewMeta);
-                    if (oldClienteOfMetasNewMeta != null && !oldClienteOfMetasNewMeta.equals(empresaCliente)) {
-                        oldClienteOfMetasNewMeta.getMetas().remove(metasNewMeta);
-                        oldClienteOfMetasNewMeta = em.merge(oldClienteOfMetasNewMeta);
-                    }
-                }
+            if (enderecoOld != null && !enderecoOld.equals(enderecoNew)) {
+                enderecoOld.getEmpresaClienteList().remove(empresaCliente);
+                enderecoOld = em.merge(enderecoOld);
+            }
+            if (enderecoNew != null && !enderecoNew.equals(enderecoOld)) {
+                enderecoNew.getEmpresaClienteList().add(empresaCliente);
+                enderecoNew = em.merge(enderecoNew);
             }
             for (FilialCliente filiaisNewFilialCliente : filiaisNew) {
                 if (!filiaisOld.contains(filiaisNewFilialCliente)) {
-                    EmpresaCliente oldMatrizOfFiliaisNewFilialCliente = filiaisNewFilialCliente.getMatriz();
-                    filiaisNewFilialCliente.setMatriz(empresaCliente);
+                    EmpresaCliente oldIdempresaclienteOfFiliaisNewFilialCliente = filiaisNewFilialCliente.getEmpresaCliente();
+                    filiaisNewFilialCliente.setEmpresaCliente(empresaCliente);
                     filiaisNewFilialCliente = em.merge(filiaisNewFilialCliente);
-                    if (oldMatrizOfFiliaisNewFilialCliente != null && !oldMatrizOfFiliaisNewFilialCliente.equals(empresaCliente)) {
-                        oldMatrizOfFiliaisNewFilialCliente.getFiliais().remove(filiaisNewFilialCliente);
-                        oldMatrizOfFiliaisNewFilialCliente = em.merge(oldMatrizOfFiliaisNewFilialCliente);
-                    }
-                }
-            }
-            for (EmpresaCliente subEmpresasOldEmpresaCliente : subEmpresasOld) {
-                if (!subEmpresasNew.contains(subEmpresasOldEmpresaCliente)) {
-                    subEmpresasOldEmpresaCliente.setEmpresaPrincipal(null);
-                    subEmpresasOldEmpresaCliente = em.merge(subEmpresasOldEmpresaCliente);
-                }
-            }
-            for (EmpresaCliente subEmpresasNewEmpresaCliente : subEmpresasNew) {
-                if (!subEmpresasOld.contains(subEmpresasNewEmpresaCliente)) {
-                    EmpresaCliente oldEmpresaPrincipalOfSubEmpresasNewEmpresaCliente = subEmpresasNewEmpresaCliente.getEmpresaPrincipal();
-                    subEmpresasNewEmpresaCliente.setEmpresaPrincipal(empresaCliente);
-                    subEmpresasNewEmpresaCliente = em.merge(subEmpresasNewEmpresaCliente);
-                    if (oldEmpresaPrincipalOfSubEmpresasNewEmpresaCliente != null && !oldEmpresaPrincipalOfSubEmpresasNewEmpresaCliente.equals(empresaCliente)) {
-                        oldEmpresaPrincipalOfSubEmpresasNewEmpresaCliente.getSubEmpresas().remove(subEmpresasNewEmpresaCliente);
-                        oldEmpresaPrincipalOfSubEmpresasNewEmpresaCliente = em.merge(oldEmpresaPrincipalOfSubEmpresasNewEmpresaCliente);
+                    if (oldIdempresaclienteOfFiliaisNewFilialCliente != null && !oldIdempresaclienteOfFiliaisNewFilialCliente.equals(empresaCliente)) {
+                        oldIdempresaclienteOfFiliaisNewFilialCliente.getFiliais().remove(filiaisNewFilialCliente);
+                        oldIdempresaclienteOfFiliaisNewFilialCliente = em.merge(oldIdempresaclienteOfFiliaisNewFilialCliente);
                     }
                 }
             }
@@ -223,7 +158,7 @@ public class EmpresaClienteDAO implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = empresaCliente.getId();
+                Integer id = empresaCliente.getIdEmpresaCliente();
                 if (findEmpresaCliente(id) == null) {
                     throw new NonexistentEntityException("The empresaCliente with id " + id + " no longer exists.");
                 }
@@ -244,37 +179,30 @@ public class EmpresaClienteDAO implements Serializable {
             EmpresaCliente empresaCliente;
             try {
                 empresaCliente = em.getReference(EmpresaCliente.class, id);
-                empresaCliente.getId();
+                empresaCliente.getIdEmpresaCliente();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The empresaCliente with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<Meta> metasOrphanCheck = empresaCliente.getMetas();
-            for (Meta metasOrphanCheckMeta : metasOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This EmpresaCliente (" + empresaCliente + ") cannot be destroyed since the Meta " + metasOrphanCheckMeta + " in its metas field has a non-nullable cliente field.");
-            }
-            Collection<FilialCliente> filiaisOrphanCheck = empresaCliente.getFiliais();
+            List<FilialCliente> filiaisOrphanCheck = empresaCliente.getFiliais();
             for (FilialCliente filiaisOrphanCheckFilialCliente : filiaisOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This EmpresaCliente (" + empresaCliente + ") cannot be destroyed since the FilialCliente " + filiaisOrphanCheckFilialCliente + " in its filiais field has a non-nullable matriz field.");
+                illegalOrphanMessages.add("This EmpresaCliente (" + empresaCliente + ") cannot be destroyed since the FilialCliente " + filiaisOrphanCheckFilialCliente + " in its filiais field has a non-nullable idempresacliente field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            EmpresaCliente empresaPrincipal = empresaCliente.getEmpresaPrincipal();
-            if (empresaPrincipal != null) {
-                empresaPrincipal.getSubEmpresas().remove(empresaCliente);
-                empresaPrincipal = em.merge(empresaPrincipal);
+            Empresa empresa = empresaCliente.getEmpresa();
+            if (empresa != null) {
+                empresa.getEmpresaClienteList().remove(empresaCliente);
+                empresa = em.merge(empresa);
             }
-            Collection<EmpresaCliente> subEmpresas = empresaCliente.getSubEmpresas();
-            for (EmpresaCliente subEmpresasEmpresaCliente : subEmpresas) {
-                subEmpresasEmpresaCliente.setEmpresaPrincipal(null);
-                subEmpresasEmpresaCliente = em.merge(subEmpresasEmpresaCliente);
+            Endereco endereco = empresaCliente.getEndereco();
+            if (endereco != null) {
+                endereco.getEmpresaClienteList().remove(empresaCliente);
+                endereco = em.merge(endereco);
             }
             em.remove(empresaCliente);
             em.getTransaction().commit();

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -25,14 +19,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * Entity bean da tabela Cidade com as namequerys configuradas<br>
+ * 
+ * O objetivo desta entidade e armazenar as Cidades <br>
+ * 
  * @author rodrigo
  */
 @Entity
 @Table(name = "cidade")
 @NamedQueries({
     @NamedQuery(name = "Cidade.findAll", query = "SELECT c FROM Cidade c"),
-    @NamedQuery(name = "Cidade.findByIdcidade", query = "SELECT c FROM Cidade c WHERE c.idcidade = :idcidade"),
+    @NamedQuery(name = "Cidade.findByIdcidade", query = "SELECT c FROM Cidade c WHERE c.idCidade = :idcidade"),
     @NamedQuery(name = "Cidade.findByNome", query = "SELECT c FROM Cidade c WHERE c.nome = :nome")})
 public class Cidade implements Serializable {
 

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -23,6 +17,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Entity bean da tabela Estado com as namequerys configuradas<br><br>
+ * 
+ * O objetivo desta entidade e armazenar os Estados dos enderecos<br><br>
  *
  * @author rodrigo
  */
@@ -30,48 +27,53 @@ import javax.validation.constraints.Size;
 @Table(name = "estado")
 @NamedQueries({
     @NamedQuery(name = "Estado.findAll", query = "SELECT e FROM Estado e"),
-    @NamedQuery(name = "Estado.findByIdestado", query = "SELECT e FROM Estado e WHERE e.idestado = :idestado"),
+    @NamedQuery(name = "Estado.findByIdestado", query = "SELECT e FROM Estado e WHERE e.idEstado = :idestado"),
     @NamedQuery(name = "Estado.findByNome", query = "SELECT e FROM Estado e WHERE e.nome = :nome"),
     @NamedQuery(name = "Estado.findByUf", query = "SELECT e FROM Estado e WHERE e.uf = :uf")})
 public class Estado implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idestado")
-    private Integer idestado;
+    private Integer idEstado;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "nome")
     private String nome;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
     @Column(name = "uf")
     private String uf;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "estado")
-    private List<Cidade> cidadeList;
+    private List<Cidade> cidades;
 
     public Estado() {
     }
 
     public Estado(Integer idestado) {
-        this.idestado = idestado;
+        this.idEstado = idestado;
     }
 
     public Estado(Integer idestado, String nome, String uf) {
-        this.idestado = idestado;
+        this.idEstado = idestado;
         this.nome = nome;
         this.uf = uf;
     }
 
-    public Integer getIdestado() {
-        return idestado;
+    public Integer getIdEstado() {
+        return idEstado;
     }
 
-    public void setIdestado(Integer idestado) {
-        this.idestado = idestado;
+    public void setIdEstado(Integer idEstado) {
+        this.idEstado = idEstado;
     }
 
     public String getNome() {
@@ -90,18 +92,18 @@ public class Estado implements Serializable {
         this.uf = uf;
     }
 
-    public List<Cidade> getCidadeList() {
-        return cidadeList;
+    public List<Cidade> getCidades() {
+        return cidades;
     }
 
-    public void setCidadeList(List<Cidade> cidadeList) {
-        this.cidadeList = cidadeList;
+    public void setCidades(List<Cidade> cidades) {
+        this.cidades = cidades;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idestado != null ? idestado.hashCode() : 0);
+        hash += (idEstado != null ? idEstado.hashCode() : 0);
         return hash;
     }
 
@@ -112,7 +114,7 @@ public class Estado implements Serializable {
             return false;
         }
         Estado other = (Estado) object;
-        if ((this.idestado == null && other.idestado != null) || (this.idestado != null && !this.idestado.equals(other.idestado))) {
+        if ((this.idEstado == null && other.idEstado != null) || (this.idEstado != null && !this.idEstado.equals(other.idEstado))) {
             return false;
         }
         return true;
@@ -120,7 +122,7 @@ public class Estado implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Estado[ idestado=" + idestado + " ]";
+        return "com.saax.gestorweb.model.datamodel.Estado[ idestado=" + idEstado + " ]";
     }
     
 }

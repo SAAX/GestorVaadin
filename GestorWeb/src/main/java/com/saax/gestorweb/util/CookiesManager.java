@@ -1,6 +1,9 @@
 package com.saax.gestorweb.util;
 
 import com.vaadin.server.VaadinService;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.servlet.http.Cookie;
 
 /**
@@ -10,9 +13,11 @@ import javax.servlet.http.Cookie;
  */
 public class CookiesManager {
 
+    private final Set<Cookie> cookies;
+
     /**
-     * Enumeração com todos os cookies da app
-     * Esta enum deve reunir todos os cookies para uim gerenciamento mais efetivo
+     * Enumeração com todos os cookies da app Esta enum deve reunir todos os
+     * cookies para uim gerenciamento mais efetivo
      */
     public enum GestorWebCookieEnum {
 
@@ -28,40 +33,55 @@ public class CookiesManager {
             return name;
         }
 
-        
-     };
+    };
 
     /**
      * Grava um cookie para a sessão da aplicação
+     *
      * @param gestorWebCookie cookie a ser gravado
-     * @param valor 
+     * @param valor
      */
-    public void setCookie(GestorWebCookieEnum gestorWebCookie, String valor){
+    public void setCookie(GestorWebCookieEnum gestorWebCookie, String valor) {
 
         // verifica se o cookie já existe
         Cookie cookie = getCookie(gestorWebCookie);
-        
+
         // se já existe seta o valor, senão cria um novo
         if (cookie != null) {
             cookie.setValue(valor);
 
         } else {
             cookie = new Cookie(gestorWebCookie.getName(), valor);
-            
+
         }
-        cookie.setPath(VaadinService.getCurrentRequest().getContextPath());
-        VaadinService.getCurrentResponse().addCookie(cookie);
+
+        
+        if (VaadinService.getCurrentRequest() != null) {
+            cookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+            VaadinService.getCurrentResponse().addCookie(cookie);
+        } else {
+            cookies.add(cookie);
+        }
 
     }
-    
+
+    public CookiesManager() {
+        if (VaadinService.getCurrentRequest() != null) {
+            cookies = new HashSet<>();
+            cookies.addAll(Arrays.asList(VaadinService.getCurrentRequest().getCookies()));
+        } else {
+            cookies = new HashSet<>();
+        }
+    }
+
     /**
-     * Obtém um cookie pelo nome
-     * Metodo privado: só deve ser acessado internamente
+     * Obtém um cookie pelo nome Metodo privado: só deve ser acessado
+     * internamente
+     *
      * @param gestorWebCookie
      * @return cookie
      */
-    private Cookie getCookie(GestorWebCookieEnum gestorWebCookie){
-        Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+    private Cookie getCookie(GestorWebCookieEnum gestorWebCookie) {
 
         for (Cookie cookie : cookies) {
             if (gestorWebCookie.getName().equals(cookie.getName())) {
@@ -69,18 +89,18 @@ public class CookiesManager {
             }
         }
 
-        return null;    
+        return null;
     }
-    
+
     /**
      * Obtém o valor de um cookie gravado na sessão
      *
      * @param gestorWebCookie
      * @return valor do cookie
      */
-    public String getCookieValue(GestorWebCookieEnum gestorWebCookie){
+    public String getCookieValue(GestorWebCookieEnum gestorWebCookie) {
         Cookie cookie = getCookie(gestorWebCookie);
-        if (cookie==null || cookie.getValue() == null || cookie.getValue().equals("")){
+        if (cookie == null || cookie.getValue() == null || cookie.getValue().equals("")) {
             return null;
         } else {
             return cookie.getValue();
@@ -90,11 +110,11 @@ public class CookiesManager {
 
     /**
      * Limpa o valor de um cookie
-     * @param gestorWebCookieEnum 
+     *
+     * @param gestorWebCookieEnum
      */
     public void destroyCookie(GestorWebCookieEnum gestorWebCookieEnum) {
         setCookie(gestorWebCookieEnum, "");
     }
-    
-  
+
 }

@@ -108,16 +108,17 @@ CREATE TABLE EmpresaCliente (
 	cpf CHARACTER (14),
 	ativa BOOLEAN NOT NULL,
 	idEndereco BIGINT,
-	FOREIGN KEY (idEmpresaClientePrincipal) REFERENCES EmpresaCliente(idEmpresaCliente),	
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
-	UNIQUE (cnpj, idEmpresa)
+	FOREIGN KEY (idEndereco) REFERENCES Endereco(idEndereco),	
+	UNIQUE (nome, idEmpresa),
+	UNIQUE (razaosocial, idEmpresa),
+	UNIQUE (cnpj, idEmpresa),
 	UNIQUE (cpf, idEmpresa)
 );
 
 -- Insert mock data
-INSERT INTO EmpresaCliente (idEmpresa, nome, razaoSocial, cnpj, ativa) VALUES (1, 'Cliente 1 - DataCompany', 'Cliente 1 LTDA','12.345.678/0001-00', TRUE);
-INSERT INTO EmpresaCliente (idEmpresa, nome, razaoSocial, cnpj, ativa) VALUES (1, 'Cliente 2 - DataCompany', 'Cliente 2 LTDA','12.345.678/0001-01', TRUE);
-INSERT INTO EmpresaCliente (idEmpresa, idEmpresaClientePrincipal, nome, razaoSocial, cnpj, ativa) VALUES (1, 2, 'Sub Empresa do conglomerado do Cliente 2', 'Cliente 1', '12.345.678/0001-02', TRUE);
+INSERT INTO EmpresaCliente (idEmpresa, tipopessoa, nome, razaoSocial, cnpj, ativa) VALUES (1, 'J', 'Cliente 1 - DataCompany', 'Cliente 1 LTDA','12.345.678/0001-00', TRUE);
+INSERT INTO EmpresaCliente (idEmpresa, tipopessoa, nome, razaoSocial, cnpj, ativa) VALUES (1, 'J', 'Cliente 2 - DataCompany', 'Cliente 2 LTDA','12.345.678/0001-01', TRUE);
 
 -- FilialEmpresa
 DROP TABLE IF EXISTS FilialCliente CASCADE;
@@ -125,9 +126,11 @@ CREATE TABLE FilialCliente (
 	idFilialCliente SERIAL NOT NULL PRIMARY KEY,
         idEmpresaCliente BIGINT NOT NULL,
 	nome CHARACTER VARYING (100) NOT NULL ,
+	cnpj CHARACTER (18),
 	ativa BOOLEAN NOT NULL,
 	FOREIGN KEY (idEmpresaCliente) REFERENCES EmpresaCliente(idEmpresaCliente),	
-	UNIQUE (idEmpresaCliente,nome)
+	UNIQUE (idEmpresaCliente,nome),
+	UNIQUE (idEmpresaCliente,cnpj)
 );
 
 -- Insert mock data

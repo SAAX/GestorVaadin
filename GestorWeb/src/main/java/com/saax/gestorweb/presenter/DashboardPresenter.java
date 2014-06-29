@@ -68,8 +68,8 @@ public class DashboardPresenter implements DashboardViewListenter {
     
     private void loadMetasTable(){
         
-        List<Meta> metas = model.getMetas();
-        view.exibirMetas(metas);
+//        List<Meta> metas = model.getMetas();
+  //      view.exibirMetas(metas);
         
     }
             

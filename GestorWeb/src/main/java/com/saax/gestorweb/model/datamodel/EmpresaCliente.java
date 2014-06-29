@@ -1,7 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,32 +19,32 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * Entity bean da tabela Empresa Cliente com as namequerys configuradas<br><br>
+ * Entity bean da tabela EmpresaCliente com as namequerys configuradas<br><br>
  * 
- * O objetivo desta entidade e armazenar os clientes do nossos clientes<br><br>
- * 
- * ATENÇÃO: Esta classe ainda não está completa, mais campos serão adicionados 
- * quando for criado o cadastro de empresas e clientes<br>
- * 
+ * O objetivo desta entidade e armazenar os Clientes dos nossos Clientes<br><br>
+ *
  * @author rodrigo
  */
 @Entity
 @Table(name = "empresacliente")
 @NamedQueries({
-    @NamedQuery(name = "Empresacliente.findAll", query = "SELECT e FROM EmpresaCliente e"),
-    @NamedQuery(name = "Empresacliente.findById", query = "SELECT e FROM EmpresaCliente e WHERE e.id = :id"),
-    @NamedQuery(name = "Empresacliente.findByNome", query = "SELECT e FROM EmpresaCliente e WHERE e.nome = :nome"),
-    @NamedQuery(name = "Empresacliente.findByCnpj", query = "SELECT e FROM EmpresaCliente e WHERE e.cnpj = :cnpj"),
-    @NamedQuery(name = "Empresacliente.findByAtiva", query = "SELECT e FROM EmpresaCliente e WHERE e.ativa = :ativa")})
+    @NamedQuery(name = "EmpresaCliente.findAll", query = "SELECT e FROM EmpresaCliente e"),
+    @NamedQuery(name = "EmpresaCliente.findByIdempresacliente", query = "SELECT e FROM EmpresaCliente e WHERE e.idEmpresaCliente = :idempresacliente"),
+    @NamedQuery(name = "EmpresaCliente.findByNome", query = "SELECT e FROM EmpresaCliente e WHERE e.nome = :nome"),
+    @NamedQuery(name = "EmpresaCliente.findByRazaosocial", query = "SELECT e FROM EmpresaCliente e WHERE e.razaoSocial = :razaosocial"),
+    @NamedQuery(name = "EmpresaCliente.findByTipopessoa", query = "SELECT e FROM EmpresaCliente e WHERE e.tipoPessoa = :tipopessoa"),
+    @NamedQuery(name = "EmpresaCliente.findByCnpj", query = "SELECT e FROM EmpresaCliente e WHERE e.cnpj = :cnpj"),
+    @NamedQuery(name = "EmpresaCliente.findByCpf", query = "SELECT e FROM EmpresaCliente e WHERE e.cpf = :cpf"),
+    @NamedQuery(name = "EmpresaCliente.findByAtiva", query = "SELECT e FROM EmpresaCliente e WHERE e.ativa = :ativa")})
 public class EmpresaCliente implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idempresacliente")
-    private Integer id;
+    private Integer idEmpresaCliente;
     
     @Basic(optional = false)
     @NotNull
@@ -54,48 +54,60 @@ public class EmpresaCliente implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 18)
+    @Size(min = 1, max = 150)
+    @Column(name = "razaosocial")
+    private String razaoSocial;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "tipopessoa")
+    private Character tipoPessoa;
+    
+    @Size(max = 18)
     @Column(name = "cnpj")
     private String cnpj;
+    
+    @Size(max = 14)
+    @Column(name = "cpf")
+    private String cpf;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ativa")
     private boolean ativa;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
-    private Collection<Meta> metas;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresaCliente")
+    private List<FilialCliente> filiais;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "matriz")
-    private Collection<FilialCliente> filiais;
+    @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
+    @ManyToOne(optional = false)
+    private Empresa empresa;
     
-    @OneToMany(mappedBy = "empresaPrincipal")
-    private Collection<EmpresaCliente> subEmpresas;
-    
-    @JoinColumn(name = "idempresaclienteprincipal", referencedColumnName = "idempresacliente")
+    @JoinColumn(name = "idendereco", referencedColumnName = "idendereco")
     @ManyToOne
-    private EmpresaCliente empresaPrincipal;
+    private Endereco endereco;
 
     public EmpresaCliente() {
     }
 
     public EmpresaCliente(Integer idempresacliente) {
-        this.id = idempresacliente;
+        this.idEmpresaCliente = idempresacliente;
     }
 
-    public EmpresaCliente(Integer idempresacliente, String nome, String cnpj, boolean ativa) {
-        this.id = idempresacliente;
+    public EmpresaCliente(Integer idempresacliente, String nome, String razaosocial, Character tipopessoa, boolean ativa) {
+        this.idEmpresaCliente = idempresacliente;
         this.nome = nome;
-        this.cnpj = cnpj;
+        this.razaoSocial = razaosocial;
+        this.tipoPessoa = tipopessoa;
         this.ativa = ativa;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIdEmpresaCliente() {
+        return idEmpresaCliente;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdEmpresaCliente(Integer idEmpresaCliente) {
+        this.idEmpresaCliente = idEmpresaCliente;
     }
 
     public String getNome() {
@@ -106,12 +118,36 @@ public class EmpresaCliente implements Serializable {
         this.nome = nome;
     }
 
+    public String getRazaoSocial() {
+        return razaoSocial;
+    }
+
+    public void setRazaoSocial(String razaoSocial) {
+        this.razaoSocial = razaoSocial;
+    }
+
+    public Character getTipoPessoa() {
+        return tipoPessoa;
+    }
+
+    public void setTipoPessoa(Character tipoPessoa) {
+        this.tipoPessoa = tipoPessoa;
+    }
+
     public String getCnpj() {
         return cnpj;
     }
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public boolean getAtiva() {
@@ -122,42 +158,34 @@ public class EmpresaCliente implements Serializable {
         this.ativa = ativa;
     }
 
-    public Collection<Meta> getMetas() {
-        return metas;
-    }
-
-    public void setMetas(Collection<Meta> metas) {
-        this.metas = metas;
-    }
-
-    public Collection<FilialCliente> getFiliais() {
+    public List<FilialCliente> getFiliais() {
         return filiais;
     }
 
-    public void setFiliais(Collection<FilialCliente> filiais) {
+    public void setFiliais(List<FilialCliente> filiais) {
         this.filiais = filiais;
     }
 
-    public Collection<EmpresaCliente> getSubEmpresas() {
-        return subEmpresas;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setSubEmpresas(Collection<EmpresaCliente> subEmpresas) {
-        this.subEmpresas = subEmpresas;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
-    public EmpresaCliente getEmpresaPrincipal() {
-        return empresaPrincipal;
+    public Endereco getEndereco() {
+        return endereco;
     }
 
-    public void setEmpresaPrincipal(EmpresaCliente empresaPrincipal) {
-        this.empresaPrincipal = empresaPrincipal;
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (idEmpresaCliente != null ? idEmpresaCliente.hashCode() : 0);
         return hash;
     }
 
@@ -168,7 +196,7 @@ public class EmpresaCliente implements Serializable {
             return false;
         }
         EmpresaCliente other = (EmpresaCliente) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.idEmpresaCliente == null && other.idEmpresaCliente != null) || (this.idEmpresaCliente != null && !this.idEmpresaCliente.equals(other.idEmpresaCliente))) {
             return false;
         }
         return true;
@@ -176,7 +204,7 @@ public class EmpresaCliente implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Empresacliente[ idempresacliente=" + id + " ]";
+        return "com.saax.gestorweb.model.datamodel.EmpresaCliente[ idempresacliente=" + idEmpresaCliente + " ]";
     }
     
 }

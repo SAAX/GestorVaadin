@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.dao.UsuarioDAOCustom;
@@ -33,6 +28,7 @@ public class LoginModelTest {
     @BeforeClass
     public static void setUpClass() {
         DBConnect.getInstance().assertConnection();
+        
     }
 
     @AfterClass
@@ -57,23 +53,14 @@ public class LoginModelTest {
 
     @Before
     public void setUp() {
-        try {
-            UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+            limparBase();
 
-            // limparBase();
-
-            // Cria um usuario para teste
-            dao.create(new Usuario(1, "Joao", "da Silva","joao@uol.com", new Cipher().md5Sum("123")));
-
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @After
     public void tearDown() {
 
-        //limparBase();
+        limparBase();
 
     }
 
@@ -84,7 +71,7 @@ public class LoginModelTest {
     public void testVerificaLoginExistente_LoginNaoExistente() {
 
         System.out.println("VerificaLoginExistente_LoginNaoExistente");
-        
+
         LoginModel instance = new LoginModel();
 
         String login = "jose@uol.com";
@@ -102,13 +89,68 @@ public class LoginModelTest {
     public void testVerificaLoginExistente_LoginExistente() {
 
         System.out.println("VerificaLoginExistente_LoginExistente");
-        
+
+        UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+
+        try {
+            // Cria um usuario para teste
+            dao.create(new Usuario(1, "Joao", "da Silva","joao@uol.com", new Cipher().md5Sum("123")));
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         LoginModel instance = new LoginModel();
 
         String login = "joao@uol.com";
         boolean expResult = true;
         boolean result = instance.verificaLoginExistente(login);
         assertEquals(expResult, result);
+
+        try {
+            dao.destroy(1);
+        } catch (IllegalOrphanException | NonexistentEntityException ex) {
+            Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+    /**
+     * Teste de sucesso ao verificar login não existente
+     */
+    @org.junit.Test
+    public void testGetUsuario_LoginNaoExistente() {
+
+        System.out.println("GetUsuario_LoginNaoExistente");
+        
+        LoginModel instance = new LoginModel();
+
+        String login = "jose@uol.com";
+        assertNull(instance.getUsuario(login));
+        
+    }
+
+
+    /**
+     * Teste de sucesso ao verificar login existente
+     */
+    @org.junit.Test
+    public void testGetUsuario_LoginExistente() {
+
+        System.out.println("GetUsuario_LoginExistente");
+        
+        UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+
+        try {
+            // Cria um usuario para teste
+            dao.create(new Usuario(1, "Joao", "da Silva","joao@uol.com", new Cipher().md5Sum("123")));
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        LoginModel instance = new LoginModel();
+
+        String login = "joao@uol.com";
+        assertNotNull(instance.verificaLoginExistente(login));
         
     }
 

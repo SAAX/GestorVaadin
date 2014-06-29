@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -22,8 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
+ * Entity bean da tabela Endereco com as namequerys configuradas<br><br>
+ * 
+ * O objetivo desta entidade e armazenar os todos os enderecos de todas entidades que precisem de endereco<br><br>
  *
  * @author rodrigo
  */
@@ -37,6 +35,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Endereco.findByComplemento", query = "SELECT e FROM Endereco e WHERE e.complemento = :complemento"),
     @NamedQuery(name = "Endereco.findByCep", query = "SELECT e FROM Endereco e WHERE e.cep = :cep")})
 public class Endereco implements Serializable {
+    @OneToMany(mappedBy = "endereco")
+    private List<EmpresaCliente> empresaClienteList;
 
     private static final long serialVersionUID = 1L;
     
@@ -171,6 +171,15 @@ public class Endereco implements Serializable {
     @Override
     public String toString() {
         return "com.saax.gestorweb.model.datamodel.Endereco[ idendereco=" + idEndereco + " ]";
+    }
+
+    @XmlTransient
+    public List<EmpresaCliente> getEmpresaClienteList() {
+        return empresaClienteList;
+    }
+
+    public void setEmpresaClienteList(List<EmpresaCliente> empresaClienteList) {
+        this.empresaClienteList = empresaClienteList;
     }
     
 }

@@ -12,19 +12,27 @@ import com.saax.gestorweb.util.PostgresConnection;
  */
 public class LoginModel {
 
-    // Referencia ao recurso das mensagens:
-    
     private final UsuarioDAOCustom usuarioDAO;
 
     public LoginModel() {
         usuarioDAO = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
     }
-    
+
+    /**
+     * Verifica se um usuario está cadastrado pelo seu login
+     * @param login
+     * @return 
+     */
     public boolean verificaLoginExistente(String login) {
         Usuario u = usuarioDAO.findByLogin(login);
         return (u!=null);
     }
 
+    /**
+     * Obtém um usuário pelo seu login
+     * @param login
+     * @return 
+     */
     public Usuario getUsuario(String login) {
         return usuarioDAO.findByLogin(login);
     }

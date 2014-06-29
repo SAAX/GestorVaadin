@@ -1,3 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
@@ -13,11 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * DAO para o entity bean: FilialCliente <br><br>
- * 
- * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
- * Caso seja necessária alguma customização, estender esta classe<br>
- * 
+ *
  * @author rodrigo
  */
 public class FilialClienteDAO implements Serializable {
@@ -36,15 +38,15 @@ public class FilialClienteDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            EmpresaCliente matriz = filialCliente.getMatriz();
-            if (matriz != null) {
-                matriz = em.getReference(matriz.getClass(), matriz.getId());
-                filialCliente.setMatriz(matriz);
+            EmpresaCliente idempresacliente = filialCliente.getEmpresaCliente();
+            if (idempresacliente != null) {
+                idempresacliente = em.getReference(idempresacliente.getClass(), idempresacliente.getIdEmpresaCliente());
+                filialCliente.setEmpresaCliente(idempresacliente);
             }
             em.persist(filialCliente);
-            if (matriz != null) {
-                matriz.getFiliais().add(filialCliente);
-                matriz = em.merge(matriz);
+            if (idempresacliente != null) {
+                idempresacliente.getFiliais().add(filialCliente);
+                idempresacliente = em.merge(idempresacliente);
             }
             em.getTransaction().commit();
         } finally {
@@ -59,27 +61,27 @@ public class FilialClienteDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            FilialCliente persistentFilialCliente = em.find(FilialCliente.class, filialCliente.getId());
-            EmpresaCliente matrizOld = persistentFilialCliente.getMatriz();
-            EmpresaCliente matrizNew = filialCliente.getMatriz();
-            if (matrizNew != null) {
-                matrizNew = em.getReference(matrizNew.getClass(), matrizNew.getId());
-                filialCliente.setMatriz(matrizNew);
+            FilialCliente persistentFilialCliente = em.find(FilialCliente.class, filialCliente.getIdFilialCliente());
+            EmpresaCliente idempresaclienteOld = persistentFilialCliente.getEmpresaCliente();
+            EmpresaCliente idempresaclienteNew = filialCliente.getEmpresaCliente();
+            if (idempresaclienteNew != null) {
+                idempresaclienteNew = em.getReference(idempresaclienteNew.getClass(), idempresaclienteNew.getIdEmpresaCliente());
+                filialCliente.setEmpresaCliente(idempresaclienteNew);
             }
             filialCliente = em.merge(filialCliente);
-            if (matrizOld != null && !matrizOld.equals(matrizNew)) {
-                matrizOld.getFiliais().remove(filialCliente);
-                matrizOld = em.merge(matrizOld);
+            if (idempresaclienteOld != null && !idempresaclienteOld.equals(idempresaclienteNew)) {
+                idempresaclienteOld.getFiliais().remove(filialCliente);
+                idempresaclienteOld = em.merge(idempresaclienteOld);
             }
-            if (matrizNew != null && !matrizNew.equals(matrizOld)) {
-                matrizNew.getFiliais().add(filialCliente);
-                matrizNew = em.merge(matrizNew);
+            if (idempresaclienteNew != null && !idempresaclienteNew.equals(idempresaclienteOld)) {
+                idempresaclienteNew.getFiliais().add(filialCliente);
+                idempresaclienteNew = em.merge(idempresaclienteNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = filialCliente.getId();
+                Integer id = filialCliente.getIdFilialCliente();
                 if (findFilialCliente(id) == null) {
                     throw new NonexistentEntityException("The filialCliente with id " + id + " no longer exists.");
                 }
@@ -100,14 +102,14 @@ public class FilialClienteDAO implements Serializable {
             FilialCliente filialCliente;
             try {
                 filialCliente = em.getReference(FilialCliente.class, id);
-                filialCliente.getId();
+                filialCliente.getIdFilialCliente();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The filialCliente with id " + id + " no longer exists.", enfe);
             }
-            EmpresaCliente matriz = filialCliente.getMatriz();
-            if (matriz != null) {
-                matriz.getFiliais().remove(filialCliente);
-                matriz = em.merge(matriz);
+            EmpresaCliente idempresacliente = filialCliente.getEmpresaCliente();
+            if (idempresacliente != null) {
+                idempresacliente.getFiliais().remove(filialCliente);
+                idempresacliente = em.merge(idempresacliente);
             }
             em.remove(filialCliente);
             em.getTransaction().commit();

@@ -24,9 +24,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author rodrigo
  */
-public class EnderecoJpaController implements Serializable {
+public class EnderecoDAO implements Serializable {
 
-    public EnderecoJpaController(EntityManagerFactory emf) {
+    public EnderecoDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;

@@ -24,9 +24,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author rodrigo
  */
-public class EstadoJpaController implements Serializable {
+public class EstadoDAO implements Serializable {
 
-    public EstadoJpaController(EntityManagerFactory emf) {
+    public EstadoDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -36,26 +36,26 @@ public class EstadoJpaController implements Serializable {
     }
 
     public void create(Estado estado) {
-        if (estado.getCidadeList() == null) {
-            estado.setCidadeList(new ArrayList<Cidade>());
+        if (estado.getCidades() == null) {
+            estado.setCidades(new ArrayList<Cidade>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             List<Cidade> attachedCidadeList = new ArrayList<Cidade>();
-            for (Cidade cidadeListCidadeToAttach : estado.getCidadeList()) {
+            for (Cidade cidadeListCidadeToAttach : estado.getCidades()) {
                 cidadeListCidadeToAttach = em.getReference(cidadeListCidadeToAttach.getClass(), cidadeListCidadeToAttach.getIdCidade());
                 attachedCidadeList.add(cidadeListCidadeToAttach);
             }
-            estado.setCidadeList(attachedCidadeList);
+            estado.setCidades(attachedCidadeList);
             em.persist(estado);
-            for (Cidade cidadeListCidade : estado.getCidadeList()) {
+            for (Cidade cidadeListCidade : estado.getCidades()) {
                 Estado oldIdestadoOfCidadeListCidade = cidadeListCidade.getEstado();
                 cidadeListCidade.setEstado(estado);
                 cidadeListCidade = em.merge(cidadeListCidade);
                 if (oldIdestadoOfCidadeListCidade != null) {
-                    oldIdestadoOfCidadeListCidade.getCidadeList().remove(cidadeListCidade);
+                    oldIdestadoOfCidadeListCidade.getCidades().remove(cidadeListCidade);
                     oldIdestadoOfCidadeListCidade = em.merge(oldIdestadoOfCidadeListCidade);
                 }
             }
@@ -72,9 +72,9 @@ public class EstadoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Estado persistentEstado = em.find(Estado.class, estado.getIdestado());
-            List<Cidade> cidadeListOld = persistentEstado.getCidadeList();
-            List<Cidade> cidadeListNew = estado.getCidadeList();
+            Estado persistentEstado = em.find(Estado.class, estado.getIdEstado());
+            List<Cidade> cidadeListOld = persistentEstado.getCidades();
+            List<Cidade> cidadeListNew = estado.getCidades();
             List<String> illegalOrphanMessages = null;
             for (Cidade cidadeListOldCidade : cidadeListOld) {
                 if (!cidadeListNew.contains(cidadeListOldCidade)) {
@@ -93,7 +93,7 @@ public class EstadoJpaController implements Serializable {
                 attachedCidadeListNew.add(cidadeListNewCidadeToAttach);
             }
             cidadeListNew = attachedCidadeListNew;
-            estado.setCidadeList(cidadeListNew);
+            estado.setCidades(cidadeListNew);
             estado = em.merge(estado);
             for (Cidade cidadeListNewCidade : cidadeListNew) {
                 if (!cidadeListOld.contains(cidadeListNewCidade)) {
@@ -101,7 +101,7 @@ public class EstadoJpaController implements Serializable {
                     cidadeListNewCidade.setEstado(estado);
                     cidadeListNewCidade = em.merge(cidadeListNewCidade);
                     if (oldIdestadoOfCidadeListNewCidade != null && !oldIdestadoOfCidadeListNewCidade.equals(estado)) {
-                        oldIdestadoOfCidadeListNewCidade.getCidadeList().remove(cidadeListNewCidade);
+                        oldIdestadoOfCidadeListNewCidade.getCidades().remove(cidadeListNewCidade);
                         oldIdestadoOfCidadeListNewCidade = em.merge(oldIdestadoOfCidadeListNewCidade);
                     }
                 }
@@ -110,7 +110,7 @@ public class EstadoJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = estado.getIdestado();
+                Integer id = estado.getIdEstado();
                 if (findEstado(id) == null) {
                     throw new NonexistentEntityException("The estado with id " + id + " no longer exists.");
                 }
@@ -131,12 +131,12 @@ public class EstadoJpaController implements Serializable {
             Estado estado;
             try {
                 estado = em.getReference(Estado.class, id);
-                estado.getIdestado();
+                estado.getIdEstado();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The estado with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<Cidade> cidadeListOrphanCheck = estado.getCidadeList();
+            List<Cidade> cidadeListOrphanCheck = estado.getCidades();
             for (Cidade cidadeListOrphanCheckCidade : cidadeListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();

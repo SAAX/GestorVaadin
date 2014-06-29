@@ -97,6 +97,9 @@ public class LoginView extends Window {
         return lembrarLoginCheckBox;
     }
     
+    public void setSenha(String login){
+        senhaTextField.setValue(login);
+    }
     
 
    

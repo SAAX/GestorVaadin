@@ -25,9 +25,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author rodrigo
  */
-public class CidadeJpaController implements Serializable {
+public class CidadeDAO implements Serializable {
 
-    public CidadeJpaController(EntityManagerFactory emf) {
+    public CidadeDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -46,7 +46,7 @@ public class CidadeJpaController implements Serializable {
             em.getTransaction().begin();
             Estado idestado = cidade.getEstado();
             if (idestado != null) {
-                idestado = em.getReference(idestado.getClass(), idestado.getIdestado());
+                idestado = em.getReference(idestado.getClass(), idestado.getIdEstado());
                 cidade.setEstado(idestado);
             }
             List<Endereco> attachedEnderecoList = new ArrayList<Endereco>();
@@ -57,7 +57,7 @@ public class CidadeJpaController implements Serializable {
             cidade.setEnderecoList(attachedEnderecoList);
             em.persist(cidade);
             if (idestado != null) {
-                idestado.getCidadeList().add(cidade);
+                idestado.getCidades().add(cidade);
                 idestado = em.merge(idestado);
             }
             for (Endereco enderecoListEndereco : cidade.getEnderecoList()) {
@@ -100,7 +100,7 @@ public class CidadeJpaController implements Serializable {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
             if (idestadoNew != null) {
-                idestadoNew = em.getReference(idestadoNew.getClass(), idestadoNew.getIdestado());
+                idestadoNew = em.getReference(idestadoNew.getClass(), idestadoNew.getIdEstado());
                 cidade.setEstado(idestadoNew);
             }
             List<Endereco> attachedEnderecoListNew = new ArrayList<Endereco>();
@@ -112,11 +112,11 @@ public class CidadeJpaController implements Serializable {
             cidade.setEnderecoList(enderecoListNew);
             cidade = em.merge(cidade);
             if (idestadoOld != null && !idestadoOld.equals(idestadoNew)) {
-                idestadoOld.getCidadeList().remove(cidade);
+                idestadoOld.getCidades().remove(cidade);
                 idestadoOld = em.merge(idestadoOld);
             }
             if (idestadoNew != null && !idestadoNew.equals(idestadoOld)) {
-                idestadoNew.getCidadeList().add(cidade);
+                idestadoNew.getCidades().add(cidade);
                 idestadoNew = em.merge(idestadoNew);
             }
             for (Endereco enderecoListNewEndereco : enderecoListNew) {
@@ -172,7 +172,7 @@ public class CidadeJpaController implements Serializable {
             }
             Estado idestado = cidade.getEstado();
             if (idestado != null) {
-                idestado.getCidadeList().remove(cidade);
+                idestado.getCidades().remove(cidade);
                 idestado = em.merge(idestado);
             }
             em.remove(cidade);

@@ -20,9 +20,6 @@ import javax.validation.constraints.Size;
  * 
  * O objetivo desta entidade e armazenar as Filiais dos nossos clientes<br><br>
  * 
- * ATENÇÃO: Esta classe ainda não está completa, mais campos serão adicionados.
- * quando for criado o cadastro de empresas e clientes<br>
- * 
  * @author rodrigo
  */
 @Entity

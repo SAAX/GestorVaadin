@@ -10,4 +10,26 @@
                 <goal>-DskipTests</goal>
             </goals>
         </action>
+        <action>
+            <actionName>rebuild</actionName>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+                <goal>-DskipTests</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>build-with-dependencies</actionName>
+            <reactor>also-make</reactor>
+            <packagings>
+                <packaging>*</packaging>
+            </packagings>
+            <goals>
+                <goal>install</goal>
+                <goal>-DskipTests</goal>
+            </goals>
+        </action>
     </actions>

@@ -3,9 +3,11 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.PaginaInicialModel;
+import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.saax.gestorweb.view.PaginaInicialViewListener;
+import com.saax.gestorweb.view.SignupView;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.util.ResourceBundle;
@@ -62,7 +64,17 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener, Serial
 
     @Override
     public void signUpButtonClicked() {
-
+        
+        //Cria o pop up para registrar a conta (model e viw)
+        SignupModel signupModel = new SignupModel();
+        SignupView signupView = new SignupView();
+        
+       //o presenter liga model e view
+        new SignupPresenter(signupModel, signupView);
+        
+        //adiciona a visualização à UI
+        UI.getCurrent().addWindow(signupView);
+        
     }
     
 

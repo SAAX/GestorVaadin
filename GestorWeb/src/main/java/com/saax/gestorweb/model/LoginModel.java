@@ -14,6 +14,9 @@ public class LoginModel {
 
     private final UsuarioDAOCustom usuarioDAO;
 
+    /**
+     * Cria o model e conecta ao DAO
+     */
     public LoginModel() {
         usuarioDAO = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
     }

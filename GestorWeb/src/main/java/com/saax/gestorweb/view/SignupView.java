@@ -5,6 +5,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -31,6 +32,7 @@ public class SignupView extends Window {
     }
 
     // componentes visuais da view
+    private Label mensagemAviso;
     
     // ABA #1 : Dados do usuário
     private TextField nomeTextField;
@@ -75,6 +77,11 @@ public class SignupView extends Window {
         container.addComponent(barraBotoes);
         container.setComponentAlignment(barraBotoes, Alignment.MIDDLE_CENTER);
 
+        // adicionar label de mensagens
+        mensagemAviso = new Label("");
+        // @TODO: Fernando, customizar o estilo do aviso
+        // mensagemAviso.setStyleName("");
+        container.addComponent(mensagemAviso);
 
         center();
     }
@@ -231,22 +238,6 @@ public class SignupView extends Window {
     }
     
     
-    public String getNome() {
-        return getNomeTextField().getValue();
-    }
-
-    public String getSobrenome() {
-        return getSobrenomeTextField().getValue();
-    }
-
-    public String getSenha() {
-        return getSenhaTextField().getValue();
-    }
-
-    public CheckBox getAceitaTermos() {
-        return getAceitaTermosCheckBox();
-    }
-
     /**
      * @return the mensagens
      */
@@ -421,6 +412,46 @@ public class SignupView extends Window {
     public void setConfirmaEmailTextField(TextField confirmaEmailTextField) {
         this.confirmaEmailTextField = confirmaEmailTextField;
     }
+
+    /**
+     * Executa os metodos de validações dos campos de preenchimento obrigatorio
+     * @TODO: fernando
+     */
+    public void validate() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     
+    /**
+     * Exibe uma mensagem de erro indicando que este login (email) já 
+     * existe no sistema e pergunta ao usuário se ele não quer recuperar sua senha
+     * 
+     * @TODO: fernando
+     * @param chave chave do resource
+     */
+    public void apresentaAviso(String chave) {
+        mensagemAviso.setValue(mensagens.getString(chave));
+    }
+
+    /**
+     * Retorna o tipo de pessoa (Fisica/Jurica) da conta (empresa)
+     * 
+     * @return char F / J
+     * @TODO: fernando
+     */
+    public char getTipoPessoa() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Retorna o cpf da empresa (conta) se pessoa fisica
+     * 
+     * @return char F / J
+     * @TODO: fernando
+     */
+    public TextField getCpfTextField() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     
 }

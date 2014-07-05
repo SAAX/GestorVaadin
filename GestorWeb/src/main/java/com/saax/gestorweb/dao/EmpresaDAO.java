@@ -26,10 +26,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
+ * DAO para o entity bean: Empresa <br><br>
+ * 
+ * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
+ * 
+ * ATENÇÃO: Não instanciar esta classe diretamente, mas sim sua subclasse substituta: EmpresaDAOCustom
+ * 
  * @author rodrigo
  */
-public class EmpresaDAO implements Serializable {
+class EmpresaDAO implements Serializable {
 
     public EmpresaDAO(EntityManagerFactory emf) {
         this.emf = emf;

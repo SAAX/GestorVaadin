@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
  */
 public class TestUtils {
 
-    public static void assertUIisSetted() {
+    public UI configureUI() {
 
         if (UI.getCurrent() == null) {
             GestorMDI mdi = new GestorMDI();
@@ -33,5 +33,7 @@ public class TestUtils {
 
             mdi.setUserData(userData);
         }
+        
+        return UI.getCurrent();
     }
 }

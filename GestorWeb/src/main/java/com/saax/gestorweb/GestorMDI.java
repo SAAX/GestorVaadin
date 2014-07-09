@@ -57,14 +57,14 @@ public class GestorMDI extends UI {
     public void carregarDashBoard() {
 
         // Cria a pagina inical
-        DashboardModel paginaInicialModel = new DashboardModel();
-        DashBoardView paginaInicialView = new DashBoardView();
+        DashboardModel dashboradModel = new DashboardModel();
+        DashBoardView dashboardView = new DashBoardView();
 
         // O presenter liga model e view
-        new DashboardPresenter(paginaInicialModel, paginaInicialView);
+        new DashboardPresenter(dashboradModel, dashboardView);
 
         // adiciona a visualização à UI
-        setContent(paginaInicialView);
+        setContent(dashboardView);
 
     }
 

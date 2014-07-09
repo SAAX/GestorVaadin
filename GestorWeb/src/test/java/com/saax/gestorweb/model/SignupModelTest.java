@@ -20,7 +20,6 @@ import com.saax.gestorweb.util.PostgresConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.persistence.jpa.jpql.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

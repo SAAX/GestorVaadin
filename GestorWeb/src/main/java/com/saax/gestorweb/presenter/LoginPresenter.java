@@ -50,8 +50,8 @@ public final class LoginPresenter implements LoginViewListener {
     @Override
     public void loginButtonClicked() {
 
-        String login = view.getLogin();
-        String senha = view.getSenha();
+        String login = view.getLoginTextField().getValue();
+        String senha = view.getSenhaTextField().getValue();
 
         try {
             
@@ -96,7 +96,7 @@ public final class LoginPresenter implements LoginViewListener {
         if (view.getLembrarLoginCheckBox().getValue()){
             
             CookiesManager cookieManager = ((GestorMDI) UI.getCurrent()).getUserData().getCookies();
-            cookieManager.setCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO, view.getLogin());
+            cookieManager.setCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO, view.getLoginTextField().getValue());
 
         } else {
             CookiesManager cookieManager = ((GestorMDI) UI.getCurrent()).getUserData().getCookies();

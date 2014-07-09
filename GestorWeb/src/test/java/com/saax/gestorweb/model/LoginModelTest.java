@@ -64,13 +64,10 @@ public class LoginModelTest {
 
     }
 
-    /**
-     * Teste de sucesso ao verificar login não existente
-     */
     @org.junit.Test
-    public void testVerificaLoginExistente_LoginNaoExistente() {
+    public void testVerificaLoginExistente() {
 
-        System.out.println("VerificaLoginExistente_LoginNaoExistente");
+        // Teste #1 : Login não existente
 
         LoginModel instance = new LoginModel();
 
@@ -79,16 +76,8 @@ public class LoginModelTest {
         boolean result = instance.verificaLoginExistente(login);
         assertEquals(expResult, result);
         
-    }
 
-
-    /**
-     * Teste de sucesso ao verificar login existente
-     */
-    @org.junit.Test
-    public void testVerificaLoginExistente_LoginExistente() {
-
-        System.out.println("VerificaLoginExistente_LoginExistente");
+        // Teste #2 : Login existente
 
         UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
 
@@ -99,11 +88,9 @@ public class LoginModelTest {
             Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        LoginModel instance = new LoginModel();
-
-        String login = "joao@uol.com";
-        boolean expResult = true;
-        boolean result = instance.verificaLoginExistente(login);
+        login = "joao@uol.com";
+        expResult = true;
+        result = instance.verificaLoginExistente(login);
         assertEquals(expResult, result);
 
         try {
@@ -114,29 +101,17 @@ public class LoginModelTest {
         
     }
 
-    /**
-     * Teste de sucesso ao verificar login não existente
-     */
     @org.junit.Test
-    public void testGetUsuario_LoginNaoExistente() {
+    public void testGetUsuario() {
 
-        System.out.println("GetUsuario_LoginNaoExistente");
+        // Teste #1 : Login não existente
         
         LoginModel instance = new LoginModel();
 
         String login = "jose@uol.com";
         assertNull(instance.getUsuario(login));
-        
-    }
 
-
-    /**
-     * Teste de sucesso ao verificar login existente
-     */
-    @org.junit.Test
-    public void testGetUsuario_LoginExistente() {
-
-        System.out.println("GetUsuario_LoginExistente");
+        // Teste #2 : Login existente
         
         UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
 
@@ -147,9 +122,10 @@ public class LoginModelTest {
             Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        LoginModel instance = new LoginModel();
+        instance = new LoginModel();
 
-        String login = "joao@uol.com";
+        login = "joao@uol.com";
+        
         assertNotNull(instance.verificaLoginExistente(login));
         
     }

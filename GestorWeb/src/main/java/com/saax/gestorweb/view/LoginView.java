@@ -35,6 +35,12 @@ public class LoginView extends Window {
     public void setListener(LoginViewListener listener) {
         this.listener = listener;
     }
+
+    public LoginViewListener getListener() {
+        return listener;
+    }
+    
+    
     /**
      * Cria o pop-up de login, com campos para usuário e senha
      *
@@ -85,14 +91,7 @@ public class LoginView extends Window {
         center();
     }
 
-    public String getLogin() {
-        return loginTextField.getValue();
-    }
-
-    public String getSenha() {
-        return senhaTextField.getValue();
-    }
-
+    
     public CheckBox getLembrarLoginCheckBox() {
         return lembrarLoginCheckBox;
     }
@@ -110,6 +109,15 @@ public class LoginView extends Window {
     public void apresentaErroUsuarioNaoExiste() {
         loginTextField.setComponentError(new UserError(mensagens.getString("LoginView.loginTextField.erro.loginNaoExiste")));        
     }
+
+    public TextField getLoginTextField() {
+        return loginTextField;
+    }
+
+    public TextField getSenhaTextField() {
+        return senhaTextField;
+    }
+    
 
     /**
      * Executa os metodos de validações dos campos informados 

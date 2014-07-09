@@ -9,6 +9,7 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.presenter.LoginPresenter;
 import com.saax.gestorweb.util.TestUtils;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -263,6 +264,48 @@ public class LoginViewTest {
         LoginView instance = new LoginView();
         instance.setLembrarSessao(b);
         assertEquals(false, instance.getLembrarLoginCheckBox().getValue());
+    }
+
+    /**
+     * Test of getListener method, of class LoginView.
+     */
+    @Test
+    public void testGetListener() {
+        System.out.println("getListener");
+        LoginView instance = new LoginView();
+        LoginViewListener expResult = null;
+        LoginViewListener result = instance.getListener();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getLoginTextField method, of class LoginView.
+     */
+    @Test
+    public void testGetLoginTextField() {
+        System.out.println("getLoginTextField");
+        LoginView instance = new LoginView();
+        TextField expResult = null;
+        TextField result = instance.getLoginTextField();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getSenhaTextField method, of class LoginView.
+     */
+    @Test
+    public void testGetSenhaTextField() {
+        System.out.println("getSenhaTextField");
+        LoginView instance = new LoginView();
+        TextField expResult = null;
+        TextField result = instance.getSenhaTextField();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
     
 }

@@ -2,8 +2,6 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.SignupModel;
-import com.saax.gestorweb.model.datamodel.Empresa;
-import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.view.SignupView;

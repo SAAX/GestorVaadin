@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
  * @author Rodrigo / Fernando
  */
 public class SignupView extends Window {
-
+//teste commit
     // Referencia ao recurso das mensagens:
     private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
@@ -159,12 +159,9 @@ public class SignupView extends Window {
         
         // text field: Nome
         setNomeTextField(new TextField());
+        containerAba1.addComponent(getNomeTextField());
         getNomeTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
         nomeTextField.setWidth("300px");
-        nomeTextField.addValidator(new StringLengthValidator(
-                mensagens.getString("LoginView.loginTextField.erro.nomeNaoInformado")));
-         containerAba1.addComponent(getNomeTextField());
-         nomeTextField.setValidationVisible(false);
         
         // text field: Sobrenome
         setSobrenomeTextField(new TextField());

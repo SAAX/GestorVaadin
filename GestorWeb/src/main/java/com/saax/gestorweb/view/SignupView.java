@@ -49,6 +49,8 @@ public class SignupView extends Window {
     // ABA #3 : Dados de empresas e filiais
      private TextField razaoSocialTextField;
      private TextField nomeFantasiaTextField;
+     private CheckBox pessoaFisicaCheckBox;
+     private CheckBox pessoaJuridicaCheckBox;
      private TextField cnpjCpfTextField;
      private TextField logradouroTextField;
      private TextField numeroTextField;
@@ -58,9 +60,11 @@ public class SignupView extends Window {
      private TextField estadoTextField;
      private TextField cepTextField;
      private Table empresasTable;
+     private CheckBox empresaAtivaCheckBox;
     
     // ABA #4 : Adicionar mais usuários à empresa
      private TextField nomeUsuarioTextField;
+     private TextField sobrenomeUsuarioTextField;
      private TextField emailTextField;
      private TextField confirmaEmailTextField;
      private Table usuariosTable;
@@ -212,11 +216,23 @@ public class SignupView extends Window {
         getNomeFantasiaTextField().setInputPrompt(getMensagens().getString("SignupView.nomeFantasiaTextField.label"));
         nomeFantasiaTextField.setWidth("300px");
         
+        HorizontalLayout containerHorizontal1 = new HorizontalLayout();
+        containerHorizontal1.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerAba3.addComponent(containerHorizontal1); // adiciona o container de datas no superior
+        
+        // check box : pessoa fisica
+        setPessoaFisicaCheckBox(new CheckBox(getMensagens().getString("SignupView.pessoaFisicaCheckBox.label")));
+        containerHorizontal1.addComponent(getPessoaFisicaCheckBox());
+        
+        // check box : pessoa juridica
+        setPessoaJuridicaCheckBox(new CheckBox(getMensagens().getString("SignupView.pessoaJuridicaCheckBox.label")));
+        containerHorizontal1.addComponent(getPessoaJuridicaCheckBox());
+                
          // text field: Cnpj
         setCnpjCpfTextField(new TextField());
-        containerAba3.addComponent(getCnpjCpfTextField());
+        containerHorizontal1.addComponent(getCnpjCpfTextField());
         getCnpjCpfTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjCpfTextField.label"));
-        cnpjCpfTextField.setWidth("300px");
+        cnpjCpfTextField.setWidth("235px");
         
         // text field: Lograoudo
         setLogradouroTextField(new TextField());
@@ -273,7 +289,11 @@ public class SignupView extends Window {
         });
         
         containerHorizontal.addComponent(adicionarEmpresaButton);
+        adicionarEmpresaButton.addStyleName("small default");
         
+         // check box : empresa Ativa
+        setEmpresaAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.empresaAtivaCheckBox.label")));
+        containerAba3.addComponent(getEmpresaAtivaCheckBox());
            
         empresasTable = new Table();
         containerAba3.addComponent(empresasTable);
@@ -305,11 +325,17 @@ public class SignupView extends Window {
         containerAba4.setSpacing(true);
        
           // text field: Nome
-        setNomeTextField(new TextField());
-        containerAba4.addComponent(getNomeTextField());
-        getNomeTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
-        nomeTextField.setWidth("300px");
+        setNomeUsuarioTextField(new TextField());
+        containerAba4.addComponent(getNomeUsuarioTextField());
+        getNomeUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
+        nomeUsuarioTextField.setWidth("300px");
 
+        // text field: Sobrenome
+        setSobrenomeUsuarioTextField(new TextField());
+        containerAba4.addComponent(getSobrenomeUsuarioTextField());
+        getSobrenomeUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.sobrenomeTextField.label"));
+        sobrenomeUsuarioTextField.setWidth("300px");
+        
         // text field: E-mail
         setEmailTextField(new TextField());
         containerAba4.addComponent(getEmailTextField());
@@ -337,6 +363,7 @@ public class SignupView extends Window {
         });
         
         containerHorizontal.addComponent(adicionarUsuarioButton);
+        adicionarUsuarioButton.addStyleName("small default");
         
         usuariosTable = new Table();
         containerAba4.addComponent(usuariosTable);
@@ -439,8 +466,8 @@ public class SignupView extends Window {
     public CheckBox getAceitaTermosCheckBox() {
         return aceitaTermosCheckBox;
     }
-
-    /**
+    
+      /**
      * @param aceitaTermosCheckBox the aceitaTermosCheckBox to set
      */
     public void setAceitaTermosCheckBox(CheckBox aceitaTermosCheckBox) {
@@ -474,7 +501,9 @@ public class SignupView extends Window {
     public void setNomeFantasiaTextField(TextField nomeFantasiaTextField) {
         this.nomeFantasiaTextField = nomeFantasiaTextField;
     }
-
+    
+    
+    
     /**
      * @return the cnpjTextField
      */
@@ -600,6 +629,20 @@ public class SignupView extends Window {
     public void setNomeUsuarioTextField(TextField nomeUsuarioTextField) {
         this.nomeUsuarioTextField = nomeUsuarioTextField;
     }
+    
+    /**
+     * @return the sobrenomeUsuarioTextField
+     */
+    public TextField getSobrenomeUsuarioTextField() {
+        return sobrenomeUsuarioTextField;
+    }
+
+    /**
+     * @param sobrenomeUsuarioTextField the sobrenomeUsuarioTextField to set
+     */
+    public void setSobrenomeUsuarioTextField(TextField sobrenomeUsuarioTextField) {
+        this.sobrenomeUsuarioTextField = sobrenomeUsuarioTextField;
+    }
 
     /**
      * @return the emailTextField
@@ -641,6 +684,20 @@ public class SignupView extends Window {
      */
     public void setUsuarioAdmCheckBox(CheckBox usuarioAdmCheckBox) {
         this.usuarioAdmCheckBox = usuarioAdmCheckBox;
+    }
+    
+    /**
+     * @return the empresaAtivaCheckBox
+     */
+    public CheckBox getEmpresaAtivaCheckBox() {
+        return empresaAtivaCheckBox;
+    }
+
+    /**
+     * @param empresaAtivaCheckBox the empresaAtivaCheckBox to set
+     */
+    public void setEmpresaAtivaCheckBox(CheckBox empresaAtivaCheckBox) {
+        this.empresaAtivaCheckBox = empresaAtivaCheckBox;
     }
     
 
@@ -693,6 +750,34 @@ public class SignupView extends Window {
      */
     public TextField getCnpjTextField() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * @return the pessoaFisicaCheckBox
+     */
+    public CheckBox getPessoaFisicaCheckBox() {
+        return pessoaFisicaCheckBox;
+    }
+
+    /**
+     * @param pessoaFisicaCheckBox the pessoaFisicaCheckBox to set
+     */
+    public void setPessoaFisicaCheckBox(CheckBox pessoaFisicaCheckBox) {
+        this.pessoaFisicaCheckBox = pessoaFisicaCheckBox;
+    }
+    
+    /**
+     * @return the pessoaJuridicaCheckBox
+     */
+    public CheckBox getPessoaJuridicaCheckBox() {
+        return pessoaJuridicaCheckBox;
+    }
+
+    /**
+     * @param pessoaJuridicaCheckBox the pessoaJuridicaCheckBox to set
+     */
+    public void setPessoaJuridicaCheckBox(CheckBox pessoaJuridicaCheckBox) {
+        this.pessoaJuridicaCheckBox = pessoaJuridicaCheckBox;
     }
 
 

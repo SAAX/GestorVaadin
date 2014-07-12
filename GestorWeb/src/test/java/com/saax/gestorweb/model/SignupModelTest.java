@@ -259,11 +259,11 @@ public class SignupModelTest {
         System.out.println("criarNovaEmpresa");
         String nomeFantasia = "";
         String razaosocial = "";
-        String cnpj = "";
-        String cpf = "";
+        String cnpjCpf = "";
+        char tipoPessoa = 'F';
         SignupModel instance = new SignupModel();
         Empresa expResult = null;
-        Empresa result = instance.criarNovaEmpresa(nomeFantasia, razaosocial, cnpj, cpf);
+        Empresa result = instance.criarNovaEmpresa(nomeFantasia, razaosocial, cnpjCpf, tipoPessoa);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -277,9 +277,10 @@ public class SignupModelTest {
     public void testCriarFilialEmpresa() {
         System.out.println("criarFilialEmpresa");
         String nome = "";
+        String cnpj = "";
         SignupModel instance = new SignupModel();
         FilialEmpresa expResult = null;
-        FilialEmpresa result = instance.criarFilialEmpresa(nome);
+        FilialEmpresa result = instance.criarFilialEmpresa(nome, cnpj);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

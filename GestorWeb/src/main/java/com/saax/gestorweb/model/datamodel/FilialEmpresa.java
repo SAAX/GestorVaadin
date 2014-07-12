@@ -28,6 +28,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "FilialEmpresa.findAll", query = "SELECT f FROM FilialEmpresa f"),
     @NamedQuery(name = "FilialEmpresa.findByIdfilialempresa", query = "SELECT f FROM FilialEmpresa f WHERE f.id = :idfilialempresa"),
     @NamedQuery(name = "FilialEmpresa.findByNome", query = "SELECT f FROM FilialEmpresa f WHERE f.nome = :nome"),
+    @NamedQuery(name = "FilialEmpresa.findByCNPJ", query = "SELECT f FROM FilialEmpresa f WHERE f.cnpj = :cnpj"),
     @NamedQuery(name = "FilialEmpresa.findByAtiva", query = "SELECT f FROM FilialEmpresa f WHERE f.ativa = :ativa")})
 public class FilialEmpresa implements Serializable {
     
@@ -44,6 +45,10 @@ public class FilialEmpresa implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "nome")
     private String nome;
+    
+    @Size(max = 18)
+    @Column(name = "cnpj")
+    private String cnpj;
     
     @Basic(optional = false)
     @NotNull
@@ -81,6 +86,14 @@ public class FilialEmpresa implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public boolean getAtiva() {

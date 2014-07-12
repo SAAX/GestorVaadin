@@ -1,21 +1,18 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 /**
@@ -714,42 +711,12 @@ public class SignupView extends Window {
      * Exibe uma mensagem de erro indicando que este login (email) já 
      * existe no sistema e pergunta ao usuário se ele não quer recuperar sua senha
      * 
-     * @TODO: fernando
      * @param chave chave do resource
      */
     private Label mensagemAviso = new Label();
-    public void apresentaAviso(String chave) {
-        mensagemAviso.setValue(mensagens.getString(chave));
-    }
-
-    /**
-     * Retorna o tipo de pessoa (Fisica/Jurica) da conta (empresa)
-     * 
-     * @return char F / J
-     * @TODO: fernando
-     */
-    public char getTipoPessoa() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     * Retorna o cpf da empresa (conta) se pessoa fisica
-     * 
-     * @return char F / J
-     * @TODO: fernando
-     */
-    public TextField getCpfTextField() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     * Retorna o cpf da empresa (conta) se pessoa fisica
-     * 
-     * @return char F / J
-     * @TODO: fernando
-     */
-    public TextField getCnpjTextField() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void apresentaAviso(String chave, Object ... params) {
+        String mensagem = MessageFormat.format(mensagens.getString(chave), params);
+        mensagemAviso.setValue(mensagem);
     }
 
     /**

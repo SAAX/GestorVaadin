@@ -258,20 +258,6 @@ public class SignupViewTest {
     }
 
     /**
-     * Test of getCnpjTextField method, of class SignupView.
-     */
-    @Test
-    public void testGetCnpjTextField() {
-        System.out.println("getCnpjTextField");
-        SignupView instance = new SignupView();
-        TextField expResult = null;
-        TextField result = instance.getCnpjTextField();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of getNomeUsuarioTextField method, of class SignupView.
      */
     @Test
@@ -373,34 +359,6 @@ public class SignupViewTest {
         String chave = "";
         SignupView instance = new SignupView();
         instance.apresentaAviso(chave);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getTipoPessoa method, of class SignupView.
-     */
-    @Test
-    public void testGetTipoPessoa() {
-        System.out.println("getTipoPessoa");
-        SignupView instance = new SignupView();
-        char expResult = ' ';
-        char result = instance.getTipoPessoa();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getCpfTextField method, of class SignupView.
-     */
-    @Test
-    public void testGetCpfTextField() {
-        System.out.println("getCpfTextField");
-        SignupView instance = new SignupView();
-        TextField expResult = null;
-        TextField result = instance.getCpfTextField();
-        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

@@ -57,15 +57,13 @@ public class SignupPresenter implements SignupViewListener {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void okButtonClicked() {
+    /**
+     * valida a aba de dados do usuário princiapal para cadastro
+     *
+     * @return true se os dados forem validos
+     */
+    private boolean validaDadosUsuarioPrincipal() {
 
-        // valida o preenchimento dos campos obrigatórios
-        view.validate();
-
-        // ---------------------------------------------------------------------
-        // valida a aba de dados do usuário princiapal
-        // ---------------------------------------------------------------------
         String login = ""; // @TODO: obter email do usuário principal
 
         // verifica se o usuário informado existe (login)
@@ -74,12 +72,18 @@ public class SignupPresenter implements SignupViewListener {
             // Exibe uma mensagem de erro indicando que este login (email) já 
             //existe no sistema e pergunta ao usuário se ele não quer recuperar sua senha
             view.apresentaAviso("SignupPresenter.mensagem.loginPreExistente");
-            return;
+            return false;
         }
 
-        // ---------------------------------------------------------------------
-        // valida dados da conta (empresa principal)
-        // ---------------------------------------------------------------------
+        return true;
+    }
+
+    /**
+     * valida dados da conta (empresa principal)
+     *
+     * @return true se os dados forem validos
+     */
+    private boolean validaDadosEmpresa() {
         // verifica se a empresa (conta) informada já não existe no cadastro
         char tipoPessoa;
         if (view.getPessoaFisicaCheckBox().getValue()) {
@@ -87,7 +91,7 @@ public class SignupPresenter implements SignupViewListener {
         } else if (view.getPessoaJuridicaCheckBox().getValue()) {
             tipoPessoa = 'J';
         } else {
-            return;
+            return false;
         }
 
         String cpf_cnpj = view.getCnpjCpfTextField().getValue();
@@ -97,22 +101,30 @@ public class SignupPresenter implements SignupViewListener {
 
                 // Exibe uma mensagem de erro indicando que esta empresa (pelo cnpj/cpf) já existe no sistema
                 view.apresentaAviso("SignupPresenter.mensagem.empresaPreExistente", cpf_cnpj);
-                return;
+                return false;
             }
         } catch (GestorException ex) {
             Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
 
-        // ---------------------------------------------------------------------
-        // valida dados das sub empresas coligadas a empresa principal
-        // ---------------------------------------------------------------------
-        final Table filiaist = null; // @TODO: Obter a tabela de sub empresas
+        return true;
+    }
+    
+    /**
+     * valida dados das sub empresas coligadas a empresa principal
+     * 
+     * @return true se os dados forem validos
+     */
+    private boolean validaDadosEmpresasColigadas(){
+                
+        
+        final Table empresasColigadasTable = null; // @TODO: Obter a tabela de sub empresas
         Set<String> identificadoresEmpresasColigadas = new HashSet<>();
 
-        filiaist.getItemIds().stream().forEach((itemID) -> {
-
-            Item linha = filiaist.getItem(itemID);
-
+        for (Object itemID : empresasColigadasTable.getItemIds()) {
+            
+            Item linha = empresasColigadasTable.getItem(itemID);
             // Valida se a sub empresa já não está cadastrada no sistema
             String cpfCnpjSubEmpresa = (String) linha.getItemProperty("?????????").getValue(); // @TODO: Obter da view
             char tipoPessoaSubEmpresa = 'J'; // @TODO: Obter da view
@@ -121,10 +133,11 @@ public class SignupPresenter implements SignupViewListener {
 
                     // Exibe uma mensagem de erro indicando que esta empresa (pelo cnpj/cpf) já existe no sistema
                     view.apresentaAviso("SignupPresenter.mensagem.empresaPreExistente", cpfCnpjSubEmpresa);
-                    return;
+                    return false;
                 }
             } catch (GestorException ex) {
                 Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
             }
 
             // Valida se a sub empresa já não faz parte desta mesma empresa principal
@@ -132,22 +145,30 @@ public class SignupPresenter implements SignupViewListener {
                 // Exibe uma mensagem de erro indicando que esta sub empresa (pelo cnpj/cpf) 
                 // foi cadastrada em duplicidade
                 view.apresentaAviso("SignupPresenter.mensagem.empresaColigadaDuplicada", cpfCnpjSubEmpresa);
-                return;
+                return false;
 
             }
             identificadoresEmpresasColigadas.add(cpfCnpjSubEmpresa);
+        }
+        
+        return true;
+        
+    }
 
-        });
+    /**
+     * valida dados das filiais a empresa principal
+     * 
+     * @return true se os dados forem validos
+     */
+    private boolean validaDadosFiliais(){
+       
 
-        // ---------------------------------------------------------------------
-        // valida dados das filiais à empresa principal
-        // ---------------------------------------------------------------------
         final Table filiaisTable = null; // @TODO: Obter a tabela de sub empresas
         Set<String> identificadoresFiliais = new HashSet<>();
         Set<String> nomesFiliais = new HashSet<>();
 
-        filiaisTable.getItemIds().stream().forEach((itemID) -> {
-
+        for (Object itemID : filiaisTable.getItemIds()) {
+            
             Item linha = filiaisTable.getItem(itemID);
 
             // Valida se a filial já não está cadastrada no sistema
@@ -160,10 +181,11 @@ public class SignupPresenter implements SignupViewListener {
 
                         // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj) já existe no sistema
                         view.apresentaAviso("SignupPresenter.mensagem.empresaPreExistente", cnpjFilial);
-                        return;
+                        return false;
                     }
                 } catch (GestorException ex) {
                     Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
+                    return false;
                 }
 
                 // Valida se a filial já não faz parte desta mesma empresa principal pelo CNPJ
@@ -171,7 +193,7 @@ public class SignupPresenter implements SignupViewListener {
                     // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj/cpf) 
                     // foi cadastrada em duplicidade
                     view.apresentaAviso("SignupPresenter.mensagem.filialDuplicada", cnpjFilial);
-                    return;
+                    return false;
 
                 }
                 identificadoresFiliais.add(cnpjFilial);
@@ -181,21 +203,29 @@ public class SignupPresenter implements SignupViewListener {
                     // Exibe uma mensagem de erro indicando que esta filial (pelo nome) 
                     // foi cadastrada em duplicidade
                     view.apresentaAviso("SignupPresenter.mensagem.filialDuplicada", nomeFilial);
-                    return;
+                    return false;
 
                 }
                 nomesFiliais.add(nomeFilial);
 
             }
-        });
+        }
 
-        // ---------------------------------------------------------------------
-        // valida dados dos usuarios adicionados
-        // ---------------------------------------------------------------------
+        return true;
+    }
+    
+    /**
+     * valida dados dos demais usuarios 
+     * 
+     * @return true se os dados forem validos
+     */
+    private boolean validaDadosDemaisUsuarios(){
+        
         Table usuariosTable = null; // @TODO: Obter a tabela de sub empresas
         Set<String> identificadoresUsuarios = new HashSet<>();
 
-        usuariosTable.getItemIds().stream().forEach((itemID) -> {
+        for (Object itemID : usuariosTable.getItemIds()) {
+            
 
             Item linha = usuariosTable.getItem(itemID);
 
@@ -206,24 +236,30 @@ public class SignupPresenter implements SignupViewListener {
 
                 // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj) já existe no sistema
                 view.apresentaAviso("SignupPresenter.mensagem.usuarioExistente", emailUsuario);
-                return;
+                return false;
             }
 
             // Valida se o usuário já não está relacionado a esta mesma empresa
             if (identificadoresUsuarios.contains(emailUsuario)) {
                 // Exibe uma mensagem de erro indicando que este usuario esta duplicado
                 view.apresentaAviso("SignupPresenter.mensagem.usuarioDuplicado", emailUsuario);
-                return;
+                return false;
 
             }
             identificadoresUsuarios.add(emailUsuario);
-        });
-
-        // ---------------------------------------------------------------------
-        // Validações bem sucedidas !!!
-        // procede com a gravação dos dados
-        // ---------------------------------------------------------------------
+        }
         
+        return true;
+
+    }
+    
+    
+    /**
+     * Obtem todos os dados da view necessários para montar o usuario princiapal
+     * com a empresa principal + coligadas e filiais + os demais usuarios
+     * @return objeto Usuario com todos os relacionamentos configurados
+     */
+    private Usuario buildUsuarioPrincipal(){
         
         // ---------------------------------------------------------------------
         // cria o usuario principal
@@ -241,12 +277,13 @@ public class SignupPresenter implements SignupViewListener {
         String nomeFantasia = view.getNomeFantasiaTextField().getValue();
         String razaosocial = view.getRazaoSocialTextField().getValue();
         String cpfCnpj = view.getCnpjCpfTextField().getValue();
+        char tipoPessoa;
         if (view.getPessoaFisicaCheckBox().getValue()) {
             tipoPessoa = 'F';
         } else if (view.getPessoaJuridicaCheckBox().getValue()) {
             tipoPessoa = 'J';
         } else {
-            return;
+            return null;
         }
 
         Empresa empresa = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa);
@@ -266,9 +303,10 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de sub empresas 
         // ---------------------------------------------------------------------
-        filiaist.getItemIds().stream().forEach((itemID) -> {
+        Table empresasColigadasTable = null; // @TODO: pegar da view
+        empresasColigadasTable.getItemIds().stream().forEach((itemID) -> {
 
-            Item linhaEmpresaColigada = filiaist.getItem(itemID);
+            Item linhaEmpresaColigada = empresasColigadasTable.getItem(itemID);
 
             String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
             String razaosocialEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
@@ -284,6 +322,7 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de filiais
         // ---------------------------------------------------------------------
+        Table filiaisTable = null; // @TODO: pegar da view
         filiaisTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = filiaisTable.getItem(itemID);
@@ -299,11 +338,11 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de usuarios
         // ---------------------------------------------------------------------
-        
+        Table usuariosTable = null; // @TODO: pegar da view
         usuariosTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = usuariosTable.getItem(itemID);
-            
+
             String nome = (String) linha.getItemProperty("Nome").getValue();
             String sobreNome = (String) linha.getItemProperty("Sobrenome").getValue();
             String email = (String) linha.getItemProperty("E-mail").getValue();
@@ -313,6 +352,43 @@ public class SignupPresenter implements SignupViewListener {
             model.relacionarUsuarioEmpresa(usuario, empresa, administrador);
 
         });
+        
+        return usuarioADM;
+    }
+    
+    @Override
+    public void okButtonClicked() {
+
+        // valida o preenchimento dos campos obrigatórios
+        view.validate();
+
+        if (!validaDadosUsuarioPrincipal()) {
+            return;
+        }
+
+        if (!validaDadosEmpresa()) {
+            return;
+        }
+
+        if (!validaDadosEmpresasColigadas()) {
+            return;
+        }
+
+        if (!validaDadosFiliais()) {
+            return;
+        }
+
+        if (!validaDadosDemaisUsuarios()) {
+            return;
+        }
+
+        // ---------------------------------------------------------------------
+        // Validações bem sucedidas !!!
+        // procede com a gravação dos dados
+        // ---------------------------------------------------------------------
+
+        // obtem todos os dados da view e monta os objetos
+        Usuario usuarioADM = buildUsuarioPrincipal();
 
         // grava todos os dados (fazer em uma unica chamada para mater a transação)
         model.cadatrarNovoUsuario(usuarioADM);

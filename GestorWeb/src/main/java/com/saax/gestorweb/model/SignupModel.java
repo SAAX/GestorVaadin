@@ -2,6 +2,8 @@ package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.dao.EmpresaDAOCustom;
 import com.saax.gestorweb.dao.FilialEmpresaDAOCustom;
+import com.saax.gestorweb.dao.UsuarioDAOCustom;
+import com.saax.gestorweb.dao.UsuarioEmpresaDAO;
 import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
@@ -15,8 +17,11 @@ import com.saax.gestorweb.util.PostgresConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -94,6 +99,10 @@ public class SignupModel {
             return false;
         }
 
+        if (!FormatterUtil.validarCNPJ(cnpj)) {
+            throw new GestorException("CNPJ fora do formato correto (##.###.###/####-##): " + cnpj);
+        }
+
         FilialEmpresa e = filialEmpresaDAO.findByCNPJ(cnpj);
         return (e != null);
 
@@ -115,17 +124,19 @@ public class SignupModel {
         usuario.setSobrenome(sobreNome);
         usuario.setLogin(email);
 
-        // criptografa a senha informada
-        String senhaCriptografada;
-        try {
-            senhaCriptografada = new Cipher().md5Sum(senha);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, "Não encontrado algorítimo MD5", ex);
-            return null;
+        // senha pode ser nula no caso de usuarios adicionados por outro usuario
+        if (senha != null) {
+            // criptografa a senha informada
+            String senhaCriptografada;
+            try {
+                senhaCriptografada = new Cipher().md5Sum(senha);
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, "Não encontrado algorítimo MD5", ex);
+                return null;
+            }
+
+            usuario.setSenha(senhaCriptografada);
         }
-
-        usuario.setSenha(senhaCriptografada);
-
         return usuario;
     }
 
@@ -138,7 +149,7 @@ public class SignupModel {
      * @param email
      * @return novo usuario criado
      */
-    public Usuario criarNovoUsuario(String nome, String sobreNome, String email) {
+     public Usuario criarNovoUsuario(String nome, String sobreNome, String email) {
 
         String senha = null;
 
@@ -181,8 +192,8 @@ public class SignupModel {
      *
      * @param nomeFantasia
      * @param razaosocial
-     * @param cnpjCpf 
-     * @param tipoPessoa 
+     * @param cnpjCpf
+     * @param tipoPessoa
      *
      * @return nova empresa criada
      */
@@ -191,8 +202,8 @@ public class SignupModel {
 
         empresa.setNome(nomeFantasia);
         empresa.setRazaoSocial(razaosocial);
-        
-        if (tipoPessoa == 'F'){
+
+        if (tipoPessoa == 'F') {
             empresa.setCpf(cnpjCpf);
         } else {
             empresa.setCnpj(cnpjCpf);
@@ -237,7 +248,7 @@ public class SignupModel {
             empresa.setSubEmpresas(new ArrayList<>());
         }
 
-        empresa.getSubEmpresas().add(empresa);
+        empresa.getSubEmpresas().add(subempresa);
 
     }
 
@@ -255,14 +266,66 @@ public class SignupModel {
 
         empresa.getFiliais().add(filialEmpresa);
 
+        filialEmpresa.setMatriz(empresa);
+
     }
 
-    public void cadatrarNovoUsuario(Usuario usuarioADM) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Cadastra um novo usuario com a empresa (conta) principal, sub empresas
+     *  filiais e demais usuarios.
+     * 
+     * @param empresaPrincipal 
+     * @return  
+     */
+    public Empresa criarNovaConta(Empresa empresaPrincipal) {
+
+        EntityManagerFactory emf = PostgresConnection.getInstance().getEntityManagerFactory();
+        
+        
+        final EntityManager em = emf.createEntityManager();
+        try {
+
+            em.getTransaction().begin();
+            
+            //a empresa principal
+            em.persist(empresaPrincipal);
+            
+            // grava as filiais
+            empresaPrincipal.getFiliais().stream().forEach((filial) -> {
+                    em.persist(filial);
+            });
+
+            // gravar coligadas
+            empresaPrincipal.getSubEmpresas().stream().forEach((empresa) -> {
+                em.persist(empresa);
+            });
+            
+            // grava os usuarios
+            for (UsuarioEmpresa usuarioEmpresa : empresaPrincipal.getUsuarios()) {
+                em.persist(usuarioEmpresa.getUsuario());
+                em.persist(usuarioEmpresa);
+            }
+            
+                                  
+            em.getTransaction().commit();
+            
+            return em.find(Empresa.class, empresaPrincipal.getId());
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+        
+        return null;
+        
+        
     }
 
     /**
      * Cria um endereco com os parametros informados
+     *
      * @param logradouro
      * @param numero
      * @param complemento
@@ -270,15 +333,15 @@ public class SignupModel {
      * @param cidade
      * @return endereco criado
      */
-    public Endereco criarEndereco(String logradouro, String numero, String complemento, 
-            String cep, Cidade cidade ) {
+    public Endereco criarEndereco(String logradouro, String numero, String complemento,
+            String cep, Cidade cidade) {
         Endereco endereco = new Endereco();
         endereco.setLogradouro(logradouro);
         endereco.setComplemento(complemento);
         endereco.setNumero(numero);
         endereco.setCep(cep);
         endereco.setCidade(cidade);
-        
+
         return endereco;
     }
 
@@ -286,7 +349,7 @@ public class SignupModel {
      * Cria o relacionamento entre uma empresa e seu endereco
      *
      * @param empresa empresa princiapal
-     * @param endereco 
+     * @param endereco
      */
     public void relacionarEmpresaEndereco(Empresa empresa, Endereco endereco) {
 

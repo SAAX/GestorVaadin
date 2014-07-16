@@ -96,7 +96,7 @@ public class FilialEmpresa implements Serializable {
         this.cnpj = cnpj;
     }
 
-    public boolean getAtiva() {
+    public boolean isAtiva() {
         return ativa;
     }
 

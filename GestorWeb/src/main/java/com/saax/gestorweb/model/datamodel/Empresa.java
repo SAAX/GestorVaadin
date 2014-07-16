@@ -88,7 +88,7 @@ public class Empresa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<Departamento> departamentos;
 
-    @OneToMany(mappedBy = "empresaPrincipal")
+    @OneToMany(mappedBy = "empresaPrincipal", cascade = CascadeType.ALL)
     private List<Empresa> subEmpresas;
 
     @JoinColumn(name = "idempresaprincipal", referencedColumnName = "idempresa")
@@ -107,7 +107,7 @@ public class Empresa implements Serializable {
     private Character tipoPessoa;
     
     @JoinColumn(name = "idendereco", referencedColumnName = "idendereco")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Endereco endereco;
 
     public Empresa() {

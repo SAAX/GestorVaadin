@@ -255,11 +255,11 @@ public class SignupPresenter implements SignupViewListener {
     
     
     /**
-     * Obtem todos os dados da view necessários para montar o usuario princiapal
-     * com a empresa principal + coligadas e filiais + os demais usuarios
-     * @return objeto Usuario com todos os relacionamentos configurados
+     * Obtem todos os dados da view necessários para montar o cadastro inicial
+     * com a empresa principal + coligadas e filiais + usuarios
+     * @return objeto empresa
      */
-    private Usuario buildUsuarioPrincipal(){
+    private Empresa buildConta(){
         
         // ---------------------------------------------------------------------
         // cria o usuario principal
@@ -298,6 +298,7 @@ public class SignupPresenter implements SignupViewListener {
             Endereco endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade);
             model.relacionarEmpresaEndereco(empresa, endereco);
         }
+        
         model.relacionarUsuarioEmpresa(usuarioADM, empresa, true);
 
         // ---------------------------------------------------------------------
@@ -353,7 +354,7 @@ public class SignupPresenter implements SignupViewListener {
 
         });
         
-        return usuarioADM;
+        return empresa;
     }
     
     @Override
@@ -388,14 +389,14 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
 
         // obtem todos os dados da view e monta os objetos
-        Usuario usuarioADM = buildUsuarioPrincipal();
+        Empresa conta = buildConta();
 
         // grava todos os dados (fazer em uma unica chamada para mater a transação)
-        model.cadatrarNovoUsuario(usuarioADM);
-
+        model.criarNovaConta(conta);
+/*
         // Configura o usuáio logado na seção
         ((GestorMDI) UI.getCurrent()).getUserData().setUsuarioLogado(usuarioADM);
-
+*/
         view.close();
 
         ((GestorMDI) UI.getCurrent()).carregarDashBoard();

@@ -26,7 +26,7 @@ public class FilialEmpresaDAOCustom extends FilialEmpresaDAO {
         EntityManager em = getEntityManager();
 
         try {
-            return (FilialEmpresa) em.createNamedQuery("FilialEmpresa.findByCnpj")
+            return (FilialEmpresa) em.createNamedQuery("FilialEmpresa.findByCNPJ")
                     .setParameter("cnpj", cnpj)
                     .getSingleResult();
         } catch (Exception e) {

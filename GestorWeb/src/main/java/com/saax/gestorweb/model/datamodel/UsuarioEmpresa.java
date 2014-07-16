@@ -3,6 +3,7 @@ package com.saax.gestorweb.model.datamodel;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -62,11 +63,11 @@ public class UsuarioEmpresa implements Serializable {
     private Date desligamento;
     
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     private Empresa empresa;
     
     @JoinColumn(name = "idusuario", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     private Usuario usuario;
 
     @Basic(optional = false)

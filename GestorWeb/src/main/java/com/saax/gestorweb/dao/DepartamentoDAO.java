@@ -18,12 +18,10 @@ import javax.persistence.EntityManagerFactory;
 /**
  * DAO para o entity bean: Departamento <br><br>
  * 
- * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
- * Caso seja necessária alguma customização, estender esta classe<br>
  * 
  * @author rodrigo
  */
-class DepartamentoDAO implements Serializable {
+public class DepartamentoDAO implements Serializable {
 
     public DepartamentoDAO(EntityManagerFactory emf) {
         this.emf = emf;
@@ -215,5 +213,24 @@ class DepartamentoDAO implements Serializable {
             em.close();
         }
     }
+
+    /**
+     * Obtém a lista de departamentos cadastrados para a empresa
+     * @param empresa
+     * @return lista de departamentos
+     */
+    public List<Departamento> obterDepartamentosPorEmpresa(Empresa empresa) {
+            EntityManager em = getEntityManager();
+
+        try {
+            return (List<Departamento>) em.createNamedQuery("Departamento.findByEmpresa")
+                    .setParameter("empresa", empresa)
+                    .getResultList();
+        } catch (Exception e) {
+            return new ArrayList<Departamento>();
+        }
+
+    }
+
     
 }

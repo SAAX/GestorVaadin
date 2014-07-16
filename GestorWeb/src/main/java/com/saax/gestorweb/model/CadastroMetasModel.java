@@ -6,7 +6,7 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.dao.DepartamentoDAOCustom;
+import com.saax.gestorweb.dao.DepartamentoDAO;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -15,7 +15,6 @@ import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.vaadin.ui.UI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,11 +43,11 @@ public class CadastroMetasModel {
         }
 
         List<Departamento> departamentos;
-        DepartamentoDAOCustom dao = new DepartamentoDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        DepartamentoDAO dao = new DepartamentoDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         departamentos = dao.obterDepartamentosPorEmpresa(empresa);
 
         if (departamentos.isEmpty()) {
-            Logger.getLogger(DepartamentoDAOCustom.class.getName()).log(Level.WARNING, "Não foram encontrados departamentos para empresa: {0}", empresa.getId());
+            Logger.getLogger(CadastroMetasModel.class.getName()).log(Level.WARNING, "Não foram encontrados departamentos para empresa: {0}", empresa.getId());
             throw new GestorException("Não foram encontrados departamentos para empresa");
         }
 

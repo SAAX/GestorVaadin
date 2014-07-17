@@ -4,15 +4,20 @@ import com.saax.gestorweb.GestorMDI;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+
+
 import java.text.MessageFormat;
+
 import java.util.ResourceBundle;
 
 /**
@@ -38,27 +43,31 @@ public class SignupView extends Window {
     // ABA #1 : Dados do usuário
     private TextField nomeTextField;
     private TextField sobrenomeTextField;
+    private TextField emailUsuarioTextField;
+    private TextField confirmaEmailUsuarioTextField;
     private TextField senhaTextField;
     private CheckBox aceitaTermosCheckBox;
+    
+    
     
     // ABA #2 : Dados de billing (será feito fururamente)
     
     // ABA #3 : Dados de empresas e filiais
      private TextField razaoSocialTextField;
      private TextField nomeFantasiaTextField;
-     private CheckBox pessoaFisicaCheckBox;
-     private CheckBox pessoaJuridicaCheckBox;
+     private OptionGroup tipoPessoaOptionGroup;
      private TextField cnpjCpfTextField;
      private TextField logradouroTextField;
      private TextField numeroTextField;
      private TextField complementoTextField;
      private TextField bairroTextField;
-     private TextField cidadeTextField;
-     private TextField estadoTextField;
+     private ComboBox cidadeComboBox;
+     private ComboBox estadoComboBox;
      private TextField cepTextField;
      private Table empresasTable;
      private CheckBox empresaAtivaCheckBox;
-    
+     
+
     // ABA #4 : Adicionar mais usuários à empresa
      private TextField nomeUsuarioTextField;
      private TextField sobrenomeUsuarioTextField;
@@ -66,8 +75,11 @@ public class SignupView extends Window {
      private TextField confirmaEmailTextField;
      private Table usuariosTable;
      private CheckBox usuarioAdmCheckBox;
+     
+    //ABA #5: Adicionar Empresas Coligadas
+    private TextField nomeColigadaTextField;
+    private TextField cnpjColigadaTextField;
    
-    
     
     /**
      * Cria o pop-up de login, com campos para usuário e senha
@@ -170,6 +182,18 @@ public class SignupView extends Window {
         getSobrenomeTextField().setInputPrompt(getMensagens().getString("SignupView.sobrenomeTextField.label"));
         sobrenomeTextField.setWidth("300px");
         
+        // text field: Email
+        setEmailUsuarioTextField(new TextField());
+        containerAba1.addComponent(getEmailUsuarioTextField());
+        getEmailUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.emailTextField.label"));
+        emailUsuarioTextField.setWidth("300px");
+        
+        // text field: ConfirmaEmail
+        setConfirmaEmailUsuarioTextField(new TextField());
+        containerAba1.addComponent(getConfirmaEmailUsuarioTextField());
+        getConfirmaEmailUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.confirmaEmailTextField.label"));
+        confirmaEmailUsuarioTextField.setWidth("300px");
+        
          // text field: Senha
         setSenhaTextField(new TextField());
         containerAba1.addComponent(getSenhaTextField());
@@ -216,20 +240,18 @@ public class SignupView extends Window {
         HorizontalLayout containerHorizontal1 = new HorizontalLayout();
         containerHorizontal1.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
         containerAba3.addComponent(containerHorizontal1); // adiciona o container de datas no superior
+
+        setTipoPessoaOptionGroup(new OptionGroup());
+        tipoPessoaOptionGroup.addItem("Pessoa Física");
+        tipoPessoaOptionGroup.addItem("Pessoa Jurídica");
+        containerHorizontal1.addComponent(tipoPessoaOptionGroup);
         
-        // check box : pessoa fisica
-        setPessoaFisicaCheckBox(new CheckBox(getMensagens().getString("SignupView.pessoaFisicaCheckBox.label")));
-        containerHorizontal1.addComponent(getPessoaFisicaCheckBox());
         
-        // check box : pessoa juridica
-        setPessoaJuridicaCheckBox(new CheckBox(getMensagens().getString("SignupView.pessoaJuridicaCheckBox.label")));
-        containerHorizontal1.addComponent(getPessoaJuridicaCheckBox());
-                
          // text field: Cnpj
         setCnpjCpfTextField(new TextField());
         containerHorizontal1.addComponent(getCnpjCpfTextField());
         getCnpjCpfTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjCpfTextField.label"));
-        cnpjCpfTextField.setWidth("235px");
+        cnpjCpfTextField.setWidth("180px");
         
         // text field: Lograoudo
         setLogradouroTextField(new TextField());
@@ -256,16 +278,16 @@ public class SignupView extends Window {
         bairroTextField.setWidth("300px");
         
          // text field: cidade
-        setCidadeTextField(new TextField());
-        containerAba3.addComponent(getCidadeTextField());
-        getCidadeTextField().setInputPrompt(getMensagens().getString("SignupView.cidadeTextField.label"));
-        cidadeTextField.setWidth("300px");
+        setCidadeComboBox(new ComboBox());
+        containerAba3.addComponent(getCidadeComboBox());
+        getCidadeComboBox().setInputPrompt(getMensagens().getString("SignupView.cidadeComboBox.label"));
+        cidadeComboBox.setWidth("300px");
         
          // text field: estado
-        setEstadoTextField(new TextField());
-        containerAba3.addComponent(getEstadoTextField());
-        getEstadoTextField().setInputPrompt(getMensagens().getString("SignupView.estadoTextField.label"));
-        estadoTextField.setWidth("300px");
+        setEstadoComboBox(new ComboBox());
+        containerAba3.addComponent(getEstadoComboBox());
+        getEstadoComboBox().setInputPrompt(getMensagens().getString("SignupView.estadoComboBox.label"));
+        estadoComboBox.setWidth("300px");
         
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
@@ -288,29 +310,51 @@ public class SignupView extends Window {
         containerHorizontal.addComponent(adicionarEmpresaButton);
         adicionarEmpresaButton.addStyleName("small default");
         
+                        
          // check box : empresa Ativa
         setEmpresaAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.empresaAtivaCheckBox.label")));
         containerAba3.addComponent(getEmpresaAtivaCheckBox());
-           
-        empresasTable = new Table();
-        containerAba3.addComponent(empresasTable);
-        empresasTable.setSizeFull();
         
-        empresasTable.addContainerProperty("Cod", Integer.class, null);
-        empresasTable.addContainerProperty("Razão Social", String.class, null);
-        empresasTable.addContainerProperty("Nome Fantasia", String.class, null);
-        empresasTable.addContainerProperty("CNPJ", String.class, null);
-        empresasTable.addContainerProperty("Logradouro", String.class, null);
-        empresasTable.addContainerProperty("Bairro", String.class, null);
-        empresasTable.addContainerProperty("Cidade", String.class, null);
-        empresasTable.addContainerProperty("Estado", String.class, null);
-        empresasTable.addContainerProperty("CEP", String.class, null);
-        empresasTable.addContainerProperty("Editar", String.class, null);
-        empresasTable.addContainerProperty("Remover", String.class, null);
+        TabSheet tabSheetColigadas = new TabSheet();
+        
+        tabSheetColigadas.addTab(buildAba5Coligadas(), getMensagens().getString("SignupView.tabPanel.aba1.coligadas"));
+        tabSheetColigadas.addTab(buildAba5Coligadas(), getMensagens().getString("SignupView.tabPanel.aba1.filiais"));
+        
+        containerAba3.addComponent(tabSheetColigadas);
+        
+        
         
            return containerAba3;
     }
-    
+    private VerticalLayout buildAba5Coligadas(){
+        VerticalLayout containerAba5 = new VerticalLayout();
+        containerAba5.setMargin(true);
+        containerAba5.setSpacing(true);
+        
+        // text field: nomeColigada
+        setNomeColigadaTextField(new TextField());
+        containerAba5.addComponent(getNomeColigadaTextField());
+        getNomeColigadaTextField().setInputPrompt(getMensagens().getString("SignupView.nomeColigadaTextField.label"));
+        nomeColigadaTextField.setWidth("300px");
+        
+         // text field: cnpjColigada
+        setCnpjColigadaTextField(new TextField());
+        containerAba5.addComponent(getCnpjColigadaTextField());
+        getCnpjColigadaTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjColigadaTextField.label"));
+        cnpjColigadaTextField.setWidth("300px");
+        
+        empresasTable = new Table();
+        containerAba5.addComponent(empresasTable);
+        empresasTable.setSizeFull();
+        
+        empresasTable.addContainerProperty("Cod", Integer.class, null);
+        empresasTable.addContainerProperty("Nome", String.class, null);
+        empresasTable.addContainerProperty("CNPJ", String.class, null);
+        empresasTable.addContainerProperty("Editar", String.class, null);
+        empresasTable.addContainerProperty("Remover", String.class, null);
+        
+        return containerAba5;
+    }
     /**
      * Cria e retorna a 4a. aba com os campos para adicionar novos usuários as empresas
      * @TODO: Fernando
@@ -428,6 +472,35 @@ public class SignupView extends Window {
     public void setNomeTextField(TextField nomeTextField) {
         this.nomeTextField = nomeTextField;
     }
+    
+    /**
+     * @return the emailUsuarioTextField
+     */
+    public TextField getEmailUsuarioTextField() {
+        return emailUsuarioTextField;
+    }
+
+    /**
+     * @param emailUsuarioTextField the emailUsuarioTextField to set
+     */
+    public void setEmailUsuarioTextField(TextField emailUsuarioTextField) {
+        this.emailUsuarioTextField = emailUsuarioTextField;
+    }
+    
+     /**
+     * @return the confirmaEmailUsuarioTextField
+     */
+    public TextField getConfirmaEmailUsuarioTextField() {
+        return confirmaEmailUsuarioTextField;
+    }
+
+    /**
+     * @param confirmaEmailUsuarioTextField the confirmaEmailUsuarioTextField to set
+     */
+    public void setConfirmaEmailUsuarioTextField(TextField confirmaEmailUsuarioTextField) {
+        this.confirmaEmailUsuarioTextField = confirmaEmailUsuarioTextField;
+    }
+
 
     /**
      * @return the sobrenomeTextField
@@ -499,7 +572,19 @@ public class SignupView extends Window {
         this.nomeFantasiaTextField = nomeFantasiaTextField;
     }
     
-    
+    /**
+     * @return the tipoPessoaOptionGroup
+     */
+    public OptionGroup getTipoPessoaOptionGroup() {
+        return tipoPessoaOptionGroup;
+    }
+
+    /**
+     * @param tipoPessoaOptionGroup the tipoPessoaOptionGroup to set
+     */
+    public void setTipoPessoaOptionGroup(OptionGroup tipoPessoaOptionGroup) {
+        this.tipoPessoaOptionGroup = tipoPessoaOptionGroup;
+    }
     
     /**
      * @return the cnpjTextField
@@ -572,31 +657,31 @@ public class SignupView extends Window {
     }
     
          /**
-     * @return the cidadeTextField
+     * @return the cidadeComboBox
      */
-    public TextField getCidadeTextField() {
-        return cidadeTextField;
+    public ComboBox getCidadeComboBox() {
+        return cidadeComboBox;
     }
 
     /**
-     * @param cidadeTextField the cidadeTextField to set
+     * @param cidadeComboBox the cidadeComboBox to set
      */
-    public void setCidadeTextField(TextField cidadeTextField) {
-        this.cidadeTextField = cidadeTextField;
+    public void setCidadeComboBox(ComboBox cidadeComboBox) {
+        this.cidadeComboBox = cidadeComboBox;
     }
     
           /**
-     * @return the estadoTextField
+     * @return the estadoComboBox
      */
-    public TextField getEstadoTextField() {
-        return estadoTextField;
+    public ComboBox getEstadoComboBox() {
+        return estadoComboBox;
     }
 
     /**
-     * @param estadoTextField the cidadeTextField to set
+     * @param estadoComboBox the cidadeComboBox to set
      */
-    public void setEstadoTextField(TextField estadoTextField) {
-        this.estadoTextField = estadoTextField;
+    public void setEstadoComboBox(ComboBox estadoComboBox) {
+        this.estadoComboBox = estadoComboBox;
     }
     
           /**
@@ -611,6 +696,34 @@ public class SignupView extends Window {
      */
     public void setCepTextField(TextField cepTextField) {
         this.cepTextField = cepTextField;
+    }
+    
+    /**
+     * @return the nomeColigadaTextField
+     */
+    public TextField getNomeColigadaTextField() {
+        return nomeColigadaTextField;
+    }
+
+    /**
+     * @param nomeColigadaTextField the nomeColigadaTextField to set
+     */
+    public void setNomeColigadaTextField(TextField nomeColigadaTextField) {
+        this.nomeColigadaTextField = nomeColigadaTextField;
+    }
+    
+    /**
+     * @return the cnpjColigadaTextField
+     */
+    public TextField getCnpjColigadaTextField() {
+        return cnpjColigadaTextField;
+    }
+
+    /**
+     * @param cnpjColigadaTextField the cnpjColigadaTextField to set
+     */
+    public void setCnpjColigadaTextField(TextField cnpjColigadaTextField) {
+        this.cnpjColigadaTextField = cnpjColigadaTextField;
     }
 
     /**
@@ -719,33 +832,8 @@ public class SignupView extends Window {
         mensagemAviso.setValue(mensagem);
     }
 
-    /**
-     * @return the pessoaFisicaCheckBox
-     */
-    public CheckBox getPessoaFisicaCheckBox() {
-        return pessoaFisicaCheckBox;
-    }
 
-    /**
-     * @param pessoaFisicaCheckBox the pessoaFisicaCheckBox to set
-     */
-    public void setPessoaFisicaCheckBox(CheckBox pessoaFisicaCheckBox) {
-        this.pessoaFisicaCheckBox = pessoaFisicaCheckBox;
-    }
     
-    /**
-     * @return the pessoaJuridicaCheckBox
-     */
-    public CheckBox getPessoaJuridicaCheckBox() {
-        return pessoaJuridicaCheckBox;
-    }
-
-    /**
-     * @param pessoaJuridicaCheckBox the pessoaJuridicaCheckBox to set
-     */
-    public void setPessoaJuridicaCheckBox(CheckBox pessoaJuridicaCheckBox) {
-        this.pessoaJuridicaCheckBox = pessoaJuridicaCheckBox;
-    }
 
 
     

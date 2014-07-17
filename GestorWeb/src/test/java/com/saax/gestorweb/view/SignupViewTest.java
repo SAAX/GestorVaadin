@@ -7,6 +7,8 @@
 package com.saax.gestorweb.view;
 
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextField;
 import java.util.ResourceBundle;
 import org.junit.After;
@@ -554,60 +556,8 @@ public class SignupViewTest {
         fail("The test case is a prototype.");
     }
 
-    /**
-     * Test of getCidadeTextField method, of class SignupView.
-     */
-    @Test
-    public void testGetCidadeTextField() {
-        System.out.println("getCidadeTextField");
-        SignupView instance = new SignupView();
-        TextField expResult = null;
-        TextField result = instance.getCidadeTextField();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
-    /**
-     * Test of setCidadeTextField method, of class SignupView.
-     */
-    @Test
-    public void testSetCidadeTextField() {
-        System.out.println("setCidadeTextField");
-        TextField cidadeTextField = null;
-        SignupView instance = new SignupView();
-        instance.setCidadeTextField(cidadeTextField);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getEstadoTextField method, of class SignupView.
-     */
-    @Test
-    public void testGetEstadoTextField() {
-        System.out.println("getEstadoTextField");
-        SignupView instance = new SignupView();
-        TextField expResult = null;
-        TextField result = instance.getEstadoTextField();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setEstadoTextField method, of class SignupView.
-     */
-    @Test
-    public void testSetEstadoTextField() {
-        System.out.println("setEstadoTextField");
-        TextField estadoTextField = null;
-        SignupView instance = new SignupView();
-        instance.setEstadoTextField(estadoTextField);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
+   
     /**
      * Test of getCepTextField method, of class SignupView.
      */
@@ -658,6 +608,249 @@ public class SignupViewTest {
         CheckBox usuarioAdmCheckBox = null;
         SignupView instance = new SignupView();
         instance.setUsuarioAdmCheckBox(usuarioAdmCheckBox);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getEmailUsuarioTextField method, of class SignupView.
+     */
+    @Test
+    public void testGetEmailUsuarioTextField() {
+        System.out.println("getEmailUsuarioTextField");
+        SignupView instance = new SignupView();
+        TextField expResult = null;
+        TextField result = instance.getEmailUsuarioTextField();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setEmailUsuarioTextField method, of class SignupView.
+     */
+    @Test
+    public void testSetEmailUsuarioTextField() {
+        System.out.println("setEmailUsuarioTextField");
+        TextField emailUsuarioTextField = null;
+        SignupView instance = new SignupView();
+        instance.setEmailUsuarioTextField(emailUsuarioTextField);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getConfirmaEmailUsuarioTextField method, of class SignupView.
+     */
+    @Test
+    public void testGetConfirmaEmailUsuarioTextField() {
+        System.out.println("getConfirmaEmailUsuarioTextField");
+        SignupView instance = new SignupView();
+        TextField expResult = null;
+        TextField result = instance.getConfirmaEmailUsuarioTextField();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setConfirmaEmailUsuarioTextField method, of class SignupView.
+     */
+    @Test
+    public void testSetConfirmaEmailUsuarioTextField() {
+        System.out.println("setConfirmaEmailUsuarioTextField");
+        TextField confirmaEmailUsuarioTextField = null;
+        SignupView instance = new SignupView();
+        instance.setConfirmaEmailUsuarioTextField(confirmaEmailUsuarioTextField);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getTipoPessoaOptionGroup method, of class SignupView.
+     */
+    @Test
+    public void testGetTipoPessoaOptionGroup() {
+        System.out.println("getTipoPessoaOptionGroup");
+        SignupView instance = new SignupView();
+        OptionGroup expResult = null;
+        OptionGroup result = instance.getTipoPessoaOptionGroup();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setTipoPessoaOptionGroup method, of class SignupView.
+     */
+    @Test
+    public void testSetTipoPessoaOptionGroup() {
+        System.out.println("setTipoPessoaOptionGroup");
+        OptionGroup tipoPessoaOptionGroup = null;
+        SignupView instance = new SignupView();
+        instance.setTipoPessoaOptionGroup(tipoPessoaOptionGroup);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getCidadeComboBox method, of class SignupView.
+     */
+    @Test
+    public void testGetCidadeComboBox() {
+        System.out.println("getCidadeComboBox");
+        SignupView instance = new SignupView();
+        ComboBox expResult = null;
+        ComboBox result = instance.getCidadeComboBox();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setCidadeComboBox method, of class SignupView.
+     */
+    @Test
+    public void testSetCidadeComboBox() {
+        System.out.println("setCidadeComboBox");
+        ComboBox cidadeComboBox = null;
+        SignupView instance = new SignupView();
+        instance.setCidadeComboBox(cidadeComboBox);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getEstadoComboBox method, of class SignupView.
+     */
+    @Test
+    public void testGetEstadoComboBox() {
+        System.out.println("getEstadoComboBox");
+        SignupView instance = new SignupView();
+        ComboBox expResult = null;
+        ComboBox result = instance.getEstadoComboBox();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setEstadoComboBox method, of class SignupView.
+     */
+    @Test
+    public void testSetEstadoComboBox() {
+        System.out.println("setEstadoComboBox");
+        ComboBox estadoComboBox = null;
+        SignupView instance = new SignupView();
+        instance.setEstadoComboBox(estadoComboBox);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getNomeColigadaTextField method, of class SignupView.
+     */
+    @Test
+    public void testGetNomeColigadaTextField() {
+        System.out.println("getNomeColigadaTextField");
+        SignupView instance = new SignupView();
+        TextField expResult = null;
+        TextField result = instance.getNomeColigadaTextField();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setNomeColigadaTextField method, of class SignupView.
+     */
+    @Test
+    public void testSetNomeColigadaTextField() {
+        System.out.println("setNomeColigadaTextField");
+        TextField nomeColigadaTextField = null;
+        SignupView instance = new SignupView();
+        instance.setNomeColigadaTextField(nomeColigadaTextField);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getCnpjColigadaTextField method, of class SignupView.
+     */
+    @Test
+    public void testGetCnpjColigadaTextField() {
+        System.out.println("getCnpjColigadaTextField");
+        SignupView instance = new SignupView();
+        TextField expResult = null;
+        TextField result = instance.getCnpjColigadaTextField();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setCnpjColigadaTextField method, of class SignupView.
+     */
+    @Test
+    public void testSetCnpjColigadaTextField() {
+        System.out.println("setCnpjColigadaTextField");
+        TextField cnpjColigadaTextField = null;
+        SignupView instance = new SignupView();
+        instance.setCnpjColigadaTextField(cnpjColigadaTextField);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getSobrenomeUsuarioTextField method, of class SignupView.
+     */
+    @Test
+    public void testGetSobrenomeUsuarioTextField() {
+        System.out.println("getSobrenomeUsuarioTextField");
+        SignupView instance = new SignupView();
+        TextField expResult = null;
+        TextField result = instance.getSobrenomeUsuarioTextField();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setSobrenomeUsuarioTextField method, of class SignupView.
+     */
+    @Test
+    public void testSetSobrenomeUsuarioTextField() {
+        System.out.println("setSobrenomeUsuarioTextField");
+        TextField sobrenomeUsuarioTextField = null;
+        SignupView instance = new SignupView();
+        instance.setSobrenomeUsuarioTextField(sobrenomeUsuarioTextField);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of getEmpresaAtivaCheckBox method, of class SignupView.
+     */
+    @Test
+    public void testGetEmpresaAtivaCheckBox() {
+        System.out.println("getEmpresaAtivaCheckBox");
+        SignupView instance = new SignupView();
+        CheckBox expResult = null;
+        CheckBox result = instance.getEmpresaAtivaCheckBox();
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of setEmpresaAtivaCheckBox method, of class SignupView.
+     */
+    @Test
+    public void testSetEmpresaAtivaCheckBox() {
+        System.out.println("setEmpresaAtivaCheckBox");
+        CheckBox empresaAtivaCheckBox = null;
+        SignupView instance = new SignupView();
+        instance.setEmpresaAtivaCheckBox(empresaAtivaCheckBox);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }

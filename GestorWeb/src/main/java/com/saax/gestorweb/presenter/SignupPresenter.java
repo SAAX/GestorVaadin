@@ -85,14 +85,14 @@ public class SignupPresenter implements SignupViewListener {
      */
     private boolean validaDadosEmpresa() {
         // verifica se a empresa (conta) informada já não existe no cadastro
-        char tipoPessoa;
-        if (view.getPessoaFisicaCheckBox().getValue()) {
-            tipoPessoa = 'F';
-        } else if (view.getPessoaJuridicaCheckBox().getValue()) {
-            tipoPessoa = 'J';
-        } else {
-            return false;
-        }
+        char tipoPessoa = '\0';
+//        if (view.getPessoaFisicaCheckBox().getValue()) {
+//            tipoPessoa = 'F';
+//        } else if (view.getPessoaJuridicaCheckBox().getValue()) {
+//            tipoPessoa = 'J';
+//        } else {
+//            return false;
+//        }
 
         String cpf_cnpj = view.getCnpjCpfTextField().getValue();
 
@@ -277,14 +277,14 @@ public class SignupPresenter implements SignupViewListener {
         String nomeFantasia = view.getNomeFantasiaTextField().getValue();
         String razaosocial = view.getRazaoSocialTextField().getValue();
         String cpfCnpj = view.getCnpjCpfTextField().getValue();
-        char tipoPessoa;
-        if (view.getPessoaFisicaCheckBox().getValue()) {
-            tipoPessoa = 'F';
-        } else if (view.getPessoaJuridicaCheckBox().getValue()) {
-            tipoPessoa = 'J';
-        } else {
-            return null;
-        }
+        char tipoPessoa = '\0';
+//        if (view.getPessoaFisicaCheckBox().getValue()) {
+//            tipoPessoa = 'F';
+//        } else if (view.getPessoaJuridicaCheckBox().getValue()) {
+//            tipoPessoa = 'J';
+//        } else { 
+//            return null;
+//        }
 
         Empresa empresa = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa);
 

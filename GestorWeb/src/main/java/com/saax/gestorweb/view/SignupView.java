@@ -79,6 +79,14 @@ public class SignupView extends Window {
     //ABA #5: Adicionar Empresas Coligadas
     private TextField nomeColigadaTextField;
     private TextField cnpjColigadaTextField;
+    private CheckBox coligadaAtivaCheckBox;
+     private Table coligadasTable;
+    
+    //ABA #6: Adicionar Empresas Filiais
+    private TextField nomeFilialTextField;
+    private TextField cnpjFilialTextField;
+    private CheckBox filialAtivaCheckBox;
+    private Table filiaisTable;
    
     
     /**
@@ -175,6 +183,8 @@ public class SignupView extends Window {
         containerAba1.addComponent(getNomeTextField());
         getNomeTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
         nomeTextField.setWidth("300px");
+        
+            
         
         // text field: Sobrenome
         setSobrenomeTextField(new TextField());
@@ -318,7 +328,7 @@ public class SignupView extends Window {
         TabSheet tabSheetColigadas = new TabSheet();
         
         tabSheetColigadas.addTab(buildAba5Coligadas(), getMensagens().getString("SignupView.tabPanel.aba1.coligadas"));
-        tabSheetColigadas.addTab(buildAba5Coligadas(), getMensagens().getString("SignupView.tabPanel.aba1.filiais"));
+        tabSheetColigadas.addTab(buildAba6Filiais(), getMensagens().getString("SignupView.tabPanel.aba1.filiais"));
         
         containerAba3.addComponent(tabSheetColigadas);
         
@@ -343,17 +353,58 @@ public class SignupView extends Window {
         getCnpjColigadaTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjColigadaTextField.label"));
         cnpjColigadaTextField.setWidth("300px");
         
-        empresasTable = new Table();
-        containerAba5.addComponent(empresasTable);
-        empresasTable.setSizeFull();
+           // check box : coligada Ativa
+        setColigadaAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.coligadaAtivaCheckBox.label")));
+        containerAba5.addComponent(getColigadaAtivaCheckBox());
         
-        empresasTable.addContainerProperty("Cod", Integer.class, null);
-        empresasTable.addContainerProperty("Nome", String.class, null);
-        empresasTable.addContainerProperty("CNPJ", String.class, null);
-        empresasTable.addContainerProperty("Editar", String.class, null);
-        empresasTable.addContainerProperty("Remover", String.class, null);
+        coligadasTable = new Table();
+        containerAba5.addComponent(coligadasTable);
+        coligadasTable.setSizeFull();
+        
+        coligadasTable.addContainerProperty("Cod", Integer.class, null);
+        coligadasTable.addContainerProperty("Nome", String.class, null);
+        coligadasTable.addContainerProperty("CNPJ", String.class, null);
+        coligadasTable.addContainerProperty("Ativa", String.class, null);
+        coligadasTable.addContainerProperty("Editar", String.class, null);
+        coligadasTable.addContainerProperty("Remover", String.class, null);
         
         return containerAba5;
+    }
+    
+     private VerticalLayout buildAba6Filiais(){
+        VerticalLayout containerAba6 = new VerticalLayout();
+        containerAba6.setMargin(true);
+        containerAba6.setSpacing(true);
+        
+        // text field: nomeFilial
+        setNomeFilialTextField(new TextField());
+        containerAba6.addComponent(getNomeFilialTextField());
+        getNomeFilialTextField().setInputPrompt(getMensagens().getString("SignupView.nomeFilialTextField.label"));
+        nomeFilialTextField.setWidth("300px");
+        
+         // text field: cnpjColigada
+        setCnpjFilialTextField(new TextField());
+        containerAba6.addComponent(getCnpjFilialTextField());
+        getCnpjFilialTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjFilialTextField.label"));
+        cnpjFilialTextField.setWidth("300px");
+        
+           // check box : filialAtiva
+        setFilialAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.filialAtivaCheckBox.label")));
+        containerAba6.addComponent(getFilialAtivaCheckBox());
+        
+        
+        filiaisTable = new Table();
+        containerAba6.addComponent(filiaisTable);
+        filiaisTable.setSizeFull();
+        
+        filiaisTable.addContainerProperty("Cod", Integer.class, null);
+        filiaisTable.addContainerProperty("Nome", String.class, null);
+        filiaisTable.addContainerProperty("CNPJ", String.class, null);
+        filiaisTable.addContainerProperty("Ativa", String.class, null);
+        filiaisTable.addContainerProperty("Editar", String.class, null);
+        filiaisTable.addContainerProperty("Remover", String.class, null);
+        
+        return containerAba6;
     }
     /**
      * Cria e retorna a 4a. aba com os campos para adicionar novos usuários as empresas
@@ -712,6 +763,21 @@ public class SignupView extends Window {
         this.nomeColigadaTextField = nomeColigadaTextField;
     }
     
+     /**
+     * @return the nomeFilialTextField
+     */
+    public TextField getNomeFilialTextField() {
+        return nomeFilialTextField;
+    }
+
+    /**
+     * @param nomeFilialTextField the nomeFilialTextField to set
+     */
+    public void setNomeFilialTextField(TextField nomeFilialTextField) {
+        this.nomeFilialTextField = nomeFilialTextField;
+    }
+    
+    
     /**
      * @return the cnpjColigadaTextField
      */
@@ -724,6 +790,20 @@ public class SignupView extends Window {
      */
     public void setCnpjColigadaTextField(TextField cnpjColigadaTextField) {
         this.cnpjColigadaTextField = cnpjColigadaTextField;
+    }
+    
+     /**
+     * @return the cnpjFilialTextField
+     */
+    public TextField getCnpjFilialTextField() {
+        return cnpjFilialTextField;
+    }
+
+    /**
+     * @param cnpjFilialTextField the cnpjFilialTextField to set
+     */
+    public void setCnpjFilialTextField(TextField cnpjFilialTextField) {
+        this.cnpjFilialTextField = cnpjFilialTextField;
     }
 
     /**
@@ -810,6 +890,33 @@ public class SignupView extends Window {
         this.empresaAtivaCheckBox = empresaAtivaCheckBox;
     }
     
+    /**
+     * @return the coligadaAtivaCheckBox
+     */
+    public CheckBox getColigadaAtivaCheckBox() {
+        return coligadaAtivaCheckBox;
+    }
+
+    /**
+     * @param coligadaAtivaCheckBox the coligadaAtivaCheckBox to set
+     */
+    public void setColigadaAtivaCheckBox(CheckBox coligadaAtivaCheckBox) {
+        this.coligadaAtivaCheckBox = coligadaAtivaCheckBox;
+    }
+    
+    /**
+     * @return the filialAtivaCheckBox
+     */
+    public CheckBox getFilialAtivaCheckBox() {
+        return filialAtivaCheckBox;
+    }
+
+    /**
+     * @param filialAtivaCheckBox the filialAtivaCheckBox to set
+     */
+    public void setFilialAtivaCheckBox(CheckBox filialAtivaCheckBox) {
+        this.filialAtivaCheckBox = filialAtivaCheckBox;
+    }
 
     /**
      * Executa os metodos de validações dos campos de preenchimento obrigatorio

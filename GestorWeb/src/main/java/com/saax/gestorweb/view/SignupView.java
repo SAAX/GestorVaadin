@@ -183,9 +183,8 @@ public class SignupView extends Window {
         containerAba1.addComponent(getNomeTextField());
         getNomeTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
         nomeTextField.setWidth("300px");
-        
-            
-        
+ 
+                
         // text field: Sobrenome
         setSobrenomeTextField(new TextField());
         containerAba1.addComponent(getSobrenomeTextField());
@@ -310,17 +309,7 @@ public class SignupView extends Window {
         getCepTextField().setInputPrompt(getMensagens().getString("SignupView.cepTextField.label"));
         cepTextField.setWidth("300px");
         
-        
-        
-        // botão para Confirmar
-        final Button adicionarEmpresaButton = new Button(getMensagens().getString("SignupView.adicionarEmpresaButton.label"), (Button.ClickEvent event) -> {
-            getListener().okButtonClicked();
-        });
-        
-        containerHorizontal.addComponent(adicionarEmpresaButton);
-        adicionarEmpresaButton.addStyleName("small default");
-        
-                        
+                  
          // check box : empresa Ativa
         setEmpresaAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.empresaAtivaCheckBox.label")));
         containerAba3.addComponent(getEmpresaAtivaCheckBox());
@@ -353,9 +342,22 @@ public class SignupView extends Window {
         getCnpjColigadaTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjColigadaTextField.label"));
         cnpjColigadaTextField.setWidth("300px");
         
+        HorizontalLayout containerHorizontal = new HorizontalLayout();
+        containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerAba5.addComponent(containerHorizontal); // adiciona o container de datas no superior
+        
            // check box : coligada Ativa
         setColigadaAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.coligadaAtivaCheckBox.label")));
-        containerAba5.addComponent(getColigadaAtivaCheckBox());
+        containerHorizontal.addComponent(getColigadaAtivaCheckBox());
+        
+        
+        // botão para Confirmar
+        final Button adicionarColigadaButton = new Button(getMensagens().getString("SignupView.adicionarColigadaButton.label"), (Button.ClickEvent event) -> {
+            getListener().okButtonClicked();
+        });
+        
+        containerHorizontal.addComponent(adicionarColigadaButton);
+        adicionarColigadaButton.addStyleName("small default");
         
         coligadasTable = new Table();
         containerAba5.addComponent(coligadasTable);
@@ -388,9 +390,23 @@ public class SignupView extends Window {
         getCnpjFilialTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjFilialTextField.label"));
         cnpjFilialTextField.setWidth("300px");
         
+         HorizontalLayout containerHorizontal = new HorizontalLayout();
+        containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerAba6.addComponent(containerHorizontal); // adiciona o container de datas no superior
+        
            // check box : filialAtiva
         setFilialAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.filialAtivaCheckBox.label")));
-        containerAba6.addComponent(getFilialAtivaCheckBox());
+        containerHorizontal.addComponent(getFilialAtivaCheckBox());
+        
+        // botão para Confirmar
+        final Button adicionarFilialButton = new Button(getMensagens().getString("SignupView.adicionarFilialButton.label"), (Button.ClickEvent event) -> {
+            getListener().okButtonClicked();
+        });
+        
+       
+        
+        containerHorizontal.addComponent(adicionarFilialButton);
+        adicionarFilialButton.addStyleName("small default");
         
         
         filiaisTable = new Table();

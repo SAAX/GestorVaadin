@@ -84,8 +84,11 @@ public class SignupPresenter implements SignupViewListener {
      * @return true se os dados forem validos
      */
     private boolean validaDadosEmpresa() {
+        
+             
         // verifica se a empresa (conta) informada já não existe no cadastro
         char tipoPessoa = '\0';
+        
 //        if (view.getPessoaFisicaCheckBox().getValue()) {
 //            tipoPessoa = 'F';
 //        } else if (view.getPessoaJuridicaCheckBox().getValue()) {
@@ -401,5 +404,22 @@ public class SignupPresenter implements SignupViewListener {
 
         ((GestorMDI) UI.getCurrent()).carregarDashBoard();
     }
+    /**
+     * Evento disparado ao ser acionado o botão para efetuar a inclusão do Usuário na tabela 
+     * Obtém o nome, sobrenome e e-mail
+     */
+    @Override
+    public void addUsuarioButtonClicked() {
+        
+        String nomeUsuario = view.getNomeUsuarioTextField().getValue();
+        String sobrenomeUsuario = view.getSobrenomeUsuarioTextField().getValue();
+        String email = view.getEmailTextField().getValue();
+        
+        //view.getUsuariosTable().addItem();
+                
+        
+    }
 
+     
+   
 }

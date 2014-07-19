@@ -8,7 +8,7 @@ package com.saax.gestorweb.view;
 public interface SignupViewListener {
 
     public void cancelButtonClicked();
-
+    void addUsuarioButtonClicked();
     public void okButtonClicked();
     
 }

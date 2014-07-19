@@ -80,7 +80,7 @@ public class SignupView extends Window {
     private TextField nomeColigadaTextField;
     private TextField cnpjColigadaTextField;
     private CheckBox coligadaAtivaCheckBox;
-     private Table coligadasTable;
+    private Table coligadasTable;
     
     //ABA #6: Adicionar Empresas Filiais
     private TextField nomeFilialTextField;
@@ -183,34 +183,40 @@ public class SignupView extends Window {
         containerAba1.addComponent(getNomeTextField());
         getNomeTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
         nomeTextField.setWidth("300px");
- 
+        nomeTextField.setValidationVisible(false);
+        
                 
         // text field: Sobrenome
         setSobrenomeTextField(new TextField());
         containerAba1.addComponent(getSobrenomeTextField());
         getSobrenomeTextField().setInputPrompt(getMensagens().getString("SignupView.sobrenomeTextField.label"));
         sobrenomeTextField.setWidth("300px");
+        sobrenomeTextField.setValidationVisible(false);
         
         // text field: Email
         setEmailUsuarioTextField(new TextField());
         containerAba1.addComponent(getEmailUsuarioTextField());
         getEmailUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.emailTextField.label"));
         emailUsuarioTextField.setWidth("300px");
+        emailUsuarioTextField.setValidationVisible(false);
         
         // text field: ConfirmaEmail
         setConfirmaEmailUsuarioTextField(new TextField());
         containerAba1.addComponent(getConfirmaEmailUsuarioTextField());
         getConfirmaEmailUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.confirmaEmailTextField.label"));
         confirmaEmailUsuarioTextField.setWidth("300px");
+        confirmaEmailUsuarioTextField.setValidationVisible(false);
         
          // text field: Senha
         setSenhaTextField(new TextField());
         containerAba1.addComponent(getSenhaTextField());
         getSenhaTextField().setInputPrompt(getMensagens().getString("SignupView.senhaTextField.label"));
+        senhaTextField.setValidationVisible(false);
         
         // check box : aceita termos
         setAceitaTermosCheckBox(new CheckBox(getMensagens().getString("SignupView.aceitaTermosCheckBox.label")));
         containerAba1.addComponent(getAceitaTermosCheckBox());
+        aceitaTermosCheckBox.setValidationVisible(false);
         
            return containerAba1;
     }
@@ -262,29 +268,38 @@ public class SignupView extends Window {
         getCnpjCpfTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjCpfTextField.label"));
         cnpjCpfTextField.setWidth("180px");
         
+        
+        HorizontalLayout containerHorizontal = new HorizontalLayout();
+        containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerAba3.addComponent(containerHorizontal); // adiciona o container de datas no superior
+        
         // text field: Lograoudo
         setLogradouroTextField(new TextField());
-        containerAba3.addComponent(getLogradouroTextField());
+        containerHorizontal.addComponent(getLogradouroTextField());
         getLogradouroTextField().setInputPrompt(getMensagens().getString("SignupView.logradouroTextField.label"));
         logradouroTextField.setWidth("300px");
         
         // text field: Numero
         setNumeroTextField(new TextField());
-        containerAba3.addComponent(getNumeroTextField());
+        containerHorizontal.addComponent(getNumeroTextField());
         getNumeroTextField().setInputPrompt(getMensagens().getString("SignupView.numeroTextField.label"));
-        numeroTextField.setWidth("300px");
+        numeroTextField.setWidth("100px");
+        
+        HorizontalLayout containerHorizontal2 = new HorizontalLayout();
+        containerHorizontal2.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerAba3.addComponent(containerHorizontal2); // adiciona o container de datas no superior
         
          // text field: Complemento
         setComplementoTextField(new TextField());
-        containerAba3.addComponent(getComplementoTextField());
+        containerHorizontal2.addComponent(getComplementoTextField());
         getComplementoTextField().setInputPrompt(getMensagens().getString("SignupView.complementoTextField.label"));
         complementoTextField.setWidth("300px");
         
          // text field: bairro
         setBairroTextField(new TextField());
-        containerAba3.addComponent(getBairroTextField());
+        containerHorizontal2.addComponent(getBairroTextField());
         getBairroTextField().setInputPrompt(getMensagens().getString("SignupView.bairroTextField.label"));
-        bairroTextField.setWidth("300px");
+        bairroTextField.setWidth("100px");
         
          // text field: cidade
         setCidadeComboBox(new ComboBox());
@@ -299,20 +314,15 @@ public class SignupView extends Window {
         estadoComboBox.setWidth("300px");
         
         
-        HorizontalLayout containerHorizontal = new HorizontalLayout();
-        containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
-        containerAba3.addComponent(containerHorizontal); // adiciona o container de datas no superior
-        
+              
         // text field: cep
         setCepTextField(new TextField());
-        containerHorizontal.addComponent(getCepTextField());
+        containerAba3.addComponent(getCepTextField());
         getCepTextField().setInputPrompt(getMensagens().getString("SignupView.cepTextField.label"));
         cepTextField.setWidth("300px");
         
                   
-         // check box : empresa Ativa
-        setEmpresaAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.empresaAtivaCheckBox.label")));
-        containerAba3.addComponent(getEmpresaAtivaCheckBox());
+         
         
         TabSheet tabSheetColigadas = new TabSheet();
         
@@ -346,11 +356,6 @@ public class SignupView extends Window {
         containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
         containerAba5.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
-           // check box : coligada Ativa
-        setColigadaAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.coligadaAtivaCheckBox.label")));
-        containerHorizontal.addComponent(getColigadaAtivaCheckBox());
-        
-        
         // botão para Confirmar
         final Button adicionarColigadaButton = new Button(getMensagens().getString("SignupView.adicionarColigadaButton.label"), (Button.ClickEvent event) -> {
             getListener().okButtonClicked();
@@ -369,6 +374,7 @@ public class SignupView extends Window {
         coligadasTable.addContainerProperty("Ativa", String.class, null);
         coligadasTable.addContainerProperty("Editar", String.class, null);
         coligadasTable.addContainerProperty("Remover", String.class, null);
+        coligadasTable.setHeight("150px");
         
         return containerAba5;
     }
@@ -394,9 +400,7 @@ public class SignupView extends Window {
         containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
         containerAba6.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
-           // check box : filialAtiva
-        setFilialAtivaCheckBox(new CheckBox(getMensagens().getString("SignupView.filialAtivaCheckBox.label")));
-        containerHorizontal.addComponent(getFilialAtivaCheckBox());
+       
         
         // botão para Confirmar
         final Button adicionarFilialButton = new Button(getMensagens().getString("SignupView.adicionarFilialButton.label"), (Button.ClickEvent event) -> {
@@ -411,7 +415,7 @@ public class SignupView extends Window {
         
         filiaisTable = new Table();
         containerAba6.addComponent(filiaisTable);
-        filiaisTable.setSizeFull();
+        filiaisTable.setHeight("150px");
         
         filiaisTable.addContainerProperty("Cod", Integer.class, null);
         filiaisTable.addContainerProperty("Nome", String.class, null);
@@ -450,32 +454,42 @@ public class SignupView extends Window {
         getEmailTextField().setInputPrompt(getMensagens().getString("SignupView.emailTextField.label"));
         emailTextField.setWidth("300px");
         
+        // text field: Confirma e-mail
+        setConfirmaEmailTextField(new TextField());
+        containerAba4.addComponent(getConfirmaEmailTextField());
+        getConfirmaEmailTextField().setInputPrompt(getMensagens().getString("SignupView.confirmaEmailTextField.label"));
+        confirmaEmailTextField.setWidth("300px");
+        
         HorizontalLayout containerHorizontal = new HorizontalLayout();
         containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
         containerAba4.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
-         // text field: Confirma e-mail
-        setConfirmaEmailTextField(new TextField());
-        containerHorizontal.addComponent(getConfirmaEmailTextField());
-        getConfirmaEmailTextField().setInputPrompt(getMensagens().getString("SignupView.confirmaEmailTextField.label"));
-        confirmaEmailTextField.setWidth("300px");
+         
         
         
         // check box : usuario adm
         setUsuarioAdmCheckBox(new CheckBox(getMensagens().getString("SignupView.usuarioAdmCheckBox.label")));
-        containerAba4.addComponent(getUsuarioAdmCheckBox());
+        containerHorizontal.addComponent(getUsuarioAdmCheckBox());
         
          // botão para Confirmar
-        final Button adicionarUsuarioButton = new Button(getMensagens().getString("SignupView.adicionarUsuarioButton.label"), (Button.ClickEvent event) -> {
-            getListener().okButtonClicked();
+        final Button adicionarUsuarioButton = new Button(getMensagens().getString("SignupView.adicionarUsuarioButton.label"), new Button.ClickListener() {
+          
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+               listener.addUsuarioButtonClicked();
+            }
         });
+        
+       
+        
         
         containerHorizontal.addComponent(adicionarUsuarioButton);
         adicionarUsuarioButton.addStyleName("small default");
         
         usuariosTable = new Table();
         containerAba4.addComponent(usuariosTable);
-        usuariosTable.setSizeFull();
+        usuariosTable.setHeight("150px");
         
         usuariosTable.addContainerProperty("Cod", Integer.class, null);
         usuariosTable.addContainerProperty("Nome", String.class, null);
@@ -597,6 +611,20 @@ public class SignupView extends Window {
         this.senhaTextField = senhaTextField;
     }
 
+    /**
+     * @return the usuariosTable
+     */
+    public Table getUsuariosTable() {
+        return usuariosTable;
+    }
+
+    /**
+     * @param usuariosTable the UsuariosTable to set
+     */
+    public void setUsuariosTable(Table usuariosTable) {
+        this.usuariosTable = usuariosTable;
+    }
+    
     /**
      * @return the aceitaTermosCheckBox
      */
@@ -939,7 +967,50 @@ public class SignupView extends Window {
      * @TODO: fernando
      */
     public void validate() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     nomeTextField.setValidationVisible(true);
+     sobrenomeTextField.setValidationVisible(true);
+     emailUsuarioTextField.setValidationVisible(true);
+     confirmaEmailUsuarioTextField.setValidationVisible(true);
+     senhaTextField.setValidationVisible(true);
+     aceitaTermosCheckBox.setValidationVisible(true);
+        
+     nomeTextField.validate();
+     sobrenomeTextField.validate();
+     emailUsuarioTextField.validate();
+     confirmaEmailUsuarioTextField.validate();
+     senhaTextField.validate();
+     aceitaTermosCheckBox.validate();
+        
+        
+     razaoSocialTextField.setValidationVisible(true);
+     nomeFantasiaTextField.setValidationVisible(true);
+     tipoPessoaOptionGroup.setValidationVisible(true);
+     cnpjCpfTextField.setValidationVisible(true);
+     logradouroTextField.setValidationVisible(true);
+     numeroTextField.setValidationVisible(true);
+     complementoTextField.setValidationVisible(true);
+     bairroTextField.setValidationVisible(true);
+     cidadeComboBox.setValidationVisible(true);
+     estadoComboBox.setValidationVisible(true);
+     cepTextField.setValidationVisible(true);
+     
+     razaoSocialTextField.validate();
+     nomeFantasiaTextField.validate();
+     tipoPessoaOptionGroup.validate();
+     cnpjCpfTextField.validate();
+     logradouroTextField.validate();
+     numeroTextField.validate();
+     complementoTextField.validate();
+     bairroTextField.validate();
+     cidadeComboBox.validate();
+     estadoComboBox.validate();
+     cepTextField.validate();
+     
+     
+     
+     
+        
+        
     }
 
     
@@ -956,7 +1027,6 @@ public class SignupView extends Window {
     }
 
 
-    
 
 
     

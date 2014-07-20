@@ -1,6 +1,8 @@
 package com.saax.gestorweb.view;
 //teste de commit -> volta
 import com.saax.gestorweb.GestorMDI;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -14,10 +16,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-
-
 import java.text.MessageFormat;
-
 import java.util.ResourceBundle;
 
 /**
@@ -184,6 +183,9 @@ public class SignupView extends Window {
         getNomeTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
         nomeTextField.setWidth("300px");
         nomeTextField.setValidationVisible(false);
+        getNomeTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.nomeTextField.erro.nomeNaoInformado"),1, 100, false));
+
+        
         
                 
         // text field: Sobrenome
@@ -192,6 +194,7 @@ public class SignupView extends Window {
         getSobrenomeTextField().setInputPrompt(getMensagens().getString("SignupView.sobrenomeTextField.label"));
         sobrenomeTextField.setWidth("300px");
         sobrenomeTextField.setValidationVisible(false);
+        getSobrenomeTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.sobrenomeTextField.erro.nomeNaoInformado"),1, 100, false));
         
         // text field: Email
         setEmailUsuarioTextField(new TextField());
@@ -199,6 +202,7 @@ public class SignupView extends Window {
         getEmailUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.emailTextField.label"));
         emailUsuarioTextField.setWidth("300px");
         emailUsuarioTextField.setValidationVisible(false);
+        getEmailUsuarioTextField().addValidator(new EmailValidator(mensagens.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
         
         // text field: ConfirmaEmail
         setConfirmaEmailUsuarioTextField(new TextField());
@@ -206,12 +210,14 @@ public class SignupView extends Window {
         getConfirmaEmailUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.confirmaEmailTextField.label"));
         confirmaEmailUsuarioTextField.setWidth("300px");
         confirmaEmailUsuarioTextField.setValidationVisible(false);
+        getConfirmaEmailUsuarioTextField().addValidator(new EmailValidator(mensagens.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
         
          // text field: Senha
         setSenhaTextField(new TextField());
         containerAba1.addComponent(getSenhaTextField());
         getSenhaTextField().setInputPrompt(getMensagens().getString("SignupView.senhaTextField.label"));
         senhaTextField.setValidationVisible(false);
+        getSenhaTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.senhaTextField.erro.nomeNaoInformado"),1, 100, false));
         
         // check box : aceita termos
         setAceitaTermosCheckBox(new CheckBox(getMensagens().getString("SignupView.aceitaTermosCheckBox.label")));
@@ -245,12 +251,14 @@ public class SignupView extends Window {
         containerAba3.addComponent(getRazaoSocialTextField());
         getRazaoSocialTextField().setInputPrompt(getMensagens().getString("SignupView.razaoSocialTextField.label"));
         razaoSocialTextField.setWidth("300px");
+        getRazaoSocialTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.razaoSocialTextField.erro.RazaoSocialNaoInformada"),1, 100, false));
 
         // text field: Nome Fantasia
         setNomeFantasiaTextField(new TextField());
         containerAba3.addComponent(getNomeFantasiaTextField());
         getNomeFantasiaTextField().setInputPrompt(getMensagens().getString("SignupView.nomeFantasiaTextField.label"));
         nomeFantasiaTextField.setWidth("300px");
+        getNomeFantasiaTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.nomeFantasiaTextField.erro.NomeFantasiaNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal1 = new HorizontalLayout();
         containerHorizontal1.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
@@ -267,6 +275,7 @@ public class SignupView extends Window {
         containerHorizontal1.addComponent(getCnpjCpfTextField());
         getCnpjCpfTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjCpfTextField.label"));
         cnpjCpfTextField.setWidth("180px");
+        getCnpjCpfTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.cnpjCpfTextField.erro.cnpjCpfNaoInformado"),1, 100, false));
         
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
@@ -278,12 +287,14 @@ public class SignupView extends Window {
         containerHorizontal.addComponent(getLogradouroTextField());
         getLogradouroTextField().setInputPrompt(getMensagens().getString("SignupView.logradouroTextField.label"));
         logradouroTextField.setWidth("300px");
+        getLogradouroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.logradouroTextField.erro.logradouroNaoInformado"),1, 100, false));
         
         // text field: Numero
         setNumeroTextField(new TextField());
         containerHorizontal.addComponent(getNumeroTextField());
         getNumeroTextField().setInputPrompt(getMensagens().getString("SignupView.numeroTextField.label"));
         numeroTextField.setWidth("100px");
+        getNumeroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal2 = new HorizontalLayout();
         containerHorizontal2.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
@@ -294,12 +305,14 @@ public class SignupView extends Window {
         containerHorizontal2.addComponent(getComplementoTextField());
         getComplementoTextField().setInputPrompt(getMensagens().getString("SignupView.complementoTextField.label"));
         complementoTextField.setWidth("300px");
+        getNumeroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
         
          // text field: bairro
         setBairroTextField(new TextField());
         containerHorizontal2.addComponent(getBairroTextField());
         getBairroTextField().setInputPrompt(getMensagens().getString("SignupView.bairroTextField.label"));
         bairroTextField.setWidth("100px");
+        getBairroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.bairroTextField.erro.bairroNaoInformado"),1, 100, false));
         
          // text field: cidade
         setCidadeComboBox(new ComboBox());

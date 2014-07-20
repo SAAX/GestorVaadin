@@ -7,6 +7,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.util.DBConnect;
+import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.TestUtils;
 import com.saax.gestorweb.view.SignupView;
 import com.vaadin.data.Validator;
@@ -63,7 +64,7 @@ public class SignupPresenterTest {
      * Test of okButtonClicked method, of class SignupPresenter.
      */
     @Test
-    public void testOkButtonClicked() {
+    public void testOkButtonClicked() throws GestorException {
         System.out.println("okButtonClicked");
         
 
@@ -302,6 +303,47 @@ public class SignupPresenterTest {
         
         
         // @TODO: tente imaginar mais testes possiveis, como nao aceitar os termos, ou informar o mesmo CNPJ para duas coligadas, etc.
+        
+        // ---------------------------------------------------------------------
+        // Teste: Pressionar o botão OK preenchendo todos os campos, mas 
+        //              com cnpj já existente
+        //
+        //      Resultado Esperado: Deverá ser disparada exceção: InvalidValueException 
+        //          pelo metodo validate()
+        // ---------------------------------------------------------------------
+        
+        // Configurações iniciais do teste
+        
+        // Configurações iniciais do teste
+        signupModel = new SignupModel();
+        signupView = new SignupView();
+        
+        //o presenter liga model e view
+        instance = new SignupPresenter(signupModel, signupView);
+        
+        //adiciona a visualização à UI
+        UI.getCurrent().addWindow(signupView);
+
+        expResult = "Exceção foi disparada";
+        
+        // preencher todos os campos obrigatorios
+        signupView.getRazaoSocialTextField().setValue("SAAX");
+        String cnpj = "121233456789000110";
+        char tipoPessoa = 'j';
+        signupModel.verificaEmpresaExistente(cnpj, tipoPessoa);
+      
+        
+        //Rodrigo, por favor veja se até aqui estava construindo certo o teste
+        try {
+            
+            instance.okButtonClicked();
+            result = "Exceção NÃO foi disparada";
+        } catch (Validator.InvalidValueException e) {
+            result = "Exceção foi disparada";
+        }
+        
+        assertEquals(expResult, result);
+        
         
     }
 

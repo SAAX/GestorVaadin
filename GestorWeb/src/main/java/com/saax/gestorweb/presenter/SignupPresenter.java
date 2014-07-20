@@ -129,7 +129,7 @@ public class SignupPresenter implements SignupViewListener {
             
             Item linha = empresasColigadasTable.getItem(itemID);
             // Valida se a sub empresa já não está cadastrada no sistema
-            String cpfCnpjSubEmpresa = (String) linha.getItemProperty("?????????").getValue(); // @TODO: Obter da view
+            String cpfCnpjSubEmpresa = (String) linha.getItemProperty(view.getCnpjCpfTextField()).getValue(); // @TODO: Obter da view
             char tipoPessoaSubEmpresa = 'J'; // @TODO: Obter da view
             try {
                 if (model.verificaEmpresaExistente(cpfCnpjSubEmpresa, tipoPessoaSubEmpresa)) {
@@ -175,8 +175,8 @@ public class SignupPresenter implements SignupViewListener {
             Item linha = filiaisTable.getItem(itemID);
 
             // Valida se a filial já não está cadastrada no sistema
-            String cnpjFilial = (String) linha.getItemProperty("?????????").getValue(); // @TODO: Obter da view
-            String nomeFilial = (String) linha.getItemProperty("?????????").getValue(); // @TODO: Obter da view
+            String cnpjFilial = (String) linha.getItemProperty(view.getCnpjFilialTextField()).getValue(); // @TODO: Obter da view
+            String nomeFilial = (String) linha.getItemProperty(view.getNomeFilialTextField()).getValue(); // @TODO: Obter da view
 
             if (StringUtils.isNotBlank(cnpjFilial)) {
                 try {
@@ -233,7 +233,7 @@ public class SignupPresenter implements SignupViewListener {
             Item linha = usuariosTable.getItem(itemID);
 
             // Valida se o usuários já não está cadastrado no sistema
-            String emailUsuario = (String) linha.getItemProperty("?????????").getValue(); // @TODO: Obter da view
+            String emailUsuario = (String) linha.getItemProperty(view.getEmailUsuarioTextField()).getValue(); // @TODO: Obter da view
 
             if (model.verificaLoginExistente(emailUsuario)) {
 
@@ -314,7 +314,7 @@ public class SignupPresenter implements SignupViewListener {
 
             String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
             String razaosocialEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
-            String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
+            String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(view.getCnpjColigadaTextField()).getValue(); // @TODO: Obter da view
             char tipoPessoaEmpresaColigada = (char) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
 
             Empresa subempresa = model.criarNovaEmpresa(nomeFantasiaEmpresaColigada,
@@ -331,8 +331,8 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = filiaisTable.getItem(itemID);
 
-            String nomeFilial = (String) linha.getItemProperty("?????????").getValue(); // @TODO: Obter da view
-            String cnpjFilial = (String) linha.getItemProperty("?????????").getValue(); // @TODO: Obter da view
+            String nomeFilial = (String) linha.getItemProperty(view.getNomeFilialTextField()).getValue(); // @TODO: Obter da view
+            String cnpjFilial = (String) linha.getItemProperty(view.getCnpjFilialTextField()).getValue(); // @TODO: Obter da view
 
             FilialEmpresa filialEmpresa = model.criarFilialEmpresa(nomeFilial, cnpjFilial);
             model.relacionarEmpresaFilial(empresa, filialEmpresa);

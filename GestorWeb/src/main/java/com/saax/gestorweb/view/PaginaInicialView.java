@@ -61,23 +61,18 @@ public class PaginaInicialView extends HorizontalLayout {
         
         
         // botão para SignUP
-        final Button signUpButton = new Button(mensagens.getString("PaginaInicialView.signUpButton.label"), new Button.ClickListener() {
-
-            // notifica o listener que o botão foi acionado para que este dê o devido tratamento
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                listener.signUpButtonClicked();
-            }
+        final Button signUpButton = new Button(mensagens.getString("PaginaInicialView.signUpButton.label"), (Button.ClickEvent event) -> {
+            listener.signUpButtonClicked();
         });
         
         // botão para Login
-        final Button loginButton = new Button(mensagens.getString("PaginaInicialView.loginButton.label"), new Button.ClickListener() {
+        final Button loginButton = new Button(mensagens.getString("PaginaInicialView.loginButton.label"), (Button.ClickEvent event) -> {
+            listener.loginButtonClicked();
+        });
 
-            // notifica o listener que o botão foi acionado para que este dê o devido tratamento
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                listener.loginButtonClicked();
-            }
+        // botão para preview do dashboard
+        final Button previewDashboardButton = new Button("dashboard preview", (Button.ClickEvent event) -> {
+            ((GestorMDI) UI.getCurrent()).carregarDashBoard();        
         });
 
         // barra dos botoes
@@ -87,6 +82,7 @@ public class PaginaInicialView extends HorizontalLayout {
         
         barraBotoes.addComponent(signUpButton);
         barraBotoes.addComponent(loginButton);
+        barraBotoes.addComponent(previewDashboardButton);
         
         // Adicona os dois containers, lado-a-lado
         addComponent(containerEsquerdo);

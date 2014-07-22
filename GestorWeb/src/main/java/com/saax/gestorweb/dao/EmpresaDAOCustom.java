@@ -35,6 +35,24 @@ public class EmpresaDAOCustom extends EmpresaDAO {
     }
 
     /**
+     * Busca uma empresa pela Razao Social
+     * @param razaoSocial
+     * @return empresa 
+     */
+    public Empresa findByRazaoSocial(String razaoSocial) {
+        EntityManager em = getEntityManager();
+
+        try {
+            return (Empresa) em.createNamedQuery("Empresa.findByRazaoSocial")
+                    .setParameter("RazaoSocial", razaoSocial)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    /**
      * Busca uma empresa pelo CPF
      * @param cpf
      * @return empresa 

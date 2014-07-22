@@ -5,9 +5,12 @@
  */
 package com.saax.gestorweb.presenter;
 
+import com.saax.gestorweb.dao.EmpresaDAOCustom;
 import com.saax.gestorweb.model.SignupModel;
+import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.GestorException;
+import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.TestUtils;
 import com.saax.gestorweb.view.SignupView;
 import com.vaadin.data.Validator;
@@ -313,8 +316,6 @@ public class SignupPresenterTest {
         // ---------------------------------------------------------------------
         
         // Configurações iniciais do teste
-        
-        // Configurações iniciais do teste
         signupModel = new SignupModel();
         signupView = new SignupView();
         
@@ -324,22 +325,38 @@ public class SignupPresenterTest {
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(signupView);
 
-        expResult = "Exceção foi disparada";
+        String cnpjRepetido = "12.123.345/0001-10";
         
-        // preencher todos os campos obrigatorios
+        // 1o passo: cadastrar um empresa com o cnpj
+        EmpresaDAOCustom empresaDAO = new EmpresaDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        empresaDAO.create(new Empresa(1, cnpjRepetido, 'J'));
+
+        
+        // 2o. passo: preencher um cadastro com o mesmo cnpj
+        // 1a. aba
+        signupView.getNomeTextField().setValue("Rodrigo");
+        signupView.getSobrenomeTextField().setValue("Moreira");
+        signupView.getEmailTextField().setValue("rodrigo.ccn2005@gmail.com");
+        signupView.getConfirmaEmailTextField().setValue("rodrigo.ccn2005@gmail.com");
+        signupView.getSenhaTextField().setValue("123456");
+        signupView.getAceitaTermosCheckBox().setValue(true);
+        // 2a. aba
         signupView.getRazaoSocialTextField().setValue("SAAX");
-        String cnpj = "121233456789000110";
-        char tipoPessoa = 'j';
-        signupModel.verificaEmpresaExistente(cnpj, tipoPessoa);
-      
+        signupView.getNomeFantasiaTextField().setValue("SAAX");
+        signupView.getTipoPessoaOptionGroup().select("Pessoa Jurídica");
+        signupView.getCnpjCpfTextField().setValue(cnpjRepetido);
         
-        //Rodrigo, por favor veja se até aqui estava construindo certo o teste
-        try {
+        // 3o. passo acionar o botão OK
+        instance.okButtonClicked();
+
+        // resultado esperado: a nova empresa não foi gravada
+        expResult = "Nova empresa NÃO foi cadastrada";
+        
+        if (empresaDAO.findByRazaoSocial("SAAX")!=null){
+            result = "Nova empresa foi cadastrada";
+        } else {
+            result = "Nova empresa NÃO foi cadastrada";
             
-            instance.okButtonClicked();
-            result = "Exceção NÃO foi disparada";
-        } catch (Validator.InvalidValueException e) {
-            result = "Exceção foi disparada";
         }
         
         assertEquals(expResult, result);

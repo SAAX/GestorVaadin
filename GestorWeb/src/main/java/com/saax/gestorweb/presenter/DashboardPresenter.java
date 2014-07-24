@@ -3,12 +3,10 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroMetasModel;
 import com.saax.gestorweb.model.DashboardModel;
-import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.view.CadastroMetasView;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.ui.UI;
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**

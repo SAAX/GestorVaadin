@@ -29,7 +29,7 @@ import javax.servlet.annotation.WebServlet;
  *
  * @author Rodrigo
  */
-@Theme("my-chameleon")
+@Theme("mytheme")
 @SuppressWarnings("serial")
 @PreserveOnRefresh
 public class GestorMDI extends UI {
@@ -66,6 +66,7 @@ public class GestorMDI extends UI {
         // adiciona a visualização à UI
         setContent(dashboardView);
 
+        setSizeFull();
     }
 
     
@@ -77,6 +78,8 @@ public class GestorMDI extends UI {
     @Override
     protected void init(VaadinRequest request) {
 
+        setStyleName("blue");
+        
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Iniciando atendimento de requisição.");
         
         userData = new UserData();

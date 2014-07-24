@@ -2,6 +2,8 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -11,7 +13,6 @@ import com.vaadin.ui.InlineDateField;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -22,10 +23,35 @@ import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
- *
+ * Raiz
+ *  + menuSuperiorContainer
+ *      - menuSuperior
+ *  + filtrosPesquisaContainer 
+ *      + filtrosPesquisaEsquerdaContainer
+ *          + filtroUsuarioButton
+ *              - filtroUsuarioOptionGroup
+ *          + filtroEmpresaButton
+ *              - filtroEmpresaOptionGroup
+ *          + filtroDataFimButton
+ *              - filtroDataFimDateField
+ *          + filtroProjecaoButton
+ *              - "não sei o que por aqui"
+ *      + filtrosPesquisaDireitaContainer
+ *          - filtroPesquisaRapidaTextField
+ *          - filtroPesquisaAvancadaButton
+ *  + dataAtualContainer
+ *      - labelDataAtual
+ *  + abasContainer
+ *      + painelAbas
+ *          - tarefasTable
+ *  + abasContainer
+ *      - principaisTarefasContainer
+ *      - principaisProjecoesContainer
+ *      - principaisConvitesContainer
+ * 
  * @author Rodrigo
  */
-public class DashBoardView extends Panel {
+public class DashBoardView extends VerticalLayout {
 
     // Referencia ao recurso das mensagens:
     private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
@@ -34,73 +60,77 @@ public class DashBoardView extends Panel {
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
     private DashboardViewListenter listener;
-    private OptionGroup filtroUsuarioOptionGroup;
-    private OptionGroup filtroEmpresaOptionGroup;
-    private InlineDateField filtroDataFim;
-
     public void setListener(DashboardViewListenter listener) {
         this.listener = listener;
     }
-
-    // container raiz
-    private final VerticalLayout main;
-
-    // barra de botoes suerior
-    private HorizontalLayout barraBotoesSuperior;
-    private PopupButton criarButton;
-    private Button publicacoesButton;
-    private Button relatoriosButton;
-    private PopupButton configButton;
-
-    // barra com filtros de pesquisa
-    private HorizontalLayout barraFiltrosPesquisa;
-    private PopupButton usuarioButton;
-    private PopupButton empresaButton;
-    private PopupButton dataFimButton;
-    private PopupButton projecaoButton;
-    private TextField pesquisarTextField;
-    private Button pesquisaAvancadaButton;
-
-    // barra com data atual
-    private HorizontalLayout barraDataAtual;
-    private Label dataAtualLabel;
-
-    // paine de abas
+    
+    
+    // ------------------------------------------------------------------------
+    // menuSuperiorContainer: 
+    private HorizontalLayout menuSuperiorContainer;
+    private MenuBar menuSuperior;
+    
+    // filtrosPesquisaContainer:
+    private HorizontalLayout filtrosPesquisaContainer;
+    
+    // filtrosPesquisaContainer -> filtrosPesquisaEsquerdaContainer:
+    private HorizontalLayout filtrosPesquisaEsquerdaContainer;
+    private PopupButton filtroUsuarioButton;
+    private OptionGroup filtroUsuarioOptionGroup;
+    private PopupButton filtroEmpresaButton;
+    private OptionGroup filtroEmpresaOptionGroup;
+    private PopupButton filtroDataFimButton;
+    private InlineDateField filtroDataFimDateField;
+    private PopupButton filtroProjecaoButton;
+    
+    // filtrosPesquisaContainer -> filtrosPesquisaEsquerdaContainer:
+    private VerticalLayout filtrosPesquisaDireitaContainer;
+    private TextField filtroPesquisaRapidaTextField;
+    private Button filtroPesquisaAvancadaButton;
+    
+    // dataAtualContainer
+    private HorizontalLayout dataAtualContainer;
+    private Label labelDataAtual;
+    
+    // abasContainer
+    private HorizontalLayout abasContainer;
     private TabSheet painelAbas;
     private TreeTable tarefasTable;
 
-    // paineis no rodape
-    private HorizontalLayout paineisRodape;
-    private Table tarefasRodapeTable;
-    private Table projecoesRodapeTable;
-    private Table convitesRodapeTable;
+    // rodapeContainer
+    private HorizontalLayout rodapeContainer;
+    private VerticalLayout principaisTarefasContainer;
+    private VerticalLayout principaisProjecoesContainer;
+    private VerticalLayout principaisConvitesContainer;
+    
+    // ------------------------------------------------------------------------
+
+
 
     public DashBoardView() {
 
-        setSizeFull();
+        setMargin(true);
+        setSpacing(true);
+        setWidth("100%");
+        setHeight(null);
+        
 
-        main = new VerticalLayout();
-        main.setSpacing(true);
-        main.setSizeFull();
+        addComponent(buildMenuSuperiorContainer());
+        
+        addComponent(buildFiltrosPesquisaContainer());
 
-        setContent(main);
+        addComponent(buildDataAtualContainer());
 
-        main.addComponent(buildBarraBotoesSuperiorOpcaoA());
-        main.addComponent(buildBarraBotoesSuperiorOpcaoB());
+        addComponent(buildAbasContainer());
 
-        main.addComponent(buildFiltrosPesquisa());
-
-        main.addComponent(buildLabelDataAtual());
-
-        main.addComponent(buildPainelAbas());
-
-        main.addComponent(buildPaineisRodape());
+        addComponent(buildPaineisRodape());
 
     }
 
     private Table buildTarefasTable() {
 
         tarefasTable = new TreeTable();
+        tarefasTable.setWidth("100%");
         tarefasTable.addContainerProperty("Cod", String.class, "");
         tarefasTable.addContainerProperty("Nome", String.class, "");
         tarefasTable.addContainerProperty("Empresa", String.class, "");
@@ -136,6 +166,14 @@ public class DashBoardView extends Panel {
             "S002", "Sub Tarefa 2 - Tarefa 1", "SAAX", "Daniel", "Fernando", "25/03/2015", "26/06/2015", apontamento, null, new Button("E"), new Button("C")}, "S002");
 
         tarefasTable.setParent("S002", "T001");
+
+        // Sub 1 da sub 2 da tarefa 1
+        apontamento = new ComboBox();
+        apontamento.addItems("Não Aceito", "Não iniciado", "Iniciado", "25%", "50%", "75%", "Concluído");
+        tarefasTable.addItem(new Object[]{
+            "D001", "Detalhe 1 da Sub 2 - Tarefa 1", "SAAX", "Daniel", "Fernando", "25/03/2015", "26/06/2015", apontamento, null, new Button("E"), new Button("C")}, "D001");
+
+        tarefasTable.setParent("D001", "S002");
 
         // tarefa #2
         apontamento = new ComboBox();
@@ -176,102 +214,57 @@ public class DashBoardView extends Panel {
 
     }
 
-    private Component buildBarraBotoesSuperiorOpcaoA() {
+    private Component buildMenuSuperiorContainer() {
 
-        barraBotoesSuperior = new HorizontalLayout();
-        barraBotoesSuperior.setMargin(true);
-        barraBotoesSuperior.setSpacing(true);
-        barraBotoesSuperior.setWidth("100%");
+        menuSuperiorContainer = new HorizontalLayout();
+        menuSuperiorContainer.setSpacing(true);
+        menuSuperiorContainer.setWidth("100%");
+        menuSuperiorContainer.setHeight("50px");
 
-        HorizontalLayout vazio = new HorizontalLayout();
-        barraBotoesSuperior.addComponent(vazio);
-        barraBotoesSuperior.setExpandRatio(vazio, 1);
         
-        MenuBar menuSuperior = new MenuBar();
+        menuSuperior = new MenuBar();
+        menuSuperior.setHeight("100%");
+        menuSuperior.setHtmlContentAllowed(true);
 
-        MenuBar.MenuItem criar = menuSuperior.addItem("Criar", null, null);
+        MenuBar.MenuItem criar = menuSuperior.addItem("<h3>Criar</h3>", null, null);
         MenuBar.MenuItem criarTarefas = criar.addItem("Tarefas/Sub", null, null);
         MenuBar.MenuItem criarMetas = criar.addItem("Metas", null, null);
 
-        MenuBar.MenuItem publicacoes = menuSuperior.addItem("Publicações", null, null);
+        MenuBar.MenuItem publicacoes = menuSuperior.addItem("<h3>Publicações</h3>", null, null);
 
-        MenuBar.MenuItem relatorios = menuSuperior.addItem("Relatórios", null, null);
+        MenuBar.MenuItem relatorios = menuSuperior.addItem("<h3>Relatórios</h3>", null, null);
 
-        MenuBar.MenuItem config = menuSuperior.addItem("Config", null, null);
+        MenuBar.MenuItem config = menuSuperior.addItem("<h3>Config</h3>", null, null);
         MenuBar.MenuItem config1 = config.addItem("Config 1", null, null);
         MenuBar.MenuItem config2 = config.addItem("Config 2", null, null);
         MenuBar.MenuItem config3 = config.addItem("Config 3", null, null);
 
-        barraBotoesSuperior.addComponent(new Label("opção A:"));
-        barraBotoesSuperior.addComponent(menuSuperior);
-
-        return barraBotoesSuperior;
+        menuSuperiorContainer.addComponent(menuSuperior);
+        menuSuperiorContainer.setComponentAlignment(menuSuperior, Alignment.MIDDLE_RIGHT);
+        
+        return menuSuperiorContainer;
     }
 
-    private Component buildBarraBotoesSuperiorOpcaoB() {
+    private Component buildFiltrosPesquisaContainer() {
 
-        HorizontalLayout barraBotoesSuperiorB = new HorizontalLayout();
-        barraBotoesSuperiorB.setMargin(true);
-        barraBotoesSuperiorB.setSpacing(true);
-        barraBotoesSuperiorB.setWidth("100%");
+        
+        filtrosPesquisaContainer = new HorizontalLayout();
+        filtrosPesquisaContainer.setWidth("100%");
+        filtrosPesquisaContainer.setHeight(null);
 
-        HorizontalLayout vazio = new HorizontalLayout();
-        barraBotoesSuperiorB.addComponent(vazio);
-        barraBotoesSuperiorB.setExpandRatio(vazio, 1);
-
-        barraBotoesSuperiorB.addComponent(new Label("opção B:"));
-        criarButton = new PopupButton("Criar");
-
-        Button criarTarefaButton = new Button("Tarefa/Sub");
-        criarTarefaButton.setStyleName("link");
-
-        Button criarMetaButton = new Button("Meta");
-        criarMetaButton.setStyleName("v-button-link");
-
-        criarButton.setContent(new VerticalLayout(
-                criarTarefaButton,
-                criarMetaButton
-        ));
-
-        barraBotoesSuperiorB.addComponent(criarButton);
-
-        publicacoesButton = new Button("Publicações");
-        barraBotoesSuperiorB.addComponent(publicacoesButton);
-
-        relatoriosButton = new Button("Relatórios");
-        barraBotoesSuperiorB.addComponent(relatoriosButton);
-
-        Button config1Button = new Button("Config1");
-        config1Button.setStyleName("link");
-
-        Button config2Button = new Button("Config2");
-        config2Button.setStyleName("link");
-
-        configButton = new PopupButton("Config");
-        configButton.setContent(new VerticalLayout(
-                config1Button,
-                config2Button
-        ));
-        barraBotoesSuperiorB.addComponent(configButton);
-
-        return barraBotoesSuperiorB;
-    }
-
-    private Component buildFiltrosPesquisa() {
-
-        barraFiltrosPesquisa = new HorizontalLayout();
-        barraFiltrosPesquisa.setMargin(true);
-        barraFiltrosPesquisa.setWidth("100%");
-
+        filtrosPesquisaEsquerdaContainer = new HorizontalLayout();
+        filtrosPesquisaEsquerdaContainer.setSizeUndefined();
+        
         filtroUsuarioOptionGroup = new OptionGroup();
         filtroUsuarioOptionGroup.setMultiSelect(true);
         filtroUsuarioOptionGroup.addItem("Daniel");
         filtroUsuarioOptionGroup.addItem("Fernando");
         filtroUsuarioOptionGroup.addItem("Rodrigo");
         
-        usuarioButton = new PopupButton("Usuario");
-        usuarioButton.setContent(filtroUsuarioOptionGroup);
-        barraFiltrosPesquisa.addComponent(usuarioButton);
+        filtroUsuarioButton = new PopupButton("Usuario");
+        filtroUsuarioButton.setContent(filtroUsuarioOptionGroup);
+        filtrosPesquisaEsquerdaContainer.addComponent(filtroUsuarioButton);
+        
         
         filtroEmpresaOptionGroup = new OptionGroup();
         filtroEmpresaOptionGroup.setMultiSelect(true);
@@ -279,65 +272,114 @@ public class DashBoardView extends Panel {
         filtroEmpresaOptionGroup.addItem("Vale Rio Doce");
         filtroEmpresaOptionGroup.addItem("Coca-Cola");
         
-        empresaButton = new PopupButton("Empresa");
-        empresaButton.setContent(filtroEmpresaOptionGroup);
-        barraFiltrosPesquisa.addComponent(empresaButton);
+        filtroEmpresaButton = new PopupButton("Empresa");
+        filtroEmpresaButton.setContent(filtroEmpresaOptionGroup);
+        filtrosPesquisaEsquerdaContainer.addComponent(filtroEmpresaButton);
         
-        dataFimButton = new PopupButton("Data Fim");
-        filtroDataFim = new InlineDateField();
-        dataFimButton.setContent(filtroDataFim);
-        barraFiltrosPesquisa.addComponent(dataFimButton);
+        filtroDataFimButton = new PopupButton("Data Fim");
+        filtroDataFimDateField = new InlineDateField();
+        filtroDataFimButton.setContent(filtroDataFimDateField);
+        filtrosPesquisaEsquerdaContainer.addComponent(filtroDataFimButton);
         
-        projecaoButton = new PopupButton("Projeçao");
-        projecaoButton.setContent(new Label("nao sei o que por aqui"));
-        barraFiltrosPesquisa.addComponent(projecaoButton);
+        filtroProjecaoButton = new PopupButton("Projeçao");
+        filtroProjecaoButton.setContent(new Label("nao sei o que por aqui"));
+        filtrosPesquisaEsquerdaContainer.addComponent(filtroProjecaoButton);
 
-
-
-        HorizontalLayout vazio = new HorizontalLayout();
-        barraFiltrosPesquisa.addComponent(vazio);
-        barraFiltrosPesquisa.setExpandRatio(vazio, 1);
-
-        VerticalLayout pesquisa = new VerticalLayout();
+        filtrosPesquisaDireitaContainer = new VerticalLayout();
+        filtrosPesquisaDireitaContainer.setSizeUndefined();
         
-        pesquisarTextField = new TextField();
-        pesquisarTextField.setInputPrompt("pesquisar...");
-        pesquisa.addComponent(pesquisarTextField);
+        filtroPesquisaRapidaTextField = new TextField();
+        filtroPesquisaRapidaTextField.setInputPrompt("pesquisar...");
+        filtrosPesquisaDireitaContainer.addComponent(filtroPesquisaRapidaTextField);
         
-        pesquisaAvancadaButton = new Button();
-        pesquisa.addComponent(pesquisaAvancadaButton);
+        filtroPesquisaAvancadaButton = new Button("Pesquisa Avançada");
+        filtroPesquisaAvancadaButton.setStyleName("link");
+        filtrosPesquisaDireitaContainer.addComponent(filtroPesquisaAvancadaButton);
 
-        barraFiltrosPesquisa.addComponent(pesquisa);
+        filtrosPesquisaContainer.addComponent(filtrosPesquisaEsquerdaContainer);
+        filtrosPesquisaContainer.setComponentAlignment(filtrosPesquisaEsquerdaContainer, Alignment.MIDDLE_LEFT);
+        filtrosPesquisaContainer.addComponent(filtrosPesquisaDireitaContainer);
+        filtrosPesquisaContainer.setComponentAlignment(filtrosPesquisaDireitaContainer, Alignment.MIDDLE_RIGHT);
         
-        return barraFiltrosPesquisa;
+        
+        return filtrosPesquisaContainer;
 
     }
 
-    private Component buildLabelDataAtual() {
-        barraDataAtual = new HorizontalLayout();
-        barraDataAtual.setMargin(true);
-        barraDataAtual.setSpacing(true);
+    private Component buildDataAtualContainer() {
+        dataAtualContainer = new HorizontalLayout();
+        dataAtualContainer.setSpacing(true);
+        dataAtualContainer.setWidth("100%");
+        dataAtualContainer.setHeight(null);
+        
+        labelDataAtual = new Label("<h1>Hoje, 27 de maio de 2014.</h1>");
+        labelDataAtual.setContentMode(ContentMode.HTML);
+        
+        dataAtualContainer.addComponent(labelDataAtual);
 
-        return barraDataAtual;
+        return dataAtualContainer;
     }
 
-    private Component buildPainelAbas() {
+    private Component buildAbasContainer() {
+        
+        abasContainer = new HorizontalLayout();
+        abasContainer.setSpacing(true);
+        abasContainer.setWidth("100%");
+        abasContainer.setHeight(null);
         
         painelAbas = new TabSheet();
+        painelAbas.setWidth("100%");
+        painelAbas.setHeight("100%");
         painelAbas.addTab(buildTarefasTable(), "Tarefa");
         painelAbas.addTab(new HorizontalLayout(), "Meta");
         painelAbas.addTab(new HorizontalLayout(), "Publicações");
 
-        return painelAbas;
+        abasContainer.addComponent(painelAbas);
+        
+        return abasContainer;
     }
 
     private Component buildPaineisRodape() {
 
-        paineisRodape = new HorizontalLayout();
-        paineisRodape.setMargin(true);
-        paineisRodape.setSpacing(true);
+        rodapeContainer = new HorizontalLayout();
+        rodapeContainer.setSpacing(true);
+        rodapeContainer.setWidth("100%");
+        rodapeContainer.setHeight(null);
+        
+        principaisTarefasContainer = new VerticalLayout();
+        principaisTarefasContainer.setStyleName("blue");
+        rodapeContainer.addComponent(principaisTarefasContainer);
+        
+        Button tarefaButton;
+        for (int i = 0; i < 5; i++) {
+            tarefaButton = new Button("Tarefa "+(i+1));
+            tarefaButton.setStyleName("v-button-link");
+            principaisTarefasContainer.addComponent(tarefaButton);
+        }
+        
+        principaisProjecoesContainer = new VerticalLayout();
+        rodapeContainer.addComponent(principaisProjecoesContainer);
+        
+        Button projecaoButton;
+        for (int i = 0; i < 5; i++) {
+            projecaoButton = new Button("Projecao "+(i+1));
+            projecaoButton.setStyleName("v-button-link");
+            principaisProjecoesContainer.addComponent(projecaoButton);
+        }
+        
+        principaisConvitesContainer = new VerticalLayout();
+        principaisConvitesContainer.setStyleName("blue");
+        rodapeContainer.addComponent(principaisConvitesContainer);
 
-        return paineisRodape;
+        Button conviteButton;
+        for (int i = 0; i < 5; i++) {
+            conviteButton = new Button("Convite  "+(i+1));
+            conviteButton.setStyleName("v-button-link");
+            principaisConvitesContainer.addComponent(conviteButton);
+        }
+        
+        return rodapeContainer;
     }
-
+    
+  
 }

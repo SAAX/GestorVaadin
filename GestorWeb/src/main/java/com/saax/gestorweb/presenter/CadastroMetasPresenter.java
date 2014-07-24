@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author Rodrigo
  */
-public class CadastroMetasPresenter implements CadastroMetasViewListener, Serializable {
+public class CadastroMetasPresenter implements CadastroMetasViewListener {
 
     // Todo presenter mantem acesso à view e ao model
     private final CadastroMetasView view;

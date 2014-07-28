@@ -415,9 +415,19 @@ public class SignupPresenter implements SignupViewListener {
         String sobrenomeUsuario = view.getSobrenomeUsuarioTextField().getValue();
         String email = view.getEmailTextField().getValue();
         
-        //view.getUsuariosTable().addItem();
-                
-        
+        //Verifica se Usuário é Administrador ou não
+        Boolean usuarioAdm =  view.getUsuarioAdmCheckBox().getValue();
+        String Adm ="";
+        if (usuarioAdm == true){
+            Adm = "SIM";
+        } else{
+            Adm = "NÃO";
+        }
+        //
+                                       
+        view.getUsuariosTable().addItem(new Object[] {1, nomeUsuario,sobrenomeUsuario,email, Adm, "Editar", "Remover"}, new Integer(1));
+       
+         
     }
 
      

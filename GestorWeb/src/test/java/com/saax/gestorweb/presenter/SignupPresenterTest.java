@@ -219,7 +219,7 @@ public class SignupPresenterTest {
         assertEquals(expResult, result);
         
         
-        
+       
         // @TODO: coloca testes para os demais campos
         
         // ---------------------------------------------------------------------
@@ -345,6 +345,7 @@ public class SignupPresenterTest {
         signupView.getNomeFantasiaTextField().setValue("SAAX");
         signupView.getTipoPessoaOptionGroup().select("Pessoa Jurídica");
         signupView.getCnpjCpfTextField().setValue(cnpjRepetido);
+        signupView.getLogradouroTextField().setValue("Avenida Teste");
         
         // 3o. passo acionar o botão OK
         instance.okButtonClicked();

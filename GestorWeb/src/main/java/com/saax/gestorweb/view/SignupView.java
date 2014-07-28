@@ -506,6 +506,7 @@ public class SignupView extends Window {
         
         usuariosTable.addContainerProperty("Cod", Integer.class, null);
         usuariosTable.addContainerProperty("Nome", String.class, null);
+        usuariosTable.addContainerProperty("Sobrenome", String.class, null);
         usuariosTable.addContainerProperty("E-mail", String.class, null);
         usuariosTable.addContainerProperty("Administrador", String.class, null);
         usuariosTable.addContainerProperty("Editar", String.class, null);
@@ -987,12 +988,12 @@ public class SignupView extends Window {
      senhaTextField.setValidationVisible(true);
      aceitaTermosCheckBox.setValidationVisible(true);
         
-     nomeTextField.validate();
-     sobrenomeTextField.validate();
-     emailUsuarioTextField.validate();
-     confirmaEmailUsuarioTextField.validate();
-     senhaTextField.validate();
-     aceitaTermosCheckBox.validate();
+     //nomeTextField.validate();
+     //sobrenomeTextField.validate();
+     //emailUsuarioTextField.validate();
+     //confirmaEmailUsuarioTextField.validate();
+     //senhaTextField.validate();
+     //aceitaTermosCheckBox.validate();
         
         
      razaoSocialTextField.setValidationVisible(true);

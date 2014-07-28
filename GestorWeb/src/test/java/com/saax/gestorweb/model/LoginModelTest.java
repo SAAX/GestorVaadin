@@ -1,6 +1,6 @@
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.dao.UsuarioDAOCustom;
+import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -39,7 +39,7 @@ public class LoginModelTest {
      * Remove todos os usuarios cadastrados
      */
     private void limparBase() {
-        UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
         dao.findUsuarioEntities().stream().forEach((usuario) -> {
             try {
@@ -79,7 +79,7 @@ public class LoginModelTest {
 
         // Teste #2 : Login existente
 
-        UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
         try {
             // Cria um usuario para teste
@@ -113,7 +113,7 @@ public class LoginModelTest {
 
         // Teste #2 : Login existente
         
-        UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
         try {
             // Cria um usuario para teste

@@ -1,6 +1,6 @@
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.dao.UsuarioDAOCustom;
+import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.PostgresConnection;
 
@@ -12,13 +12,13 @@ import com.saax.gestorweb.util.PostgresConnection;
  */
 public class LoginModel {
 
-    private final UsuarioDAOCustom usuarioDAO;
+    private final UsuarioDAO usuarioDAO;
 
     /**
      * Cria o model e conecta ao DAO
      */
     public LoginModel() {
-        usuarioDAO = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
     }
 
     /**

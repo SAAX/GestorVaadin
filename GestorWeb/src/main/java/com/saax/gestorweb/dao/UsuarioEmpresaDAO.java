@@ -16,9 +16,6 @@ import javax.persistence.EntityManagerFactory;
 /**
  * DAO para o entity bean: UsuarioEmpresa <br><br>
  * 
- * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
- * Caso seja necessária alguma customização, estender esta classe<br>
- * 
  * @author rodrigo
  */
 public class UsuarioEmpresaDAO implements Serializable {
@@ -47,6 +44,11 @@ public class UsuarioEmpresaDAO implements Serializable {
                 usuario = em.getReference(usuario.getClass(), usuario.getId());
                 usuarioEmpresa.setUsuario(usuario);
             }
+            Usuario idusuarioinclusao = usuarioEmpresa.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
+                usuarioEmpresa.setIdusuarioinclusao(idusuarioinclusao);
+            }
             em.persist(usuarioEmpresa);
             if (empresa != null) {
                 empresa.getUsuarios().add(usuarioEmpresa);
@@ -55,6 +57,10 @@ public class UsuarioEmpresaDAO implements Serializable {
             if (usuario != null) {
                 usuario.getEmpresas().add(usuarioEmpresa);
                 usuario = em.merge(usuario);
+            }
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getEmpresas().add(usuarioEmpresa);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.getTransaction().commit();
         } finally {
@@ -74,6 +80,8 @@ public class UsuarioEmpresaDAO implements Serializable {
             Empresa empresaNew = usuarioEmpresa.getEmpresa();
             Usuario usuarioOld = persistentUsuarioEmpresa.getUsuario();
             Usuario usuarioNew = usuarioEmpresa.getUsuario();
+            Usuario idusuarioinclusaoOld = persistentUsuarioEmpresa.getIdusuarioinclusao();
+            Usuario idusuarioinclusaoNew = usuarioEmpresa.getIdusuarioinclusao();
             if (empresaNew != null) {
                 empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 usuarioEmpresa.setEmpresa(empresaNew);
@@ -81,6 +89,10 @@ public class UsuarioEmpresaDAO implements Serializable {
             if (usuarioNew != null) {
                 usuarioNew = em.getReference(usuarioNew.getClass(), usuarioNew.getId());
                 usuarioEmpresa.setUsuario(usuarioNew);
+            }
+            if (idusuarioinclusaoNew != null) {
+                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
+                usuarioEmpresa.setIdusuarioinclusao(idusuarioinclusaoNew);
             }
             usuarioEmpresa = em.merge(usuarioEmpresa);
             if (empresaOld != null && !empresaOld.equals(empresaNew)) {
@@ -98,6 +110,14 @@ public class UsuarioEmpresaDAO implements Serializable {
             if (usuarioNew != null && !usuarioNew.equals(usuarioOld)) {
                 usuarioNew.getEmpresas().add(usuarioEmpresa);
                 usuarioNew = em.merge(usuarioNew);
+            }
+            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
+                idusuarioinclusaoOld.getEmpresas().remove(usuarioEmpresa);
+                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            }
+            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
+                idusuarioinclusaoNew.getEmpresas().add(usuarioEmpresa);
+                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -137,6 +157,11 @@ public class UsuarioEmpresaDAO implements Serializable {
             if (usuario != null) {
                 usuario.getEmpresas().remove(usuarioEmpresa);
                 usuario = em.merge(usuario);
+            }
+            Usuario idusuarioinclusao = usuarioEmpresa.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getEmpresas().remove(usuarioEmpresa);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.remove(usuarioEmpresa);
             em.getTransaction().commit();

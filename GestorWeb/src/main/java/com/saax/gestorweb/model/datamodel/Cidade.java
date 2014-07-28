@@ -29,7 +29,6 @@ import javax.validation.constraints.Size;
 @Table(name = "cidade")
 @NamedQueries({
     @NamedQuery(name = "Cidade.findAll", query = "SELECT c FROM Cidade c"),
-    @NamedQuery(name = "Cidade.findByIdcidade", query = "SELECT c FROM Cidade c WHERE c.idCidade = :idcidade"),
     @NamedQuery(name = "Cidade.findByNome", query = "SELECT c FROM Cidade c WHERE c.nome = :nome")})
 public class Cidade implements Serializable {
 
@@ -39,7 +38,7 @@ public class Cidade implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idcidade")
-    private Integer idCidade;
+    private Integer id;
     
     @Basic(optional = false)
     @NotNull
@@ -58,20 +57,20 @@ public class Cidade implements Serializable {
     }
 
     public Cidade(Integer idcidade) {
-        this.idCidade = idcidade;
+        this.id = idcidade;
     }
 
     public Cidade(Integer idcidade, String nome) {
-        this.idCidade = idcidade;
+        this.id = idcidade;
         this.nome = nome;
     }
 
-    public Integer getIdCidade() {
-        return idCidade;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdCidade(Integer idCidade) {
-        this.idCidade = idCidade;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -101,7 +100,7 @@ public class Cidade implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idCidade != null ? idCidade.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -112,7 +111,7 @@ public class Cidade implements Serializable {
             return false;
         }
         Cidade other = (Cidade) object;
-        if ((this.idCidade == null && other.idCidade != null) || (this.idCidade != null && !this.idCidade.equals(other.idCidade))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -120,7 +119,7 @@ public class Cidade implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Cidade[ idcidade=" + idCidade + " ]";
+        return "com.saax.gestorweb.model.datamodel.Cidade[ idcidade=" + id + " ]";
     }
     
 }

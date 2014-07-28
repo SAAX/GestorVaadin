@@ -7,5 +7,6 @@ package com.saax.gestorweb.view;
  */
 public interface DashboardViewListenter {
    
-   void addMeta();
+    void addMeta();
+    void logout();
 }

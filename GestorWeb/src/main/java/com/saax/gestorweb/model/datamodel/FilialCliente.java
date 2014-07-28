@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -31,6 +34,14 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "FilialCliente.findByCnpj", query = "SELECT f FROM FilialCliente f WHERE f.cnpj = :cnpj"),
     @NamedQuery(name = "FilialCliente.findByAtiva", query = "SELECT f FROM FilialCliente f WHERE f.ativa = :ativa")})
 public class FilialCliente implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idusuarioinclusao;
 
     private static final long serialVersionUID = 1L;
     
@@ -38,7 +49,7 @@ public class FilialCliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idfilialcliente")
-    private Integer idFilialCliente;
+    private Integer id;
     
     @Basic(optional = false)
     @NotNull
@@ -63,21 +74,21 @@ public class FilialCliente implements Serializable {
     }
 
     public FilialCliente(Integer idfilialcliente) {
-        this.idFilialCliente = idfilialcliente;
+        this.id = idfilialcliente;
     }
 
     public FilialCliente(Integer idfilialcliente, String nome, boolean ativa) {
-        this.idFilialCliente = idfilialcliente;
+        this.id = idfilialcliente;
         this.nome = nome;
         this.ativa = ativa;
     }
 
-    public Integer getIdFilialCliente() {
-        return idFilialCliente;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdFilialCliente(Integer idFilialCliente) {
-        this.idFilialCliente = idFilialCliente;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -115,7 +126,7 @@ public class FilialCliente implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idFilialCliente != null ? idFilialCliente.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -126,7 +137,7 @@ public class FilialCliente implements Serializable {
             return false;
         }
         FilialCliente other = (FilialCliente) object;
-        if ((this.idFilialCliente == null && other.idFilialCliente != null) || (this.idFilialCliente != null && !this.idFilialCliente.equals(other.idFilialCliente))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -134,7 +145,23 @@ public class FilialCliente implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.FilialCliente[ idfilialcliente=" + idFilialCliente + " ]";
+        return "com.saax.gestorweb.model.datamodel.FilialCliente[ idfilialcliente=" + id + " ]";
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
     }
     
 }

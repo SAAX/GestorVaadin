@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
@@ -21,7 +15,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
+ * DAO para o entity bean: Estado <br><br>
+ * 
  * @author rodrigo
  */
 public class EstadoDAO implements Serializable {
@@ -43,20 +38,20 @@ public class EstadoDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<Cidade> attachedCidadeList = new ArrayList<Cidade>();
-            for (Cidade cidadeListCidadeToAttach : estado.getCidades()) {
-                cidadeListCidadeToAttach = em.getReference(cidadeListCidadeToAttach.getClass(), cidadeListCidadeToAttach.getIdCidade());
-                attachedCidadeList.add(cidadeListCidadeToAttach);
+            List<Cidade> attachedCidades = new ArrayList<Cidade>();
+            for (Cidade cidadesCidadeToAttach : estado.getCidades()) {
+                cidadesCidadeToAttach = em.getReference(cidadesCidadeToAttach.getClass(), cidadesCidadeToAttach.getId());
+                attachedCidades.add(cidadesCidadeToAttach);
             }
-            estado.setCidades(attachedCidadeList);
+            estado.setCidades(attachedCidades);
             em.persist(estado);
-            for (Cidade cidadeListCidade : estado.getCidades()) {
-                Estado oldIdestadoOfCidadeListCidade = cidadeListCidade.getEstado();
-                cidadeListCidade.setEstado(estado);
-                cidadeListCidade = em.merge(cidadeListCidade);
-                if (oldIdestadoOfCidadeListCidade != null) {
-                    oldIdestadoOfCidadeListCidade.getCidades().remove(cidadeListCidade);
-                    oldIdestadoOfCidadeListCidade = em.merge(oldIdestadoOfCidadeListCidade);
+            for (Cidade cidadesCidade : estado.getCidades()) {
+                Estado oldEstadoOfCidadesCidade = cidadesCidade.getEstado();
+                cidadesCidade.setEstado(estado);
+                cidadesCidade = em.merge(cidadesCidade);
+                if (oldEstadoOfCidadesCidade != null) {
+                    oldEstadoOfCidadesCidade.getCidades().remove(cidadesCidade);
+                    oldEstadoOfCidadesCidade = em.merge(oldEstadoOfCidadesCidade);
                 }
             }
             em.getTransaction().commit();
@@ -72,37 +67,37 @@ public class EstadoDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Estado persistentEstado = em.find(Estado.class, estado.getIdEstado());
-            List<Cidade> cidadeListOld = persistentEstado.getCidades();
-            List<Cidade> cidadeListNew = estado.getCidades();
+            Estado persistentEstado = em.find(Estado.class, estado.getId());
+            List<Cidade> cidadesOld = persistentEstado.getCidades();
+            List<Cidade> cidadesNew = estado.getCidades();
             List<String> illegalOrphanMessages = null;
-            for (Cidade cidadeListOldCidade : cidadeListOld) {
-                if (!cidadeListNew.contains(cidadeListOldCidade)) {
+            for (Cidade cidadesOldCidade : cidadesOld) {
+                if (!cidadesNew.contains(cidadesOldCidade)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Cidade " + cidadeListOldCidade + " since its idestado field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Cidade " + cidadesOldCidade + " since its estado field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            List<Cidade> attachedCidadeListNew = new ArrayList<Cidade>();
-            for (Cidade cidadeListNewCidadeToAttach : cidadeListNew) {
-                cidadeListNewCidadeToAttach = em.getReference(cidadeListNewCidadeToAttach.getClass(), cidadeListNewCidadeToAttach.getIdCidade());
-                attachedCidadeListNew.add(cidadeListNewCidadeToAttach);
+            List<Cidade> attachedCidadesNew = new ArrayList<Cidade>();
+            for (Cidade cidadesNewCidadeToAttach : cidadesNew) {
+                cidadesNewCidadeToAttach = em.getReference(cidadesNewCidadeToAttach.getClass(), cidadesNewCidadeToAttach.getId());
+                attachedCidadesNew.add(cidadesNewCidadeToAttach);
             }
-            cidadeListNew = attachedCidadeListNew;
-            estado.setCidades(cidadeListNew);
+            cidadesNew = attachedCidadesNew;
+            estado.setCidades(cidadesNew);
             estado = em.merge(estado);
-            for (Cidade cidadeListNewCidade : cidadeListNew) {
-                if (!cidadeListOld.contains(cidadeListNewCidade)) {
-                    Estado oldIdestadoOfCidadeListNewCidade = cidadeListNewCidade.getEstado();
-                    cidadeListNewCidade.setEstado(estado);
-                    cidadeListNewCidade = em.merge(cidadeListNewCidade);
-                    if (oldIdestadoOfCidadeListNewCidade != null && !oldIdestadoOfCidadeListNewCidade.equals(estado)) {
-                        oldIdestadoOfCidadeListNewCidade.getCidades().remove(cidadeListNewCidade);
-                        oldIdestadoOfCidadeListNewCidade = em.merge(oldIdestadoOfCidadeListNewCidade);
+            for (Cidade cidadesNewCidade : cidadesNew) {
+                if (!cidadesOld.contains(cidadesNewCidade)) {
+                    Estado oldEstadoOfCidadesNewCidade = cidadesNewCidade.getEstado();
+                    cidadesNewCidade.setEstado(estado);
+                    cidadesNewCidade = em.merge(cidadesNewCidade);
+                    if (oldEstadoOfCidadesNewCidade != null && !oldEstadoOfCidadesNewCidade.equals(estado)) {
+                        oldEstadoOfCidadesNewCidade.getCidades().remove(cidadesNewCidade);
+                        oldEstadoOfCidadesNewCidade = em.merge(oldEstadoOfCidadesNewCidade);
                     }
                 }
             }
@@ -110,7 +105,7 @@ public class EstadoDAO implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = estado.getIdEstado();
+                Integer id = estado.getId();
                 if (findEstado(id) == null) {
                     throw new NonexistentEntityException("The estado with id " + id + " no longer exists.");
                 }
@@ -131,17 +126,17 @@ public class EstadoDAO implements Serializable {
             Estado estado;
             try {
                 estado = em.getReference(Estado.class, id);
-                estado.getIdEstado();
+                estado.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The estado with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<Cidade> cidadeListOrphanCheck = estado.getCidades();
-            for (Cidade cidadeListOrphanCheckCidade : cidadeListOrphanCheck) {
+            List<Cidade> cidadesOrphanCheck = estado.getCidades();
+            for (Cidade cidadesOrphanCheckCidade : cidadesOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Estado (" + estado + ") cannot be destroyed since the Cidade " + cidadeListOrphanCheckCidade + " in its cidadeList field has a non-nullable idestado field.");
+                illegalOrphanMessages.add("This Estado (" + estado + ") cannot be destroyed since the Cidade " + cidadesOrphanCheckCidade + " in its cidades field has a non-nullable estado field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);

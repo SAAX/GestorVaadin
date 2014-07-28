@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
@@ -22,7 +16,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
+ * DAO para o entity bean: Cidade <br><br>
+ * 
  * @author rodrigo
  */
 public class CidadeDAO implements Serializable {
@@ -44,29 +39,29 @@ public class CidadeDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Estado idestado = cidade.getEstado();
-            if (idestado != null) {
-                idestado = em.getReference(idestado.getClass(), idestado.getIdEstado());
-                cidade.setEstado(idestado);
+            Estado estado = cidade.getEstado();
+            if (estado != null) {
+                estado = em.getReference(estado.getClass(), estado.getId());
+                cidade.setEstado(estado);
             }
             List<Endereco> attachedEnderecoList = new ArrayList<Endereco>();
             for (Endereco enderecoListEnderecoToAttach : cidade.getEnderecoList()) {
-                enderecoListEnderecoToAttach = em.getReference(enderecoListEnderecoToAttach.getClass(), enderecoListEnderecoToAttach.getIdEndereco());
+                enderecoListEnderecoToAttach = em.getReference(enderecoListEnderecoToAttach.getClass(), enderecoListEnderecoToAttach.getId());
                 attachedEnderecoList.add(enderecoListEnderecoToAttach);
             }
             cidade.setEnderecoList(attachedEnderecoList);
             em.persist(cidade);
-            if (idestado != null) {
-                idestado.getCidades().add(cidade);
-                idestado = em.merge(idestado);
+            if (estado != null) {
+                estado.getCidades().add(cidade);
+                estado = em.merge(estado);
             }
             for (Endereco enderecoListEndereco : cidade.getEnderecoList()) {
-                Cidade oldIdcidadeOfEnderecoListEndereco = enderecoListEndereco.getCidade();
+                Cidade oldCidadeOfEnderecoListEndereco = enderecoListEndereco.getCidade();
                 enderecoListEndereco.setCidade(cidade);
                 enderecoListEndereco = em.merge(enderecoListEndereco);
-                if (oldIdcidadeOfEnderecoListEndereco != null) {
-                    oldIdcidadeOfEnderecoListEndereco.getEnderecoList().remove(enderecoListEndereco);
-                    oldIdcidadeOfEnderecoListEndereco = em.merge(oldIdcidadeOfEnderecoListEndereco);
+                if (oldCidadeOfEnderecoListEndereco != null) {
+                    oldCidadeOfEnderecoListEndereco.getEnderecoList().remove(enderecoListEndereco);
+                    oldCidadeOfEnderecoListEndereco = em.merge(oldCidadeOfEnderecoListEndereco);
                 }
             }
             em.getTransaction().commit();
@@ -82,9 +77,9 @@ public class CidadeDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cidade persistentCidade = em.find(Cidade.class, cidade.getIdCidade());
-            Estado idestadoOld = persistentCidade.getEstado();
-            Estado idestadoNew = cidade.getEstado();
+            Cidade persistentCidade = em.find(Cidade.class, cidade.getId());
+            Estado estadoOld = persistentCidade.getEstado();
+            Estado estadoNew = cidade.getEstado();
             List<Endereco> enderecoListOld = persistentCidade.getEnderecoList();
             List<Endereco> enderecoListNew = cidade.getEnderecoList();
             List<String> illegalOrphanMessages = null;
@@ -93,40 +88,40 @@ public class CidadeDAO implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Endereco " + enderecoListOldEndereco + " since its idcidade field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Endereco " + enderecoListOldEndereco + " since its cidade field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (idestadoNew != null) {
-                idestadoNew = em.getReference(idestadoNew.getClass(), idestadoNew.getIdEstado());
-                cidade.setEstado(idestadoNew);
+            if (estadoNew != null) {
+                estadoNew = em.getReference(estadoNew.getClass(), estadoNew.getId());
+                cidade.setEstado(estadoNew);
             }
             List<Endereco> attachedEnderecoListNew = new ArrayList<Endereco>();
             for (Endereco enderecoListNewEnderecoToAttach : enderecoListNew) {
-                enderecoListNewEnderecoToAttach = em.getReference(enderecoListNewEnderecoToAttach.getClass(), enderecoListNewEnderecoToAttach.getIdEndereco());
+                enderecoListNewEnderecoToAttach = em.getReference(enderecoListNewEnderecoToAttach.getClass(), enderecoListNewEnderecoToAttach.getId());
                 attachedEnderecoListNew.add(enderecoListNewEnderecoToAttach);
             }
             enderecoListNew = attachedEnderecoListNew;
             cidade.setEnderecoList(enderecoListNew);
             cidade = em.merge(cidade);
-            if (idestadoOld != null && !idestadoOld.equals(idestadoNew)) {
-                idestadoOld.getCidades().remove(cidade);
-                idestadoOld = em.merge(idestadoOld);
+            if (estadoOld != null && !estadoOld.equals(estadoNew)) {
+                estadoOld.getCidades().remove(cidade);
+                estadoOld = em.merge(estadoOld);
             }
-            if (idestadoNew != null && !idestadoNew.equals(idestadoOld)) {
-                idestadoNew.getCidades().add(cidade);
-                idestadoNew = em.merge(idestadoNew);
+            if (estadoNew != null && !estadoNew.equals(estadoOld)) {
+                estadoNew.getCidades().add(cidade);
+                estadoNew = em.merge(estadoNew);
             }
             for (Endereco enderecoListNewEndereco : enderecoListNew) {
                 if (!enderecoListOld.contains(enderecoListNewEndereco)) {
-                    Cidade oldIdcidadeOfEnderecoListNewEndereco = enderecoListNewEndereco.getCidade();
+                    Cidade oldCidadeOfEnderecoListNewEndereco = enderecoListNewEndereco.getCidade();
                     enderecoListNewEndereco.setCidade(cidade);
                     enderecoListNewEndereco = em.merge(enderecoListNewEndereco);
-                    if (oldIdcidadeOfEnderecoListNewEndereco != null && !oldIdcidadeOfEnderecoListNewEndereco.equals(cidade)) {
-                        oldIdcidadeOfEnderecoListNewEndereco.getEnderecoList().remove(enderecoListNewEndereco);
-                        oldIdcidadeOfEnderecoListNewEndereco = em.merge(oldIdcidadeOfEnderecoListNewEndereco);
+                    if (oldCidadeOfEnderecoListNewEndereco != null && !oldCidadeOfEnderecoListNewEndereco.equals(cidade)) {
+                        oldCidadeOfEnderecoListNewEndereco.getEnderecoList().remove(enderecoListNewEndereco);
+                        oldCidadeOfEnderecoListNewEndereco = em.merge(oldCidadeOfEnderecoListNewEndereco);
                     }
                 }
             }
@@ -134,7 +129,7 @@ public class CidadeDAO implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = cidade.getIdCidade();
+                Integer id = cidade.getId();
                 if (findCidade(id) == null) {
                     throw new NonexistentEntityException("The cidade with id " + id + " no longer exists.");
                 }
@@ -155,7 +150,7 @@ public class CidadeDAO implements Serializable {
             Cidade cidade;
             try {
                 cidade = em.getReference(Cidade.class, id);
-                cidade.getIdCidade();
+                cidade.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The cidade with id " + id + " no longer exists.", enfe);
             }
@@ -165,15 +160,15 @@ public class CidadeDAO implements Serializable {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Cidade (" + cidade + ") cannot be destroyed since the Endereco " + enderecoListOrphanCheckEndereco + " in its enderecoList field has a non-nullable idcidade field.");
+                illegalOrphanMessages.add("This Cidade (" + cidade + ") cannot be destroyed since the Endereco " + enderecoListOrphanCheckEndereco + " in its enderecoList field has a non-nullable cidade field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Estado idestado = cidade.getEstado();
-            if (idestado != null) {
-                idestado.getCidades().remove(cidade);
-                idestado = em.merge(idestado);
+            Estado estado = cidade.getEstado();
+            if (estado != null) {
+                estado.getCidades().remove(cidade);
+                estado = em.merge(estado);
             }
             em.remove(cidade);
             em.getTransaction().commit();

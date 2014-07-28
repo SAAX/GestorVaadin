@@ -1,7 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.dao.UsuarioDAOCustom;
+import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.LoginModelTest;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -61,7 +61,7 @@ public class LoginPresenterTest {
         System.out.println("loginButtonClicked");
 
         // Cria um usuario para teste
-        UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         try {
             dao.create(new Usuario(1, "Joao", "da Silva", "joao@uol.com.br", new Cipher().md5Sum("123")));
         } catch (NoSuchAlgorithmException ex) {

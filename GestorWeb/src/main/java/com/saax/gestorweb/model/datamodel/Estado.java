@@ -27,7 +27,6 @@ import javax.validation.constraints.Size;
 @Table(name = "estado")
 @NamedQueries({
     @NamedQuery(name = "Estado.findAll", query = "SELECT e FROM Estado e"),
-    @NamedQuery(name = "Estado.findByIdestado", query = "SELECT e FROM Estado e WHERE e.idEstado = :idestado"),
     @NamedQuery(name = "Estado.findByNome", query = "SELECT e FROM Estado e WHERE e.nome = :nome"),
     @NamedQuery(name = "Estado.findByUf", query = "SELECT e FROM Estado e WHERE e.uf = :uf")})
 public class Estado implements Serializable {
@@ -38,7 +37,7 @@ public class Estado implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idestado")
-    private Integer idEstado;
+    private Integer id;
     
     @Basic(optional = false)
     @NotNull
@@ -59,21 +58,21 @@ public class Estado implements Serializable {
     }
 
     public Estado(Integer idestado) {
-        this.idEstado = idestado;
+        this.id = idestado;
     }
 
     public Estado(Integer idestado, String nome, String uf) {
-        this.idEstado = idestado;
+        this.id = idestado;
         this.nome = nome;
         this.uf = uf;
     }
 
-    public Integer getIdEstado() {
-        return idEstado;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdEstado(Integer idEstado) {
-        this.idEstado = idEstado;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -103,7 +102,7 @@ public class Estado implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idEstado != null ? idEstado.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -114,7 +113,7 @@ public class Estado implements Serializable {
             return false;
         }
         Estado other = (Estado) object;
-        if ((this.idEstado == null && other.idEstado != null) || (this.idEstado != null && !this.idEstado.equals(other.idEstado))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -122,7 +121,7 @@ public class Estado implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Estado[ idestado=" + idEstado + " ]";
+        return "com.saax.gestorweb.model.datamodel.Estado[ idestado=" + id + " ]";
     }
     
 }

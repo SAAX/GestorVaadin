@@ -5,7 +5,7 @@
  */
 package com.saax.gestorweb.presenter;
 
-import com.saax.gestorweb.dao.EmpresaDAOCustom;
+import com.saax.gestorweb.dao.EmpresaDAO;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.util.DBConnect;
@@ -328,7 +328,7 @@ public class SignupPresenterTest {
         String cnpjRepetido = "12.123.345/0001-10";
         
         // 1o passo: cadastrar um empresa com o cnpj
-        EmpresaDAOCustom empresaDAO = new EmpresaDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        EmpresaDAO empresaDAO = new EmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         empresaDAO.create(new Empresa(1, cnpjRepetido, 'J'));
 
         

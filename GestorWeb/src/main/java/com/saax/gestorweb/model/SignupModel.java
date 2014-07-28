@@ -1,9 +1,7 @@
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.dao.EmpresaDAOCustom;
-import com.saax.gestorweb.dao.FilialEmpresaDAOCustom;
-import com.saax.gestorweb.dao.UsuarioDAOCustom;
-import com.saax.gestorweb.dao.UsuarioEmpresaDAO;
+import com.saax.gestorweb.dao.EmpresaDAO;
+import com.saax.gestorweb.dao.FilialEmpresaDAO;
 import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
@@ -15,9 +13,8 @@ import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.PostgresConnection;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -30,15 +27,15 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class SignupModel {
 
-    private final EmpresaDAOCustom empresaDAO;
-    private final FilialEmpresaDAOCustom filialEmpresaDAO;
+    private final EmpresaDAO empresaDAO;
+    private final FilialEmpresaDAO filialEmpresaDAO;
 
     /**
      * Cria o model e conecta ao DAO
      */
     public SignupModel() {
-        empresaDAO = new EmpresaDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
-        filialEmpresaDAO = new FilialEmpresaDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        empresaDAO = new EmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        filialEmpresaDAO = new FilialEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
     }
 
     /**
@@ -169,7 +166,7 @@ public class SignupModel {
         usuarioEmpresa.setUsuario(usuario);
         usuarioEmpresa.setEmpresa(empresa);
         usuarioEmpresa.setAtivo(true);
-        usuarioEmpresa.setContratacao(new Date());
+        usuarioEmpresa.setContratacao(LocalDate.now());
 
         usuarioEmpresa.setAdministrador(administrador);
 

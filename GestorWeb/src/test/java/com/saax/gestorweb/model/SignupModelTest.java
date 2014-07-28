@@ -7,11 +7,11 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.dao.CidadeDAO;
-import com.saax.gestorweb.dao.EmpresaDAOCustom;
+import com.saax.gestorweb.dao.EmpresaDAO;
 import com.saax.gestorweb.dao.EnderecoDAO;
 import com.saax.gestorweb.dao.EstadoDAO;
-import com.saax.gestorweb.dao.FilialEmpresaDAOCustom;
-import com.saax.gestorweb.dao.UsuarioDAOCustom;
+import com.saax.gestorweb.dao.FilialEmpresaDAO;
+import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.dao.UsuarioEmpresaDAO;
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
@@ -77,7 +77,7 @@ public class SignupModelTest {
         assertEquals(expResult, result);
 
         // Cria um usuario para teste
-        UsuarioDAOCustom dao = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
         try {
             dao.create(new Usuario(1, "Joao", "da Silva","joao@uol.com", new Cipher().md5Sum("123")));
@@ -106,7 +106,7 @@ public class SignupModelTest {
         System.out.println("verificaEmpresaExistente");
         
         SignupModel instance = new SignupModel();
-        EmpresaDAOCustom dao = new EmpresaDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        EmpresaDAO dao = new EmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
         // Teste #1 : CNPJ Não existente
         String cpf_cnpj = "12.345.678/0001-01";
@@ -461,9 +461,9 @@ public class SignupModelTest {
         System.out.println("cadatrarNovoUsuario");
         
         SignupModel instance = new SignupModel();
-        UsuarioDAOCustom usuarioDAOCustom = new UsuarioDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
-        EmpresaDAOCustom empresaDAOCustom = new EmpresaDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
-        FilialEmpresaDAOCustom filialEmpresaDAO = new FilialEmpresaDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        UsuarioDAO usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        EmpresaDAO empresaDAO = new EmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        FilialEmpresaDAO filialEmpresaDAO = new FilialEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         UsuarioEmpresaDAO usuarioEmpresaDAO = new UsuarioEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         
         // ---------------------------------------------------------------------
@@ -482,7 +482,7 @@ public class SignupModelTest {
         
         // Assert
         Object expResult = usuarioADM;
-        Object result = usuarioDAOCustom.findByLogin("rodrigo@gmail.com");
+        Object result = usuarioDAO.findByLogin("rodrigo@gmail.com");
         assertEquals(expResult, result);
         
         // remover
@@ -562,12 +562,12 @@ public class SignupModelTest {
         
         // Assert
         expResult = empresaPrincipal;
-        result = empresaDAOCustom.findByCNPJ("12.345.678/0001-03").getEmpresaPrincipal();
+        result = empresaDAO.findByCNPJ("12.345.678/0001-03").getEmpresaPrincipal();
         assertEquals(expResult, result);
         
         // Assert
         expResult = subempresa.getCnpj();
-        result = empresaDAOCustom.findByCNPJ("12.345.678/0001-01").getSubEmpresas().iterator().next().getCnpj();
+        result = empresaDAO.findByCNPJ("12.345.678/0001-01").getSubEmpresas().iterator().next().getCnpj();
         assertEquals(expResult, result);
                
        
@@ -723,7 +723,7 @@ public class SignupModelTest {
         String cnpj = "12.345.678/0001-01";
         SignupModel instance = new SignupModel();
 
-        FilialEmpresaDAOCustom dao = new FilialEmpresaDAOCustom(PostgresConnection.getInstance().getEntityManagerFactory());
+        FilialEmpresaDAO dao = new FilialEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
         // Teste #1 : CNPJ Não existente
         boolean expResult = false;

@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -15,12 +16,9 @@ import javax.persistence.EntityManagerFactory;
 /**
  * DAO para o entity bean: FilialEmpresa <br><br>
  * 
- * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
- * Caso seja necessária alguma customização, estender esta classe<br>
- * 
  * @author rodrigo
  */
-class FilialEmpresaDAO implements Serializable {
+public class FilialEmpresaDAO implements Serializable {
 
     public FilialEmpresaDAO(EntityManagerFactory emf) {
         this.emf = emf;
@@ -41,10 +39,19 @@ class FilialEmpresaDAO implements Serializable {
                 matriz = em.getReference(matriz.getClass(), matriz.getId());
                 filialEmpresa.setMatriz(matriz);
             }
+            Usuario idusuarioinclusao = filialEmpresa.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
+                filialEmpresa.setIdusuarioinclusao(idusuarioinclusao);
+            }
             em.persist(filialEmpresa);
             if (matriz != null) {
                 matriz.getFiliais().add(filialEmpresa);
                 matriz = em.merge(matriz);
+            }
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getFilialEmpresaList().add(filialEmpresa);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.getTransaction().commit();
         } finally {
@@ -62,9 +69,15 @@ class FilialEmpresaDAO implements Serializable {
             FilialEmpresa persistentFilialEmpresa = em.find(FilialEmpresa.class, filialEmpresa.getId());
             Empresa matrizOld = persistentFilialEmpresa.getMatriz();
             Empresa matrizNew = filialEmpresa.getMatriz();
+            Usuario idusuarioinclusaoOld = persistentFilialEmpresa.getIdusuarioinclusao();
+            Usuario idusuarioinclusaoNew = filialEmpresa.getIdusuarioinclusao();
             if (matrizNew != null) {
                 matrizNew = em.getReference(matrizNew.getClass(), matrizNew.getId());
                 filialEmpresa.setMatriz(matrizNew);
+            }
+            if (idusuarioinclusaoNew != null) {
+                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
+                filialEmpresa.setIdusuarioinclusao(idusuarioinclusaoNew);
             }
             filialEmpresa = em.merge(filialEmpresa);
             if (matrizOld != null && !matrizOld.equals(matrizNew)) {
@@ -74,6 +87,14 @@ class FilialEmpresaDAO implements Serializable {
             if (matrizNew != null && !matrizNew.equals(matrizOld)) {
                 matrizNew.getFiliais().add(filialEmpresa);
                 matrizNew = em.merge(matrizNew);
+            }
+            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
+                idusuarioinclusaoOld.getFilialEmpresaList().remove(filialEmpresa);
+                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            }
+            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
+                idusuarioinclusaoNew.getFilialEmpresaList().add(filialEmpresa);
+                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -108,6 +129,11 @@ class FilialEmpresaDAO implements Serializable {
             if (matriz != null) {
                 matriz.getFiliais().remove(filialEmpresa);
                 matriz = em.merge(matriz);
+            }
+            Usuario idusuarioinclusao = filialEmpresa.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getFilialEmpresaList().remove(filialEmpresa);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.remove(filialEmpresa);
             em.getTransaction().commit();
@@ -163,5 +189,25 @@ class FilialEmpresaDAO implements Serializable {
             em.close();
         }
     }
-    
+
+        
+    /**
+     * Busca uma filial pelo CNPJ
+     * @param cnpj
+     * @return filial
+     */
+    public FilialEmpresa findByCNPJ(String cnpj) {
+        EntityManager em = getEntityManager();
+
+        try {
+            return (FilialEmpresa) em.createNamedQuery("FilialEmpresa.findByCNPJ")
+                    .setParameter("cnpj", cnpj)
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+
 }

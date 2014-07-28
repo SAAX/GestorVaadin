@@ -8,18 +8,17 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.Meta;
 import java.util.ArrayList;
 import java.util.Collection;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
  * DAO para o entity bean: CentroCusto <br><br>
- * 
- * Classe gerada automaticamente pelo netbeans: NÃO ALTERAR<br>
- * Caso seja necessária alguma customização, estender esta classe<br>
  * 
  * @author rodrigo
  */
@@ -38,6 +37,9 @@ public class CentroCustoDAO implements Serializable {
         if (centroCusto.getMetas() == null) {
             centroCusto.setMetas(new ArrayList<Meta>());
         }
+        if (centroCusto.getTarefaList() == null) {
+            centroCusto.setTarefaList(new ArrayList<Tarefa>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -47,16 +49,31 @@ public class CentroCustoDAO implements Serializable {
                 empresa = em.getReference(empresa.getClass(), empresa.getId());
                 centroCusto.setEmpresa(empresa);
             }
+            Usuario idusuarioinclusao = centroCusto.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
+                centroCusto.setIdusuarioinclusao(idusuarioinclusao);
+            }
             Collection<Meta> attachedMetas = new ArrayList<Meta>();
             for (Meta metasMetaToAttach : centroCusto.getMetas()) {
                 metasMetaToAttach = em.getReference(metasMetaToAttach.getClass(), metasMetaToAttach.getId());
                 attachedMetas.add(metasMetaToAttach);
             }
             centroCusto.setMetas(attachedMetas);
+            List<Tarefa> attachedTarefaList = new ArrayList<Tarefa>();
+            for (Tarefa tarefaListTarefaToAttach : centroCusto.getTarefaList()) {
+                tarefaListTarefaToAttach = em.getReference(tarefaListTarefaToAttach.getClass(), tarefaListTarefaToAttach.getId());
+                attachedTarefaList.add(tarefaListTarefaToAttach);
+            }
+            centroCusto.setTarefaList(attachedTarefaList);
             em.persist(centroCusto);
             if (empresa != null) {
                 empresa.getCentrosDeCusto().add(centroCusto);
                 empresa = em.merge(empresa);
+            }
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getCentroCustoList().add(centroCusto);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             for (Meta metasMeta : centroCusto.getMetas()) {
                 CentroCusto oldCentroCustoOfMetasMeta = metasMeta.getCentroCusto();
@@ -65,6 +82,15 @@ public class CentroCustoDAO implements Serializable {
                 if (oldCentroCustoOfMetasMeta != null) {
                     oldCentroCustoOfMetasMeta.getMetas().remove(metasMeta);
                     oldCentroCustoOfMetasMeta = em.merge(oldCentroCustoOfMetasMeta);
+                }
+            }
+            for (Tarefa tarefaListTarefa : centroCusto.getTarefaList()) {
+                CentroCusto oldIdcentrocustoOfTarefaListTarefa = tarefaListTarefa.getIdcentrocusto();
+                tarefaListTarefa.setIdcentrocusto(centroCusto);
+                tarefaListTarefa = em.merge(tarefaListTarefa);
+                if (oldIdcentrocustoOfTarefaListTarefa != null) {
+                    oldIdcentrocustoOfTarefaListTarefa.getTarefaList().remove(tarefaListTarefa);
+                    oldIdcentrocustoOfTarefaListTarefa = em.merge(oldIdcentrocustoOfTarefaListTarefa);
                 }
             }
             em.getTransaction().commit();
@@ -83,11 +109,19 @@ public class CentroCustoDAO implements Serializable {
             CentroCusto persistentCentroCusto = em.find(CentroCusto.class, centroCusto.getId());
             Empresa empresaOld = persistentCentroCusto.getEmpresa();
             Empresa empresaNew = centroCusto.getEmpresa();
+            Usuario idusuarioinclusaoOld = persistentCentroCusto.getIdusuarioinclusao();
+            Usuario idusuarioinclusaoNew = centroCusto.getIdusuarioinclusao();
             Collection<Meta> metasOld = persistentCentroCusto.getMetas();
             Collection<Meta> metasNew = centroCusto.getMetas();
+            List<Tarefa> tarefaListOld = persistentCentroCusto.getTarefaList();
+            List<Tarefa> tarefaListNew = centroCusto.getTarefaList();
             if (empresaNew != null) {
                 empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 centroCusto.setEmpresa(empresaNew);
+            }
+            if (idusuarioinclusaoNew != null) {
+                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
+                centroCusto.setIdusuarioinclusao(idusuarioinclusaoNew);
             }
             Collection<Meta> attachedMetasNew = new ArrayList<Meta>();
             for (Meta metasNewMetaToAttach : metasNew) {
@@ -96,6 +130,13 @@ public class CentroCustoDAO implements Serializable {
             }
             metasNew = attachedMetasNew;
             centroCusto.setMetas(metasNew);
+            List<Tarefa> attachedTarefaListNew = new ArrayList<Tarefa>();
+            for (Tarefa tarefaListNewTarefaToAttach : tarefaListNew) {
+                tarefaListNewTarefaToAttach = em.getReference(tarefaListNewTarefaToAttach.getClass(), tarefaListNewTarefaToAttach.getId());
+                attachedTarefaListNew.add(tarefaListNewTarefaToAttach);
+            }
+            tarefaListNew = attachedTarefaListNew;
+            centroCusto.setTarefaList(tarefaListNew);
             centroCusto = em.merge(centroCusto);
             if (empresaOld != null && !empresaOld.equals(empresaNew)) {
                 empresaOld.getCentrosDeCusto().remove(centroCusto);
@@ -104,6 +145,14 @@ public class CentroCustoDAO implements Serializable {
             if (empresaNew != null && !empresaNew.equals(empresaOld)) {
                 empresaNew.getCentrosDeCusto().add(centroCusto);
                 empresaNew = em.merge(empresaNew);
+            }
+            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
+                idusuarioinclusaoOld.getCentroCustoList().remove(centroCusto);
+                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            }
+            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
+                idusuarioinclusaoNew.getCentroCustoList().add(centroCusto);
+                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
             }
             for (Meta metasOldMeta : metasOld) {
                 if (!metasNew.contains(metasOldMeta)) {
@@ -119,6 +168,23 @@ public class CentroCustoDAO implements Serializable {
                     if (oldCentroCustoOfMetasNewMeta != null && !oldCentroCustoOfMetasNewMeta.equals(centroCusto)) {
                         oldCentroCustoOfMetasNewMeta.getMetas().remove(metasNewMeta);
                         oldCentroCustoOfMetasNewMeta = em.merge(oldCentroCustoOfMetasNewMeta);
+                    }
+                }
+            }
+            for (Tarefa tarefaListOldTarefa : tarefaListOld) {
+                if (!tarefaListNew.contains(tarefaListOldTarefa)) {
+                    tarefaListOldTarefa.setIdcentrocusto(null);
+                    tarefaListOldTarefa = em.merge(tarefaListOldTarefa);
+                }
+            }
+            for (Tarefa tarefaListNewTarefa : tarefaListNew) {
+                if (!tarefaListOld.contains(tarefaListNewTarefa)) {
+                    CentroCusto oldIdcentrocustoOfTarefaListNewTarefa = tarefaListNewTarefa.getIdcentrocusto();
+                    tarefaListNewTarefa.setIdcentrocusto(centroCusto);
+                    tarefaListNewTarefa = em.merge(tarefaListNewTarefa);
+                    if (oldIdcentrocustoOfTarefaListNewTarefa != null && !oldIdcentrocustoOfTarefaListNewTarefa.equals(centroCusto)) {
+                        oldIdcentrocustoOfTarefaListNewTarefa.getTarefaList().remove(tarefaListNewTarefa);
+                        oldIdcentrocustoOfTarefaListNewTarefa = em.merge(oldIdcentrocustoOfTarefaListNewTarefa);
                     }
                 }
             }
@@ -156,10 +222,20 @@ public class CentroCustoDAO implements Serializable {
                 empresa.getCentrosDeCusto().remove(centroCusto);
                 empresa = em.merge(empresa);
             }
+            Usuario idusuarioinclusao = centroCusto.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getCentroCustoList().remove(centroCusto);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
+            }
             Collection<Meta> metas = centroCusto.getMetas();
             for (Meta metasMeta : metas) {
                 metasMeta.setCentroCusto(null);
                 metasMeta = em.merge(metasMeta);
+            }
+            List<Tarefa> tarefaList = centroCusto.getTarefaList();
+            for (Tarefa tarefaListTarefa : tarefaList) {
+                tarefaListTarefa.setIdcentrocusto(null);
+                tarefaListTarefa = em.merge(tarefaListTarefa);
             }
             em.remove(centroCusto);
             em.getTransaction().commit();

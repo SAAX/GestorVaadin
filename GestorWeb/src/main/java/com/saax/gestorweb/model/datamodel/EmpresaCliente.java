@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,6 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -29,7 +32,6 @@ import javax.validation.constraints.Size;
 @Table(name = "empresacliente")
 @NamedQueries({
     @NamedQuery(name = "EmpresaCliente.findAll", query = "SELECT e FROM EmpresaCliente e"),
-    @NamedQuery(name = "EmpresaCliente.findByIdempresacliente", query = "SELECT e FROM EmpresaCliente e WHERE e.idEmpresaCliente = :idempresacliente"),
     @NamedQuery(name = "EmpresaCliente.findByNome", query = "SELECT e FROM EmpresaCliente e WHERE e.nome = :nome"),
     @NamedQuery(name = "EmpresaCliente.findByRazaosocial", query = "SELECT e FROM EmpresaCliente e WHERE e.razaoSocial = :razaosocial"),
     @NamedQuery(name = "EmpresaCliente.findByTipopessoa", query = "SELECT e FROM EmpresaCliente e WHERE e.tipoPessoa = :tipopessoa"),
@@ -37,6 +39,18 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "EmpresaCliente.findByCpf", query = "SELECT e FROM EmpresaCliente e WHERE e.cpf = :cpf"),
     @NamedQuery(name = "EmpresaCliente.findByAtiva", query = "SELECT e FROM EmpresaCliente e WHERE e.ativa = :ativa")})
 public class EmpresaCliente implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @OneToMany(mappedBy = "idempresacliente")
+    private List<Tarefa> tarefaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idempresacliente")
+    private List<Meta> metaList;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idusuarioinclusao;
 
     private static final long serialVersionUID = 1L;
     
@@ -44,7 +58,7 @@ public class EmpresaCliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idempresacliente")
-    private Integer idEmpresaCliente;
+    private Integer id;
     
     @Basic(optional = false)
     @NotNull
@@ -91,23 +105,23 @@ public class EmpresaCliente implements Serializable {
     }
 
     public EmpresaCliente(Integer idempresacliente) {
-        this.idEmpresaCliente = idempresacliente;
+        this.id = idempresacliente;
     }
 
     public EmpresaCliente(Integer idempresacliente, String nome, String razaosocial, Character tipopessoa, boolean ativa) {
-        this.idEmpresaCliente = idempresacliente;
+        this.id = idempresacliente;
         this.nome = nome;
         this.razaoSocial = razaosocial;
         this.tipoPessoa = tipopessoa;
         this.ativa = ativa;
     }
 
-    public Integer getIdEmpresaCliente() {
-        return idEmpresaCliente;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdEmpresaCliente(Integer idEmpresaCliente) {
-        this.idEmpresaCliente = idEmpresaCliente;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -185,7 +199,7 @@ public class EmpresaCliente implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idEmpresaCliente != null ? idEmpresaCliente.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -196,7 +210,7 @@ public class EmpresaCliente implements Serializable {
             return false;
         }
         EmpresaCliente other = (EmpresaCliente) object;
-        if ((this.idEmpresaCliente == null && other.idEmpresaCliente != null) || (this.idEmpresaCliente != null && !this.idEmpresaCliente.equals(other.idEmpresaCliente))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -204,7 +218,39 @@ public class EmpresaCliente implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.EmpresaCliente[ idempresacliente=" + idEmpresaCliente + " ]";
+        return "com.saax.gestorweb.model.datamodel.EmpresaCliente[ idempresacliente=" + id + " ]";
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public List<Tarefa> getTarefaList() {
+        return tarefaList;
+    }
+
+    public void setTarefaList(List<Tarefa> tarefaList) {
+        this.tarefaList = tarefaList;
+    }
+
+    public List<Meta> getMetaList() {
+        return metaList;
+    }
+
+    public void setMetaList(List<Meta> metaList) {
+        this.metaList = metaList;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
     }
     
 }

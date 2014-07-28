@@ -132,6 +132,7 @@ public class DashBoardView extends VerticalLayout {
         tarefasTable = new TreeTable();
         tarefasTable.setWidth("100%");
         tarefasTable.addContainerProperty("Cod", String.class, "");
+        tarefasTable.addContainerProperty("Título", String.class, "");
         tarefasTable.addContainerProperty("Nome", String.class, "");
         tarefasTable.addContainerProperty("Empresa", String.class, "");
         tarefasTable.addContainerProperty("Solicitante", String.class, "");
@@ -221,7 +222,6 @@ public class DashBoardView extends VerticalLayout {
         menuSuperiorContainer.setWidth("100%");
         menuSuperiorContainer.setHeight("50px");
 
-        
         menuSuperior = new MenuBar();
         menuSuperior.setHeight("100%");
         menuSuperior.setHtmlContentAllowed(true);
@@ -235,10 +235,14 @@ public class DashBoardView extends VerticalLayout {
         MenuBar.MenuItem relatorios = menuSuperior.addItem("<h3>Relatórios</h3>", null, null);
 
         MenuBar.MenuItem config = menuSuperior.addItem("<h3>Config</h3>", null, null);
-        MenuBar.MenuItem config1 = config.addItem("Config 1", null, null);
-        MenuBar.MenuItem config2 = config.addItem("Config 2", null, null);
-        MenuBar.MenuItem config3 = config.addItem("Config 3", null, null);
+        config.addItem("Config 1", null, null);
+        config.addItem("Config 2", null, null);
+        config.addItem("Config 3", null, null);
 
+        menuSuperior.addItem("<h3>Sair</h3>", null, (MenuBar.MenuItem selectedItem) -> {
+            listener.logout();
+        });
+        
         menuSuperiorContainer.addComponent(menuSuperior);
         menuSuperiorContainer.setComponentAlignment(menuSuperior, Alignment.MIDDLE_RIGHT);
         
@@ -348,6 +352,7 @@ public class DashBoardView extends VerticalLayout {
         
         principaisTarefasContainer = new VerticalLayout();
         principaisTarefasContainer.setStyleName("blue");
+        principaisTarefasContainer.setWidth("20%");
         rodapeContainer.addComponent(principaisTarefasContainer);
         
         Button tarefaButton;
@@ -358,6 +363,7 @@ public class DashBoardView extends VerticalLayout {
         }
         
         principaisProjecoesContainer = new VerticalLayout();
+        principaisProjecoesContainer.setWidth("20%");
         rodapeContainer.addComponent(principaisProjecoesContainer);
         
         Button projecaoButton;
@@ -369,6 +375,7 @@ public class DashBoardView extends VerticalLayout {
         
         principaisConvitesContainer = new VerticalLayout();
         principaisConvitesContainer.setStyleName("blue");
+        principaisConvitesContainer.setWidth("20%");
         rodapeContainer.addComponent(principaisConvitesContainer);
 
         Button conviteButton;

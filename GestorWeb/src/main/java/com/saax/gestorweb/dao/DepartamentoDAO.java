@@ -8,9 +8,11 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.Meta;
 import java.util.ArrayList;
 import java.util.Collection;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -36,6 +38,9 @@ public class DepartamentoDAO implements Serializable {
         if (departamento.getMetas() == null) {
             departamento.setMetas(new ArrayList<Meta>());
         }
+        if (departamento.getTarefaList() == null) {
+            departamento.setTarefaList(new ArrayList<Tarefa>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -45,16 +50,31 @@ public class DepartamentoDAO implements Serializable {
                 empresa = em.getReference(empresa.getClass(), empresa.getId());
                 departamento.setEmpresa(empresa);
             }
+            Usuario idusuarioinclusao = departamento.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
+                departamento.setIdusuarioinclusao(idusuarioinclusao);
+            }
             Collection<Meta> attachedMetas = new ArrayList<Meta>();
             for (Meta metasMetaToAttach : departamento.getMetas()) {
                 metasMetaToAttach = em.getReference(metasMetaToAttach.getClass(), metasMetaToAttach.getId());
                 attachedMetas.add(metasMetaToAttach);
             }
             departamento.setMetas(attachedMetas);
+            List<Tarefa> attachedTarefaList = new ArrayList<Tarefa>();
+            for (Tarefa tarefaListTarefaToAttach : departamento.getTarefaList()) {
+                tarefaListTarefaToAttach = em.getReference(tarefaListTarefaToAttach.getClass(), tarefaListTarefaToAttach.getId());
+                attachedTarefaList.add(tarefaListTarefaToAttach);
+            }
+            departamento.setTarefaList(attachedTarefaList);
             em.persist(departamento);
             if (empresa != null) {
                 empresa.getDepartamentos().add(departamento);
                 empresa = em.merge(empresa);
+            }
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getDepartamentoList().add(departamento);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             for (Meta metasMeta : departamento.getMetas()) {
                 Departamento oldDepartamentoOfMetasMeta = metasMeta.getDepartamento();
@@ -63,6 +83,15 @@ public class DepartamentoDAO implements Serializable {
                 if (oldDepartamentoOfMetasMeta != null) {
                     oldDepartamentoOfMetasMeta.getMetas().remove(metasMeta);
                     oldDepartamentoOfMetasMeta = em.merge(oldDepartamentoOfMetasMeta);
+                }
+            }
+            for (Tarefa tarefaListTarefa : departamento.getTarefaList()) {
+                Departamento oldIddepartamentoOfTarefaListTarefa = tarefaListTarefa.getIddepartamento();
+                tarefaListTarefa.setIddepartamento(departamento);
+                tarefaListTarefa = em.merge(tarefaListTarefa);
+                if (oldIddepartamentoOfTarefaListTarefa != null) {
+                    oldIddepartamentoOfTarefaListTarefa.getTarefaList().remove(tarefaListTarefa);
+                    oldIddepartamentoOfTarefaListTarefa = em.merge(oldIddepartamentoOfTarefaListTarefa);
                 }
             }
             em.getTransaction().commit();
@@ -81,11 +110,19 @@ public class DepartamentoDAO implements Serializable {
             Departamento persistentDepartamento = em.find(Departamento.class, departamento.getId());
             Empresa empresaOld = persistentDepartamento.getEmpresa();
             Empresa empresaNew = departamento.getEmpresa();
+            Usuario idusuarioinclusaoOld = persistentDepartamento.getIdusuarioinclusao();
+            Usuario idusuarioinclusaoNew = departamento.getIdusuarioinclusao();
             Collection<Meta> metasOld = persistentDepartamento.getMetas();
             Collection<Meta> metasNew = departamento.getMetas();
+            List<Tarefa> tarefaListOld = persistentDepartamento.getTarefaList();
+            List<Tarefa> tarefaListNew = departamento.getTarefaList();
             if (empresaNew != null) {
                 empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 departamento.setEmpresa(empresaNew);
+            }
+            if (idusuarioinclusaoNew != null) {
+                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
+                departamento.setIdusuarioinclusao(idusuarioinclusaoNew);
             }
             Collection<Meta> attachedMetasNew = new ArrayList<Meta>();
             for (Meta metasNewMetaToAttach : metasNew) {
@@ -94,6 +131,13 @@ public class DepartamentoDAO implements Serializable {
             }
             metasNew = attachedMetasNew;
             departamento.setMetas(metasNew);
+            List<Tarefa> attachedTarefaListNew = new ArrayList<Tarefa>();
+            for (Tarefa tarefaListNewTarefaToAttach : tarefaListNew) {
+                tarefaListNewTarefaToAttach = em.getReference(tarefaListNewTarefaToAttach.getClass(), tarefaListNewTarefaToAttach.getId());
+                attachedTarefaListNew.add(tarefaListNewTarefaToAttach);
+            }
+            tarefaListNew = attachedTarefaListNew;
+            departamento.setTarefaList(tarefaListNew);
             departamento = em.merge(departamento);
             if (empresaOld != null && !empresaOld.equals(empresaNew)) {
                 empresaOld.getDepartamentos().remove(departamento);
@@ -102,6 +146,14 @@ public class DepartamentoDAO implements Serializable {
             if (empresaNew != null && !empresaNew.equals(empresaOld)) {
                 empresaNew.getDepartamentos().add(departamento);
                 empresaNew = em.merge(empresaNew);
+            }
+            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
+                idusuarioinclusaoOld.getDepartamentoList().remove(departamento);
+                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            }
+            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
+                idusuarioinclusaoNew.getDepartamentoList().add(departamento);
+                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
             }
             for (Meta metasOldMeta : metasOld) {
                 if (!metasNew.contains(metasOldMeta)) {
@@ -117,6 +169,23 @@ public class DepartamentoDAO implements Serializable {
                     if (oldDepartamentoOfMetasNewMeta != null && !oldDepartamentoOfMetasNewMeta.equals(departamento)) {
                         oldDepartamentoOfMetasNewMeta.getMetas().remove(metasNewMeta);
                         oldDepartamentoOfMetasNewMeta = em.merge(oldDepartamentoOfMetasNewMeta);
+                    }
+                }
+            }
+            for (Tarefa tarefaListOldTarefa : tarefaListOld) {
+                if (!tarefaListNew.contains(tarefaListOldTarefa)) {
+                    tarefaListOldTarefa.setIddepartamento(null);
+                    tarefaListOldTarefa = em.merge(tarefaListOldTarefa);
+                }
+            }
+            for (Tarefa tarefaListNewTarefa : tarefaListNew) {
+                if (!tarefaListOld.contains(tarefaListNewTarefa)) {
+                    Departamento oldIddepartamentoOfTarefaListNewTarefa = tarefaListNewTarefa.getIddepartamento();
+                    tarefaListNewTarefa.setIddepartamento(departamento);
+                    tarefaListNewTarefa = em.merge(tarefaListNewTarefa);
+                    if (oldIddepartamentoOfTarefaListNewTarefa != null && !oldIddepartamentoOfTarefaListNewTarefa.equals(departamento)) {
+                        oldIddepartamentoOfTarefaListNewTarefa.getTarefaList().remove(tarefaListNewTarefa);
+                        oldIddepartamentoOfTarefaListNewTarefa = em.merge(oldIddepartamentoOfTarefaListNewTarefa);
                     }
                 }
             }
@@ -154,10 +223,20 @@ public class DepartamentoDAO implements Serializable {
                 empresa.getDepartamentos().remove(departamento);
                 empresa = em.merge(empresa);
             }
+            Usuario idusuarioinclusao = departamento.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getDepartamentoList().remove(departamento);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
+            }
             Collection<Meta> metas = departamento.getMetas();
             for (Meta metasMeta : metas) {
                 metasMeta.setDepartamento(null);
                 metasMeta = em.merge(metasMeta);
+            }
+            List<Tarefa> tarefaList = departamento.getTarefaList();
+            for (Tarefa tarefaListTarefa : tarefaList) {
+                tarefaListTarefa.setIddepartamento(null);
+                tarefaListTarefa = em.merge(tarefaListTarefa);
             }
             em.remove(departamento);
             em.getTransaction().commit();
@@ -213,7 +292,8 @@ public class DepartamentoDAO implements Serializable {
             em.close();
         }
     }
-
+    
+    
     /**
      * Obtém a lista de departamentos cadastrados para a empresa
      * @param empresa

@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -31,6 +34,14 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "FilialEmpresa.findByCNPJ", query = "SELECT f FROM FilialEmpresa f WHERE f.cnpj = :cnpj"),
     @NamedQuery(name = "FilialEmpresa.findByAtiva", query = "SELECT f FROM FilialEmpresa f WHERE f.ativa = :ativa")})
 public class FilialEmpresa implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idusuarioinclusao;
     
     private static final long serialVersionUID = 1L;
     
@@ -135,6 +146,22 @@ public class FilialEmpresa implements Serializable {
     @Override
     public String toString() {
         return "com.saax.gestorweb.model.datamodel.FilialEmpresa[ idfilialempresa=" + id + " ]";
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
     }
     
 }

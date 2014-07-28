@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
@@ -14,12 +8,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.FilialCliente;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**
- *
+ * DAO para o entity bean: FilialCliente <br><br>
+ * 
  * @author rodrigo
  */
 public class FilialClienteDAO implements Serializable {
@@ -38,15 +34,24 @@ public class FilialClienteDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            EmpresaCliente idempresacliente = filialCliente.getEmpresaCliente();
-            if (idempresacliente != null) {
-                idempresacliente = em.getReference(idempresacliente.getClass(), idempresacliente.getIdEmpresaCliente());
-                filialCliente.setEmpresaCliente(idempresacliente);
+            EmpresaCliente empresaCliente = filialCliente.getEmpresaCliente();
+            if (empresaCliente != null) {
+                empresaCliente = em.getReference(empresaCliente.getClass(), empresaCliente.getId());
+                filialCliente.setEmpresaCliente(empresaCliente);
+            }
+            Usuario idusuarioinclusao = filialCliente.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
+                filialCliente.setIdusuarioinclusao(idusuarioinclusao);
             }
             em.persist(filialCliente);
-            if (idempresacliente != null) {
-                idempresacliente.getFiliais().add(filialCliente);
-                idempresacliente = em.merge(idempresacliente);
+            if (empresaCliente != null) {
+                empresaCliente.getFiliais().add(filialCliente);
+                empresaCliente = em.merge(empresaCliente);
+            }
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getFilialClienteList().add(filialCliente);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.getTransaction().commit();
         } finally {
@@ -61,27 +66,41 @@ public class FilialClienteDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            FilialCliente persistentFilialCliente = em.find(FilialCliente.class, filialCliente.getIdFilialCliente());
-            EmpresaCliente idempresaclienteOld = persistentFilialCliente.getEmpresaCliente();
-            EmpresaCliente idempresaclienteNew = filialCliente.getEmpresaCliente();
-            if (idempresaclienteNew != null) {
-                idempresaclienteNew = em.getReference(idempresaclienteNew.getClass(), idempresaclienteNew.getIdEmpresaCliente());
-                filialCliente.setEmpresaCliente(idempresaclienteNew);
+            FilialCliente persistentFilialCliente = em.find(FilialCliente.class, filialCliente.getId());
+            EmpresaCliente empresaClienteOld = persistentFilialCliente.getEmpresaCliente();
+            EmpresaCliente empresaClienteNew = filialCliente.getEmpresaCliente();
+            Usuario idusuarioinclusaoOld = persistentFilialCliente.getIdusuarioinclusao();
+            Usuario idusuarioinclusaoNew = filialCliente.getIdusuarioinclusao();
+            if (empresaClienteNew != null) {
+                empresaClienteNew = em.getReference(empresaClienteNew.getClass(), empresaClienteNew.getId());
+                filialCliente.setEmpresaCliente(empresaClienteNew);
+            }
+            if (idusuarioinclusaoNew != null) {
+                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
+                filialCliente.setIdusuarioinclusao(idusuarioinclusaoNew);
             }
             filialCliente = em.merge(filialCliente);
-            if (idempresaclienteOld != null && !idempresaclienteOld.equals(idempresaclienteNew)) {
-                idempresaclienteOld.getFiliais().remove(filialCliente);
-                idempresaclienteOld = em.merge(idempresaclienteOld);
+            if (empresaClienteOld != null && !empresaClienteOld.equals(empresaClienteNew)) {
+                empresaClienteOld.getFiliais().remove(filialCliente);
+                empresaClienteOld = em.merge(empresaClienteOld);
             }
-            if (idempresaclienteNew != null && !idempresaclienteNew.equals(idempresaclienteOld)) {
-                idempresaclienteNew.getFiliais().add(filialCliente);
-                idempresaclienteNew = em.merge(idempresaclienteNew);
+            if (empresaClienteNew != null && !empresaClienteNew.equals(empresaClienteOld)) {
+                empresaClienteNew.getFiliais().add(filialCliente);
+                empresaClienteNew = em.merge(empresaClienteNew);
+            }
+            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
+                idusuarioinclusaoOld.getFilialClienteList().remove(filialCliente);
+                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            }
+            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
+                idusuarioinclusaoNew.getFilialClienteList().add(filialCliente);
+                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = filialCliente.getIdFilialCliente();
+                Integer id = filialCliente.getId();
                 if (findFilialCliente(id) == null) {
                     throw new NonexistentEntityException("The filialCliente with id " + id + " no longer exists.");
                 }
@@ -102,14 +121,19 @@ public class FilialClienteDAO implements Serializable {
             FilialCliente filialCliente;
             try {
                 filialCliente = em.getReference(FilialCliente.class, id);
-                filialCliente.getIdFilialCliente();
+                filialCliente.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The filialCliente with id " + id + " no longer exists.", enfe);
             }
-            EmpresaCliente idempresacliente = filialCliente.getEmpresaCliente();
-            if (idempresacliente != null) {
-                idempresacliente.getFiliais().remove(filialCliente);
-                idempresacliente = em.merge(idempresacliente);
+            EmpresaCliente empresaCliente = filialCliente.getEmpresaCliente();
+            if (empresaCliente != null) {
+                empresaCliente.getFiliais().remove(filialCliente);
+                empresaCliente = em.merge(empresaCliente);
+            }
+            Usuario idusuarioinclusao = filialCliente.getIdusuarioinclusao();
+            if (idusuarioinclusao != null) {
+                idusuarioinclusao.getFilialClienteList().remove(filialCliente);
+                idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.remove(filialCliente);
             em.getTransaction().commit();

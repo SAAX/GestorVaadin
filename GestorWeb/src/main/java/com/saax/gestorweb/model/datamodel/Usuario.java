@@ -2,6 +2,8 @@ package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,10 +11,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -32,6 +38,54 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login"),
     @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")})
 public class Usuario implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<FavoritosTarefaMeta> favoritosTarefaMetaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<CentroCusto> centroCustoList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<Endereco> enderecoList;
+    @OneToMany(mappedBy = "idusuarioinclusao")
+    private List<Tarefa> tarefaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuariosolicitante")
+    private List<Tarefa> tarefaList1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioresponsavel")
+    private List<Tarefa> tarefaList2;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<ParicipanteTarefa> paricipanteTarefaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioparticipante")
+    private List<ParicipanteTarefa> paricipanteTarefaList1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<FilialCliente> filialClienteList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<FilialEmpresa> filialEmpresaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioavaliador")
+    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioavaliado")
+    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList2;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<OrcamentoTarefa> orcamentoTarefaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
+    private List<ApontamentoTarefa> apontamentoTarefaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<Departamento> departamentoList;
+    @OneToMany(mappedBy = "idusuarioinclusao")
+    private List<Usuario> usuarioList;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario idusuarioinclusao;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<Empresa> empresaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private List<EmpresaCliente> empresaClienteList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
+    private List<AnexoTarefa> anexoTarefaList;
     
     private static final long serialVersionUID = 1L;
 
@@ -167,6 +221,182 @@ public class Usuario implements Serializable {
 
     public void setMetasResponsaveis(Collection<Meta> metasResponsaveis) {
         this.metasResponsaveis = metasResponsaveis;
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public List<FavoritosTarefaMeta> getFavoritosTarefaMetaList() {
+        return favoritosTarefaMetaList;
+    }
+
+    public void setFavoritosTarefaMetaList(List<FavoritosTarefaMeta> favoritosTarefaMetaList) {
+        this.favoritosTarefaMetaList = favoritosTarefaMetaList;
+    }
+
+    public List<CentroCusto> getCentroCustoList() {
+        return centroCustoList;
+    }
+
+    public void setCentroCustoList(List<CentroCusto> centroCustoList) {
+        this.centroCustoList = centroCustoList;
+    }
+
+    public List<Endereco> getEnderecoList() {
+        return enderecoList;
+    }
+
+    public void setEnderecoList(List<Endereco> enderecoList) {
+        this.enderecoList = enderecoList;
+    }
+
+    public List<Tarefa> getTarefaList() {
+        return tarefaList;
+    }
+
+    public void setTarefaList(List<Tarefa> tarefaList) {
+        this.tarefaList = tarefaList;
+    }
+
+    public List<Tarefa> getTarefaList1() {
+        return tarefaList1;
+    }
+
+    public void setTarefaList1(List<Tarefa> tarefaList1) {
+        this.tarefaList1 = tarefaList1;
+    }
+
+    public List<Tarefa> getTarefaList2() {
+        return tarefaList2;
+    }
+
+    public void setTarefaList2(List<Tarefa> tarefaList2) {
+        this.tarefaList2 = tarefaList2;
+    }
+
+    public List<ParicipanteTarefa> getParicipanteTarefaList() {
+        return paricipanteTarefaList;
+    }
+
+    public void setParicipanteTarefaList(List<ParicipanteTarefa> paricipanteTarefaList) {
+        this.paricipanteTarefaList = paricipanteTarefaList;
+    }
+
+    public List<ParicipanteTarefa> getParicipanteTarefaList1() {
+        return paricipanteTarefaList1;
+    }
+
+    public void setParicipanteTarefaList1(List<ParicipanteTarefa> paricipanteTarefaList1) {
+        this.paricipanteTarefaList1 = paricipanteTarefaList1;
+    }
+
+    public List<FilialCliente> getFilialClienteList() {
+        return filialClienteList;
+    }
+
+    public void setFilialClienteList(List<FilialCliente> filialClienteList) {
+        this.filialClienteList = filialClienteList;
+    }
+
+    public List<FilialEmpresa> getFilialEmpresaList() {
+        return filialEmpresaList;
+    }
+
+    public void setFilialEmpresaList(List<FilialEmpresa> filialEmpresaList) {
+        this.filialEmpresaList = filialEmpresaList;
+    }
+
+    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList() {
+        return avaliacaoMetaTarefaList;
+    }
+
+    public void setAvaliacaoMetaTarefaList(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList) {
+        this.avaliacaoMetaTarefaList = avaliacaoMetaTarefaList;
+    }
+
+    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList1() {
+        return avaliacaoMetaTarefaList1;
+    }
+
+    public void setAvaliacaoMetaTarefaList1(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList1) {
+        this.avaliacaoMetaTarefaList1 = avaliacaoMetaTarefaList1;
+    }
+
+    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList2() {
+        return avaliacaoMetaTarefaList2;
+    }
+
+    public void setAvaliacaoMetaTarefaList2(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList2) {
+        this.avaliacaoMetaTarefaList2 = avaliacaoMetaTarefaList2;
+    }
+
+    public List<OrcamentoTarefa> getOrcamentoTarefaList() {
+        return orcamentoTarefaList;
+    }
+
+    public void setOrcamentoTarefaList(List<OrcamentoTarefa> orcamentoTarefaList) {
+        this.orcamentoTarefaList = orcamentoTarefaList;
+    }
+
+    public List<ApontamentoTarefa> getApontamentoTarefaList() {
+        return apontamentoTarefaList;
+    }
+
+    public void setApontamentoTarefaList(List<ApontamentoTarefa> apontamentoTarefaList) {
+        this.apontamentoTarefaList = apontamentoTarefaList;
+    }
+
+    public List<Departamento> getDepartamentoList() {
+        return departamentoList;
+    }
+
+    public void setDepartamentoList(List<Departamento> departamentoList) {
+        this.departamentoList = departamentoList;
+    }
+
+    public List<Usuario> getUsuarioList() {
+        return usuarioList;
+    }
+
+    public void setUsuarioList(List<Usuario> usuarioList) {
+        this.usuarioList = usuarioList;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
+    }
+
+    public List<Empresa> getEmpresaList() {
+        return empresaList;
+    }
+
+    public void setEmpresaList(List<Empresa> empresaList) {
+        this.empresaList = empresaList;
+    }
+
+    public List<EmpresaCliente> getEmpresaClienteList() {
+        return empresaClienteList;
+    }
+
+    public void setEmpresaClienteList(List<EmpresaCliente> empresaClienteList) {
+        this.empresaClienteList = empresaClienteList;
+    }
+
+    public List<AnexoTarefa> getAnexoTarefaList() {
+        return anexoTarefaList;
+    }
+
+    public void setAnexoTarefaList(List<AnexoTarefa> anexoTarefaList) {
+        this.anexoTarefaList = anexoTarefaList;
     }
 
     

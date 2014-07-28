@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -14,6 +15,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
@@ -29,12 +32,19 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "endereco")
 @NamedQueries({
     @NamedQuery(name = "Endereco.findAll", query = "SELECT e FROM Endereco e"),
-    @NamedQuery(name = "Endereco.findByIdendereco", query = "SELECT e FROM Endereco e WHERE e.idEndereco = :idendereco"),
     @NamedQuery(name = "Endereco.findByLogradouro", query = "SELECT e FROM Endereco e WHERE e.logradouro = :logradouro"),
     @NamedQuery(name = "Endereco.findByNumero", query = "SELECT e FROM Endereco e WHERE e.numero = :numero"),
     @NamedQuery(name = "Endereco.findByComplemento", query = "SELECT e FROM Endereco e WHERE e.complemento = :complemento"),
     @NamedQuery(name = "Endereco.findByCep", query = "SELECT e FROM Endereco e WHERE e.cep = :cep")})
 public class Endereco implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idusuarioinclusao;
     @OneToMany(mappedBy = "endereco")
     private List<EmpresaCliente> empresaClienteList;
 
@@ -44,7 +54,7 @@ public class Endereco implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idendereco")
-    private Integer idEndereco;
+    private Integer id;
     
     @Basic(optional = false)
     @NotNull
@@ -81,23 +91,23 @@ public class Endereco implements Serializable {
     }
 
     public Endereco(Integer idendereco) {
-        this.idEndereco = idendereco;
+        this.id = idendereco;
     }
 
     public Endereco(Integer idendereco, String logradouro, String numero, String complemento, String cep) {
-        this.idEndereco = idendereco;
+        this.id = idendereco;
         this.logradouro = logradouro;
         this.numero = numero;
         this.complemento = complemento;
         this.cep = cep;
     }
 
-    public Integer getIdEndereco() {
-        return idEndereco;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdEndereco(Integer idEndereco) {
-        this.idEndereco = idEndereco;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getLogradouro() {
@@ -151,7 +161,7 @@ public class Endereco implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idEndereco != null ? idEndereco.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -162,7 +172,7 @@ public class Endereco implements Serializable {
             return false;
         }
         Endereco other = (Endereco) object;
-        if ((this.idEndereco == null && other.idEndereco != null) || (this.idEndereco != null && !this.idEndereco.equals(other.idEndereco))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -170,7 +180,7 @@ public class Endereco implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Endereco[ idendereco=" + idEndereco + " ]";
+        return "com.saax.gestorweb.model.datamodel.Endereco[ idendereco=" + id + " ]";
     }
 
     @XmlTransient
@@ -180,6 +190,22 @@ public class Endereco implements Serializable {
 
     public void setEmpresaClienteList(List<EmpresaCliente> empresaClienteList) {
         this.empresaClienteList = empresaClienteList;
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
     }
     
 }

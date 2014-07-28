@@ -70,6 +70,18 @@ public class DashboardPresenter implements DashboardViewListenter {
   //      view.exibirMetas(metas);
         
     }
+
+    @Override
+    public void logout() {
+
+        ((GestorMDI) UI.getCurrent()).setUserData(null);
+        
+        ((GestorMDI) UI.getCurrent()).getPage().setLocation("/");
+        
+        // Close the VaadinServiceSession
+        ((GestorMDI) UI.getCurrent()).getSession().close();
+
+    }
             
             
 }

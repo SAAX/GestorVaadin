@@ -1,8 +1,12 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,6 +43,18 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Meta.findByHorasestimadas", query = "SELECT m FROM Meta m WHERE m.horasEstimadas = :horasestimadas"),
     @NamedQuery(name = "Meta.findByHorasrealizadas", query = "SELECT m FROM Meta m WHERE m.horasRealizadas = :horasrealizadas")})
 public class Meta implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmeta")
+    private List<FavoritosTarefaMeta> favoritosTarefaMetaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmeta")
+    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario idusuarioinclusao;
 
     private static final long serialVersionUID = 1L;
  
@@ -53,7 +70,6 @@ public class Meta implements Serializable {
     @Column(name = "nome")
     private String nome;
     
-    @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2147483647)
     @Column(name = "descricao")
@@ -63,27 +79,27 @@ public class Meta implements Serializable {
     @NotNull
     @Column(name = "datainicio")
     @Temporal(TemporalType.DATE)
-    private Date dataInicio;
+    private LocalDate dataInicio;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "datafim")
     @Temporal(TemporalType.DATE)
-    private Date dataFim;
+    private LocalDate dataFim;
     
     @Column(name = "datatermino")
     @Temporal(TemporalType.DATE)
-    private Date dataTermino;
+    private LocalDate dataTermino;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "horasestimadas")
     @Temporal(TemporalType.TIME)
-    private Date horasEstimadas;
+    private LocalTime horasEstimadas;
     
     @Column(name = "horasrealizadas")
     @Temporal(TemporalType.TIME)
-    private Date horasRealizadas;
+    private LocalTime horasRealizadas;
     
     @JoinColumn(name = "idcentrocusto", referencedColumnName = "idcentrocusto")
     @ManyToOne
@@ -112,7 +128,7 @@ public class Meta implements Serializable {
         this.id = idmeta;
     }
 
-    public Meta(Integer idmeta, String nome, String descricao, Date datainicio, Date datafim, Date horasestimadas) {
+    public Meta(Integer idmeta, String nome, String descricao, LocalDate datainicio, LocalDate datafim, LocalTime horasestimadas) {
         this.id = idmeta;
         this.nome = nome;
         this.descricao = descricao;
@@ -145,43 +161,43 @@ public class Meta implements Serializable {
         this.descricao = descricao;
     }
 
-    public Date getDataInicio() {
+    public LocalDate getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(Date dataInicio) {
+    public void setDataInicio(LocalDate dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public Date getDataFim() {
+    public LocalDate getDataFim() {
         return dataFim;
     }
 
-    public void setDataFim(Date dataFim) {
+    public void setDataFim(LocalDate dataFim) {
         this.dataFim = dataFim;
     }
 
-    public Date getDataTermino() {
+    public LocalDate getDataTermino() {
         return dataTermino;
     }
 
-    public void setDataTermino(Date dataTermino) {
+    public void setDataTermino(LocalDate dataTermino) {
         this.dataTermino = dataTermino;
     }
 
-    public Date getHorasEstimadas() {
+    public LocalTime getHorasEstimadas() {
         return horasEstimadas;
     }
 
-    public void setHorasEstimadas(Date horasEstimadas) {
+    public void setHorasEstimadas(LocalTime horasEstimadas) {
         this.horasEstimadas = horasEstimadas;
     }
 
-    public Date getHorasRealizadas() {
+    public LocalTime getHorasRealizadas() {
         return horasRealizadas;
     }
 
-    public void setHorasRealizadas(Date horasRealizadas) {
+    public void setHorasRealizadas(LocalTime horasRealizadas) {
         this.horasRealizadas = horasRealizadas;
     }
 
@@ -248,6 +264,38 @@ public class Meta implements Serializable {
     @Override
     public String toString() {
         return "com.saax.gestorweb.model.datamodel.Meta[ idmeta=" + id + " ]";
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public List<FavoritosTarefaMeta> getFavoritosTarefaMetaList() {
+        return favoritosTarefaMetaList;
+    }
+
+    public void setFavoritosTarefaMetaList(List<FavoritosTarefaMeta> favoritosTarefaMetaList) {
+        this.favoritosTarefaMetaList = favoritosTarefaMetaList;
+    }
+
+    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList() {
+        return avaliacaoMetaTarefaList;
+    }
+
+    public void setAvaliacaoMetaTarefaList(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList) {
+        this.avaliacaoMetaTarefaList = avaliacaoMetaTarefaList;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
     }
 
 }

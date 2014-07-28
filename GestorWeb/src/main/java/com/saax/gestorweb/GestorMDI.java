@@ -34,8 +34,11 @@ import javax.servlet.annotation.WebServlet;
 @PreserveOnRefresh
 public class GestorMDI extends UI {
 
-  
 
+    private static PaginaInicialModel paginaInicialModel;
+    private static PaginaInicialView paginaInicialView;
+    private static PaginaInicialPresenter paginaInicialPresenter;
+    
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
     public static class Servlet extends VaadinServlet {
@@ -51,6 +54,20 @@ public class GestorMDI extends UI {
     public UserData getUserData() {
         return userData;
     }
+
+    public void loadPaginaInicial() {
+        // Cria a pagina inical
+        paginaInicialModel = new PaginaInicialModel();
+        paginaInicialView = new PaginaInicialView();
+
+        // O presenter liga model e view
+        paginaInicialPresenter = new PaginaInicialPresenter(paginaInicialModel, paginaInicialView);
+        
+        // adiciona a visualização à UI
+        setContent(paginaInicialView);
+        
+    }
+    
     
     
 
@@ -99,39 +116,12 @@ public class GestorMDI extends UI {
         userData.setImagens(gestorWebImagens);
         
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens carregado");
-        
-        // Cria a pagina inical
-        PaginaInicialModel paginaInicialModel = new PaginaInicialModel();
-        PaginaInicialView paginaInicialView = new PaginaInicialView();
 
-        // O presenter liga model e view
-        new PaginaInicialPresenter(paginaInicialModel, paginaInicialView);
-
-        // adiciona a visualização à UI
-        setContent(paginaInicialView);
+        loadPaginaInicial();
 
         setSizeFull();
 
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Atendimento de requisição concluído.");
-    }
-
-    /**
-     * Cria o container com os elementos visuais da página inicial de
-     * apresentação
-     *
-     */
-    private VerticalLayout buildPaginaInicial() {
-        VerticalLayout layout = new VerticalLayout();
-
-        // ocupar todo espaço disponível
-        layout.setSizeFull();
-
-        // inserir imagens iniciais
-        // @TODO
-        Panel panel = new Panel();
-
-        return layout;
-
     }
 
 

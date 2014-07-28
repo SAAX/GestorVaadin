@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,6 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
@@ -41,6 +44,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Empresa.findByCpf", query = "SELECT e FROM Empresa e WHERE e.cpf = :cpf"),
     @NamedQuery(name = "Empresa.findByAtiva", query = "SELECT e FROM Empresa e WHERE e.ativa = :ativa")})
 public class Empresa implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idempresa")
+    private List<Tarefa> tarefaList;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idusuarioinclusao;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<EmpresaCliente> empresaClienteList;
 
@@ -277,6 +290,30 @@ public class Empresa implements Serializable {
 
     public void setEmpresaClienteList(List<EmpresaCliente> empresaClienteList) {
         this.empresaClienteList = empresaClienteList;
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public List<Tarefa> getTarefaList() {
+        return tarefaList;
+    }
+
+    public void setTarefaList(List<Tarefa> tarefaList) {
+        this.tarefaList = tarefaList;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
     }
 
 }

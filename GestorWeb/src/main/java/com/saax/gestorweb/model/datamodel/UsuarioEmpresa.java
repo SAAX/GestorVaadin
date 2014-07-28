@@ -1,7 +1,8 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,6 +38,14 @@ import javax.validation.constraints.NotNull;
     @NamedQuery(name = "UsuarioEmpresa.findByContratacao", query = "SELECT u FROM UsuarioEmpresa u WHERE u.contratacao = :contratacao"),
     @NamedQuery(name = "UsuarioEmpresa.findByDesligamento", query = "SELECT u FROM UsuarioEmpresa u WHERE u.desligamento = :desligamento")})
 public class UsuarioEmpresa implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idusuarioinclusao;
 
     
     private static final long serialVersionUID = 1L;
@@ -56,11 +65,11 @@ public class UsuarioEmpresa implements Serializable {
     @NotNull
     @Column(name = "contratacao")
     @Temporal(TemporalType.DATE)
-    private Date contratacao;
+    private LocalDate contratacao;
     
     @Column(name = "desligamento")
     @Temporal(TemporalType.DATE)
-    private Date desligamento;
+    private LocalDate desligamento;
     
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
@@ -82,7 +91,7 @@ public class UsuarioEmpresa implements Serializable {
         this.id = idusuarioempresa;
     }
 
-    public UsuarioEmpresa(Integer idusuarioempresa, boolean administrador, Date contratacao) {
+    public UsuarioEmpresa(Integer idusuarioempresa, boolean administrador, LocalDate contratacao) {
         this.id = idusuarioempresa;
         this.administrador = administrador;
         this.contratacao = contratacao;
@@ -104,19 +113,19 @@ public class UsuarioEmpresa implements Serializable {
         this.administrador = administrador;
     }
 
-    public Date getContratacao() {
+    public LocalDate getContratacao() {
         return contratacao;
     }
 
-    public void setContratacao(Date contratacao) {
+    public void setContratacao(LocalDate contratacao) {
         this.contratacao = contratacao;
     }
 
-    public Date getDesligamento() {
+    public LocalDate getDesligamento() {
         return desligamento;
     }
 
-    public void setDesligamento(Date desligamento) {
+    public void setDesligamento(LocalDate desligamento) {
         this.desligamento = desligamento;
     }
 
@@ -167,6 +176,22 @@ public class UsuarioEmpresa implements Serializable {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
     }
     
 }

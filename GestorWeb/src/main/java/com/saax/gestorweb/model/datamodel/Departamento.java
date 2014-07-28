@@ -1,7 +1,9 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -33,6 +37,16 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Departamento.findByDepartamento", query = "SELECT d FROM Departamento d WHERE d.departamento = :departamento"),
     @NamedQuery(name = "Departamento.findByAtivo", query = "SELECT d FROM Departamento d WHERE d.ativo = :ativo")})
 public class Departamento implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime datahorainclusao;
+    @OneToMany(mappedBy = "iddepartamento")
+    private List<Tarefa> tarefaList;
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idusuarioinclusao;
     
     private static final long serialVersionUID = 1L;
     
@@ -131,6 +145,30 @@ public class Departamento implements Serializable {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public LocalDateTime getDatahorainclusao() {
+        return datahorainclusao;
+    }
+
+    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
+        this.datahorainclusao = datahorainclusao;
+    }
+
+    public List<Tarefa> getTarefaList() {
+        return tarefaList;
+    }
+
+    public void setTarefaList(List<Tarefa> tarefaList) {
+        this.tarefaList = tarefaList;
+    }
+
+    public Usuario getIdusuarioinclusao() {
+        return idusuarioinclusao;
+    }
+
+    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
+        this.idusuarioinclusao = idusuarioinclusao;
     }
     
 }

@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,8 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -41,7 +40,7 @@ public class UsuarioEmpresa implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "datahorainclusao")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -64,11 +63,11 @@ public class UsuarioEmpresa implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "contratacao")
-    @Temporal(TemporalType.DATE)
+    @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate contratacao;
     
     @Column(name = "desligamento")
-    @Temporal(TemporalType.DATE)
+    @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate desligamento;
     
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")

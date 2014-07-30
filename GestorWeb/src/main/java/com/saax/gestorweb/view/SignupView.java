@@ -490,7 +490,7 @@ public class SignupView extends Window {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-               listener.addUsuarioButtonClicked();
+               listener.incluirUsuario();
             }
         });
         

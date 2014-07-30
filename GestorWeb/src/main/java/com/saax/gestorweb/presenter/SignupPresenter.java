@@ -408,8 +408,23 @@ public class SignupPresenter implements SignupViewListener {
      * Evento disparado ao ser acionado o botão para efetuar a inclusão do Usuário na tabela 
      * Obtém o nome, sobrenome e e-mail
      */
-    @Override
+    
     public void addUsuarioButtonClicked() {
+        
+        String nomeUsuario = view.getNomeUsuarioTextField().getValue();
+        String sobrenomeUsuario = view.getSobrenomeUsuarioTextField().getValue();
+        String email = view.getEmailTextField().getValue();
+        
+      
+         
+    }
+    
+     /**
+     * Evento disparado ao ser acionado o botão para efetuar a inclusão do Usuário na grid 
+     * Obtém o nome, sobrenome e e-mail
+     */
+    @Override
+    public void incluirUsuario() {
         
         String nomeUsuario = view.getNomeUsuarioTextField().getValue();
         String sobrenomeUsuario = view.getSobrenomeUsuarioTextField().getValue();

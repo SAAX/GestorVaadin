@@ -444,6 +444,39 @@ public class SignupPresenter implements SignupViewListener {
        
          
     }
+    
+     /**
+     * Evento disparado ao ser acionado o botão para efetuar a inclusão das Coligadas na grid 
+     * Obtém o nome, sobrenome e e-mail
+     */
+    //@Override
+    public void incluirColigadas() {
+        
+        String nomeColigada = view.getNomeColigadaTextField().getValue();
+        String cnpjColigada = view.getCnpjColigadaTextField().getValue();
+       
+                                       
+        view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada,"Editar", "Remover"}, new Integer(1));
+       
+         
+    }
+    
+      /**
+     * Evento disparado ao ser acionado o botão para efetuar a inclusão das Coligadas na grid 
+     * Obtém o nome, sobrenome e e-mail
+     */
+    //@Override
+    public void incluirFiliais() {
+        
+        String nomeFilial = view.getNomeFilialTextField().getValue();
+        String cnpjFilial = view.getCnpjFilialTextField().getValue();
+       
+                                       
+        view.getFiliaisTable().addItem(new Object[] {nomeFilial,cnpjFilial,"Editar", "Remover"}, new Integer(1));
+        
+       
+         
+    }
 
      
    

@@ -20,7 +20,7 @@ import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 /**
- * Janela de criação de nova conta, com dados do usuáiro, billing, empresas, etc.
+ * Janela de criaÃ§Ã£o de nova conta, com dados do usuÃ¡iro, billing, empresas, etc.
  *
  * @author Rodrigo / Fernando
  */
@@ -30,7 +30,7 @@ public class SignupView extends Window {
     private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
-    // Este acesso se dá por uma interface para manter a abstração das camadas
+    // Este acesso se dÃ¡ por uma interface para manter a abstraÃ§Ã£o das camadas
     private SignupViewListener listener;
 
     public void setListener(SignupViewListener listener) {
@@ -39,7 +39,7 @@ public class SignupView extends Window {
 
     // componentes visuais da view
     
-    // ABA #1 : Dados do usuário
+    // ABA #1 : Dados do usuÃ¡rio
     private TextField nomeTextField;
     private TextField sobrenomeTextField;
     private TextField emailUsuarioTextField;
@@ -49,7 +49,7 @@ public class SignupView extends Window {
     
     
     
-    // ABA #2 : Dados de billing (será feito fururamente)
+    // ABA #2 : Dados de billing (serÃ¡ feito fururamente)
     
     // ABA #3 : Dados de empresas e filiais
      private TextField razaoSocialTextField;
@@ -67,7 +67,7 @@ public class SignupView extends Window {
      private CheckBox empresaAtivaCheckBox;
      
 
-    // ABA #4 : Adicionar mais usuários à empresa
+    // ABA #4 : Adicionar mais usuÃ¡rios Ã  empresa
      private TextField nomeUsuarioTextField;
      private TextField sobrenomeUsuarioTextField;
      private TextField emailTextField;
@@ -89,7 +89,7 @@ public class SignupView extends Window {
    
     
     /**
-     * Cria o pop-up de login, com campos para usuário e senha
+     * Cria o pop-up de login, com campos para usuÃ¡rio e senha
      *
      */
     public SignupView() {
@@ -126,12 +126,12 @@ public class SignupView extends Window {
         
         HorizontalLayout barraBotoes = new HorizontalLayout();
         
-        // botão para Confirmar
+        // botÃ£o para Confirmar
         final Button okButton = new Button(getMensagens().getString("SignupView.okButton.label"), (Button.ClickEvent event) -> {
             getListener().okButtonClicked();
         });
         
-        // botão para cancelar
+        // botÃ£o para cancelar
         final Button cancelButton = new Button(getMensagens().getString("SignupView.cancelButton.label"), (Button.ClickEvent event) -> {
             getListener().cancelButtonClicked();
         });
@@ -144,11 +144,11 @@ public class SignupView extends Window {
     
     
     /**
-     * Cria o painel com ABAs que terá os paineis de: <br>
+     * Cria o painel com ABAs que terÃ¡ os paineis de: <br>
      * 1. Cadastro do usuario <br>
      * 2. Billing <br>
      * 3. Cadastro da empresa (conta) <br>
-     * 4. Adcionar mais usuários à empresa <br>
+     * 4. Adcionar mais usuÃ¡rios Ã  empresa <br>
      * @TODO: Fernando
      */
     private TabSheet buildTabPanel() {
@@ -167,7 +167,7 @@ public class SignupView extends Window {
     /**
      * Cria e retorna a 1a. aba com os campos para o cadastro de usuario
      * @TODO: Fernando
-     * @return aba de cadastro de usuários
+     * @return aba de cadastro de usuÃ¡rios
      */
     private VerticalLayout buildAba1CadastroUsuario(){
         
@@ -229,7 +229,7 @@ public class SignupView extends Window {
 
     /**
      * Cria e retorna a 2a. aba com os campos para o billing
-     * @TODO: Será feito futuramente
+     * @TODO: SerÃ¡ feito futuramente
      * @return aba com os campos para o billing
      */
     private VerticalLayout buildAba2Billing(){
@@ -261,12 +261,12 @@ public class SignupView extends Window {
         getNomeFantasiaTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.nomeFantasiaTextField.erro.NomeFantasiaNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal1 = new HorizontalLayout();
-        containerHorizontal1.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerHorizontal1.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba3.addComponent(containerHorizontal1); // adiciona o container de datas no superior
 
         setTipoPessoaOptionGroup(new OptionGroup());
-        tipoPessoaOptionGroup.addItem("Pessoa Física");
-        tipoPessoaOptionGroup.addItem("Pessoa Jurídica");
+        tipoPessoaOptionGroup.addItem("Pessoa FÃ­sica");
+        tipoPessoaOptionGroup.addItem("Pessoa JurÃ­dica");
         containerHorizontal1.addComponent(tipoPessoaOptionGroup);
         
         
@@ -279,7 +279,7 @@ public class SignupView extends Window {
         
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
-        containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba3.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
         // text field: Lograoudo
@@ -297,7 +297,7 @@ public class SignupView extends Window {
         getNumeroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal2 = new HorizontalLayout();
-        containerHorizontal2.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerHorizontal2.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba3.addComponent(containerHorizontal2); // adiciona o container de datas no superior
         
          // text field: Complemento
@@ -366,10 +366,10 @@ public class SignupView extends Window {
         cnpjColigadaTextField.setWidth("300px");
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
-        containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba5.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
-        // botão para Confirmar
+        // botÃ£o para Confirmar
         final Button adicionarColigadaButton = new Button(getMensagens().getString("SignupView.adicionarColigadaButton.label"), (Button.ClickEvent event) -> {
             getListener().okButtonClicked();
         });
@@ -381,10 +381,9 @@ public class SignupView extends Window {
         containerAba5.addComponent(coligadasTable);
         coligadasTable.setSizeFull();
         
-        coligadasTable.addContainerProperty("Cod", Integer.class, null);
+      
         coligadasTable.addContainerProperty("Nome", String.class, null);
-        coligadasTable.addContainerProperty("CNPJ", String.class, null);
-        coligadasTable.addContainerProperty("Ativa", String.class, null);
+        coligadasTable.addContainerProperty("Cnpj", String.class, null);
         coligadasTable.addContainerProperty("Editar", String.class, null);
         coligadasTable.addContainerProperty("Remover", String.class, null);
         coligadasTable.setHeight("150px");
@@ -410,12 +409,12 @@ public class SignupView extends Window {
         cnpjFilialTextField.setWidth("300px");
         
          HorizontalLayout containerHorizontal = new HorizontalLayout();
-        containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba6.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
        
         
-        // botão para Confirmar
+        // botÃ£o para Confirmar
         final Button adicionarFilialButton = new Button(getMensagens().getString("SignupView.adicionarFilialButton.label"), (Button.ClickEvent event) -> {
             getListener().okButtonClicked();
         });
@@ -430,7 +429,7 @@ public class SignupView extends Window {
         containerAba6.addComponent(filiaisTable);
         filiaisTable.setHeight("150px");
         
-        filiaisTable.addContainerProperty("Cod", Integer.class, null);
+       
         filiaisTable.addContainerProperty("Nome", String.class, null);
         filiaisTable.addContainerProperty("CNPJ", String.class, null);
         filiaisTable.addContainerProperty("Ativa", String.class, null);
@@ -440,9 +439,9 @@ public class SignupView extends Window {
         return containerAba6;
     }
     /**
-     * Cria e retorna a 4a. aba com os campos para adicionar novos usuários as empresas
+     * Cria e retorna a 4a. aba com os campos para adicionar novos usuÃ¡rios as empresas
      * @TODO: Fernando
-     * @return aba de cadastro de usuário -> empresa
+     * @return aba de cadastro de usuÃ¡rio -> empresa
      */
     private VerticalLayout buildAba4UsuarioEmpresa(){
         VerticalLayout containerAba4 = new VerticalLayout();
@@ -474,7 +473,7 @@ public class SignupView extends Window {
         confirmaEmailTextField.setWidth("300px");
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
-        containerHorizontal.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+        containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba4.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
          
@@ -484,7 +483,7 @@ public class SignupView extends Window {
         setUsuarioAdmCheckBox(new CheckBox(getMensagens().getString("SignupView.usuarioAdmCheckBox.label")));
         containerHorizontal.addComponent(getUsuarioAdmCheckBox());
         
-         // botão para Confirmar
+         // botÃ£o para Confirmar
         final Button adicionarUsuarioButton = new Button(getMensagens().getString("SignupView.adicionarUsuarioButton.label"), new Button.ClickListener() {
           
 
@@ -637,6 +636,34 @@ public class SignupView extends Window {
      */
     public void setUsuariosTable(Table usuariosTable) {
         this.usuariosTable = usuariosTable;
+    }
+    
+    /**
+     * @return the coligadasTable
+     */
+    public Table getColigadasTable() {
+        return coligadasTable;
+    }
+
+    /**
+     * @param coligadasTable the ColigadasTable to set
+     */
+    public void setColigadasTable(Table coligadasTable) {
+        this.coligadasTable = coligadasTable;
+    }
+    
+    /**
+     * @return the filiaisTable
+     */
+    public Table getFiliaisTable() {
+        return filiaisTable;
+    }
+
+    /**
+     * @param filiaisTable the FiliaisTable to set
+     */
+    public void setFiliaisTable(Table filiaisTable) {
+        this.filiaisTable = filiaisTable;
     }
     
     /**
@@ -977,7 +1004,7 @@ public class SignupView extends Window {
     }
 
     /**
-     * Executa os metodos de validações dos campos de preenchimento obrigatorio
+     * Executa os metodos de validaÃ§Ãµes dos campos de preenchimento obrigatorio
      * @TODO: fernando
      */
     public void validate() {
@@ -1029,8 +1056,8 @@ public class SignupView extends Window {
 
     
     /**
-     * Exibe uma mensagem de erro indicando que este login (email) já 
-     * existe no sistema e pergunta ao usuário se ele não quer recuperar sua senha
+     * Exibe uma mensagem de erro indicando que este login (email) jÃ¡ 
+     * existe no sistema e pergunta ao usuÃ¡rio se ele nÃ£o quer recuperar sua senha
      * 
      * @param chave chave do resource
      */

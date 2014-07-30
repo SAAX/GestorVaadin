@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.saax.gestorweb.model.datamodel;
 
-import com.saax.gestorweb.model.datamodel.Usuario;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Basic;
@@ -25,6 +19,9 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Entity bean da tabela Participante Tarefa com as namequerys configuradas.<br><br>
+ * 
+ * O objetivo desta entidade é armazenar os usuários Participantes das tarefas/subs <br><br>
  *
  * @author rodrigo
  */
@@ -32,29 +29,34 @@ import javax.validation.constraints.NotNull;
 @Table(name = "paricipantetarefa")
 @NamedQueries({
     @NamedQuery(name = "ParicipanteTarefa.findAll", query = "SELECT p FROM ParicipanteTarefa p"),
-    @NamedQuery(name = "ParicipanteTarefa.findByIdparicipantetarefa", query = "SELECT p FROM ParicipanteTarefa p WHERE p.idparicipantetarefa = :idparicipantetarefa"),
-    @NamedQuery(name = "ParicipanteTarefa.findByDatahorainclusao", query = "SELECT p FROM ParicipanteTarefa p WHERE p.datahorainclusao = :datahorainclusao")})
+    @NamedQuery(name = "ParicipanteTarefa.findByDatahorainclusao", query = "SELECT p FROM ParicipanteTarefa p WHERE p.dataHoraInclusao = :dataHoraInclusao")})
 public class ParicipanteTarefa implements Serializable {
+
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idparicipantetarefa")
     private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
+    private LocalDateTime dataHoraInclusao;
+    
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa idtarefa;
+    private Tarefa idTarefa;
+    
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
+    private Usuario idUsuarioInclusao;
+    
     @JoinColumn(name = "idusuarioparticipante", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioparticipante;
+    private Usuario idUsuarioParticipante;
 
     public ParicipanteTarefa() {
     }
@@ -63,9 +65,9 @@ public class ParicipanteTarefa implements Serializable {
         this.id = idparicipantetarefa;
     }
 
-    public ParicipanteTarefa(Integer idparicipantetarefa, LocalDateTime datahorainclusao) {
+    public ParicipanteTarefa(Integer idparicipantetarefa, LocalDateTime dataHoraInclusao) {
         this.id = idparicipantetarefa;
-        this.datahorainclusao = datahorainclusao;
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public Integer getId() {
@@ -76,36 +78,36 @@ public class ParicipanteTarefa implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Tarefa getIdtarefa() {
-        return idtarefa;
+    public Tarefa getIdTarefa() {
+        return idTarefa;
     }
 
-    public void setIdtarefa(Tarefa idtarefa) {
-        this.idtarefa = idtarefa;
+    public void setIdTarefa(Tarefa idTarefa) {
+        this.idTarefa = idTarefa;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
-    public Usuario getIdusuarioparticipante() {
-        return idusuarioparticipante;
+    public Usuario getIdUsuarioParticipante() {
+        return idUsuarioParticipante;
     }
 
-    public void setIdusuarioparticipante(Usuario idusuarioparticipante) {
-        this.idusuarioparticipante = idusuarioparticipante;
+    public void setIdUsuarioParticipante(Usuario idUsuarioParticipante) {
+        this.idUsuarioParticipante = idUsuarioParticipante;
     }
 
     @Override

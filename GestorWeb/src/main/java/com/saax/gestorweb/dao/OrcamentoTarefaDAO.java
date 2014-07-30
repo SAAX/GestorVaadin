@@ -34,19 +34,19 @@ public class OrcamentoTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Tarefa idtarefa = orcamentoTarefa.getIdtarefa();
+            Tarefa idtarefa = orcamentoTarefa.getIdTarefa();
             if (idtarefa != null) {
                 idtarefa = em.getReference(idtarefa.getClass(), idtarefa.getId());
-                orcamentoTarefa.setIdtarefa(idtarefa);
+                orcamentoTarefa.setIdTarefa(idtarefa);
             }
-            Usuario idusuarioinclusao = orcamentoTarefa.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = orcamentoTarefa.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                orcamentoTarefa.setIdusuarioinclusao(idusuarioinclusao);
+                orcamentoTarefa.setIdUsuarioInclusao(idusuarioinclusao);
             }
             em.persist(orcamentoTarefa);
             if (idtarefa != null) {
-                idtarefa.getOrcamentoTarefaList().add(orcamentoTarefa);
+                idtarefa.getOrcamentos().add(orcamentoTarefa);
                 idtarefa = em.merge(idtarefa);
             }
             if (idusuarioinclusao != null) {
@@ -67,25 +67,25 @@ public class OrcamentoTarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             OrcamentoTarefa persistentOrcamentoTarefa = em.find(OrcamentoTarefa.class, orcamentoTarefa.getId());
-            Tarefa idtarefaOld = persistentOrcamentoTarefa.getIdtarefa();
-            Tarefa idtarefaNew = orcamentoTarefa.getIdtarefa();
-            Usuario idusuarioinclusaoOld = persistentOrcamentoTarefa.getIdusuarioinclusao();
-            Usuario idusuarioinclusaoNew = orcamentoTarefa.getIdusuarioinclusao();
+            Tarefa idtarefaOld = persistentOrcamentoTarefa.getIdTarefa();
+            Tarefa idtarefaNew = orcamentoTarefa.getIdTarefa();
+            Usuario idusuarioinclusaoOld = persistentOrcamentoTarefa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = orcamentoTarefa.getIdUsuarioInclusao();
             if (idtarefaNew != null) {
                 idtarefaNew = em.getReference(idtarefaNew.getClass(), idtarefaNew.getId());
-                orcamentoTarefa.setIdtarefa(idtarefaNew);
+                orcamentoTarefa.setIdTarefa(idtarefaNew);
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                orcamentoTarefa.setIdusuarioinclusao(idusuarioinclusaoNew);
+                orcamentoTarefa.setIdUsuarioInclusao(idusuarioinclusaoNew);
             }
             orcamentoTarefa = em.merge(orcamentoTarefa);
             if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getOrcamentoTarefaList().remove(orcamentoTarefa);
+                idtarefaOld.getOrcamentos().remove(orcamentoTarefa);
                 idtarefaOld = em.merge(idtarefaOld);
             }
             if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getOrcamentoTarefaList().add(orcamentoTarefa);
+                idtarefaNew.getOrcamentos().add(orcamentoTarefa);
                 idtarefaNew = em.merge(idtarefaNew);
             }
             if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
@@ -125,12 +125,12 @@ public class OrcamentoTarefaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The orcamentoTarefa with id " + id + " no longer exists.", enfe);
             }
-            Tarefa idtarefa = orcamentoTarefa.getIdtarefa();
+            Tarefa idtarefa = orcamentoTarefa.getIdTarefa();
             if (idtarefa != null) {
-                idtarefa.getOrcamentoTarefaList().remove(orcamentoTarefa);
+                idtarefa.getOrcamentos().remove(orcamentoTarefa);
                 idtarefa = em.merge(idtarefa);
             }
-            Usuario idusuarioinclusao = orcamentoTarefa.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = orcamentoTarefa.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao.getOrcamentoTarefaList().remove(orcamentoTarefa);
                 idusuarioinclusao = em.merge(idusuarioinclusao);

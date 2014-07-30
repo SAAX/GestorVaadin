@@ -35,38 +35,38 @@ public class AvaliacaoMetaTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Meta idmeta = avaliacaoMetaTarefa.getIdmeta();
+            Meta idmeta = avaliacaoMetaTarefa.getIdMeta();
             if (idmeta != null) {
                 idmeta = em.getReference(idmeta.getClass(), idmeta.getId());
-                avaliacaoMetaTarefa.setIdmeta(idmeta);
+                avaliacaoMetaTarefa.setIdMeta(idmeta);
             }
-            Tarefa idtarefa = avaliacaoMetaTarefa.getIdtarefa();
+            Tarefa idtarefa = avaliacaoMetaTarefa.getIdTarefa();
             if (idtarefa != null) {
                 idtarefa = em.getReference(idtarefa.getClass(), idtarefa.getId());
-                avaliacaoMetaTarefa.setIdtarefa(idtarefa);
+                avaliacaoMetaTarefa.setIdTarefa(idtarefa);
             }
-            Usuario idusuarioinclusao = avaliacaoMetaTarefa.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = avaliacaoMetaTarefa.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                avaliacaoMetaTarefa.setIdusuarioinclusao(idusuarioinclusao);
+                avaliacaoMetaTarefa.setIdUsuarioInclusao(idusuarioinclusao);
             }
-            Usuario idusuarioavaliador = avaliacaoMetaTarefa.getIdusuarioavaliador();
+            Usuario idusuarioavaliador = avaliacaoMetaTarefa.getIdUsuarioAvaliador();
             if (idusuarioavaliador != null) {
                 idusuarioavaliador = em.getReference(idusuarioavaliador.getClass(), idusuarioavaliador.getId());
-                avaliacaoMetaTarefa.setIdusuarioavaliador(idusuarioavaliador);
+                avaliacaoMetaTarefa.setIdUsuarioAvaliador(idusuarioavaliador);
             }
-            Usuario idusuarioavaliado = avaliacaoMetaTarefa.getIdusuarioavaliado();
+            Usuario idusuarioavaliado = avaliacaoMetaTarefa.getIdUsuarioAvaliado();
             if (idusuarioavaliado != null) {
                 idusuarioavaliado = em.getReference(idusuarioavaliado.getClass(), idusuarioavaliado.getId());
-                avaliacaoMetaTarefa.setIdusuarioavaliado(idusuarioavaliado);
+                avaliacaoMetaTarefa.setIdUsuarioAvaliado(idusuarioavaliado);
             }
             em.persist(avaliacaoMetaTarefa);
             if (idmeta != null) {
-                idmeta.getAvaliacaoMetaTarefaList().add(avaliacaoMetaTarefa);
+                idmeta.getAvaliacoes().add(avaliacaoMetaTarefa);
                 idmeta = em.merge(idmeta);
             }
             if (idtarefa != null) {
-                idtarefa.getAvaliacaoMetaTarefaList().add(avaliacaoMetaTarefa);
+                idtarefa.getAvaliacoes().add(avaliacaoMetaTarefa);
                 idtarefa = em.merge(idtarefa);
             }
             if (idusuarioinclusao != null) {
@@ -95,51 +95,51 @@ public class AvaliacaoMetaTarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             AvaliacaoMetaTarefa persistentAvaliacaoMetaTarefa = em.find(AvaliacaoMetaTarefa.class, avaliacaoMetaTarefa.getId());
-            Meta idmetaOld = persistentAvaliacaoMetaTarefa.getIdmeta();
-            Meta idmetaNew = avaliacaoMetaTarefa.getIdmeta();
-            Tarefa idtarefaOld = persistentAvaliacaoMetaTarefa.getIdtarefa();
-            Tarefa idtarefaNew = avaliacaoMetaTarefa.getIdtarefa();
-            Usuario idusuarioinclusaoOld = persistentAvaliacaoMetaTarefa.getIdusuarioinclusao();
-            Usuario idusuarioinclusaoNew = avaliacaoMetaTarefa.getIdusuarioinclusao();
-            Usuario idusuarioavaliadorOld = persistentAvaliacaoMetaTarefa.getIdusuarioavaliador();
-            Usuario idusuarioavaliadorNew = avaliacaoMetaTarefa.getIdusuarioavaliador();
-            Usuario idusuarioavaliadoOld = persistentAvaliacaoMetaTarefa.getIdusuarioavaliado();
-            Usuario idusuarioavaliadoNew = avaliacaoMetaTarefa.getIdusuarioavaliado();
+            Meta idmetaOld = persistentAvaliacaoMetaTarefa.getIdMeta();
+            Meta idmetaNew = avaliacaoMetaTarefa.getIdMeta();
+            Tarefa idtarefaOld = persistentAvaliacaoMetaTarefa.getIdTarefa();
+            Tarefa idtarefaNew = avaliacaoMetaTarefa.getIdTarefa();
+            Usuario idusuarioinclusaoOld = persistentAvaliacaoMetaTarefa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = avaliacaoMetaTarefa.getIdUsuarioInclusao();
+            Usuario idusuarioavaliadorOld = persistentAvaliacaoMetaTarefa.getIdUsuarioAvaliador();
+            Usuario idusuarioavaliadorNew = avaliacaoMetaTarefa.getIdUsuarioAvaliador();
+            Usuario idusuarioavaliadoOld = persistentAvaliacaoMetaTarefa.getIdUsuarioAvaliado();
+            Usuario idusuarioavaliadoNew = avaliacaoMetaTarefa.getIdUsuarioAvaliado();
             if (idmetaNew != null) {
                 idmetaNew = em.getReference(idmetaNew.getClass(), idmetaNew.getId());
-                avaliacaoMetaTarefa.setIdmeta(idmetaNew);
+                avaliacaoMetaTarefa.setIdMeta(idmetaNew);
             }
             if (idtarefaNew != null) {
                 idtarefaNew = em.getReference(idtarefaNew.getClass(), idtarefaNew.getId());
-                avaliacaoMetaTarefa.setIdtarefa(idtarefaNew);
+                avaliacaoMetaTarefa.setIdTarefa(idtarefaNew);
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                avaliacaoMetaTarefa.setIdusuarioinclusao(idusuarioinclusaoNew);
+                avaliacaoMetaTarefa.setIdUsuarioInclusao(idusuarioinclusaoNew);
             }
             if (idusuarioavaliadorNew != null) {
                 idusuarioavaliadorNew = em.getReference(idusuarioavaliadorNew.getClass(), idusuarioavaliadorNew.getId());
-                avaliacaoMetaTarefa.setIdusuarioavaliador(idusuarioavaliadorNew);
+                avaliacaoMetaTarefa.setIdUsuarioAvaliador(idusuarioavaliadorNew);
             }
             if (idusuarioavaliadoNew != null) {
                 idusuarioavaliadoNew = em.getReference(idusuarioavaliadoNew.getClass(), idusuarioavaliadoNew.getId());
-                avaliacaoMetaTarefa.setIdusuarioavaliado(idusuarioavaliadoNew);
+                avaliacaoMetaTarefa.setIdUsuarioAvaliado(idusuarioavaliadoNew);
             }
             avaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefa);
             if (idmetaOld != null && !idmetaOld.equals(idmetaNew)) {
-                idmetaOld.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefa);
+                idmetaOld.getAvaliacoes().remove(avaliacaoMetaTarefa);
                 idmetaOld = em.merge(idmetaOld);
             }
             if (idmetaNew != null && !idmetaNew.equals(idmetaOld)) {
-                idmetaNew.getAvaliacaoMetaTarefaList().add(avaliacaoMetaTarefa);
+                idmetaNew.getAvaliacoes().add(avaliacaoMetaTarefa);
                 idmetaNew = em.merge(idmetaNew);
             }
             if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefa);
+                idtarefaOld.getAvaliacoes().remove(avaliacaoMetaTarefa);
                 idtarefaOld = em.merge(idtarefaOld);
             }
             if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getAvaliacaoMetaTarefaList().add(avaliacaoMetaTarefa);
+                idtarefaNew.getAvaliacoes().add(avaliacaoMetaTarefa);
                 idtarefaNew = em.merge(idtarefaNew);
             }
             if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
@@ -195,27 +195,27 @@ public class AvaliacaoMetaTarefaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The avaliacaoMetaTarefa with id " + id + " no longer exists.", enfe);
             }
-            Meta idmeta = avaliacaoMetaTarefa.getIdmeta();
+            Meta idmeta = avaliacaoMetaTarefa.getIdMeta();
             if (idmeta != null) {
-                idmeta.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefa);
+                idmeta.getAvaliacoes().remove(avaliacaoMetaTarefa);
                 idmeta = em.merge(idmeta);
             }
-            Tarefa idtarefa = avaliacaoMetaTarefa.getIdtarefa();
+            Tarefa idtarefa = avaliacaoMetaTarefa.getIdTarefa();
             if (idtarefa != null) {
-                idtarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefa);
+                idtarefa.getAvaliacoes().remove(avaliacaoMetaTarefa);
                 idtarefa = em.merge(idtarefa);
             }
-            Usuario idusuarioinclusao = avaliacaoMetaTarefa.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = avaliacaoMetaTarefa.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefa);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
-            Usuario idusuarioavaliador = avaliacaoMetaTarefa.getIdusuarioavaliador();
+            Usuario idusuarioavaliador = avaliacaoMetaTarefa.getIdUsuarioAvaliador();
             if (idusuarioavaliador != null) {
                 idusuarioavaliador.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefa);
                 idusuarioavaliador = em.merge(idusuarioavaliador);
             }
-            Usuario idusuarioavaliado = avaliacaoMetaTarefa.getIdusuarioavaliado();
+            Usuario idusuarioavaliado = avaliacaoMetaTarefa.getIdUsuarioAvaliado();
             if (idusuarioavaliado != null) {
                 idusuarioavaliado.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefa);
                 idusuarioavaliado = em.merge(idusuarioavaliado);

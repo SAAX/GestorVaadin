@@ -1,6 +1,6 @@
 package com.saax.gestorweb.dao;
 
-import com.saax.gestorweb.model.datamodel.Statustarefa;
+import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
 import com.saax.gestorweb.dao.exceptions.PreexistingEntityException;
@@ -33,7 +33,7 @@ public class StatusTarefaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Statustarefa statustarefa) throws PreexistingEntityException, Exception {
+    public void create(StatusTarefa statustarefa) throws PreexistingEntityException, Exception {
         if (statustarefa.getTarefaSet() == null) {
             statustarefa.setTarefaSet(new HashSet<Tarefa>());
         }
@@ -49,7 +49,7 @@ public class StatusTarefaDAO implements Serializable {
             statustarefa.setTarefaSet(attachedTarefaSet);
             em.persist(statustarefa);
             for (Tarefa tarefaSetTarefa : statustarefa.getTarefaSet()) {
-                Statustarefa oldStatusOfTarefaSetTarefa = tarefaSetTarefa.getStatus();
+                StatusTarefa oldStatusOfTarefaSetTarefa = tarefaSetTarefa.getStatus();
                 tarefaSetTarefa.setStatus(statustarefa);
                 tarefaSetTarefa = em.merge(tarefaSetTarefa);
                 if (oldStatusOfTarefaSetTarefa != null) {
@@ -70,12 +70,12 @@ public class StatusTarefaDAO implements Serializable {
         }
     }
 
-    public void edit(Statustarefa statustarefa) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(StatusTarefa statustarefa) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Statustarefa persistentStatustarefa = em.find(Statustarefa.class, statustarefa.getStatustarefa());
+            StatusTarefa persistentStatustarefa = em.find(StatusTarefa.class, statustarefa.getStatustarefa());
             Set<Tarefa> tarefaSetOld = persistentStatustarefa.getTarefaSet();
             Set<Tarefa> tarefaSetNew = statustarefa.getTarefaSet();
             List<String> illegalOrphanMessages = null;
@@ -100,7 +100,7 @@ public class StatusTarefaDAO implements Serializable {
             statustarefa = em.merge(statustarefa);
             for (Tarefa tarefaSetNewTarefa : tarefaSetNew) {
                 if (!tarefaSetOld.contains(tarefaSetNewTarefa)) {
-                    Statustarefa oldStatusOfTarefaSetNewTarefa = tarefaSetNewTarefa.getStatus();
+                    StatusTarefa oldStatusOfTarefaSetNewTarefa = tarefaSetNewTarefa.getStatus();
                     tarefaSetNewTarefa.setStatus(statustarefa);
                     tarefaSetNewTarefa = em.merge(tarefaSetNewTarefa);
                     if (oldStatusOfTarefaSetNewTarefa != null && !oldStatusOfTarefaSetNewTarefa.equals(statustarefa)) {
@@ -131,9 +131,9 @@ public class StatusTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Statustarefa statustarefa;
+            StatusTarefa statustarefa;
             try {
-                statustarefa = em.getReference(Statustarefa.class, id);
+                statustarefa = em.getReference(StatusTarefa.class, id);
                 statustarefa.getStatustarefa();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The statustarefa with id " + id + " no longer exists.", enfe);
@@ -158,19 +158,19 @@ public class StatusTarefaDAO implements Serializable {
         }
     }
 
-    public List<Statustarefa> findStatustarefaEntities() {
+    public List<StatusTarefa> findStatustarefaEntities() {
         return findStatustarefaEntities(true, -1, -1);
     }
 
-    public List<Statustarefa> findStatustarefaEntities(int maxResults, int firstResult) {
+    public List<StatusTarefa> findStatustarefaEntities(int maxResults, int firstResult) {
         return findStatustarefaEntities(false, maxResults, firstResult);
     }
 
-    private List<Statustarefa> findStatustarefaEntities(boolean all, int maxResults, int firstResult) {
+    private List<StatusTarefa> findStatustarefaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Statustarefa.class));
+            cq.select(cq.from(StatusTarefa.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -182,10 +182,10 @@ public class StatusTarefaDAO implements Serializable {
         }
     }
 
-    public Statustarefa findStatustarefa(String id) {
+    public StatusTarefa findStatustarefa(String id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Statustarefa.class, id);
+            return em.find(StatusTarefa.class, id);
         } finally {
             em.close();
         }
@@ -195,7 +195,7 @@ public class StatusTarefaDAO implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Statustarefa> rt = cq.from(Statustarefa.class);
+            Root<StatusTarefa> rt = cq.from(StatusTarefa.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

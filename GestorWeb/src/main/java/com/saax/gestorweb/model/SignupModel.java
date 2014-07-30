@@ -350,12 +350,12 @@ public class SignupModel {
      */
     public void relacionarEmpresaEndereco(Empresa empresa, Endereco endereco) {
 
-        if (endereco.getEmpresaList() == null) {
-            endereco.setEmpresaList(new ArrayList<>());
+        if (endereco.getEmpresas() == null) {
+            endereco.setEmpresas(new ArrayList<>());
         }
 
         empresa.setEndereco(endereco);
-        endereco.getEmpresaList().add(empresa);
+        endereco.getEmpresas().add(empresa);
 
     }
 

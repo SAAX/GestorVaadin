@@ -1,9 +1,6 @@
 package com.saax.gestorweb.model.datamodel;
 
-import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.Usuario;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -22,6 +19,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Entity bean da tabela Avaliacao Meta - Tarefa com as namequerys configuradas.<br><br>
+ * 
+ * O objetivo desta entidade e armazenar as avaliações feitas pelos solicitantes de metas e tarefas <br><br>
  *
  * @author rodrigo
  */
@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "AvaliacaoMetaTarefa.findAll", query = "SELECT a FROM AvaliacaoMetaTarefa a"),
     @NamedQuery(name = "AvaliacaoMetaTarefa.findByAvaliacao", query = "SELECT a FROM AvaliacaoMetaTarefa a WHERE a.avaliacao = :avaliacao"),
     @NamedQuery(name = "AvaliacaoMetaTarefa.findByComentario", query = "SELECT a FROM AvaliacaoMetaTarefa a WHERE a.comentario = :comentario"),
-    @NamedQuery(name = "AvaliacaoMetaTarefa.findByDatahorainclusao", query = "SELECT a FROM AvaliacaoMetaTarefa a WHERE a.datahorainclusao = :datahorainclusao")})
+    @NamedQuery(name = "AvaliacaoMetaTarefa.findByDatahorainclusao", query = "SELECT a FROM AvaliacaoMetaTarefa a WHERE a.dataHoraInclusao = :dataHoraInclusao")})
 public class AvaliacaoMetaTarefa implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,35 +41,43 @@ public class AvaliacaoMetaTarefa implements Serializable {
     @Basic(optional = false)
     @Column(name = "idavaliacaometatarefa")
     private Integer id;
+  
     @Basic(optional = false)
     @NotNull
     @Column(name = "avaliacao")
     private int avaliacao;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 150)
     @Column(name = "comentario")
     private String comentario;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
+    private LocalDateTime dataHoraInclusao;
+    
     @JoinColumn(name = "idmeta", referencedColumnName = "idmeta")
     @ManyToOne(optional = false)
-    private Meta idmeta;
+    private Meta idMeta;
+    
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa idtarefa;
+    private Tarefa idTarefa;
+    
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
+    private Usuario idUsuarioInclusao;
+    
     @JoinColumn(name = "idusuarioavaliador", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioavaliador;
+    private Usuario idUsuarioAvaliador;
+
     @JoinColumn(name = "idusuarioavaliado", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioavaliado;
+    private Usuario idUsuarioAvaliado;
 
     public AvaliacaoMetaTarefa() {
     }
@@ -78,11 +86,11 @@ public class AvaliacaoMetaTarefa implements Serializable {
         this.id = idavaliacaometatarefa;
     }
 
-    public AvaliacaoMetaTarefa(Integer idavaliacaometatarefa, int avaliacao, String comentario, LocalDateTime datahorainclusao) {
+    public AvaliacaoMetaTarefa(Integer idavaliacaometatarefa, int avaliacao, String comentario, LocalDateTime dataHoraInclusao) {
         this.id = idavaliacaometatarefa;
         this.avaliacao = avaliacao;
         this.comentario = comentario;
-        this.datahorainclusao = datahorainclusao;
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public Integer getId() {
@@ -109,52 +117,52 @@ public class AvaliacaoMetaTarefa implements Serializable {
         this.comentario = comentario;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Meta getIdmeta() {
-        return idmeta;
+    public Meta getIdMeta() {
+        return idMeta;
     }
 
-    public void setIdmeta(Meta idmeta) {
-        this.idmeta = idmeta;
+    public void setIdMeta(Meta idMeta) {
+        this.idMeta = idMeta;
     }
 
-    public Tarefa getIdtarefa() {
-        return idtarefa;
+    public Tarefa getIdTarefa() {
+        return idTarefa;
     }
 
-    public void setIdtarefa(Tarefa idtarefa) {
-        this.idtarefa = idtarefa;
+    public void setIdTarefa(Tarefa idTarefa) {
+        this.idTarefa = idTarefa;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
-    public Usuario getIdusuarioavaliador() {
-        return idusuarioavaliador;
+    public Usuario getIdUsuarioAvaliador() {
+        return idUsuarioAvaliador;
     }
 
-    public void setIdusuarioavaliador(Usuario idusuarioavaliador) {
-        this.idusuarioavaliador = idusuarioavaliador;
+    public void setIdUsuarioAvaliador(Usuario idUsuarioAvaliador) {
+        this.idUsuarioAvaliador = idUsuarioAvaliador;
     }
 
-    public Usuario getIdusuarioavaliado() {
-        return idusuarioavaliado;
+    public Usuario getIdUsuarioAvaliado() {
+        return idUsuarioAvaliado;
     }
 
-    public void setIdusuarioavaliado(Usuario idusuarioavaliado) {
-        this.idusuarioavaliado = idusuarioavaliado;
+    public void setIdUsuarioAvaliado(Usuario idUsuarioAvaliado) {
+        this.idUsuarioAvaliado = idUsuarioAvaliado;
     }
 
     @Override

@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
@@ -29,6 +23,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Entity bean da tabela Tarefa com as namequerys configuradas.<br><br>
+ * 
+ * O objetivo desta entidade é armazenar as Tarefas e subs do sistema <br><br>
  *
  * @author rodrigo
  */
@@ -40,155 +37,162 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tarefa.findByTitulo", query = "SELECT t FROM Tarefa t WHERE t.titulo = :titulo"),
     @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.nome = :nome"),
     @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.prioridade = :prioridade"),
-    @NamedQuery(name = "Tarefa.findByTipo", query = "SELECT t FROM Tarefa t WHERE t.tipo = :tipo"),
+    @NamedQuery(name = "Tarefa.findByDataInicio", query = "SELECT t FROM Tarefa t WHERE t.dataInicio = :dataInicio"),
+    @NamedQuery(name = "Tarefa.findByDataFim", query = "SELECT t FROM Tarefa t WHERE t.dataFim = :dataFim"),
+    @NamedQuery(name = "Tarefa.findByDataTermino", query = "SELECT t FROM Tarefa t WHERE t.dataTermino = :dataTermino"),
     @NamedQuery(name = "Tarefa.findByStatus", query = "SELECT t FROM Tarefa t WHERE t.status = :status"),
     @NamedQuery(name = "Tarefa.findByAndamento", query = "SELECT t FROM Tarefa t WHERE t.andamento = :andamento"),
-    @NamedQuery(name = "Tarefa.findByDatainicio", query = "SELECT t FROM Tarefa t WHERE t.datainicio = :datainicio"),
-    @NamedQuery(name = "Tarefa.findByDatafim", query = "SELECT t FROM Tarefa t WHERE t.datafim = :datafim"),
-    @NamedQuery(name = "Tarefa.findByDatatermino", query = "SELECT t FROM Tarefa t WHERE t.datatermino = :datatermino"),
     @NamedQuery(name = "Tarefa.findByDescricao", query = "SELECT t FROM Tarefa t WHERE t.descricao = :descricao"),
-    @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.apontamentohoras = :apontamentohoras"),
-    @NamedQuery(name = "Tarefa.findByOrcamentocontrolado", query = "SELECT t FROM Tarefa t WHERE t.orcamentocontrolado = :orcamentocontrolado"),
-    @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.datahorainclusao = :datahorainclusao")})
+    @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.apontamentoHoras = :apontamentohoras"),
+    @NamedQuery(name = "Tarefa.findByOrcamentocontrolado", query = "SELECT t FROM Tarefa t WHERE t.orcamentoControlado = :orcamentocontrolado"),
+    @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.dataHoraInclusao = :dataHoraInclusao")})
 public class Tarefa implements Serializable {
-    @JoinColumn(name = "status", referencedColumnName = "statustarefa")
-    @ManyToOne(optional = false)
-    private Statustarefa status;
+
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idtarefa")
     private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "nivel")
     private int nivel;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "titulo")
     private String titulo;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 150)
     @Column(name = "nome")
     private String nome;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 30)
-    @Column(name = "prioridade")
-    private String prioridade;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 30)
-    @Column(name = "tipo")
-    private String tipo;
+    
+    @JoinColumn(name = "prioridade", referencedColumnName = "prioridadetarefa")
+    @ManyToOne(optional = false)
+    private PrioridadeTarefa prioridade;
+    
+    @JoinColumn(name = "status", referencedColumnName = "statustarefa")
+    @ManyToOne(optional = false)
+    private StatusTarefa status;
+        
     @Basic(optional = false)
     @NotNull
     @Column(name = "andamento")
     private int andamento;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datainicio")
-    @Temporal(TemporalType.DATE)
-    private LocalDate datainicio;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datafim")
-    @Temporal(TemporalType.DATE)
-    private LocalDate datafim;
-    @Column(name = "datatermino")
-    @Temporal(TemporalType.DATE)
-    private LocalDate datatermino;
+
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2147483647)
     @Column(name = "descricao")
     private String descricao;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "apontamentohoras")
-    private boolean apontamentohoras;
+    private boolean apontamentoHoras;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "orcamentocontrolado")
-    private boolean orcamentocontrolado;
+    private boolean orcamentoControlado;
+    
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    private List<FavoritosTarefaMeta> favoritados;
+    
+    @JoinColumn(name = "idcentrocusto", referencedColumnName = "idcentrocusto")
+    @ManyToOne
+    private CentroCusto idCentroCusto;
+    
+    @JoinColumn(name = "iddepartamento", referencedColumnName = "iddepartamento")
+    @ManyToOne
+    private Departamento idDepartamento;
+    
+    @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
+    @ManyToOne(optional = false)
+    private Empresa idEmpresa;
+    
+    @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
+    @ManyToOne
+    private EmpresaCliente empresaCliente;
+    
+    @OneToMany(mappedBy = "idTarefaPai")
+    private List<Tarefa> subTarefas;
+    
+    @JoinColumn(name = "idproximatarefa", referencedColumnName = "idtarefa")
+    @ManyToOne(optional = false)
+    private Tarefa idProximaTarefa;
+    
+    @JoinColumn(name = "tipo", referencedColumnName = "tipotarefa")
+    @ManyToOne(optional = false)
+    private TipoTarefa tipo;
+    
+    @JoinColumn(name = "idtarefapai", referencedColumnName = "idtarefa")
+    @ManyToOne
+    private Tarefa idTarefaPai;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario idUsuarioInclusao;
+
+    @JoinColumn(name = "idusuariosolicitante", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idUsuarioSolicitante;
+    
+    @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idUsuarioResponsavel;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    private List<ParicipanteTarefa> paricipantes;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    private List<AvaliacaoMetaTarefa> avaliacoes;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    private List<OrcamentoTarefa> orcamentos;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    private List<ApontamentoTarefa> apontamentoTarefaList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    private List<AnexoTarefa> anexos;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datainicio")
+    @Temporal(TemporalType.DATE)
+    private LocalDate dataInicio;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datafim")
+    @Temporal(TemporalType.DATE)
+    
+    private LocalDate dataFim;
+    @Column(name = "datatermino")
+    @Temporal(TemporalType.DATE)
+    private LocalDate dataTermino;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtarefa")
-    private List<FavoritosTarefaMeta> favoritosTarefaMetaList;
-    @JoinColumn(name = "idcentrocusto", referencedColumnName = "idcentrocusto")
-    @ManyToOne
-    private CentroCusto idcentrocusto;
-    @JoinColumn(name = "iddepartamento", referencedColumnName = "iddepartamento")
-    @ManyToOne
-    private Departamento iddepartamento;
-    @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
-    @ManyToOne(optional = false)
-    private Empresa idempresa;
-    @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
-    @ManyToOne
-    private EmpresaCliente idempresacliente;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtarefaproxima")
-    private List<Tarefa> tarefaList;
-    @JoinColumn(name = "idtarefaproxima", referencedColumnName = "idtarefa")
-    @ManyToOne(optional = false)
-    private Tarefa idtarefaproxima;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtarefaanterior")
-    private List<Tarefa> tarefaList1;
-    @JoinColumn(name = "idtarefaanterior", referencedColumnName = "idtarefa")
-    @ManyToOne(optional = false)
-    private Tarefa idtarefaanterior;
-    @OneToMany(mappedBy = "idtarefapai")
-    private List<Tarefa> tarefaList2;
-    @JoinColumn(name = "idtarefapai", referencedColumnName = "idtarefa")
-    @ManyToOne
-    private Tarefa idtarefapai;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne
-    private Usuario idusuarioinclusao;
-    @JoinColumn(name = "idusuariosolicitante", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idusuariosolicitante;
-    @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idusuarioresponsavel;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtarefa")
-    private List<ParicipanteTarefa> paricipanteTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtarefa")
-    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idtarefa")
-    private List<OrcamentoTarefa> orcamentoTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
-    private List<ApontamentoTarefa> apontamentoTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
-    private List<AnexoTarefa> anexoTarefaList;
+    private LocalDateTime dataHoraInclusao;
 
     public Tarefa() {
     }
 
     public Tarefa(Integer idtarefa) {
         this.id = idtarefa;
-    }
-
-    public Tarefa(Integer idtarefa, int nivel, String titulo, String nome, String prioridade, String tipo, int andamento, LocalDate datainicio, LocalDate datafim, String descricao, boolean apontamentohoras, boolean orcamentocontrolado, LocalDateTime datahorainclusao) {
-        this.id = idtarefa;
-        this.nivel = nivel;
-        this.titulo = titulo;
-        this.nome = nome;
-        this.prioridade = prioridade;
-        this.tipo = tipo;
-        this.andamento = andamento;
-        this.datainicio = datainicio;
-        this.datafim = datafim;
-        this.descricao = descricao;
-        this.apontamentohoras = apontamentohoras;
-        this.orcamentocontrolado = orcamentocontrolado;
-        this.datahorainclusao = datahorainclusao;
     }
 
     public Integer getId() {
@@ -223,22 +227,13 @@ public class Tarefa implements Serializable {
         this.nome = nome;
     }
 
-    public String getPrioridade() {
+    public PrioridadeTarefa getPrioridade() {
         return prioridade;
     }
 
-    public void setPrioridade(String prioridade) {
+    public void setPrioridade(PrioridadeTarefa prioridade) {
         this.prioridade = prioridade;
     }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
 
     public int getAndamento() {
         return andamento;
@@ -248,29 +243,6 @@ public class Tarefa implements Serializable {
         this.andamento = andamento;
     }
 
-    public LocalDate getDatainicio() {
-        return datainicio;
-    }
-
-    public void setDatainicio(LocalDate datainicio) {
-        this.datainicio = datainicio;
-    }
-
-    public LocalDate getDatafim() {
-        return datafim;
-    }
-
-    public void setDatafim(LocalDate datafim) {
-        this.datafim = datafim;
-    }
-
-    public LocalDate getDatatermino() {
-        return datatermino;
-    }
-
-    public void setDatatermino(LocalDate datatermino) {
-        this.datatermino = datatermino;
-    }
 
     public String getDescricao() {
         return descricao;
@@ -280,164 +252,125 @@ public class Tarefa implements Serializable {
         this.descricao = descricao;
     }
 
-    public boolean getApontamentohoras() {
-        return apontamentohoras;
+    public boolean getApontamentoHoras() {
+        return apontamentoHoras;
     }
 
-    public void setApontamentohoras(boolean apontamentohoras) {
-        this.apontamentohoras = apontamentohoras;
+    public void setApontamentoHoras(boolean apontamentoHoras) {
+        this.apontamentoHoras = apontamentoHoras;
     }
 
-    public boolean getOrcamentocontrolado() {
-        return orcamentocontrolado;
+    public boolean getOrcamentoControlado() {
+        return orcamentoControlado;
     }
 
-    public void setOrcamentocontrolado(boolean orcamentocontrolado) {
-        this.orcamentocontrolado = orcamentocontrolado;
+    public void setOrcamentoControlado(boolean orcamentoControlado) {
+        this.orcamentoControlado = orcamentoControlado;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+
+    public List<FavoritosTarefaMeta> getFavoritados() {
+        return favoritados;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setFavoritados(List<FavoritosTarefaMeta> favoritados) {
+        this.favoritados = favoritados;
     }
 
-    public List<FavoritosTarefaMeta> getFavoritosTarefaMetaList() {
-        return favoritosTarefaMetaList;
+    public CentroCusto getIdCentroCusto() {
+        return idCentroCusto;
     }
 
-    public void setFavoritosTarefaMetaList(List<FavoritosTarefaMeta> favoritosTarefaMetaList) {
-        this.favoritosTarefaMetaList = favoritosTarefaMetaList;
+    public void setIdCentroCusto(CentroCusto idCentroCusto) {
+        this.idCentroCusto = idCentroCusto;
     }
 
-    public CentroCusto getIdcentrocusto() {
-        return idcentrocusto;
+    public Departamento getIdDepartamento() {
+        return idDepartamento;
     }
 
-    public void setIdcentrocusto(CentroCusto idcentrocusto) {
-        this.idcentrocusto = idcentrocusto;
+    public void setIdDepartamento(Departamento idDepartamento) {
+        this.idDepartamento = idDepartamento;
     }
 
-    public Departamento getIddepartamento() {
-        return iddepartamento;
+    public Empresa getIdEmpresa() {
+        return idEmpresa;
     }
 
-    public void setIddepartamento(Departamento iddepartamento) {
-        this.iddepartamento = iddepartamento;
+    public void setIdEmpresa(Empresa idEmpresa) {
+        this.idEmpresa = idEmpresa;
     }
 
-    public Empresa getIdempresa() {
-        return idempresa;
+    public EmpresaCliente getEmpresaCliente() {
+        return empresaCliente;
     }
 
-    public void setIdempresa(Empresa idempresa) {
-        this.idempresa = idempresa;
+    public void setEmpresaCliente(EmpresaCliente empresaCliente) {
+        this.empresaCliente = empresaCliente;
     }
 
-    public EmpresaCliente getIdempresacliente() {
-        return idempresacliente;
+    public List<Tarefa> getSubTarefas() {
+        return subTarefas;
     }
 
-    public void setIdempresacliente(EmpresaCliente idempresacliente) {
-        this.idempresacliente = idempresacliente;
+    public void setSubTarefas(List<Tarefa> subTarefas) {
+        this.subTarefas = subTarefas;
     }
 
-    public List<Tarefa> getTarefaList() {
-        return tarefaList;
+    public Tarefa getIdTarefaPai() {
+        return idTarefaPai;
     }
 
-    public void setTarefaList(List<Tarefa> tarefaList) {
-        this.tarefaList = tarefaList;
+    public void setIdTarefaPai(Tarefa idTarefaPai) {
+        this.idTarefaPai = idTarefaPai;
     }
 
-    public Tarefa getIdtarefaproxima() {
-        return idtarefaproxima;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdtarefaproxima(Tarefa idtarefaproxima) {
-        this.idtarefaproxima = idtarefaproxima;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
-    public List<Tarefa> getTarefaList1() {
-        return tarefaList1;
+    public Usuario getIdUsuarioSolicitante() {
+        return idUsuarioSolicitante;
     }
 
-    public void setTarefaList1(List<Tarefa> tarefaList1) {
-        this.tarefaList1 = tarefaList1;
+    public void setIdUsuarioSolicitante(Usuario idUsuarioSolicitante) {
+        this.idUsuarioSolicitante = idUsuarioSolicitante;
     }
 
-    public Tarefa getIdtarefaanterior() {
-        return idtarefaanterior;
+    public Usuario getIdUsuarioResponsavel() {
+        return idUsuarioResponsavel;
     }
 
-    public void setIdtarefaanterior(Tarefa idtarefaanterior) {
-        this.idtarefaanterior = idtarefaanterior;
+    public void setIdUsuarioResponsavel(Usuario idUsuarioResponsavel) {
+        this.idUsuarioResponsavel = idUsuarioResponsavel;
     }
 
-    public List<Tarefa> getTarefaList2() {
-        return tarefaList2;
+    public List<ParicipanteTarefa> getParicipantes() {
+        return paricipantes;
     }
 
-    public void setTarefaList2(List<Tarefa> tarefaList2) {
-        this.tarefaList2 = tarefaList2;
+    public void setParicipantes(List<ParicipanteTarefa> paricipantes) {
+        this.paricipantes = paricipantes;
     }
 
-    public Tarefa getIdtarefapai() {
-        return idtarefapai;
+    public List<AvaliacaoMetaTarefa> getAvaliacoes() {
+        return avaliacoes;
     }
 
-    public void setIdtarefapai(Tarefa idtarefapai) {
-        this.idtarefapai = idtarefapai;
+    public void setAvaliacoes(List<AvaliacaoMetaTarefa> avaliacoes) {
+        this.avaliacoes = avaliacoes;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public List<OrcamentoTarefa> getOrcamentos() {
+        return orcamentos;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
-    }
-
-    public Usuario getIdusuariosolicitante() {
-        return idusuariosolicitante;
-    }
-
-    public void setIdusuariosolicitante(Usuario idusuariosolicitante) {
-        this.idusuariosolicitante = idusuariosolicitante;
-    }
-
-    public Usuario getIdusuarioresponsavel() {
-        return idusuarioresponsavel;
-    }
-
-    public void setIdusuarioresponsavel(Usuario idusuarioresponsavel) {
-        this.idusuarioresponsavel = idusuarioresponsavel;
-    }
-
-    public List<ParicipanteTarefa> getParicipanteTarefaList() {
-        return paricipanteTarefaList;
-    }
-
-    public void setParicipanteTarefaList(List<ParicipanteTarefa> paricipanteTarefaList) {
-        this.paricipanteTarefaList = paricipanteTarefaList;
-    }
-
-    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList() {
-        return avaliacaoMetaTarefaList;
-    }
-
-    public void setAvaliacaoMetaTarefaList(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList) {
-        this.avaliacaoMetaTarefaList = avaliacaoMetaTarefaList;
-    }
-
-    public List<OrcamentoTarefa> getOrcamentoTarefaList() {
-        return orcamentoTarefaList;
-    }
-
-    public void setOrcamentoTarefaList(List<OrcamentoTarefa> orcamentoTarefaList) {
-        this.orcamentoTarefaList = orcamentoTarefaList;
+    public void setOrcamentos(List<OrcamentoTarefa> orcamentos) {
+        this.orcamentos = orcamentos;
     }
 
     public List<ApontamentoTarefa> getApontamentoTarefaList() {
@@ -448,12 +381,12 @@ public class Tarefa implements Serializable {
         this.apontamentoTarefaList = apontamentoTarefaList;
     }
 
-    public List<AnexoTarefa> getAnexoTarefaList() {
-        return anexoTarefaList;
+    public List<AnexoTarefa> getAnexos() {
+        return anexos;
     }
 
-    public void setAnexoTarefaList(List<AnexoTarefa> anexoTarefaList) {
-        this.anexoTarefaList = anexoTarefaList;
+    public void setAnexos(List<AnexoTarefa> anexos) {
+        this.anexos = anexos;
     }
 
     @Override
@@ -481,12 +414,60 @@ public class Tarefa implements Serializable {
         return "com.saax.gestorweb.Tarefa[ idtarefa=" + id + " ]";
     }
 
-    public Statustarefa getStatus() {
+    public StatusTarefa getStatus() {
         return status;
     }
 
-    public void setStatus(Statustarefa status) {
+    public void setStatus(StatusTarefa status) {
         this.status = status;
+    }
+
+    public Tarefa getIdProximaTarefa() {
+        return idProximaTarefa;
+    }
+
+    public void setIdProximaTarefa(Tarefa idProximaTarefa) {
+        this.idProximaTarefa = idProximaTarefa;
+    }
+
+    public TipoTarefa getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoTarefa tipo) {
+        this.tipo = tipo;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    public LocalDate getDataFim() {
+        return dataFim;
+    }
+
+    public void setDataFim(LocalDate dataFim) {
+        this.dataFim = dataFim;
+    }
+
+    public LocalDate getDataTermino() {
+        return dataTermino;
+    }
+
+    public void setDataTermino(LocalDate dataTermino) {
+        this.dataTermino = dataTermino;
+    }
+
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
+    }
+
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
     
 }

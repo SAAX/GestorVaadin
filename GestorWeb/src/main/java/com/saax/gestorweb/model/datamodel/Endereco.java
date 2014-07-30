@@ -37,16 +37,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Endereco.findByComplemento", query = "SELECT e FROM Endereco e WHERE e.complemento = :complemento"),
     @NamedQuery(name = "Endereco.findByCep", query = "SELECT e FROM Endereco e WHERE e.cep = :cep")})
 public class Endereco implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
-    @OneToMany(mappedBy = "endereco")
-    private List<EmpresaCliente> empresaClienteList;
 
     private static final long serialVersionUID = 1L;
     
@@ -85,8 +75,23 @@ public class Endereco implements Serializable {
     private Cidade cidade;
     
     @OneToMany(mappedBy = "endereco")
-    private List<Empresa> empresaList;
+    private List<Empresa> empresas;
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dataHoraInclusao;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idUsuarioInclusao;
+    
+    @OneToMany(mappedBy = "endereco")
+    private List<EmpresaCliente> empresasCliente;
+
+
+    
     public Endereco() {
     }
 
@@ -150,12 +155,12 @@ public class Endereco implements Serializable {
         this.cidade = cidade;
     }
 
-    public List<Empresa> getEmpresaList() {
-        return empresaList;
+    public List<Empresa> getEmpresas() {
+        return empresas;
     }
 
-    public void setEmpresaList(List<Empresa> empresaList) {
-        this.empresaList = empresaList;
+    public void setEmpresas(List<Empresa> empresas) {
+        this.empresas = empresas;
     }
 
     @Override
@@ -184,28 +189,28 @@ public class Endereco implements Serializable {
     }
 
     @XmlTransient
-    public List<EmpresaCliente> getEmpresaClienteList() {
-        return empresaClienteList;
+    public List<EmpresaCliente> getEmpresasCliente() {
+        return empresasCliente;
     }
 
-    public void setEmpresaClienteList(List<EmpresaCliente> empresaClienteList) {
-        this.empresaClienteList = empresaClienteList;
+    public void setEmpresasCliente(List<EmpresaCliente> empresasCliente) {
+        this.empresasCliente = empresasCliente;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
     
 }

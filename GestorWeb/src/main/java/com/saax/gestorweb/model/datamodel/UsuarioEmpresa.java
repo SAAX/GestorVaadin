@@ -42,10 +42,10 @@ public class UsuarioEmpresa implements Serializable {
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
+    private LocalDateTime dataHoraInclusao;
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
+    private Usuario idUsuarioInclusao;
 
     
     private static final long serialVersionUID = 1L;
@@ -178,20 +178,20 @@ public class UsuarioEmpresa implements Serializable {
         this.ativo = ativo;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
     
 }

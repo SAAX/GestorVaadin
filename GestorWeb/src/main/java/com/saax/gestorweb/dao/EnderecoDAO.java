@@ -33,11 +33,11 @@ public class EnderecoDAO implements Serializable {
     }
 
     public void create(Endereco endereco) {
-        if (endereco.getEmpresaList() == null) {
-            endereco.setEmpresaList(new ArrayList<Empresa>());
+        if (endereco.getEmpresas() == null) {
+            endereco.setEmpresas(new ArrayList<Empresa>());
         }
-        if (endereco.getEmpresaClienteList() == null) {
-            endereco.setEmpresaClienteList(new ArrayList<EmpresaCliente>());
+        if (endereco.getEmpresasCliente() == null) {
+            endereco.setEmpresasCliente(new ArrayList<EmpresaCliente>());
         }
         EntityManager em = null;
         try {
@@ -48,23 +48,23 @@ public class EnderecoDAO implements Serializable {
                 cidade = em.getReference(cidade.getClass(), cidade.getId());
                 endereco.setCidade(cidade);
             }
-            Usuario idusuarioinclusao = endereco.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = endereco.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                endereco.setIdusuarioinclusao(idusuarioinclusao);
+                endereco.setIdUsuarioInclusao(idusuarioinclusao);
             }
             List<Empresa> attachedEmpresaList = new ArrayList<Empresa>();
-            for (Empresa empresaListEmpresaToAttach : endereco.getEmpresaList()) {
+            for (Empresa empresaListEmpresaToAttach : endereco.getEmpresas()) {
                 empresaListEmpresaToAttach = em.getReference(empresaListEmpresaToAttach.getClass(), empresaListEmpresaToAttach.getId());
                 attachedEmpresaList.add(empresaListEmpresaToAttach);
             }
-            endereco.setEmpresaList(attachedEmpresaList);
+            endereco.setEmpresas(attachedEmpresaList);
             List<EmpresaCliente> attachedEmpresaClienteList = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente empresaClienteListEmpresaClienteToAttach : endereco.getEmpresaClienteList()) {
+            for (EmpresaCliente empresaClienteListEmpresaClienteToAttach : endereco.getEmpresasCliente()) {
                 empresaClienteListEmpresaClienteToAttach = em.getReference(empresaClienteListEmpresaClienteToAttach.getClass(), empresaClienteListEmpresaClienteToAttach.getId());
                 attachedEmpresaClienteList.add(empresaClienteListEmpresaClienteToAttach);
             }
-            endereco.setEmpresaClienteList(attachedEmpresaClienteList);
+            endereco.setEmpresasCliente(attachedEmpresaClienteList);
             em.persist(endereco);
             if (cidade != null) {
                 cidade.getEnderecoList().add(endereco);
@@ -74,21 +74,21 @@ public class EnderecoDAO implements Serializable {
                 idusuarioinclusao.getEnderecoList().add(endereco);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
-            for (Empresa empresaListEmpresa : endereco.getEmpresaList()) {
+            for (Empresa empresaListEmpresa : endereco.getEmpresas()) {
                 Endereco oldEnderecoOfEmpresaListEmpresa = empresaListEmpresa.getEndereco();
                 empresaListEmpresa.setEndereco(endereco);
                 empresaListEmpresa = em.merge(empresaListEmpresa);
                 if (oldEnderecoOfEmpresaListEmpresa != null) {
-                    oldEnderecoOfEmpresaListEmpresa.getEmpresaList().remove(empresaListEmpresa);
+                    oldEnderecoOfEmpresaListEmpresa.getEmpresas().remove(empresaListEmpresa);
                     oldEnderecoOfEmpresaListEmpresa = em.merge(oldEnderecoOfEmpresaListEmpresa);
                 }
             }
-            for (EmpresaCliente empresaClienteListEmpresaCliente : endereco.getEmpresaClienteList()) {
+            for (EmpresaCliente empresaClienteListEmpresaCliente : endereco.getEmpresasCliente()) {
                 Endereco oldEnderecoOfEmpresaClienteListEmpresaCliente = empresaClienteListEmpresaCliente.getEndereco();
                 empresaClienteListEmpresaCliente.setEndereco(endereco);
                 empresaClienteListEmpresaCliente = em.merge(empresaClienteListEmpresaCliente);
                 if (oldEnderecoOfEmpresaClienteListEmpresaCliente != null) {
-                    oldEnderecoOfEmpresaClienteListEmpresaCliente.getEmpresaClienteList().remove(empresaClienteListEmpresaCliente);
+                    oldEnderecoOfEmpresaClienteListEmpresaCliente.getEmpresasCliente().remove(empresaClienteListEmpresaCliente);
                     oldEnderecoOfEmpresaClienteListEmpresaCliente = em.merge(oldEnderecoOfEmpresaClienteListEmpresaCliente);
                 }
             }
@@ -108,19 +108,19 @@ public class EnderecoDAO implements Serializable {
             Endereco persistentEndereco = em.find(Endereco.class, endereco.getId());
             Cidade cidadeOld = persistentEndereco.getCidade();
             Cidade cidadeNew = endereco.getCidade();
-            Usuario idusuarioinclusaoOld = persistentEndereco.getIdusuarioinclusao();
-            Usuario idusuarioinclusaoNew = endereco.getIdusuarioinclusao();
-            List<Empresa> empresaListOld = persistentEndereco.getEmpresaList();
-            List<Empresa> empresaListNew = endereco.getEmpresaList();
-            List<EmpresaCliente> empresaClienteListOld = persistentEndereco.getEmpresaClienteList();
-            List<EmpresaCliente> empresaClienteListNew = endereco.getEmpresaClienteList();
+            Usuario idusuarioinclusaoOld = persistentEndereco.getIdUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = endereco.getIdUsuarioInclusao();
+            List<Empresa> empresaListOld = persistentEndereco.getEmpresas();
+            List<Empresa> empresaListNew = endereco.getEmpresas();
+            List<EmpresaCliente> empresaClienteListOld = persistentEndereco.getEmpresasCliente();
+            List<EmpresaCliente> empresaClienteListNew = endereco.getEmpresasCliente();
             if (cidadeNew != null) {
                 cidadeNew = em.getReference(cidadeNew.getClass(), cidadeNew.getId());
                 endereco.setCidade(cidadeNew);
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                endereco.setIdusuarioinclusao(idusuarioinclusaoNew);
+                endereco.setIdUsuarioInclusao(idusuarioinclusaoNew);
             }
             List<Empresa> attachedEmpresaListNew = new ArrayList<Empresa>();
             for (Empresa empresaListNewEmpresaToAttach : empresaListNew) {
@@ -128,14 +128,14 @@ public class EnderecoDAO implements Serializable {
                 attachedEmpresaListNew.add(empresaListNewEmpresaToAttach);
             }
             empresaListNew = attachedEmpresaListNew;
-            endereco.setEmpresaList(empresaListNew);
+            endereco.setEmpresas(empresaListNew);
             List<EmpresaCliente> attachedEmpresaClienteListNew = new ArrayList<EmpresaCliente>();
             for (EmpresaCliente empresaClienteListNewEmpresaClienteToAttach : empresaClienteListNew) {
                 empresaClienteListNewEmpresaClienteToAttach = em.getReference(empresaClienteListNewEmpresaClienteToAttach.getClass(), empresaClienteListNewEmpresaClienteToAttach.getId());
                 attachedEmpresaClienteListNew.add(empresaClienteListNewEmpresaClienteToAttach);
             }
             empresaClienteListNew = attachedEmpresaClienteListNew;
-            endereco.setEmpresaClienteList(empresaClienteListNew);
+            endereco.setEmpresasCliente(empresaClienteListNew);
             endereco = em.merge(endereco);
             if (cidadeOld != null && !cidadeOld.equals(cidadeNew)) {
                 cidadeOld.getEnderecoList().remove(endereco);
@@ -165,7 +165,7 @@ public class EnderecoDAO implements Serializable {
                     empresaListNewEmpresa.setEndereco(endereco);
                     empresaListNewEmpresa = em.merge(empresaListNewEmpresa);
                     if (oldEnderecoOfEmpresaListNewEmpresa != null && !oldEnderecoOfEmpresaListNewEmpresa.equals(endereco)) {
-                        oldEnderecoOfEmpresaListNewEmpresa.getEmpresaList().remove(empresaListNewEmpresa);
+                        oldEnderecoOfEmpresaListNewEmpresa.getEmpresas().remove(empresaListNewEmpresa);
                         oldEnderecoOfEmpresaListNewEmpresa = em.merge(oldEnderecoOfEmpresaListNewEmpresa);
                     }
                 }
@@ -182,7 +182,7 @@ public class EnderecoDAO implements Serializable {
                     empresaClienteListNewEmpresaCliente.setEndereco(endereco);
                     empresaClienteListNewEmpresaCliente = em.merge(empresaClienteListNewEmpresaCliente);
                     if (oldEnderecoOfEmpresaClienteListNewEmpresaCliente != null && !oldEnderecoOfEmpresaClienteListNewEmpresaCliente.equals(endereco)) {
-                        oldEnderecoOfEmpresaClienteListNewEmpresaCliente.getEmpresaClienteList().remove(empresaClienteListNewEmpresaCliente);
+                        oldEnderecoOfEmpresaClienteListNewEmpresaCliente.getEmpresasCliente().remove(empresaClienteListNewEmpresaCliente);
                         oldEnderecoOfEmpresaClienteListNewEmpresaCliente = em.merge(oldEnderecoOfEmpresaClienteListNewEmpresaCliente);
                     }
                 }
@@ -221,17 +221,17 @@ public class EnderecoDAO implements Serializable {
                 cidade.getEnderecoList().remove(endereco);
                 cidade = em.merge(cidade);
             }
-            Usuario idusuarioinclusao = endereco.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = endereco.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao.getEnderecoList().remove(endereco);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
-            List<Empresa> empresaList = endereco.getEmpresaList();
+            List<Empresa> empresaList = endereco.getEmpresas();
             for (Empresa empresaListEmpresa : empresaList) {
                 empresaListEmpresa.setEndereco(null);
                 empresaListEmpresa = em.merge(empresaListEmpresa);
             }
-            List<EmpresaCliente> empresaClienteList = endereco.getEmpresaClienteList();
+            List<EmpresaCliente> empresaClienteList = endereco.getEmpresasCliente();
             for (EmpresaCliente empresaClienteListEmpresaCliente : empresaClienteList) {
                 empresaClienteListEmpresaCliente.setEndereco(null);
                 empresaClienteListEmpresaCliente = em.merge(empresaClienteListEmpresaCliente);

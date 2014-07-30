@@ -39,18 +39,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "EmpresaCliente.findByCpf", query = "SELECT e FROM EmpresaCliente e WHERE e.cpf = :cpf"),
     @NamedQuery(name = "EmpresaCliente.findByAtiva", query = "SELECT e FROM EmpresaCliente e WHERE e.ativa = :ativa")})
 public class EmpresaCliente implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @OneToMany(mappedBy = "idempresacliente")
-    private List<Tarefa> tarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idempresacliente")
-    private List<Meta> metaList;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
 
     private static final long serialVersionUID = 1L;
     
@@ -100,6 +88,23 @@ public class EmpresaCliente implements Serializable {
     @JoinColumn(name = "idendereco", referencedColumnName = "idendereco")
     @ManyToOne
     private Endereco endereco;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dataHoraInclusao;
+    
+    @OneToMany(mappedBy = "empresaCliente")
+    private List<Tarefa> tarefas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idempresacliente")
+    private List<Meta> metas;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idUsuarioInclusao;
+
 
     public EmpresaCliente() {
     }
@@ -221,36 +226,36 @@ public class EmpresaCliente implements Serializable {
         return "com.saax.gestorweb.model.datamodel.EmpresaCliente[ idempresacliente=" + id + " ]";
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<Tarefa> getTarefaList() {
-        return tarefaList;
+    public List<Tarefa> getTarefas() {
+        return tarefas;
     }
 
-    public void setTarefaList(List<Tarefa> tarefaList) {
-        this.tarefaList = tarefaList;
+    public void setTarefas(List<Tarefa> tarefas) {
+        this.tarefas = tarefas;
     }
 
-    public List<Meta> getMetaList() {
-        return metaList;
+    public List<Meta> getMetas() {
+        return metas;
     }
 
-    public void setMetaList(List<Meta> metaList) {
-        this.metaList = metaList;
+    public void setMetas(List<Meta> metas) {
+        this.metas = metas;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
     
 }

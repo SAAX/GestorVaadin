@@ -1,6 +1,5 @@
 package com.saax.gestorweb.model.datamodel;
 
-import com.saax.gestorweb.model.datamodel.Usuario;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,6 +20,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Entity bean da tabela Orcamento Tarefa com as namequerys configuradas.<br><br>
+ * 
+ * O objetivo desta entidade e armazenar os orçamentos de valores (orçado/realizado) das tarefas / subs <br><br>
  *
  * @author rodrigo
  */
@@ -28,43 +30,50 @@ import javax.validation.constraints.Size;
 @Table(name = "orcamentotarefa")
 @NamedQueries({
     @NamedQuery(name = "OrcamentoTarefa.findAll", query = "SELECT o FROM OrcamentoTarefa o"),
-    @NamedQuery(name = "OrcamentoTarefa.findByIdorcamentotarefa", query = "SELECT o FROM OrcamentoTarefa o WHERE o.idorcamentotarefa = :idorcamentotarefa"),
     @NamedQuery(name = "OrcamentoTarefa.findByValor", query = "SELECT o FROM OrcamentoTarefa o WHERE o.valor = :valor"),
     @NamedQuery(name = "OrcamentoTarefa.findBySentido", query = "SELECT o FROM OrcamentoTarefa o WHERE o.sentido = :sentido"),
     @NamedQuery(name = "OrcamentoTarefa.findByObservacoes", query = "SELECT o FROM OrcamentoTarefa o WHERE o.observacoes = :observacoes"),
-    @NamedQuery(name = "OrcamentoTarefa.findByDatahorainclusao", query = "SELECT o FROM OrcamentoTarefa o WHERE o.datahorainclusao = :datahorainclusao")})
+    @NamedQuery(name = "OrcamentoTarefa.findByDatahorainclusao", query = "SELECT o FROM OrcamentoTarefa o WHERE o.dataHoraInclusao = :dataHoraInclusao")})
 public class OrcamentoTarefa implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idorcamentotarefa")
     private Integer id;
+    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Column(name = "valor")
+    @Column(name = "valor", precision = 10, scale = 2)
     private BigDecimal valor;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "sentido")
     private Character sentido;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 60)
     @Column(name = "observacoes")
     private String observacoes;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
+    private LocalDateTime dataHoraInclusao;
+    
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa idtarefa;
+    private Tarefa idTarefa;
+    
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
+    private Usuario idUsuarioInclusao;
 
     public OrcamentoTarefa() {
     }
@@ -73,12 +82,12 @@ public class OrcamentoTarefa implements Serializable {
         this.id = idorcamentotarefa;
     }
 
-    public OrcamentoTarefa(Integer idorcamentotarefa, BigDecimal valor, Character sentido, String observacoes, LocalDateTime datahorainclusao) {
+    public OrcamentoTarefa(Integer idorcamentotarefa, BigDecimal valor, Character sentido, String observacoes, LocalDateTime dataHoraInclusao) {
         this.id = idorcamentotarefa;
         this.valor = valor;
         this.sentido = sentido;
         this.observacoes = observacoes;
-        this.datahorainclusao = datahorainclusao;
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public Integer getId() {
@@ -113,28 +122,28 @@ public class OrcamentoTarefa implements Serializable {
         this.observacoes = observacoes;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Tarefa getIdtarefa() {
-        return idtarefa;
+    public Tarefa getIdTarefa() {
+        return idTarefa;
     }
 
-    public void setIdtarefa(Tarefa idtarefa) {
-        this.idtarefa = idtarefa;
+    public void setIdTarefa(Tarefa idTarefa) {
+        this.idTarefa = idTarefa;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
     @Override

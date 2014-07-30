@@ -44,10 +44,10 @@ public class UsuarioEmpresaDAO implements Serializable {
                 usuario = em.getReference(usuario.getClass(), usuario.getId());
                 usuarioEmpresa.setUsuario(usuario);
             }
-            Usuario idusuarioinclusao = usuarioEmpresa.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = usuarioEmpresa.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                usuarioEmpresa.setIdusuarioinclusao(idusuarioinclusao);
+                usuarioEmpresa.setIdUsuarioInclusao(idusuarioinclusao);
             }
             em.persist(usuarioEmpresa);
             if (empresa != null) {
@@ -80,8 +80,8 @@ public class UsuarioEmpresaDAO implements Serializable {
             Empresa empresaNew = usuarioEmpresa.getEmpresa();
             Usuario usuarioOld = persistentUsuarioEmpresa.getUsuario();
             Usuario usuarioNew = usuarioEmpresa.getUsuario();
-            Usuario idusuarioinclusaoOld = persistentUsuarioEmpresa.getIdusuarioinclusao();
-            Usuario idusuarioinclusaoNew = usuarioEmpresa.getIdusuarioinclusao();
+            Usuario idusuarioinclusaoOld = persistentUsuarioEmpresa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = usuarioEmpresa.getIdUsuarioInclusao();
             if (empresaNew != null) {
                 empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 usuarioEmpresa.setEmpresa(empresaNew);
@@ -92,7 +92,7 @@ public class UsuarioEmpresaDAO implements Serializable {
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                usuarioEmpresa.setIdusuarioinclusao(idusuarioinclusaoNew);
+                usuarioEmpresa.setIdUsuarioInclusao(idusuarioinclusaoNew);
             }
             usuarioEmpresa = em.merge(usuarioEmpresa);
             if (empresaOld != null && !empresaOld.equals(empresaNew)) {
@@ -158,7 +158,7 @@ public class UsuarioEmpresaDAO implements Serializable {
                 usuario.getEmpresas().remove(usuarioEmpresa);
                 usuario = em.merge(usuario);
             }
-            Usuario idusuarioinclusao = usuarioEmpresa.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = usuarioEmpresa.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao.getEmpresas().remove(usuarioEmpresa);
                 idusuarioinclusao = em.merge(idusuarioinclusao);

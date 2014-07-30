@@ -37,17 +37,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Departamento.findByDepartamento", query = "SELECT d FROM Departamento d WHERE d.departamento = :departamento"),
     @NamedQuery(name = "Departamento.findByAtivo", query = "SELECT d FROM Departamento d WHERE d.ativo = :ativo")})
 public class Departamento implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @OneToMany(mappedBy = "iddepartamento")
-    private List<Tarefa> tarefaList;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
-    
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -74,6 +63,19 @@ public class Departamento implements Serializable {
     @OneToMany(mappedBy = "departamento")
     private Collection<Meta> metas;
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dataHoraInclusao;
+
+    @OneToMany(mappedBy = "idDepartamento")
+    private List<Tarefa> tarefas;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idUsuarioInclusao;
+    
     public Departamento() {
     }
 
@@ -147,28 +149,28 @@ public class Departamento implements Serializable {
         this.empresa = empresa;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<Tarefa> getTarefaList() {
-        return tarefaList;
+    public List<Tarefa> getTarefas() {
+        return tarefas;
     }
 
-    public void setTarefaList(List<Tarefa> tarefaList) {
-        this.tarefaList = tarefaList;
+    public void setTarefas(List<Tarefa> tarefas) {
+        this.tarefas = tarefas;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
     
 }

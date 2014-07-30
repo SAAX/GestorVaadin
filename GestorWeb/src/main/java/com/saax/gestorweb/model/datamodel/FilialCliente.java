@@ -29,19 +29,10 @@ import javax.validation.constraints.Size;
 @Table(name = "filialcliente")
 @NamedQueries({
     @NamedQuery(name = "FilialCliente.findAll", query = "SELECT f FROM FilialCliente f"),
-    @NamedQuery(name = "FilialCliente.findByIdfilialcliente", query = "SELECT f FROM FilialCliente f WHERE f.idFilialCliente = :idfilialcliente"),
     @NamedQuery(name = "FilialCliente.findByNome", query = "SELECT f FROM FilialCliente f WHERE f.nome = :nome"),
     @NamedQuery(name = "FilialCliente.findByCnpj", query = "SELECT f FROM FilialCliente f WHERE f.cnpj = :cnpj"),
     @NamedQuery(name = "FilialCliente.findByAtiva", query = "SELECT f FROM FilialCliente f WHERE f.ativa = :ativa")})
 public class FilialCliente implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
 
     private static final long serialVersionUID = 1L;
     
@@ -70,6 +61,17 @@ public class FilialCliente implements Serializable {
     @ManyToOne(optional = false)
     private EmpresaCliente empresaCliente;
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dataHoraInclusao;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idUsuarioInclusao;
+
+    
     public FilialCliente() {
     }
 
@@ -148,20 +150,20 @@ public class FilialCliente implements Serializable {
         return "com.saax.gestorweb.model.datamodel.FilialCliente[ idfilialcliente=" + id + " ]";
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
     
 }

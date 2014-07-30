@@ -42,47 +42,47 @@ public class Usuario implements Serializable {
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private LocalDateTime dataHoraInclusao;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<FavoritosTarefaMeta> favoritosTarefaMetaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<CentroCusto> centroCustoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<Endereco> enderecoList;
-    @OneToMany(mappedBy = "idusuarioinclusao")
+    @OneToMany(mappedBy = "idUsuarioInclusao")
     private List<Tarefa> tarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuariosolicitante")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioSolicitante")
     private List<Tarefa> tarefaList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioresponsavel")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioResponsavel")
     private List<Tarefa> tarefaList2;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<ParicipanteTarefa> paricipanteTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioparticipante")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioParticipante")
     private List<ParicipanteTarefa> paricipanteTarefaList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<FilialCliente> filialClienteList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<FilialEmpresa> filialEmpresaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioavaliador")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioAvaliador")
     private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioavaliado")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioAvaliado")
     private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList2;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<OrcamentoTarefa> orcamentoTarefaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<ApontamentoTarefa> apontamentoTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<Departamento> departamentoList;
-    @OneToMany(mappedBy = "idusuarioinclusao")
+    @OneToMany(mappedBy = "idUsuarioInclusao")
     private List<Usuario> usuarioList;
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne
-    private Usuario idusuarioinclusao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    private Usuario idUsuarioInclusao;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<Empresa> empresaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idusuarioinclusao")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<EmpresaCliente> empresaClienteList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
     private List<AnexoTarefa> anexoTarefaList;
@@ -223,12 +223,12 @@ public class Usuario implements Serializable {
         this.metasResponsaveis = metasResponsaveis;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public List<FavoritosTarefaMeta> getFavoritosTarefaMetaList() {
@@ -367,12 +367,12 @@ public class Usuario implements Serializable {
         this.usuarioList = usuarioList;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
     public List<Empresa> getEmpresaList() {

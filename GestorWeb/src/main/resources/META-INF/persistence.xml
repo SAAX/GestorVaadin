@@ -22,7 +22,9 @@
     <class>com.saax.gestorweb.model.datamodel.OrcamentoTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.ParicipanteTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.Tarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.Statustarefa</class>
+    <class>com.saax.gestorweb.model.datamodel.StatusTarefa</class>
+    <class>com.saax.gestorweb.model.datamodel.PrioridadeTarefa</class>
+    <class>com.saax.gestorweb.model.datamodel.TipoTarefa</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor"/>

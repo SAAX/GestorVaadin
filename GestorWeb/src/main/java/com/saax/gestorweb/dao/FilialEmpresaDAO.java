@@ -39,10 +39,10 @@ public class FilialEmpresaDAO implements Serializable {
                 matriz = em.getReference(matriz.getClass(), matriz.getId());
                 filialEmpresa.setMatriz(matriz);
             }
-            Usuario idusuarioinclusao = filialEmpresa.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = filialEmpresa.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                filialEmpresa.setIdusuarioinclusao(idusuarioinclusao);
+                filialEmpresa.setIdUsuarioInclusao(idusuarioinclusao);
             }
             em.persist(filialEmpresa);
             if (matriz != null) {
@@ -69,15 +69,15 @@ public class FilialEmpresaDAO implements Serializable {
             FilialEmpresa persistentFilialEmpresa = em.find(FilialEmpresa.class, filialEmpresa.getId());
             Empresa matrizOld = persistentFilialEmpresa.getMatriz();
             Empresa matrizNew = filialEmpresa.getMatriz();
-            Usuario idusuarioinclusaoOld = persistentFilialEmpresa.getIdusuarioinclusao();
-            Usuario idusuarioinclusaoNew = filialEmpresa.getIdusuarioinclusao();
+            Usuario idusuarioinclusaoOld = persistentFilialEmpresa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = filialEmpresa.getIdUsuarioInclusao();
             if (matrizNew != null) {
                 matrizNew = em.getReference(matrizNew.getClass(), matrizNew.getId());
                 filialEmpresa.setMatriz(matrizNew);
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                filialEmpresa.setIdusuarioinclusao(idusuarioinclusaoNew);
+                filialEmpresa.setIdUsuarioInclusao(idusuarioinclusaoNew);
             }
             filialEmpresa = em.merge(filialEmpresa);
             if (matrizOld != null && !matrizOld.equals(matrizNew)) {
@@ -130,7 +130,7 @@ public class FilialEmpresaDAO implements Serializable {
                 matriz.getFiliais().remove(filialEmpresa);
                 matriz = em.merge(matriz);
             }
-            Usuario idusuarioinclusao = filialEmpresa.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = filialEmpresa.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao.getFilialEmpresaList().remove(filialEmpresa);
                 idusuarioinclusao = em.merge(idusuarioinclusao);

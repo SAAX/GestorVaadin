@@ -79,11 +79,11 @@ public class AnexoTarefa implements Serializable {
         this.id = idanexotarefa;
     }
 
-    public AnexoTarefa(Integer idanexotarefa, byte[] arquivo, String nome, LocalDateTime datahorainclusao) {
+    public AnexoTarefa(Integer idanexotarefa, byte[] arquivo, String nome, LocalDateTime dataHoraInclusao) {
         this.id = idanexotarefa;
         this.arquivo = arquivo;
         this.nome = nome;
-        this.dataHoraInclusao = datahorainclusao;
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public Integer getId() {

@@ -46,7 +46,7 @@ public class AnexoTarefaDAO implements Serializable {
             }
             em.persist(anexoTarefa);
             if (idtarefa != null) {
-                idtarefa.getAnexoTarefaList().add(anexoTarefa);
+                idtarefa.getAnexos().add(anexoTarefa);
                 idtarefa = em.merge(idtarefa);
             }
             if (idusuarioinclusao != null) {
@@ -81,11 +81,11 @@ public class AnexoTarefaDAO implements Serializable {
             }
             anexoTarefa = em.merge(anexoTarefa);
             if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getAnexoTarefaList().remove(anexoTarefa);
+                idtarefaOld.getAnexos().remove(anexoTarefa);
                 idtarefaOld = em.merge(idtarefaOld);
             }
             if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getAnexoTarefaList().add(anexoTarefa);
+                idtarefaNew.getAnexos().add(anexoTarefa);
                 idtarefaNew = em.merge(idtarefaNew);
             }
             if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
@@ -127,7 +127,7 @@ public class AnexoTarefaDAO implements Serializable {
             }
             Tarefa idtarefa = anexoTarefa.getIdTarefa();
             if (idtarefa != null) {
-                idtarefa.getAnexoTarefaList().remove(anexoTarefa);
+                idtarefa.getAnexos().remove(anexoTarefa);
                 idtarefa = em.merge(idtarefa);
             }
             Usuario idusuarioinclusao = anexoTarefa.getIdUsuarioInclusao();

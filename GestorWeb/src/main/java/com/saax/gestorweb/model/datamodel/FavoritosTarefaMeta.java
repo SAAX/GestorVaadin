@@ -1,7 +1,5 @@
 package com.saax.gestorweb.model.datamodel;
 
-import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.Usuario;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Basic;
@@ -20,6 +18,9 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 /**
+ * Entity bean da tabela Favoritos Tarefa Meta com as namequerys configuradas<br><br>
+ * 
+ * O objetivo desta entidade e armazenar as metas e tarefas favoritas dos usuários<br><br>
  *
  * @author rodrigo
  */
@@ -27,29 +28,34 @@ import javax.validation.constraints.NotNull;
 @Table(name = "favoritostarefameta")
 @NamedQueries({
     @NamedQuery(name = "FavoritosTarefaMeta.findAll", query = "SELECT f FROM FavoritosTarefaMeta f"),
-    @NamedQuery(name = "FavoritosTarefaMeta.findByIdfavoritostarefameta", query = "SELECT f FROM FavoritosTarefaMeta f WHERE f.idfavoritostarefameta = :idfavoritostarefameta"),
-    @NamedQuery(name = "FavoritosTarefaMeta.findByDatahorainclusao", query = "SELECT f FROM FavoritosTarefaMeta f WHERE f.datahorainclusao = :datahorainclusao")})
+    @NamedQuery(name = "FavoritosTarefaMeta.findByDatahorainclusao", query = "SELECT f FROM FavoritosTarefaMeta f WHERE f.dataHoraInclusao = :dataHoraInclusao")})
 public class FavoritosTarefaMeta implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idfavoritostarefameta")
     private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
+    private LocalDateTime dataHoraInclusao;
+    
     @JoinColumn(name = "idmeta", referencedColumnName = "idmeta")
     @ManyToOne(optional = false)
-    private Meta idmeta;
+    private Meta idMeta;
+    
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa idtarefa;
+    private Tarefa idTarefa;
+    
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
+    private Usuario idUsuarioInclusao;
 
     public FavoritosTarefaMeta() {
     }
@@ -58,9 +64,9 @@ public class FavoritosTarefaMeta implements Serializable {
         this.id = idfavoritostarefameta;
     }
 
-    public FavoritosTarefaMeta(Integer idfavoritostarefameta, LocalDateTime datahorainclusao) {
+    public FavoritosTarefaMeta(Integer idfavoritostarefameta, LocalDateTime dataHoraInclusao) {
         this.id = idfavoritostarefameta;
-        this.datahorainclusao = datahorainclusao;
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public Integer getId() {
@@ -71,36 +77,36 @@ public class FavoritosTarefaMeta implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Meta getIdmeta() {
-        return idmeta;
+    public Meta getIdMeta() {
+        return idMeta;
     }
 
-    public void setIdmeta(Meta idmeta) {
-        this.idmeta = idmeta;
+    public void setIdMeta(Meta idMeta) {
+        this.idMeta = idMeta;
     }
 
-    public Tarefa getIdtarefa() {
-        return idtarefa;
+    public Tarefa getIdTarefa() {
+        return idTarefa;
     }
 
-    public void setIdtarefa(Tarefa idtarefa) {
-        this.idtarefa = idtarefa;
+    public void setIdTarefa(Tarefa idTarefa) {
+        this.idTarefa = idTarefa;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
     @Override

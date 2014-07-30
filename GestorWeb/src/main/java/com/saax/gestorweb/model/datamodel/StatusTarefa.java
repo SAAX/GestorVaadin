@@ -1,12 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.saax.gestorweb.model.datamodel;
 
-import com.saax.gestorweb.model.datamodel.Tarefa;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -22,6 +15,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
+ * Entity bean da tabela Status Tarefa com as namequerys configuradas.<br><br>
+ * 
+ * O objetivo desta entidade é armazenar as situações (Status) das tarefas/subs <br><br>
  *
  * @author rodrigo
  */
@@ -30,21 +26,24 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Statustarefa.findAll", query = "SELECT s FROM Statustarefa s"),
     @NamedQuery(name = "Statustarefa.findByStatustarefa", query = "SELECT s FROM Statustarefa s WHERE s.statustarefa = :statustarefa")})
-public class Statustarefa implements Serializable {
+public class StatusTarefa implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "statustarefa")
     private String statustarefa;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "status")
     private Set<Tarefa> tarefaSet;
 
-    public Statustarefa() {
+    public StatusTarefa() {
     }
 
-    public Statustarefa(String statustarefa) {
+    public StatusTarefa(String statustarefa) {
         this.statustarefa = statustarefa;
     }
 
@@ -74,10 +73,10 @@ public class Statustarefa implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Statustarefa)) {
+        if (!(object instanceof StatusTarefa)) {
             return false;
         }
-        Statustarefa other = (Statustarefa) object;
+        StatusTarefa other = (StatusTarefa) object;
         if ((this.statustarefa == null && other.statustarefa != null) || (this.statustarefa != null && !this.statustarefa.equals(other.statustarefa))) {
             return false;
         }

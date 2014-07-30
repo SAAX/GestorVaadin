@@ -117,10 +117,10 @@ public class UsuarioDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Usuario idusuarioinclusao = usuario.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = usuario.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                usuario.setIdusuarioinclusao(idusuarioinclusao);
+                usuario.setIdUsuarioInclusao(idusuarioinclusao);
             }
             Collection<UsuarioEmpresa> attachedEmpresas = new ArrayList<UsuarioEmpresa>();
             for (UsuarioEmpresa empresasUsuarioEmpresaToAttach : usuario.getEmpresas()) {
@@ -278,8 +278,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMeta : usuario.getFavoritosTarefaMetaList()) {
-                Usuario oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta = favoritosTarefaMetaListFavoritosTarefaMeta.getIdusuarioinclusao();
-                favoritosTarefaMetaListFavoritosTarefaMeta.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta = favoritosTarefaMetaListFavoritosTarefaMeta.getIdUsuarioInclusao();
+                favoritosTarefaMetaListFavoritosTarefaMeta.setIdUsuarioInclusao(usuario);
                 favoritosTarefaMetaListFavoritosTarefaMeta = em.merge(favoritosTarefaMetaListFavoritosTarefaMeta);
                 if (oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta != null) {
                     oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta.getFavoritosTarefaMetaList().remove(favoritosTarefaMetaListFavoritosTarefaMeta);
@@ -287,8 +287,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (CentroCusto centroCustoListCentroCusto : usuario.getCentroCustoList()) {
-                Usuario oldIdusuarioinclusaoOfCentroCustoListCentroCusto = centroCustoListCentroCusto.getIdusuarioinclusao();
-                centroCustoListCentroCusto.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfCentroCustoListCentroCusto = centroCustoListCentroCusto.getIdUsuarioInclusao();
+                centroCustoListCentroCusto.setIdUsuarioInclusao(usuario);
                 centroCustoListCentroCusto = em.merge(centroCustoListCentroCusto);
                 if (oldIdusuarioinclusaoOfCentroCustoListCentroCusto != null) {
                     oldIdusuarioinclusaoOfCentroCustoListCentroCusto.getCentroCustoList().remove(centroCustoListCentroCusto);
@@ -296,8 +296,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (Endereco enderecoListEndereco : usuario.getEnderecoList()) {
-                Usuario oldIdusuarioinclusaoOfEnderecoListEndereco = enderecoListEndereco.getIdusuarioinclusao();
-                enderecoListEndereco.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfEnderecoListEndereco = enderecoListEndereco.getIdUsuarioInclusao();
+                enderecoListEndereco.setIdUsuarioInclusao(usuario);
                 enderecoListEndereco = em.merge(enderecoListEndereco);
                 if (oldIdusuarioinclusaoOfEnderecoListEndereco != null) {
                     oldIdusuarioinclusaoOfEnderecoListEndereco.getEnderecoList().remove(enderecoListEndereco);
@@ -305,8 +305,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (Tarefa tarefaListTarefa : usuario.getTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfTarefaListTarefa = tarefaListTarefa.getIdusuarioinclusao();
-                tarefaListTarefa.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfTarefaListTarefa = tarefaListTarefa.getIdUsuarioInclusao();
+                tarefaListTarefa.setIdUsuarioInclusao(usuario);
                 tarefaListTarefa = em.merge(tarefaListTarefa);
                 if (oldIdusuarioinclusaoOfTarefaListTarefa != null) {
                     oldIdusuarioinclusaoOfTarefaListTarefa.getTarefaList().remove(tarefaListTarefa);
@@ -314,8 +314,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (Tarefa tarefaList1Tarefa : usuario.getTarefaList1()) {
-                Usuario oldIdusuariosolicitanteOfTarefaList1Tarefa = tarefaList1Tarefa.getIdusuariosolicitante();
-                tarefaList1Tarefa.setIdusuariosolicitante(usuario);
+                Usuario oldIdusuariosolicitanteOfTarefaList1Tarefa = tarefaList1Tarefa.getIdUsuarioSolicitante();
+                tarefaList1Tarefa.setIdUsuarioSolicitante(usuario);
                 tarefaList1Tarefa = em.merge(tarefaList1Tarefa);
                 if (oldIdusuariosolicitanteOfTarefaList1Tarefa != null) {
                     oldIdusuariosolicitanteOfTarefaList1Tarefa.getTarefaList1().remove(tarefaList1Tarefa);
@@ -323,8 +323,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (Tarefa tarefaList2Tarefa : usuario.getTarefaList2()) {
-                Usuario oldIdusuarioresponsavelOfTarefaList2Tarefa = tarefaList2Tarefa.getIdusuarioresponsavel();
-                tarefaList2Tarefa.setIdusuarioresponsavel(usuario);
+                Usuario oldIdusuarioresponsavelOfTarefaList2Tarefa = tarefaList2Tarefa.getIdUsuarioResponsavel();
+                tarefaList2Tarefa.setIdUsuarioResponsavel(usuario);
                 tarefaList2Tarefa = em.merge(tarefaList2Tarefa);
                 if (oldIdusuarioresponsavelOfTarefaList2Tarefa != null) {
                     oldIdusuarioresponsavelOfTarefaList2Tarefa.getTarefaList2().remove(tarefaList2Tarefa);
@@ -332,8 +332,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (ParicipanteTarefa paricipanteTarefaListParicipanteTarefa : usuario.getParicipanteTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa = paricipanteTarefaListParicipanteTarefa.getIdusuarioinclusao();
-                paricipanteTarefaListParicipanteTarefa.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa = paricipanteTarefaListParicipanteTarefa.getIdUsuarioInclusao();
+                paricipanteTarefaListParicipanteTarefa.setIdUsuarioInclusao(usuario);
                 paricipanteTarefaListParicipanteTarefa = em.merge(paricipanteTarefaListParicipanteTarefa);
                 if (oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa != null) {
                     oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa.getParicipanteTarefaList().remove(paricipanteTarefaListParicipanteTarefa);
@@ -341,8 +341,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (ParicipanteTarefa paricipanteTarefaList1ParicipanteTarefa : usuario.getParicipanteTarefaList1()) {
-                Usuario oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa = paricipanteTarefaList1ParicipanteTarefa.getIdusuarioparticipante();
-                paricipanteTarefaList1ParicipanteTarefa.setIdusuarioparticipante(usuario);
+                Usuario oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa = paricipanteTarefaList1ParicipanteTarefa.getIdUsuarioParticipante();
+                paricipanteTarefaList1ParicipanteTarefa.setIdUsuarioParticipante(usuario);
                 paricipanteTarefaList1ParicipanteTarefa = em.merge(paricipanteTarefaList1ParicipanteTarefa);
                 if (oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa != null) {
                     oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa.getParicipanteTarefaList1().remove(paricipanteTarefaList1ParicipanteTarefa);
@@ -350,8 +350,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (FilialCliente filialClienteListFilialCliente : usuario.getFilialClienteList()) {
-                Usuario oldIdusuarioinclusaoOfFilialClienteListFilialCliente = filialClienteListFilialCliente.getIdusuarioinclusao();
-                filialClienteListFilialCliente.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfFilialClienteListFilialCliente = filialClienteListFilialCliente.getIdUsuarioInclusao();
+                filialClienteListFilialCliente.setIdUsuarioInclusao(usuario);
                 filialClienteListFilialCliente = em.merge(filialClienteListFilialCliente);
                 if (oldIdusuarioinclusaoOfFilialClienteListFilialCliente != null) {
                     oldIdusuarioinclusaoOfFilialClienteListFilialCliente.getFilialClienteList().remove(filialClienteListFilialCliente);
@@ -359,8 +359,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (FilialEmpresa filialEmpresaListFilialEmpresa : usuario.getFilialEmpresaList()) {
-                Usuario oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa = filialEmpresaListFilialEmpresa.getIdusuarioinclusao();
-                filialEmpresaListFilialEmpresa.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa = filialEmpresaListFilialEmpresa.getIdUsuarioInclusao();
+                filialEmpresaListFilialEmpresa.setIdUsuarioInclusao(usuario);
                 filialEmpresaListFilialEmpresa = em.merge(filialEmpresaListFilialEmpresa);
                 if (oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa != null) {
                     oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa.getFilialEmpresaList().remove(filialEmpresaListFilialEmpresa);
@@ -368,8 +368,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefa : usuario.getAvaliacaoMetaTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = avaliacaoMetaTarefaListAvaliacaoMetaTarefa.getIdusuarioinclusao();
-                avaliacaoMetaTarefaListAvaliacaoMetaTarefa.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = avaliacaoMetaTarefaListAvaliacaoMetaTarefa.getIdUsuarioInclusao();
+                avaliacaoMetaTarefaListAvaliacaoMetaTarefa.setIdUsuarioInclusao(usuario);
                 avaliacaoMetaTarefaListAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
                 if (oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa != null) {
                     oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
@@ -377,8 +377,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList1AvaliacaoMetaTarefa : usuario.getAvaliacaoMetaTarefaList1()) {
-                Usuario oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa = avaliacaoMetaTarefaList1AvaliacaoMetaTarefa.getIdusuarioavaliador();
-                avaliacaoMetaTarefaList1AvaliacaoMetaTarefa.setIdusuarioavaliador(usuario);
+                Usuario oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa = avaliacaoMetaTarefaList1AvaliacaoMetaTarefa.getIdUsuarioAvaliador();
+                avaliacaoMetaTarefaList1AvaliacaoMetaTarefa.setIdUsuarioAvaliador(usuario);
                 avaliacaoMetaTarefaList1AvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaList1AvaliacaoMetaTarefa);
                 if (oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa != null) {
                     oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList1().remove(avaliacaoMetaTarefaList1AvaliacaoMetaTarefa);
@@ -386,8 +386,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList2AvaliacaoMetaTarefa : usuario.getAvaliacaoMetaTarefaList2()) {
-                Usuario oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa = avaliacaoMetaTarefaList2AvaliacaoMetaTarefa.getIdusuarioavaliado();
-                avaliacaoMetaTarefaList2AvaliacaoMetaTarefa.setIdusuarioavaliado(usuario);
+                Usuario oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa = avaliacaoMetaTarefaList2AvaliacaoMetaTarefa.getIdUsuarioAvaliado();
+                avaliacaoMetaTarefaList2AvaliacaoMetaTarefa.setIdUsuarioAvaliado(usuario);
                 avaliacaoMetaTarefaList2AvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaList2AvaliacaoMetaTarefa);
                 if (oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa != null) {
                     oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList2().remove(avaliacaoMetaTarefaList2AvaliacaoMetaTarefa);
@@ -395,8 +395,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (OrcamentoTarefa orcamentoTarefaListOrcamentoTarefa : usuario.getOrcamentoTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa = orcamentoTarefaListOrcamentoTarefa.getIdusuarioinclusao();
-                orcamentoTarefaListOrcamentoTarefa.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa = orcamentoTarefaListOrcamentoTarefa.getIdUsuarioInclusao();
+                orcamentoTarefaListOrcamentoTarefa.setIdUsuarioInclusao(usuario);
                 orcamentoTarefaListOrcamentoTarefa = em.merge(orcamentoTarefaListOrcamentoTarefa);
                 if (oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa != null) {
                     oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa.getOrcamentoTarefaList().remove(orcamentoTarefaListOrcamentoTarefa);
@@ -413,8 +413,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (Departamento departamentoListDepartamento : usuario.getDepartamentoList()) {
-                Usuario oldIdusuarioinclusaoOfDepartamentoListDepartamento = departamentoListDepartamento.getIdusuarioinclusao();
-                departamentoListDepartamento.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfDepartamentoListDepartamento = departamentoListDepartamento.getIdUsuarioInclusao();
+                departamentoListDepartamento.setIdUsuarioInclusao(usuario);
                 departamentoListDepartamento = em.merge(departamentoListDepartamento);
                 if (oldIdusuarioinclusaoOfDepartamentoListDepartamento != null) {
                     oldIdusuarioinclusaoOfDepartamentoListDepartamento.getDepartamentoList().remove(departamentoListDepartamento);
@@ -422,8 +422,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (Usuario usuarioListUsuario : usuario.getUsuarioList()) {
-                Usuario oldIdusuarioinclusaoOfUsuarioListUsuario = usuarioListUsuario.getIdusuarioinclusao();
-                usuarioListUsuario.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfUsuarioListUsuario = usuarioListUsuario.getIdUsuarioInclusao();
+                usuarioListUsuario.setIdUsuarioInclusao(usuario);
                 usuarioListUsuario = em.merge(usuarioListUsuario);
                 if (oldIdusuarioinclusaoOfUsuarioListUsuario != null) {
                     oldIdusuarioinclusaoOfUsuarioListUsuario.getUsuarioList().remove(usuarioListUsuario);
@@ -431,8 +431,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (Empresa empresaListEmpresa : usuario.getEmpresaList()) {
-                Usuario oldIdusuarioinclusaoOfEmpresaListEmpresa = empresaListEmpresa.getIdusuarioinclusao();
-                empresaListEmpresa.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfEmpresaListEmpresa = empresaListEmpresa.getIdUsuarioInclusao();
+                empresaListEmpresa.setIdUsuarioInclusao(usuario);
                 empresaListEmpresa = em.merge(empresaListEmpresa);
                 if (oldIdusuarioinclusaoOfEmpresaListEmpresa != null) {
                     oldIdusuarioinclusaoOfEmpresaListEmpresa.getEmpresaList().remove(empresaListEmpresa);
@@ -440,8 +440,8 @@ public class UsuarioDAO implements Serializable {
                 }
             }
             for (EmpresaCliente empresaClienteListEmpresaCliente : usuario.getEmpresaClienteList()) {
-                Usuario oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente = empresaClienteListEmpresaCliente.getIdusuarioinclusao();
-                empresaClienteListEmpresaCliente.setIdusuarioinclusao(usuario);
+                Usuario oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente = empresaClienteListEmpresaCliente.getIdUsuarioInclusao();
+                empresaClienteListEmpresaCliente.setIdUsuarioInclusao(usuario);
                 empresaClienteListEmpresaCliente = em.merge(empresaClienteListEmpresaCliente);
                 if (oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente != null) {
                     oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente.getEmpresaClienteList().remove(empresaClienteListEmpresaCliente);
@@ -471,8 +471,8 @@ public class UsuarioDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Usuario persistentUsuario = em.find(Usuario.class, usuario.getId());
-            Usuario idusuarioinclusaoOld = persistentUsuario.getIdusuarioinclusao();
-            Usuario idusuarioinclusaoNew = usuario.getIdusuarioinclusao();
+            Usuario idusuarioinclusaoOld = persistentUsuario.getIdUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = usuario.getIdUsuarioInclusao();
             Collection<UsuarioEmpresa> empresasOld = persistentUsuario.getEmpresas();
             Collection<UsuarioEmpresa> empresasNew = usuario.getEmpresas();
             Collection<Meta> metasResponsaveisOld = persistentUsuario.getMetasResponsaveis();
@@ -683,7 +683,7 @@ public class UsuarioDAO implements Serializable {
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                usuario.setIdusuarioinclusao(idusuarioinclusaoNew);
+                usuario.setIdUsuarioInclusao(idusuarioinclusaoNew);
             }
             Collection<UsuarioEmpresa> attachedEmpresasNew = new ArrayList<UsuarioEmpresa>();
             for (UsuarioEmpresa empresasNewUsuarioEmpresaToAttach : empresasNew) {
@@ -872,8 +872,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (FavoritosTarefaMeta favoritosTarefaMetaListNewFavoritosTarefaMeta : favoritosTarefaMetaListNew) {
                 if (!favoritosTarefaMetaListOld.contains(favoritosTarefaMetaListNewFavoritosTarefaMeta)) {
-                    Usuario oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = favoritosTarefaMetaListNewFavoritosTarefaMeta.getIdusuarioinclusao();
-                    favoritosTarefaMetaListNewFavoritosTarefaMeta.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = favoritosTarefaMetaListNewFavoritosTarefaMeta.getIdUsuarioInclusao();
+                    favoritosTarefaMetaListNewFavoritosTarefaMeta.setIdUsuarioInclusao(usuario);
                     favoritosTarefaMetaListNewFavoritosTarefaMeta = em.merge(favoritosTarefaMetaListNewFavoritosTarefaMeta);
                     if (oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta != null && !oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.equals(usuario)) {
                         oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.getFavoritosTarefaMetaList().remove(favoritosTarefaMetaListNewFavoritosTarefaMeta);
@@ -883,8 +883,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (CentroCusto centroCustoListNewCentroCusto : centroCustoListNew) {
                 if (!centroCustoListOld.contains(centroCustoListNewCentroCusto)) {
-                    Usuario oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto = centroCustoListNewCentroCusto.getIdusuarioinclusao();
-                    centroCustoListNewCentroCusto.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto = centroCustoListNewCentroCusto.getIdUsuarioInclusao();
+                    centroCustoListNewCentroCusto.setIdUsuarioInclusao(usuario);
                     centroCustoListNewCentroCusto = em.merge(centroCustoListNewCentroCusto);
                     if (oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto != null && !oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto.equals(usuario)) {
                         oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto.getCentroCustoList().remove(centroCustoListNewCentroCusto);
@@ -894,8 +894,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (Endereco enderecoListNewEndereco : enderecoListNew) {
                 if (!enderecoListOld.contains(enderecoListNewEndereco)) {
-                    Usuario oldIdusuarioinclusaoOfEnderecoListNewEndereco = enderecoListNewEndereco.getIdusuarioinclusao();
-                    enderecoListNewEndereco.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfEnderecoListNewEndereco = enderecoListNewEndereco.getIdUsuarioInclusao();
+                    enderecoListNewEndereco.setIdUsuarioInclusao(usuario);
                     enderecoListNewEndereco = em.merge(enderecoListNewEndereco);
                     if (oldIdusuarioinclusaoOfEnderecoListNewEndereco != null && !oldIdusuarioinclusaoOfEnderecoListNewEndereco.equals(usuario)) {
                         oldIdusuarioinclusaoOfEnderecoListNewEndereco.getEnderecoList().remove(enderecoListNewEndereco);
@@ -905,14 +905,14 @@ public class UsuarioDAO implements Serializable {
             }
             for (Tarefa tarefaListOldTarefa : tarefaListOld) {
                 if (!tarefaListNew.contains(tarefaListOldTarefa)) {
-                    tarefaListOldTarefa.setIdusuarioinclusao(null);
+                    tarefaListOldTarefa.setIdUsuarioInclusao(null);
                     tarefaListOldTarefa = em.merge(tarefaListOldTarefa);
                 }
             }
             for (Tarefa tarefaListNewTarefa : tarefaListNew) {
                 if (!tarefaListOld.contains(tarefaListNewTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfTarefaListNewTarefa = tarefaListNewTarefa.getIdusuarioinclusao();
-                    tarefaListNewTarefa.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfTarefaListNewTarefa = tarefaListNewTarefa.getIdUsuarioInclusao();
+                    tarefaListNewTarefa.setIdUsuarioInclusao(usuario);
                     tarefaListNewTarefa = em.merge(tarefaListNewTarefa);
                     if (oldIdusuarioinclusaoOfTarefaListNewTarefa != null && !oldIdusuarioinclusaoOfTarefaListNewTarefa.equals(usuario)) {
                         oldIdusuarioinclusaoOfTarefaListNewTarefa.getTarefaList().remove(tarefaListNewTarefa);
@@ -922,8 +922,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (Tarefa tarefaList1NewTarefa : tarefaList1New) {
                 if (!tarefaList1Old.contains(tarefaList1NewTarefa)) {
-                    Usuario oldIdusuariosolicitanteOfTarefaList1NewTarefa = tarefaList1NewTarefa.getIdusuariosolicitante();
-                    tarefaList1NewTarefa.setIdusuariosolicitante(usuario);
+                    Usuario oldIdusuariosolicitanteOfTarefaList1NewTarefa = tarefaList1NewTarefa.getIdUsuarioSolicitante();
+                    tarefaList1NewTarefa.setIdUsuarioSolicitante(usuario);
                     tarefaList1NewTarefa = em.merge(tarefaList1NewTarefa);
                     if (oldIdusuariosolicitanteOfTarefaList1NewTarefa != null && !oldIdusuariosolicitanteOfTarefaList1NewTarefa.equals(usuario)) {
                         oldIdusuariosolicitanteOfTarefaList1NewTarefa.getTarefaList1().remove(tarefaList1NewTarefa);
@@ -933,8 +933,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (Tarefa tarefaList2NewTarefa : tarefaList2New) {
                 if (!tarefaList2Old.contains(tarefaList2NewTarefa)) {
-                    Usuario oldIdusuarioresponsavelOfTarefaList2NewTarefa = tarefaList2NewTarefa.getIdusuarioresponsavel();
-                    tarefaList2NewTarefa.setIdusuarioresponsavel(usuario);
+                    Usuario oldIdusuarioresponsavelOfTarefaList2NewTarefa = tarefaList2NewTarefa.getIdUsuarioResponsavel();
+                    tarefaList2NewTarefa.setIdUsuarioResponsavel(usuario);
                     tarefaList2NewTarefa = em.merge(tarefaList2NewTarefa);
                     if (oldIdusuarioresponsavelOfTarefaList2NewTarefa != null && !oldIdusuarioresponsavelOfTarefaList2NewTarefa.equals(usuario)) {
                         oldIdusuarioresponsavelOfTarefaList2NewTarefa.getTarefaList2().remove(tarefaList2NewTarefa);
@@ -944,8 +944,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (ParicipanteTarefa paricipanteTarefaListNewParicipanteTarefa : paricipanteTarefaListNew) {
                 if (!paricipanteTarefaListOld.contains(paricipanteTarefaListNewParicipanteTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa = paricipanteTarefaListNewParicipanteTarefa.getIdusuarioinclusao();
-                    paricipanteTarefaListNewParicipanteTarefa.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa = paricipanteTarefaListNewParicipanteTarefa.getIdUsuarioInclusao();
+                    paricipanteTarefaListNewParicipanteTarefa.setIdUsuarioInclusao(usuario);
                     paricipanteTarefaListNewParicipanteTarefa = em.merge(paricipanteTarefaListNewParicipanteTarefa);
                     if (oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa != null && !oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa.equals(usuario)) {
                         oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa.getParicipanteTarefaList().remove(paricipanteTarefaListNewParicipanteTarefa);
@@ -955,8 +955,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (ParicipanteTarefa paricipanteTarefaList1NewParicipanteTarefa : paricipanteTarefaList1New) {
                 if (!paricipanteTarefaList1Old.contains(paricipanteTarefaList1NewParicipanteTarefa)) {
-                    Usuario oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa = paricipanteTarefaList1NewParicipanteTarefa.getIdusuarioparticipante();
-                    paricipanteTarefaList1NewParicipanteTarefa.setIdusuarioparticipante(usuario);
+                    Usuario oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa = paricipanteTarefaList1NewParicipanteTarefa.getIdUsuarioParticipante();
+                    paricipanteTarefaList1NewParicipanteTarefa.setIdUsuarioParticipante(usuario);
                     paricipanteTarefaList1NewParicipanteTarefa = em.merge(paricipanteTarefaList1NewParicipanteTarefa);
                     if (oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa != null && !oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa.equals(usuario)) {
                         oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa.getParicipanteTarefaList1().remove(paricipanteTarefaList1NewParicipanteTarefa);
@@ -966,8 +966,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (FilialCliente filialClienteListNewFilialCliente : filialClienteListNew) {
                 if (!filialClienteListOld.contains(filialClienteListNewFilialCliente)) {
-                    Usuario oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente = filialClienteListNewFilialCliente.getIdusuarioinclusao();
-                    filialClienteListNewFilialCliente.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente = filialClienteListNewFilialCliente.getIdUsuarioInclusao();
+                    filialClienteListNewFilialCliente.setIdUsuarioInclusao(usuario);
                     filialClienteListNewFilialCliente = em.merge(filialClienteListNewFilialCliente);
                     if (oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente != null && !oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente.equals(usuario)) {
                         oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente.getFilialClienteList().remove(filialClienteListNewFilialCliente);
@@ -977,8 +977,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (FilialEmpresa filialEmpresaListNewFilialEmpresa : filialEmpresaListNew) {
                 if (!filialEmpresaListOld.contains(filialEmpresaListNewFilialEmpresa)) {
-                    Usuario oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa = filialEmpresaListNewFilialEmpresa.getIdusuarioinclusao();
-                    filialEmpresaListNewFilialEmpresa.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa = filialEmpresaListNewFilialEmpresa.getIdUsuarioInclusao();
+                    filialEmpresaListNewFilialEmpresa.setIdUsuarioInclusao(usuario);
                     filialEmpresaListNewFilialEmpresa = em.merge(filialEmpresaListNewFilialEmpresa);
                     if (oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa != null && !oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa.equals(usuario)) {
                         oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa.getFilialEmpresaList().remove(filialEmpresaListNewFilialEmpresa);
@@ -988,8 +988,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa : avaliacaoMetaTarefaListNew) {
                 if (!avaliacaoMetaTarefaListOld.contains(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getIdusuarioinclusao();
-                    avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getIdUsuarioInclusao();
+                    avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.setIdUsuarioInclusao(usuario);
                     avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
                     if (oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa != null && !oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.equals(usuario)) {
                         oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
@@ -999,8 +999,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa : avaliacaoMetaTarefaList1New) {
                 if (!avaliacaoMetaTarefaList1Old.contains(avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa)) {
-                    Usuario oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa = avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.getIdusuarioavaliador();
-                    avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.setIdusuarioavaliador(usuario);
+                    Usuario oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa = avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.getIdUsuarioAvaliador();
+                    avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.setIdUsuarioAvaliador(usuario);
                     avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa);
                     if (oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa != null && !oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.equals(usuario)) {
                         oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList1().remove(avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa);
@@ -1010,8 +1010,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa : avaliacaoMetaTarefaList2New) {
                 if (!avaliacaoMetaTarefaList2Old.contains(avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa)) {
-                    Usuario oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa = avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.getIdusuarioavaliado();
-                    avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.setIdusuarioavaliado(usuario);
+                    Usuario oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa = avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.getIdUsuarioAvaliado();
+                    avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.setIdUsuarioAvaliado(usuario);
                     avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa);
                     if (oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa != null && !oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.equals(usuario)) {
                         oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList2().remove(avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa);
@@ -1021,8 +1021,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (OrcamentoTarefa orcamentoTarefaListNewOrcamentoTarefa : orcamentoTarefaListNew) {
                 if (!orcamentoTarefaListOld.contains(orcamentoTarefaListNewOrcamentoTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa = orcamentoTarefaListNewOrcamentoTarefa.getIdusuarioinclusao();
-                    orcamentoTarefaListNewOrcamentoTarefa.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa = orcamentoTarefaListNewOrcamentoTarefa.getIdUsuarioInclusao();
+                    orcamentoTarefaListNewOrcamentoTarefa.setIdUsuarioInclusao(usuario);
                     orcamentoTarefaListNewOrcamentoTarefa = em.merge(orcamentoTarefaListNewOrcamentoTarefa);
                     if (oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa != null && !oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa.equals(usuario)) {
                         oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa.getOrcamentoTarefaList().remove(orcamentoTarefaListNewOrcamentoTarefa);
@@ -1043,8 +1043,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (Departamento departamentoListNewDepartamento : departamentoListNew) {
                 if (!departamentoListOld.contains(departamentoListNewDepartamento)) {
-                    Usuario oldIdusuarioinclusaoOfDepartamentoListNewDepartamento = departamentoListNewDepartamento.getIdusuarioinclusao();
-                    departamentoListNewDepartamento.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfDepartamentoListNewDepartamento = departamentoListNewDepartamento.getIdUsuarioInclusao();
+                    departamentoListNewDepartamento.setIdUsuarioInclusao(usuario);
                     departamentoListNewDepartamento = em.merge(departamentoListNewDepartamento);
                     if (oldIdusuarioinclusaoOfDepartamentoListNewDepartamento != null && !oldIdusuarioinclusaoOfDepartamentoListNewDepartamento.equals(usuario)) {
                         oldIdusuarioinclusaoOfDepartamentoListNewDepartamento.getDepartamentoList().remove(departamentoListNewDepartamento);
@@ -1054,14 +1054,14 @@ public class UsuarioDAO implements Serializable {
             }
             for (Usuario usuarioListOldUsuario : usuarioListOld) {
                 if (!usuarioListNew.contains(usuarioListOldUsuario)) {
-                    usuarioListOldUsuario.setIdusuarioinclusao(null);
+                    usuarioListOldUsuario.setIdUsuarioInclusao(null);
                     usuarioListOldUsuario = em.merge(usuarioListOldUsuario);
                 }
             }
             for (Usuario usuarioListNewUsuario : usuarioListNew) {
                 if (!usuarioListOld.contains(usuarioListNewUsuario)) {
-                    Usuario oldIdusuarioinclusaoOfUsuarioListNewUsuario = usuarioListNewUsuario.getIdusuarioinclusao();
-                    usuarioListNewUsuario.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfUsuarioListNewUsuario = usuarioListNewUsuario.getIdUsuarioInclusao();
+                    usuarioListNewUsuario.setIdUsuarioInclusao(usuario);
                     usuarioListNewUsuario = em.merge(usuarioListNewUsuario);
                     if (oldIdusuarioinclusaoOfUsuarioListNewUsuario != null && !oldIdusuarioinclusaoOfUsuarioListNewUsuario.equals(usuario)) {
                         oldIdusuarioinclusaoOfUsuarioListNewUsuario.getUsuarioList().remove(usuarioListNewUsuario);
@@ -1071,8 +1071,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (Empresa empresaListNewEmpresa : empresaListNew) {
                 if (!empresaListOld.contains(empresaListNewEmpresa)) {
-                    Usuario oldIdusuarioinclusaoOfEmpresaListNewEmpresa = empresaListNewEmpresa.getIdusuarioinclusao();
-                    empresaListNewEmpresa.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfEmpresaListNewEmpresa = empresaListNewEmpresa.getIdUsuarioInclusao();
+                    empresaListNewEmpresa.setIdUsuarioInclusao(usuario);
                     empresaListNewEmpresa = em.merge(empresaListNewEmpresa);
                     if (oldIdusuarioinclusaoOfEmpresaListNewEmpresa != null && !oldIdusuarioinclusaoOfEmpresaListNewEmpresa.equals(usuario)) {
                         oldIdusuarioinclusaoOfEmpresaListNewEmpresa.getEmpresaList().remove(empresaListNewEmpresa);
@@ -1082,8 +1082,8 @@ public class UsuarioDAO implements Serializable {
             }
             for (EmpresaCliente empresaClienteListNewEmpresaCliente : empresaClienteListNew) {
                 if (!empresaClienteListOld.contains(empresaClienteListNewEmpresaCliente)) {
-                    Usuario oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente = empresaClienteListNewEmpresaCliente.getIdusuarioinclusao();
-                    empresaClienteListNewEmpresaCliente.setIdusuarioinclusao(usuario);
+                    Usuario oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente = empresaClienteListNewEmpresaCliente.getIdUsuarioInclusao();
+                    empresaClienteListNewEmpresaCliente.setIdUsuarioInclusao(usuario);
                     empresaClienteListNewEmpresaCliente = em.merge(empresaClienteListNewEmpresaCliente);
                     if (oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente != null && !oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente.equals(usuario)) {
                         oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente.getEmpresaClienteList().remove(empresaClienteListNewEmpresaCliente);
@@ -1275,19 +1275,19 @@ public class UsuarioDAO implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Usuario idusuarioinclusao = usuario.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = usuario.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao.getUsuarioList().remove(usuario);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             List<Tarefa> tarefaList = usuario.getTarefaList();
             for (Tarefa tarefaListTarefa : tarefaList) {
-                tarefaListTarefa.setIdusuarioinclusao(null);
+                tarefaListTarefa.setIdUsuarioInclusao(null);
                 tarefaListTarefa = em.merge(tarefaListTarefa);
             }
             List<Usuario> usuarioList = usuario.getUsuarioList();
             for (Usuario usuarioListUsuario : usuarioList) {
-                usuarioListUsuario.setIdusuarioinclusao(null);
+                usuarioListUsuario.setIdUsuarioInclusao(null);
                 usuarioListUsuario = em.merge(usuarioListUsuario);
             }
             em.remove(usuario);

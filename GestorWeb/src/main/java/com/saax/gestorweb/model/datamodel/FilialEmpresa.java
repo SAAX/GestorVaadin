@@ -34,15 +34,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "FilialEmpresa.findByCNPJ", query = "SELECT f FROM FilialEmpresa f WHERE f.cnpj = :cnpj"),
     @NamedQuery(name = "FilialEmpresa.findByAtiva", query = "SELECT f FROM FilialEmpresa f WHERE f.ativa = :ativa")})
 public class FilialEmpresa implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
-    
+
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -69,6 +61,17 @@ public class FilialEmpresa implements Serializable {
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa matriz;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dataHoraInclusao;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idUsuarioInclusao;
+    
 
     public FilialEmpresa() {
     }
@@ -148,20 +151,20 @@ public class FilialEmpresa implements Serializable {
         return "com.saax.gestorweb.model.datamodel.FilialEmpresa[ idfilialempresa=" + id + " ]";
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
     
 }

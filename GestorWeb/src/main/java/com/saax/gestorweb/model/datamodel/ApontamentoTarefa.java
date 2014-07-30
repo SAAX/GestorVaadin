@@ -1,7 +1,6 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import javax.persistence.Basic;
@@ -25,8 +24,6 @@ import javax.validation.constraints.Size;
  * 
  * O objetivo desta entidade e armazenar os apontamentos de horas das tarefas / subs <br><br>
  *
- * Revisado em: __/07/14 
- * 
  * @author rodrigo
  */
 @Entity
@@ -36,7 +33,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "ApontamentoTarefa.findByHoras", query = "SELECT a FROM ApontamentoTarefa a WHERE a.horas = :horas"),
     @NamedQuery(name = "ApontamentoTarefa.findBySentido", query = "SELECT a FROM ApontamentoTarefa a WHERE a.sentido = :sentido"),
     @NamedQuery(name = "ApontamentoTarefa.findByObservacoes", query = "SELECT a FROM ApontamentoTarefa a WHERE a.observacoes = :observacoes"),
-    @NamedQuery(name = "ApontamentoTarefa.findByDatahorainclusao", query = "SELECT a FROM ApontamentoTarefa a WHERE a.datahorainclusao = :datahorainclusao")})
+    @NamedQuery(name = "ApontamentoTarefa.findByDatahorainclusao", query = "SELECT a FROM ApontamentoTarefa a WHERE a.dataHoraInclusao = :datahorainclusao")})
 public class ApontamentoTarefa implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -68,7 +65,7 @@ public class ApontamentoTarefa implements Serializable {
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
+    private LocalDateTime dataHoraInclusao;
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
@@ -85,12 +82,12 @@ public class ApontamentoTarefa implements Serializable {
         this.id = idapontamentotarefa;
     }
 
-    public ApontamentoTarefa(Integer idapontamentotarefa, LocalTime horas, Character sentido, String observacoes, LocalDateTime datahorainclusao) {
+    public ApontamentoTarefa(Integer idapontamentotarefa, LocalTime horas, Character sentido, String observacoes, LocalDateTime dataHoraInclusao) {
         this.id = idapontamentotarefa;
         this.horas = horas;
         this.sentido = sentido;
         this.observacoes = observacoes;
-        this.datahorainclusao = datahorainclusao;
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public Integer getId() {
@@ -125,12 +122,12 @@ public class ApontamentoTarefa implements Serializable {
         this.observacoes = observacoes;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public Tarefa getIdTarefa() {

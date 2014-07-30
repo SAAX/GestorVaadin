@@ -43,18 +43,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Meta.findByHorasestimadas", query = "SELECT m FROM Meta m WHERE m.horasEstimadas = :horasestimadas"),
     @NamedQuery(name = "Meta.findByHorasrealizadas", query = "SELECT m FROM Meta m WHERE m.horasRealizadas = :horasrealizadas")})
 public class Meta implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmeta")
-    private List<FavoritosTarefaMeta> favoritosTarefaMetaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idmeta")
-    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne
-    private Usuario idusuarioinclusao;
 
     private static final long serialVersionUID = 1L;
  
@@ -120,6 +108,22 @@ public class Meta implements Serializable {
     @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario responsavel;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dataHoraInclusao;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMeta")
+    private List<FavoritosTarefaMeta> favoritados;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMeta")
+    private List<AvaliacaoMetaTarefa> avaliacoes;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario idUsuarioInclusao;
 
     public Meta() {
     }
@@ -266,36 +270,36 @@ public class Meta implements Serializable {
         return "com.saax.gestorweb.model.datamodel.Meta[ idmeta=" + id + " ]";
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<FavoritosTarefaMeta> getFavoritosTarefaMetaList() {
-        return favoritosTarefaMetaList;
+    public List<FavoritosTarefaMeta> getFavoritados() {
+        return favoritados;
     }
 
-    public void setFavoritosTarefaMetaList(List<FavoritosTarefaMeta> favoritosTarefaMetaList) {
-        this.favoritosTarefaMetaList = favoritosTarefaMetaList;
+    public void setFavoritados(List<FavoritosTarefaMeta> favoritados) {
+        this.favoritados = favoritados;
     }
 
-    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList() {
-        return avaliacaoMetaTarefaList;
+    public List<AvaliacaoMetaTarefa> getAvaliacoes() {
+        return avaliacoes;
     }
 
-    public void setAvaliacaoMetaTarefaList(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList) {
-        this.avaliacaoMetaTarefaList = avaliacaoMetaTarefaList;
+    public void setAvaliacoes(List<AvaliacaoMetaTarefa> avaliacoes) {
+        this.avaliacoes = avaliacoes;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
 }

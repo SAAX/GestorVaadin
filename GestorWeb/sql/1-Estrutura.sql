@@ -273,6 +273,25 @@ INSERT INTO StatusTarefa VALUES ('Bloqueada');
 INSERT INTO StatusTarefa VALUES ('Concluída');
 INSERT INTO StatusTarefa VALUES ('Cancelada');
 
+-- Tipo Tarefa
+DROP TABLE IF EXISTS TipoTarefa CASCADE;
+CREATE TABLE TipoTarefa (
+    TipoTarefa CHARACTER VARYING (20) NOT NULL PRIMARY KEY
+);
+
+INSERT INTO TipoTarefa VALUES ('Única');
+INSERT INTO TipoTarefa VALUES ('Recorrente');
+
+-- Prioridade Tarefa
+DROP TABLE IF EXISTS PrioridadeTarefa CASCADE;
+CREATE TABLE PrioridadeTarefa (
+    PrioridadeTarefa CHARACTER VARYING (10) NOT NULL PRIMARY KEY
+);
+
+INSERT INTO PrioridadeTarefa VALUES ('Baixa');
+INSERT INTO PrioridadeTarefa VALUES ('Normal');
+INSERT INTO PrioridadeTarefa VALUES ('Alta');
+
 -- Tarefa 
 DROP TABLE IF EXISTS Tarefa CASCADE;
 CREATE TABLE Tarefa (
@@ -282,10 +301,9 @@ CREATE TABLE Tarefa (
     idEmpresa BIGINT NOT NULL, 
     titulo CHARACTER VARYING (50) NOT NULL,
     nome CHARACTER VARYING (150) NOT NULL,
-    prioridade CHARACTER VARYING (30) NOT NULL,
-    tipo  CHARACTER VARYING (30) NOT NULL,
-    idTarefaAnterior BIGINT NOT NULL, 
-    idTarefaProxima BIGINT NOT NULL, 
+    prioridade CHARACTER VARYING (10) NOT NULL,
+    tipo  CHARACTER VARYING (20) NOT NULL,
+    idProximaTarefa BIGINT NOT NULL, 
     status CHARACTER VARYING (50) NOT NULL,
     andamento INTEGER NOT NULL,
     dataInicio DATE NOT NULL,
@@ -304,9 +322,10 @@ CREATE TABLE Tarefa (
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
     FOREIGN KEY (idTarefaPai) REFERENCES Tarefa(idTarefa),
-    FOREIGN KEY (idTarefaAnterior) REFERENCES Tarefa(idTarefa),
-    FOREIGN KEY (idTarefaProxima) REFERENCES Tarefa(idTarefa),
+    FOREIGN KEY (idProximaTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (status) REFERENCES statusTarefa (statusTarefa),	
+    FOREIGN KEY (tipo) REFERENCES tipoTarefa (tipoTarefa),	
+    FOREIGN KEY (Prioridade) REFERENCES PrioridadeTarefa (PrioridadeTarefa),	
     FOREIGN KEY (idEmpresaCliente) REFERENCES EmpresaCliente (idEmpresaCliente),	
     FOREIGN KEY (idUsuarioSolicitante) REFERENCES Usuario(idUsuario),	
     FOREIGN KEY (idUsuarioResponsavel) REFERENCES Usuario(idUsuario),	

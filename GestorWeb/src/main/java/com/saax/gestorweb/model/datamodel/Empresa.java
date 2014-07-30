@@ -44,19 +44,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Empresa.findByCpf", query = "SELECT e FROM Empresa e WHERE e.cpf = :cpf"),
     @NamedQuery(name = "Empresa.findByAtiva", query = "SELECT e FROM Empresa e WHERE e.ativa = :ativa")})
 public class Empresa implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idempresa")
-    private List<Tarefa> tarefaList;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
-    private List<EmpresaCliente> empresaClienteList;
-
 
     private static final long serialVersionUID = 1L;
 
@@ -122,6 +109,22 @@ public class Empresa implements Serializable {
     @JoinColumn(name = "idendereco", referencedColumnName = "idendereco")
     @ManyToOne(cascade = CascadeType.ALL)
     private Endereco endereco;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dataHoraInclusao;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmpresa")
+    private List<Tarefa> tarefas;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario idUsuarioInclusao;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    private List<EmpresaCliente> clientes;
 
     public Empresa() {
     }
@@ -284,36 +287,36 @@ public class Empresa implements Serializable {
     }
 
     @XmlTransient
-    public List<EmpresaCliente> getEmpresaClienteList() {
-        return empresaClienteList;
+    public List<EmpresaCliente> getClientes() {
+        return clientes;
     }
 
-    public void setEmpresaClienteList(List<EmpresaCliente> empresaClienteList) {
-        this.empresaClienteList = empresaClienteList;
+    public void setClientes(List<EmpresaCliente> clientes) {
+        this.clientes = clientes;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<Tarefa> getTarefaList() {
-        return tarefaList;
+    public List<Tarefa> getTarefas() {
+        return tarefas;
     }
 
-    public void setTarefaList(List<Tarefa> tarefaList) {
-        this.tarefaList = tarefaList;
+    public void setTarefas(List<Tarefa> tarefas) {
+        this.tarefas = tarefas;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
 }

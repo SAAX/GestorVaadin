@@ -37,11 +37,11 @@ public class MetaDAO implements Serializable {
     }
 
     public void create(Meta meta) {
-        if (meta.getFavoritosTarefaMetaList() == null) {
-            meta.setFavoritosTarefaMetaList(new ArrayList<FavoritosTarefaMeta>());
+        if (meta.getFavoritados() == null) {
+            meta.setFavoritados(new ArrayList<FavoritosTarefaMeta>());
         }
-        if (meta.getAvaliacaoMetaTarefaList() == null) {
-            meta.setAvaliacaoMetaTarefaList(new ArrayList<AvaliacaoMetaTarefa>());
+        if (meta.getAvaliacoes() == null) {
+            meta.setAvaliacoes(new ArrayList<AvaliacaoMetaTarefa>());
         }
         EntityManager em = null;
         try {
@@ -72,23 +72,23 @@ public class MetaDAO implements Serializable {
                 responsavel = em.getReference(responsavel.getClass(), responsavel.getId());
                 meta.setResponsavel(responsavel);
             }
-            Usuario idusuarioinclusao = meta.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = meta.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                meta.setIdusuarioinclusao(idusuarioinclusao);
+                meta.setIdUsuarioInclusao(idusuarioinclusao);
             }
             List<FavoritosTarefaMeta> attachedFavoritosTarefaMetaList = new ArrayList<FavoritosTarefaMeta>();
-            for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMetaToAttach : meta.getFavoritosTarefaMetaList()) {
+            for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMetaToAttach : meta.getFavoritados()) {
                 favoritosTarefaMetaListFavoritosTarefaMetaToAttach = em.getReference(favoritosTarefaMetaListFavoritosTarefaMetaToAttach.getClass(), favoritosTarefaMetaListFavoritosTarefaMetaToAttach.getId());
                 attachedFavoritosTarefaMetaList.add(favoritosTarefaMetaListFavoritosTarefaMetaToAttach);
             }
-            meta.setFavoritosTarefaMetaList(attachedFavoritosTarefaMetaList);
+            meta.setFavoritados(attachedFavoritosTarefaMetaList);
             List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaList = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach : meta.getAvaliacaoMetaTarefaList()) {
+            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach : meta.getAvaliacoes()) {
                 avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach.getId());
                 attachedAvaliacaoMetaTarefaList.add(avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach);
             }
-            meta.setAvaliacaoMetaTarefaList(attachedAvaliacaoMetaTarefaList);
+            meta.setAvaliacoes(attachedAvaliacaoMetaTarefaList);
             em.persist(meta);
             if (centroCusto != null) {
                 centroCusto.getMetas().add(meta);
@@ -103,7 +103,7 @@ public class MetaDAO implements Serializable {
                 empresa = em.merge(empresa);
             }
             if (cliente != null) {
-                cliente.getMetaList().add(meta);
+                cliente.getMetas().add(meta);
                 cliente = em.merge(cliente);
             }
             if (responsavel != null) {
@@ -114,21 +114,21 @@ public class MetaDAO implements Serializable {
                 idusuarioinclusao.getMetasResponsaveis().add(meta);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
-            for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMeta : meta.getFavoritosTarefaMetaList()) {
-                Meta oldIdmetaOfFavoritosTarefaMetaListFavoritosTarefaMeta = favoritosTarefaMetaListFavoritosTarefaMeta.getIdmeta();
-                favoritosTarefaMetaListFavoritosTarefaMeta.setIdmeta(meta);
+            for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMeta : meta.getFavoritados()) {
+                Meta oldIdmetaOfFavoritosTarefaMetaListFavoritosTarefaMeta = favoritosTarefaMetaListFavoritosTarefaMeta.getIdMeta();
+                favoritosTarefaMetaListFavoritosTarefaMeta.setIdMeta(meta);
                 favoritosTarefaMetaListFavoritosTarefaMeta = em.merge(favoritosTarefaMetaListFavoritosTarefaMeta);
                 if (oldIdmetaOfFavoritosTarefaMetaListFavoritosTarefaMeta != null) {
-                    oldIdmetaOfFavoritosTarefaMetaListFavoritosTarefaMeta.getFavoritosTarefaMetaList().remove(favoritosTarefaMetaListFavoritosTarefaMeta);
+                    oldIdmetaOfFavoritosTarefaMetaListFavoritosTarefaMeta.getFavoritados().remove(favoritosTarefaMetaListFavoritosTarefaMeta);
                     oldIdmetaOfFavoritosTarefaMetaListFavoritosTarefaMeta = em.merge(oldIdmetaOfFavoritosTarefaMetaListFavoritosTarefaMeta);
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefa : meta.getAvaliacaoMetaTarefaList()) {
-                Meta oldIdmetaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = avaliacaoMetaTarefaListAvaliacaoMetaTarefa.getIdmeta();
-                avaliacaoMetaTarefaListAvaliacaoMetaTarefa.setIdmeta(meta);
+            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefa : meta.getAvaliacoes()) {
+                Meta oldIdmetaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = avaliacaoMetaTarefaListAvaliacaoMetaTarefa.getIdMeta();
+                avaliacaoMetaTarefaListAvaliacaoMetaTarefa.setIdMeta(meta);
                 avaliacaoMetaTarefaListAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
                 if (oldIdmetaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa != null) {
-                    oldIdmetaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
+                    oldIdmetaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa.getAvaliacoes().remove(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
                     oldIdmetaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = em.merge(oldIdmetaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa);
                 }
             }
@@ -156,12 +156,12 @@ public class MetaDAO implements Serializable {
             EmpresaCliente clienteNew = meta.getCliente();
             Usuario responsavelOld = persistentMeta.getResponsavel();
             Usuario responsavelNew = meta.getResponsavel();
-            Usuario idusuarioinclusaoOld = persistentMeta.getIdusuarioinclusao();
-            Usuario idusuarioinclusaoNew = meta.getIdusuarioinclusao();
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListOld = persistentMeta.getFavoritosTarefaMetaList();
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListNew = meta.getFavoritosTarefaMetaList();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListOld = persistentMeta.getAvaliacaoMetaTarefaList();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListNew = meta.getAvaliacaoMetaTarefaList();
+            Usuario idusuarioinclusaoOld = persistentMeta.getIdUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = meta.getIdUsuarioInclusao();
+            List<FavoritosTarefaMeta> favoritosTarefaMetaListOld = persistentMeta.getFavoritados();
+            List<FavoritosTarefaMeta> favoritosTarefaMetaListNew = meta.getFavoritados();
+            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListOld = persistentMeta.getAvaliacoes();
+            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListNew = meta.getAvaliacoes();
             List<String> illegalOrphanMessages = null;
             for (FavoritosTarefaMeta favoritosTarefaMetaListOldFavoritosTarefaMeta : favoritosTarefaMetaListOld) {
                 if (!favoritosTarefaMetaListNew.contains(favoritosTarefaMetaListOldFavoritosTarefaMeta)) {
@@ -204,7 +204,7 @@ public class MetaDAO implements Serializable {
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                meta.setIdusuarioinclusao(idusuarioinclusaoNew);
+                meta.setIdUsuarioInclusao(idusuarioinclusaoNew);
             }
             List<FavoritosTarefaMeta> attachedFavoritosTarefaMetaListNew = new ArrayList<FavoritosTarefaMeta>();
             for (FavoritosTarefaMeta favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach : favoritosTarefaMetaListNew) {
@@ -212,14 +212,14 @@ public class MetaDAO implements Serializable {
                 attachedFavoritosTarefaMetaListNew.add(favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach);
             }
             favoritosTarefaMetaListNew = attachedFavoritosTarefaMetaListNew;
-            meta.setFavoritosTarefaMetaList(favoritosTarefaMetaListNew);
+            meta.setFavoritados(favoritosTarefaMetaListNew);
             List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaListNew = new ArrayList<AvaliacaoMetaTarefa>();
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach : avaliacaoMetaTarefaListNew) {
                 avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach.getId());
                 attachedAvaliacaoMetaTarefaListNew.add(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach);
             }
             avaliacaoMetaTarefaListNew = attachedAvaliacaoMetaTarefaListNew;
-            meta.setAvaliacaoMetaTarefaList(avaliacaoMetaTarefaListNew);
+            meta.setAvaliacoes(avaliacaoMetaTarefaListNew);
             meta = em.merge(meta);
             if (centroCustoOld != null && !centroCustoOld.equals(centroCustoNew)) {
                 centroCustoOld.getMetas().remove(meta);
@@ -246,11 +246,11 @@ public class MetaDAO implements Serializable {
                 empresaNew = em.merge(empresaNew);
             }
             if (clienteOld != null && !clienteOld.equals(clienteNew)) {
-                clienteOld.getMetaList().remove(meta);
+                clienteOld.getMetas().remove(meta);
                 clienteOld = em.merge(clienteOld);
             }
             if (clienteNew != null && !clienteNew.equals(clienteOld)) {
-                clienteNew.getMetaList().add(meta);
+                clienteNew.getMetas().add(meta);
                 clienteNew = em.merge(clienteNew);
             }
             if (responsavelOld != null && !responsavelOld.equals(responsavelNew)) {
@@ -271,22 +271,22 @@ public class MetaDAO implements Serializable {
             }
             for (FavoritosTarefaMeta favoritosTarefaMetaListNewFavoritosTarefaMeta : favoritosTarefaMetaListNew) {
                 if (!favoritosTarefaMetaListOld.contains(favoritosTarefaMetaListNewFavoritosTarefaMeta)) {
-                    Meta oldIdmetaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = favoritosTarefaMetaListNewFavoritosTarefaMeta.getIdmeta();
-                    favoritosTarefaMetaListNewFavoritosTarefaMeta.setIdmeta(meta);
+                    Meta oldIdmetaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = favoritosTarefaMetaListNewFavoritosTarefaMeta.getIdMeta();
+                    favoritosTarefaMetaListNewFavoritosTarefaMeta.setIdMeta(meta);
                     favoritosTarefaMetaListNewFavoritosTarefaMeta = em.merge(favoritosTarefaMetaListNewFavoritosTarefaMeta);
                     if (oldIdmetaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta != null && !oldIdmetaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.equals(meta)) {
-                        oldIdmetaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.getFavoritosTarefaMetaList().remove(favoritosTarefaMetaListNewFavoritosTarefaMeta);
+                        oldIdmetaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.getFavoritados().remove(favoritosTarefaMetaListNewFavoritosTarefaMeta);
                         oldIdmetaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = em.merge(oldIdmetaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta);
                     }
                 }
             }
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa : avaliacaoMetaTarefaListNew) {
                 if (!avaliacaoMetaTarefaListOld.contains(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa)) {
-                    Meta oldIdmetaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getIdmeta();
-                    avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.setIdmeta(meta);
+                    Meta oldIdmetaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getIdMeta();
+                    avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.setIdMeta(meta);
                     avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
                     if (oldIdmetaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa != null && !oldIdmetaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.equals(meta)) {
-                        oldIdmetaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
+                        oldIdmetaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getAvaliacoes().remove(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
                         oldIdmetaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = em.merge(oldIdmetaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
                     }
                 }
@@ -321,14 +321,14 @@ public class MetaDAO implements Serializable {
                 throw new NonexistentEntityException("The meta with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListOrphanCheck = meta.getFavoritosTarefaMetaList();
+            List<FavoritosTarefaMeta> favoritosTarefaMetaListOrphanCheck = meta.getFavoritados();
             for (FavoritosTarefaMeta favoritosTarefaMetaListOrphanCheckFavoritosTarefaMeta : favoritosTarefaMetaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
                 illegalOrphanMessages.add("This Meta (" + meta + ") cannot be destroyed since the FavoritosTarefaMeta " + favoritosTarefaMetaListOrphanCheckFavoritosTarefaMeta + " in its favoritosTarefaMetaList field has a non-nullable idmeta field.");
             }
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListOrphanCheck = meta.getAvaliacaoMetaTarefaList();
+            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListOrphanCheck = meta.getAvaliacoes();
             for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListOrphanCheckAvaliacaoMetaTarefa : avaliacaoMetaTarefaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
@@ -355,7 +355,7 @@ public class MetaDAO implements Serializable {
             }
             EmpresaCliente cliente = meta.getCliente();
             if (cliente != null) {
-                cliente.getMetaList().remove(meta);
+                cliente.getMetas().remove(meta);
                 cliente = em.merge(cliente);
             }
             Usuario responsavel = meta.getResponsavel();
@@ -363,7 +363,7 @@ public class MetaDAO implements Serializable {
                 responsavel.getMetasResponsaveis().remove(meta);
                 responsavel = em.merge(responsavel);
             }
-            Usuario idusuarioinclusao = meta.getIdusuarioinclusao();
+            Usuario idusuarioinclusao = meta.getIdUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao.getMetasResponsaveis().remove(meta);
                 idusuarioinclusao = em.merge(idusuarioinclusao);

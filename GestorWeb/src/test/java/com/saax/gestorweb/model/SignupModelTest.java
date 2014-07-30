@@ -831,7 +831,7 @@ public class SignupModelTest {
 
         
         assertEquals(empresa.getEndereco().getLogradouro(), endereco.getLogradouro());
-        assertEquals(endereco.getEmpresaList().get(0).getCnpj(), empresa.getCnpj());
+        assertEquals(endereco.getEmpresas().get(0).getCnpj(), empresa.getCnpj());
         
         
     }

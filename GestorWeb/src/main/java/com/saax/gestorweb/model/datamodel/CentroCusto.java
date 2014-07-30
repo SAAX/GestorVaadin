@@ -67,14 +67,14 @@ public class CentroCusto implements Serializable {
     @NotNull
     @Column(name = "datahorainclusao")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime datahorainclusao;
+    private LocalDateTime dataHoraInclusao;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idusuarioinclusao;
+    private Usuario idUsuarioInclusao;
     
-    @OneToMany(mappedBy = "idcentrocusto")
-    private List<Tarefa> tarefaList;
+    @OneToMany(mappedBy = "idCentroCusto")
+    private List<Tarefa> tarefas;
 
     public CentroCusto() {
     }
@@ -150,28 +150,28 @@ public class CentroCusto implements Serializable {
         this.empresa = empresa;
     }
 
-    public LocalDateTime getDatahorainclusao() {
-        return datahorainclusao;
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
     }
 
-    public void setDatahorainclusao(LocalDateTime datahorainclusao) {
-        this.datahorainclusao = datahorainclusao;
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Usuario getIdusuarioinclusao() {
-        return idusuarioinclusao;
+    public Usuario getIdUsuarioInclusao() {
+        return idUsuarioInclusao;
     }
 
-    public void setIdusuarioinclusao(Usuario idusuarioinclusao) {
-        this.idusuarioinclusao = idusuarioinclusao;
+    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
+        this.idUsuarioInclusao = idUsuarioInclusao;
     }
 
-    public List<Tarefa> getTarefaList() {
-        return tarefaList;
+    public List<Tarefa> getTarefas() {
+        return tarefas;
     }
 
-    public void setTarefaList(List<Tarefa> tarefaList) {
-        this.tarefaList = tarefaList;
+    public void setTarefas(List<Tarefa> tarefas) {
+        this.tarefas = tarefas;
     }
     
 }

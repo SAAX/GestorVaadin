@@ -7,12 +7,15 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.model.datamodel.StatusTarefa;
+import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,261 +44,243 @@ public class TarefaDAO implements Serializable {
     }
 
     public void create(Tarefa tarefa) {
-        if (tarefa.getFavoritosTarefaMetaList() == null) {
-            tarefa.setFavoritosTarefaMetaList(new ArrayList<FavoritosTarefaMeta>());
+        if (tarefa.getFavoritados() == null) {
+            tarefa.setFavoritados(new ArrayList<FavoritosTarefaMeta>());
         }
-        if (tarefa.getTarefaList() == null) {
-            tarefa.setTarefaList(new ArrayList<Tarefa>());
+        if (tarefa.getSubTarefas() == null) {
+            tarefa.setSubTarefas(new ArrayList<Tarefa>());
         }
-        if (tarefa.getTarefaList1() == null) {
-            tarefa.setTarefaList1(new ArrayList<Tarefa>());
+        if (tarefa.getParicipantes() == null) {
+            tarefa.setParicipantes(new ArrayList<ParicipanteTarefa>());
         }
-        if (tarefa.getTarefaList2() == null) {
-            tarefa.setTarefaList2(new ArrayList<Tarefa>());
+        if (tarefa.getAvaliacoes() == null) {
+            tarefa.setAvaliacoes(new ArrayList<AvaliacaoMetaTarefa>());
         }
-        if (tarefa.getParicipanteTarefaList() == null) {
-            tarefa.setParicipanteTarefaList(new ArrayList<ParicipanteTarefa>());
-        }
-        if (tarefa.getAvaliacaoMetaTarefaList() == null) {
-            tarefa.setAvaliacaoMetaTarefaList(new ArrayList<AvaliacaoMetaTarefa>());
-        }
-        if (tarefa.getOrcamentoTarefaList() == null) {
-            tarefa.setOrcamentoTarefaList(new ArrayList<OrcamentoTarefa>());
+        if (tarefa.getOrcamentos() == null) {
+            tarefa.setOrcamentos(new ArrayList<OrcamentoTarefa>());
         }
         if (tarefa.getApontamentoTarefaList() == null) {
             tarefa.setApontamentoTarefaList(new ArrayList<ApontamentoTarefa>());
         }
-        if (tarefa.getAnexoTarefaList() == null) {
-            tarefa.setAnexoTarefaList(new ArrayList<AnexoTarefa>());
+        if (tarefa.getAnexos() == null) {
+            tarefa.setAnexos(new ArrayList<AnexoTarefa>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            CentroCusto idcentrocusto = tarefa.getIdcentrocusto();
-            if (idcentrocusto != null) {
-                idcentrocusto = em.getReference(idcentrocusto.getClass(), idcentrocusto.getId());
-                tarefa.setIdcentrocusto(idcentrocusto);
+            PrioridadeTarefa prioridade = tarefa.getPrioridade();
+            if (prioridade != null) {
+                prioridade = em.getReference(prioridade.getClass(), prioridade.getPrioridadetarefa());
+                tarefa.setPrioridade(prioridade);
             }
-            Departamento iddepartamento = tarefa.getIddepartamento();
-            if (iddepartamento != null) {
-                iddepartamento = em.getReference(iddepartamento.getClass(), iddepartamento.getId());
-                tarefa.setIddepartamento(iddepartamento);
+            CentroCusto idCentroCusto = tarefa.getIdCentroCusto();
+            if (idCentroCusto != null) {
+                idCentroCusto = em.getReference(idCentroCusto.getClass(), idCentroCusto.getId());
+                tarefa.setIdCentroCusto(idCentroCusto);
             }
-            Empresa idempresa = tarefa.getIdempresa();
-            if (idempresa != null) {
-                idempresa = em.getReference(idempresa.getClass(), idempresa.getId());
-                tarefa.setIdempresa(idempresa);
+            Departamento idDepartamento = tarefa.getIdDepartamento();
+            if (idDepartamento != null) {
+                idDepartamento = em.getReference(idDepartamento.getClass(), idDepartamento.getId());
+                tarefa.setIdDepartamento(idDepartamento);
             }
-            EmpresaCliente idempresacliente = tarefa.getIdempresacliente();
-            if (idempresacliente != null) {
-                idempresacliente = em.getReference(idempresacliente.getClass(), idempresacliente.getId());
-                tarefa.setIdempresacliente(idempresacliente);
+            Empresa idEmpresa = tarefa.getIdEmpresa();
+            if (idEmpresa != null) {
+                idEmpresa = em.getReference(idEmpresa.getClass(), idEmpresa.getId());
+                tarefa.setIdEmpresa(idEmpresa);
             }
-            Tarefa idtarefaproxima = tarefa.getIdtarefaproxima();
-            if (idtarefaproxima != null) {
-                idtarefaproxima = em.getReference(idtarefaproxima.getClass(), idtarefaproxima.getId());
-                tarefa.setIdtarefaproxima(idtarefaproxima);
+            EmpresaCliente empresaCliente = tarefa.getEmpresaCliente();
+            if (empresaCliente != null) {
+                empresaCliente = em.getReference(empresaCliente.getClass(), empresaCliente.getId());
+                tarefa.setEmpresaCliente(empresaCliente);
             }
-            Tarefa idtarefaanterior = tarefa.getIdtarefaanterior();
-            if (idtarefaanterior != null) {
-                idtarefaanterior = em.getReference(idtarefaanterior.getClass(), idtarefaanterior.getId());
-                tarefa.setIdtarefaanterior(idtarefaanterior);
+            Tarefa idTarefaPai = tarefa.getIdTarefaPai();
+            if (idTarefaPai != null) {
+                idTarefaPai = em.getReference(idTarefaPai.getClass(), idTarefaPai.getId());
+                tarefa.setIdTarefaPai(idTarefaPai);
             }
-            Tarefa idtarefapai = tarefa.getIdtarefapai();
-            if (idtarefapai != null) {
-                idtarefapai = em.getReference(idtarefapai.getClass(), idtarefapai.getId());
-                tarefa.setIdtarefapai(idtarefapai);
+            Usuario idUsuarioInclusao = tarefa.getIdUsuarioInclusao();
+            if (idUsuarioInclusao != null) {
+                idUsuarioInclusao = em.getReference(idUsuarioInclusao.getClass(), idUsuarioInclusao.getId());
+                tarefa.setIdUsuarioInclusao(idUsuarioInclusao);
             }
-            Usuario idusuarioinclusao = tarefa.getIdusuarioinclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                tarefa.setIdusuarioinclusao(idusuarioinclusao);
+            Usuario idUsuarioSolicitante = tarefa.getIdUsuarioSolicitante();
+            if (idUsuarioSolicitante != null) {
+                idUsuarioSolicitante = em.getReference(idUsuarioSolicitante.getClass(), idUsuarioSolicitante.getId());
+                tarefa.setIdUsuarioSolicitante(idUsuarioSolicitante);
             }
-            Usuario idusuariosolicitante = tarefa.getIdusuariosolicitante();
-            if (idusuariosolicitante != null) {
-                idusuariosolicitante = em.getReference(idusuariosolicitante.getClass(), idusuariosolicitante.getId());
-                tarefa.setIdusuariosolicitante(idusuariosolicitante);
+            Usuario idUsuarioResponsavel = tarefa.getIdUsuarioResponsavel();
+            if (idUsuarioResponsavel != null) {
+                idUsuarioResponsavel = em.getReference(idUsuarioResponsavel.getClass(), idUsuarioResponsavel.getId());
+                tarefa.setIdUsuarioResponsavel(idUsuarioResponsavel);
             }
-            Usuario idusuarioresponsavel = tarefa.getIdusuarioresponsavel();
-            if (idusuarioresponsavel != null) {
-                idusuarioresponsavel = em.getReference(idusuarioresponsavel.getClass(), idusuarioresponsavel.getId());
-                tarefa.setIdusuarioresponsavel(idusuarioresponsavel);
+            StatusTarefa status = tarefa.getStatus();
+            if (status != null) {
+                status = em.getReference(status.getClass(), status.getStatustarefa());
+                tarefa.setStatus(status);
             }
-            List<FavoritosTarefaMeta> attachedFavoritosTarefaMetaList = new ArrayList<FavoritosTarefaMeta>();
-            for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMetaToAttach : tarefa.getFavoritosTarefaMetaList()) {
-                favoritosTarefaMetaListFavoritosTarefaMetaToAttach = em.getReference(favoritosTarefaMetaListFavoritosTarefaMetaToAttach.getClass(), favoritosTarefaMetaListFavoritosTarefaMetaToAttach.getId());
-                attachedFavoritosTarefaMetaList.add(favoritosTarefaMetaListFavoritosTarefaMetaToAttach);
+            Tarefa idProximaTarefa = tarefa.getIdProximaTarefa();
+            if (idProximaTarefa != null) {
+                idProximaTarefa = em.getReference(idProximaTarefa.getClass(), idProximaTarefa.getId());
+                tarefa.setIdProximaTarefa(idProximaTarefa);
             }
-            tarefa.setFavoritosTarefaMetaList(attachedFavoritosTarefaMetaList);
-            List<Tarefa> attachedTarefaList = new ArrayList<Tarefa>();
-            for (Tarefa tarefaListTarefaToAttach : tarefa.getTarefaList()) {
-                tarefaListTarefaToAttach = em.getReference(tarefaListTarefaToAttach.getClass(), tarefaListTarefaToAttach.getId());
-                attachedTarefaList.add(tarefaListTarefaToAttach);
+            TipoTarefa tipo = tarefa.getTipo();
+            if (tipo != null) {
+                tipo = em.getReference(tipo.getClass(), tipo.getTipotarefa());
+                tarefa.setTipo(tipo);
             }
-            tarefa.setTarefaList(attachedTarefaList);
-            List<Tarefa> attachedTarefaList1 = new ArrayList<Tarefa>();
-            for (Tarefa tarefaList1TarefaToAttach : tarefa.getTarefaList1()) {
-                tarefaList1TarefaToAttach = em.getReference(tarefaList1TarefaToAttach.getClass(), tarefaList1TarefaToAttach.getId());
-                attachedTarefaList1.add(tarefaList1TarefaToAttach);
+            List<FavoritosTarefaMeta> attachedFavoritados = new ArrayList<FavoritosTarefaMeta>();
+            for (FavoritosTarefaMeta favoritadosFavoritosTarefaMetaToAttach : tarefa.getFavoritados()) {
+                favoritadosFavoritosTarefaMetaToAttach = em.getReference(favoritadosFavoritosTarefaMetaToAttach.getClass(), favoritadosFavoritosTarefaMetaToAttach.getId());
+                attachedFavoritados.add(favoritadosFavoritosTarefaMetaToAttach);
             }
-            tarefa.setTarefaList1(attachedTarefaList1);
-            List<Tarefa> attachedTarefaList2 = new ArrayList<Tarefa>();
-            for (Tarefa tarefaList2TarefaToAttach : tarefa.getTarefaList2()) {
-                tarefaList2TarefaToAttach = em.getReference(tarefaList2TarefaToAttach.getClass(), tarefaList2TarefaToAttach.getId());
-                attachedTarefaList2.add(tarefaList2TarefaToAttach);
+            tarefa.setFavoritados(attachedFavoritados);
+            List<Tarefa> attachedSubTarefas = new ArrayList<Tarefa>();
+            for (Tarefa subTarefasTarefaToAttach : tarefa.getSubTarefas()) {
+                subTarefasTarefaToAttach = em.getReference(subTarefasTarefaToAttach.getClass(), subTarefasTarefaToAttach.getId());
+                attachedSubTarefas.add(subTarefasTarefaToAttach);
             }
-            tarefa.setTarefaList2(attachedTarefaList2);
-            List<ParicipanteTarefa> attachedParicipanteTarefaList = new ArrayList<ParicipanteTarefa>();
-            for (ParicipanteTarefa paricipanteTarefaListParicipanteTarefaToAttach : tarefa.getParicipanteTarefaList()) {
-                paricipanteTarefaListParicipanteTarefaToAttach = em.getReference(paricipanteTarefaListParicipanteTarefaToAttach.getClass(), paricipanteTarefaListParicipanteTarefaToAttach.getId());
-                attachedParicipanteTarefaList.add(paricipanteTarefaListParicipanteTarefaToAttach);
+            tarefa.setSubTarefas(attachedSubTarefas);
+            List<ParicipanteTarefa> attachedParicipantes = new ArrayList<ParicipanteTarefa>();
+            for (ParicipanteTarefa paricipantesParicipanteTarefaToAttach : tarefa.getParicipantes()) {
+                paricipantesParicipanteTarefaToAttach = em.getReference(paricipantesParicipanteTarefaToAttach.getClass(), paricipantesParicipanteTarefaToAttach.getId());
+                attachedParicipantes.add(paricipantesParicipanteTarefaToAttach);
             }
-            tarefa.setParicipanteTarefaList(attachedParicipanteTarefaList);
-            List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaList = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach : tarefa.getAvaliacaoMetaTarefaList()) {
-                avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach.getId());
-                attachedAvaliacaoMetaTarefaList.add(avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach);
+            tarefa.setParicipantes(attachedParicipantes);
+            List<AvaliacaoMetaTarefa> attachedAvaliacoes = new ArrayList<AvaliacaoMetaTarefa>();
+            for (AvaliacaoMetaTarefa avaliacoesAvaliacaoMetaTarefaToAttach : tarefa.getAvaliacoes()) {
+                avaliacoesAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesAvaliacaoMetaTarefaToAttach.getId());
+                attachedAvaliacoes.add(avaliacoesAvaliacaoMetaTarefaToAttach);
             }
-            tarefa.setAvaliacaoMetaTarefaList(attachedAvaliacaoMetaTarefaList);
-            List<OrcamentoTarefa> attachedOrcamentoTarefaList = new ArrayList<OrcamentoTarefa>();
-            for (OrcamentoTarefa orcamentoTarefaListOrcamentoTarefaToAttach : tarefa.getOrcamentoTarefaList()) {
-                orcamentoTarefaListOrcamentoTarefaToAttach = em.getReference(orcamentoTarefaListOrcamentoTarefaToAttach.getClass(), orcamentoTarefaListOrcamentoTarefaToAttach.getId());
-                attachedOrcamentoTarefaList.add(orcamentoTarefaListOrcamentoTarefaToAttach);
+            tarefa.setAvaliacoes(attachedAvaliacoes);
+            List<OrcamentoTarefa> attachedOrcamentos = new ArrayList<OrcamentoTarefa>();
+            for (OrcamentoTarefa orcamentosOrcamentoTarefaToAttach : tarefa.getOrcamentos()) {
+                orcamentosOrcamentoTarefaToAttach = em.getReference(orcamentosOrcamentoTarefaToAttach.getClass(), orcamentosOrcamentoTarefaToAttach.getId());
+                attachedOrcamentos.add(orcamentosOrcamentoTarefaToAttach);
             }
-            tarefa.setOrcamentoTarefaList(attachedOrcamentoTarefaList);
+            tarefa.setOrcamentos(attachedOrcamentos);
             List<ApontamentoTarefa> attachedApontamentoTarefaList = new ArrayList<ApontamentoTarefa>();
             for (ApontamentoTarefa apontamentoTarefaListApontamentoTarefaToAttach : tarefa.getApontamentoTarefaList()) {
                 apontamentoTarefaListApontamentoTarefaToAttach = em.getReference(apontamentoTarefaListApontamentoTarefaToAttach.getClass(), apontamentoTarefaListApontamentoTarefaToAttach.getId());
                 attachedApontamentoTarefaList.add(apontamentoTarefaListApontamentoTarefaToAttach);
             }
             tarefa.setApontamentoTarefaList(attachedApontamentoTarefaList);
-            List<AnexoTarefa> attachedAnexoTarefaList = new ArrayList<AnexoTarefa>();
-            for (AnexoTarefa anexoTarefaListAnexoTarefaToAttach : tarefa.getAnexoTarefaList()) {
-                anexoTarefaListAnexoTarefaToAttach = em.getReference(anexoTarefaListAnexoTarefaToAttach.getClass(), anexoTarefaListAnexoTarefaToAttach.getId());
-                attachedAnexoTarefaList.add(anexoTarefaListAnexoTarefaToAttach);
+            List<AnexoTarefa> attachedAnexos = new ArrayList<AnexoTarefa>();
+            for (AnexoTarefa anexosAnexoTarefaToAttach : tarefa.getAnexos()) {
+                anexosAnexoTarefaToAttach = em.getReference(anexosAnexoTarefaToAttach.getClass(), anexosAnexoTarefaToAttach.getId());
+                attachedAnexos.add(anexosAnexoTarefaToAttach);
             }
-            tarefa.setAnexoTarefaList(attachedAnexoTarefaList);
+            tarefa.setAnexos(attachedAnexos);
             em.persist(tarefa);
-            if (idcentrocusto != null) {
-                idcentrocusto.getTarefaList().add(tarefa);
-                idcentrocusto = em.merge(idcentrocusto);
+            if (prioridade != null) {
+                prioridade.getTarefas().add(tarefa);
+                prioridade = em.merge(prioridade);
             }
-            if (iddepartamento != null) {
-                iddepartamento.getTarefaList().add(tarefa);
-                iddepartamento = em.merge(iddepartamento);
+            if (idCentroCusto != null) {
+                idCentroCusto.getTarefas().add(tarefa);
+                idCentroCusto = em.merge(idCentroCusto);
             }
-            if (idempresa != null) {
-                idempresa.getTarefaList().add(tarefa);
-                idempresa = em.merge(idempresa);
+            if (idDepartamento != null) {
+                idDepartamento.getTarefas().add(tarefa);
+                idDepartamento = em.merge(idDepartamento);
             }
-            if (idempresacliente != null) {
-                idempresacliente.getTarefaList().add(tarefa);
-                idempresacliente = em.merge(idempresacliente);
+            if (idEmpresa != null) {
+                idEmpresa.getTarefas().add(tarefa);
+                idEmpresa = em.merge(idEmpresa);
             }
-            if (idtarefaproxima != null) {
-                idtarefaproxima.getTarefaList().add(tarefa);
-                idtarefaproxima = em.merge(idtarefaproxima);
+            if (empresaCliente != null) {
+                empresaCliente.getTarefas().add(tarefa);
+                empresaCliente = em.merge(empresaCliente);
             }
-            if (idtarefaanterior != null) {
-                idtarefaanterior.getTarefaList().add(tarefa);
-                idtarefaanterior = em.merge(idtarefaanterior);
+            if (idTarefaPai != null) {
+                idTarefaPai.getSubTarefas().add(tarefa);
+                idTarefaPai = em.merge(idTarefaPai);
             }
-            if (idtarefapai != null) {
-                idtarefapai.getTarefaList().add(tarefa);
-                idtarefapai = em.merge(idtarefapai);
+            if (idUsuarioInclusao != null) {
+                idUsuarioInclusao.getTarefaList().add(tarefa);
+                idUsuarioInclusao = em.merge(idUsuarioInclusao);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getTarefaList().add(tarefa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (idUsuarioSolicitante != null) {
+                idUsuarioSolicitante.getTarefaList().add(tarefa);
+                idUsuarioSolicitante = em.merge(idUsuarioSolicitante);
             }
-            if (idusuariosolicitante != null) {
-                idusuariosolicitante.getTarefaList().add(tarefa);
-                idusuariosolicitante = em.merge(idusuariosolicitante);
+            if (idUsuarioResponsavel != null) {
+                idUsuarioResponsavel.getTarefaList().add(tarefa);
+                idUsuarioResponsavel = em.merge(idUsuarioResponsavel);
             }
-            if (idusuarioresponsavel != null) {
-                idusuarioresponsavel.getTarefaList().add(tarefa);
-                idusuarioresponsavel = em.merge(idusuarioresponsavel);
+            if (status != null) {
+                status.getTarefaSet().add(tarefa);
+                status = em.merge(status);
             }
-            for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMeta : tarefa.getFavoritosTarefaMetaList()) {
-                Tarefa oldIdtarefaOfFavoritosTarefaMetaListFavoritosTarefaMeta = favoritosTarefaMetaListFavoritosTarefaMeta.getIdtarefa();
-                favoritosTarefaMetaListFavoritosTarefaMeta.setIdtarefa(tarefa);
-                favoritosTarefaMetaListFavoritosTarefaMeta = em.merge(favoritosTarefaMetaListFavoritosTarefaMeta);
-                if (oldIdtarefaOfFavoritosTarefaMetaListFavoritosTarefaMeta != null) {
-                    oldIdtarefaOfFavoritosTarefaMetaListFavoritosTarefaMeta.getFavoritosTarefaMetaList().remove(favoritosTarefaMetaListFavoritosTarefaMeta);
-                    oldIdtarefaOfFavoritosTarefaMetaListFavoritosTarefaMeta = em.merge(oldIdtarefaOfFavoritosTarefaMetaListFavoritosTarefaMeta);
+            if (idProximaTarefa != null) {
+                idProximaTarefa.getSubTarefas().add(tarefa);
+                idProximaTarefa = em.merge(idProximaTarefa);
+            }
+            if (tipo != null) {
+                tipo.getTarefas().add(tarefa);
+                tipo = em.merge(tipo);
+            }
+            for (FavoritosTarefaMeta favoritadosFavoritosTarefaMeta : tarefa.getFavoritados()) {
+                Tarefa oldIdTarefaOfFavoritadosFavoritosTarefaMeta = favoritadosFavoritosTarefaMeta.getIdTarefa();
+                favoritadosFavoritosTarefaMeta.setIdTarefa(tarefa);
+                favoritadosFavoritosTarefaMeta = em.merge(favoritadosFavoritosTarefaMeta);
+                if (oldIdTarefaOfFavoritadosFavoritosTarefaMeta != null) {
+                    oldIdTarefaOfFavoritadosFavoritosTarefaMeta.getFavoritados().remove(favoritadosFavoritosTarefaMeta);
+                    oldIdTarefaOfFavoritadosFavoritosTarefaMeta = em.merge(oldIdTarefaOfFavoritadosFavoritosTarefaMeta);
                 }
             }
-            for (Tarefa tarefaListTarefa : tarefa.getTarefaList()) {
-                Tarefa oldIdtarefaproximaOfTarefaListTarefa = tarefaListTarefa.getIdtarefaproxima();
-                tarefaListTarefa.setIdtarefaproxima(tarefa);
-                tarefaListTarefa = em.merge(tarefaListTarefa);
-                if (oldIdtarefaproximaOfTarefaListTarefa != null) {
-                    oldIdtarefaproximaOfTarefaListTarefa.getTarefaList().remove(tarefaListTarefa);
-                    oldIdtarefaproximaOfTarefaListTarefa = em.merge(oldIdtarefaproximaOfTarefaListTarefa);
+            for (Tarefa subTarefasTarefa : tarefa.getSubTarefas()) {
+                Tarefa oldIdTarefaPaiOfSubTarefasTarefa = subTarefasTarefa.getIdTarefaPai();
+                subTarefasTarefa.setIdTarefaPai(tarefa);
+                subTarefasTarefa = em.merge(subTarefasTarefa);
+                if (oldIdTarefaPaiOfSubTarefasTarefa != null) {
+                    oldIdTarefaPaiOfSubTarefasTarefa.getSubTarefas().remove(subTarefasTarefa);
+                    oldIdTarefaPaiOfSubTarefasTarefa = em.merge(oldIdTarefaPaiOfSubTarefasTarefa);
                 }
             }
-            for (Tarefa tarefaList1Tarefa : tarefa.getTarefaList1()) {
-                Tarefa oldIdtarefaanteriorOfTarefaList1Tarefa = tarefaList1Tarefa.getIdtarefaanterior();
-                tarefaList1Tarefa.setIdtarefaanterior(tarefa);
-                tarefaList1Tarefa = em.merge(tarefaList1Tarefa);
-                if (oldIdtarefaanteriorOfTarefaList1Tarefa != null) {
-                    oldIdtarefaanteriorOfTarefaList1Tarefa.getTarefaList1().remove(tarefaList1Tarefa);
-                    oldIdtarefaanteriorOfTarefaList1Tarefa = em.merge(oldIdtarefaanteriorOfTarefaList1Tarefa);
+            for (ParicipanteTarefa paricipantesParicipanteTarefa : tarefa.getParicipantes()) {
+                Tarefa oldIdTarefaOfParicipantesParicipanteTarefa = paricipantesParicipanteTarefa.getIdTarefa();
+                paricipantesParicipanteTarefa.setIdTarefa(tarefa);
+                paricipantesParicipanteTarefa = em.merge(paricipantesParicipanteTarefa);
+                if (oldIdTarefaOfParicipantesParicipanteTarefa != null) {
+                    oldIdTarefaOfParicipantesParicipanteTarefa.getParicipantes().remove(paricipantesParicipanteTarefa);
+                    oldIdTarefaOfParicipantesParicipanteTarefa = em.merge(oldIdTarefaOfParicipantesParicipanteTarefa);
                 }
             }
-            for (Tarefa tarefaList2Tarefa : tarefa.getTarefaList2()) {
-                Tarefa oldIdtarefapaiOfTarefaList2Tarefa = tarefaList2Tarefa.getIdtarefapai();
-                tarefaList2Tarefa.setIdtarefapai(tarefa);
-                tarefaList2Tarefa = em.merge(tarefaList2Tarefa);
-                if (oldIdtarefapaiOfTarefaList2Tarefa != null) {
-                    oldIdtarefapaiOfTarefaList2Tarefa.getTarefaList2().remove(tarefaList2Tarefa);
-                    oldIdtarefapaiOfTarefaList2Tarefa = em.merge(oldIdtarefapaiOfTarefaList2Tarefa);
+            for (AvaliacaoMetaTarefa avaliacoesAvaliacaoMetaTarefa : tarefa.getAvaliacoes()) {
+                Tarefa oldIdTarefaOfAvaliacoesAvaliacaoMetaTarefa = avaliacoesAvaliacaoMetaTarefa.getIdTarefa();
+                avaliacoesAvaliacaoMetaTarefa.setIdTarefa(tarefa);
+                avaliacoesAvaliacaoMetaTarefa = em.merge(avaliacoesAvaliacaoMetaTarefa);
+                if (oldIdTarefaOfAvaliacoesAvaliacaoMetaTarefa != null) {
+                    oldIdTarefaOfAvaliacoesAvaliacaoMetaTarefa.getAvaliacoes().remove(avaliacoesAvaliacaoMetaTarefa);
+                    oldIdTarefaOfAvaliacoesAvaliacaoMetaTarefa = em.merge(oldIdTarefaOfAvaliacoesAvaliacaoMetaTarefa);
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaListParicipanteTarefa : tarefa.getParicipanteTarefaList()) {
-                Tarefa oldIdtarefaOfParicipanteTarefaListParicipanteTarefa = paricipanteTarefaListParicipanteTarefa.getIdtarefa();
-                paricipanteTarefaListParicipanteTarefa.setIdtarefa(tarefa);
-                paricipanteTarefaListParicipanteTarefa = em.merge(paricipanteTarefaListParicipanteTarefa);
-                if (oldIdtarefaOfParicipanteTarefaListParicipanteTarefa != null) {
-                    oldIdtarefaOfParicipanteTarefaListParicipanteTarefa.getParicipanteTarefaList().remove(paricipanteTarefaListParicipanteTarefa);
-                    oldIdtarefaOfParicipanteTarefaListParicipanteTarefa = em.merge(oldIdtarefaOfParicipanteTarefaListParicipanteTarefa);
-                }
-            }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefa : tarefa.getAvaliacaoMetaTarefaList()) {
-                Tarefa oldIdtarefaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = avaliacaoMetaTarefaListAvaliacaoMetaTarefa.getIdtarefa();
-                avaliacaoMetaTarefaListAvaliacaoMetaTarefa.setIdtarefa(tarefa);
-                avaliacaoMetaTarefaListAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
-                if (oldIdtarefaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa != null) {
-                    oldIdtarefaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
-                    oldIdtarefaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = em.merge(oldIdtarefaOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa);
-                }
-            }
-            for (OrcamentoTarefa orcamentoTarefaListOrcamentoTarefa : tarefa.getOrcamentoTarefaList()) {
-                Tarefa oldIdtarefaOfOrcamentoTarefaListOrcamentoTarefa = orcamentoTarefaListOrcamentoTarefa.getIdtarefa();
-                orcamentoTarefaListOrcamentoTarefa.setIdtarefa(tarefa);
-                orcamentoTarefaListOrcamentoTarefa = em.merge(orcamentoTarefaListOrcamentoTarefa);
-                if (oldIdtarefaOfOrcamentoTarefaListOrcamentoTarefa != null) {
-                    oldIdtarefaOfOrcamentoTarefaListOrcamentoTarefa.getOrcamentoTarefaList().remove(orcamentoTarefaListOrcamentoTarefa);
-                    oldIdtarefaOfOrcamentoTarefaListOrcamentoTarefa = em.merge(oldIdtarefaOfOrcamentoTarefaListOrcamentoTarefa);
+            for (OrcamentoTarefa orcamentosOrcamentoTarefa : tarefa.getOrcamentos()) {
+                Tarefa oldIdTarefaOfOrcamentosOrcamentoTarefa = orcamentosOrcamentoTarefa.getIdTarefa();
+                orcamentosOrcamentoTarefa.setIdTarefa(tarefa);
+                orcamentosOrcamentoTarefa = em.merge(orcamentosOrcamentoTarefa);
+                if (oldIdTarefaOfOrcamentosOrcamentoTarefa != null) {
+                    oldIdTarefaOfOrcamentosOrcamentoTarefa.getOrcamentos().remove(orcamentosOrcamentoTarefa);
+                    oldIdTarefaOfOrcamentosOrcamentoTarefa = em.merge(oldIdTarefaOfOrcamentosOrcamentoTarefa);
                 }
             }
             for (ApontamentoTarefa apontamentoTarefaListApontamentoTarefa : tarefa.getApontamentoTarefaList()) {
-                Tarefa oldIdtarefaOfApontamentoTarefaListApontamentoTarefa = apontamentoTarefaListApontamentoTarefa.getIdTarefa();
+                Tarefa oldIdTarefaOfApontamentoTarefaListApontamentoTarefa = apontamentoTarefaListApontamentoTarefa.getIdTarefa();
                 apontamentoTarefaListApontamentoTarefa.setIdTarefa(tarefa);
                 apontamentoTarefaListApontamentoTarefa = em.merge(apontamentoTarefaListApontamentoTarefa);
-                if (oldIdtarefaOfApontamentoTarefaListApontamentoTarefa != null) {
-                    oldIdtarefaOfApontamentoTarefaListApontamentoTarefa.getApontamentoTarefaList().remove(apontamentoTarefaListApontamentoTarefa);
-                    oldIdtarefaOfApontamentoTarefaListApontamentoTarefa = em.merge(oldIdtarefaOfApontamentoTarefaListApontamentoTarefa);
+                if (oldIdTarefaOfApontamentoTarefaListApontamentoTarefa != null) {
+                    oldIdTarefaOfApontamentoTarefaListApontamentoTarefa.getApontamentoTarefaList().remove(apontamentoTarefaListApontamentoTarefa);
+                    oldIdTarefaOfApontamentoTarefaListApontamentoTarefa = em.merge(oldIdTarefaOfApontamentoTarefaListApontamentoTarefa);
                 }
             }
-            for (AnexoTarefa anexoTarefaListAnexoTarefa : tarefa.getAnexoTarefaList()) {
-                Tarefa oldIdtarefaOfAnexoTarefaListAnexoTarefa = anexoTarefaListAnexoTarefa.getIdTarefa();
-                anexoTarefaListAnexoTarefa.setIdTarefa(tarefa);
-                anexoTarefaListAnexoTarefa = em.merge(anexoTarefaListAnexoTarefa);
-                if (oldIdtarefaOfAnexoTarefaListAnexoTarefa != null) {
-                    oldIdtarefaOfAnexoTarefaListAnexoTarefa.getAnexoTarefaList().remove(anexoTarefaListAnexoTarefa);
-                    oldIdtarefaOfAnexoTarefaListAnexoTarefa = em.merge(oldIdtarefaOfAnexoTarefaListAnexoTarefa);
+            for (AnexoTarefa anexosAnexoTarefa : tarefa.getAnexos()) {
+                Tarefa oldIdTarefaOfAnexosAnexoTarefa = anexosAnexoTarefa.getIdTarefa();
+                anexosAnexoTarefa.setIdTarefa(tarefa);
+                anexosAnexoTarefa = em.merge(anexosAnexoTarefa);
+                if (oldIdTarefaOfAnexosAnexoTarefa != null) {
+                    oldIdTarefaOfAnexosAnexoTarefa.getAnexos().remove(anexosAnexoTarefa);
+                    oldIdTarefaOfAnexosAnexoTarefa = em.merge(oldIdTarefaOfAnexosAnexoTarefa);
                 }
             }
             em.getTransaction().commit();
@@ -312,91 +297,75 @@ public class TarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Tarefa persistentTarefa = em.find(Tarefa.class, tarefa.getId());
-            CentroCusto idcentrocustoOld = persistentTarefa.getIdcentrocusto();
-            CentroCusto idcentrocustoNew = tarefa.getIdcentrocusto();
-            Departamento iddepartamentoOld = persistentTarefa.getIddepartamento();
-            Departamento iddepartamentoNew = tarefa.getIddepartamento();
-            Empresa idempresaOld = persistentTarefa.getIdempresa();
-            Empresa idempresaNew = tarefa.getIdempresa();
-            EmpresaCliente idempresaclienteOld = persistentTarefa.getIdempresacliente();
-            EmpresaCliente idempresaclienteNew = tarefa.getIdempresacliente();
-            Tarefa idtarefaproximaOld = persistentTarefa.getIdtarefaproxima();
-            Tarefa idtarefaproximaNew = tarefa.getIdtarefaproxima();
-            Tarefa idtarefaanteriorOld = persistentTarefa.getIdtarefaanterior();
-            Tarefa idtarefaanteriorNew = tarefa.getIdtarefaanterior();
-            Tarefa idtarefapaiOld = persistentTarefa.getIdtarefapai();
-            Tarefa idtarefapaiNew = tarefa.getIdtarefapai();
-            Usuario idusuarioinclusaoOld = persistentTarefa.getIdusuarioinclusao();
-            Usuario idusuarioinclusaoNew = tarefa.getIdusuarioinclusao();
-            Usuario idusuariosolicitanteOld = persistentTarefa.getIdusuariosolicitante();
-            Usuario idusuariosolicitanteNew = tarefa.getIdusuariosolicitante();
-            Usuario idusuarioresponsavelOld = persistentTarefa.getIdusuarioresponsavel();
-            Usuario idusuarioresponsavelNew = tarefa.getIdusuarioresponsavel();
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListOld = persistentTarefa.getFavoritosTarefaMetaList();
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListNew = tarefa.getFavoritosTarefaMetaList();
-            List<Tarefa> tarefaListOld = persistentTarefa.getTarefaList();
-            List<Tarefa> tarefaListNew = tarefa.getTarefaList();
-            List<Tarefa> tarefaList1Old = persistentTarefa.getTarefaList1();
-            List<Tarefa> tarefaList1New = tarefa.getTarefaList1();
-            List<Tarefa> tarefaList2Old = persistentTarefa.getTarefaList2();
-            List<Tarefa> tarefaList2New = tarefa.getTarefaList2();
-            List<ParicipanteTarefa> paricipanteTarefaListOld = persistentTarefa.getParicipanteTarefaList();
-            List<ParicipanteTarefa> paricipanteTarefaListNew = tarefa.getParicipanteTarefaList();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListOld = persistentTarefa.getAvaliacaoMetaTarefaList();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListNew = tarefa.getAvaliacaoMetaTarefaList();
-            List<OrcamentoTarefa> orcamentoTarefaListOld = persistentTarefa.getOrcamentoTarefaList();
-            List<OrcamentoTarefa> orcamentoTarefaListNew = tarefa.getOrcamentoTarefaList();
+            PrioridadeTarefa prioridadeOld = persistentTarefa.getPrioridade();
+            PrioridadeTarefa prioridadeNew = tarefa.getPrioridade();
+            CentroCusto idCentroCustoOld = persistentTarefa.getIdCentroCusto();
+            CentroCusto idCentroCustoNew = tarefa.getIdCentroCusto();
+            Departamento idDepartamentoOld = persistentTarefa.getIdDepartamento();
+            Departamento idDepartamentoNew = tarefa.getIdDepartamento();
+            Empresa idEmpresaOld = persistentTarefa.getIdEmpresa();
+            Empresa idEmpresaNew = tarefa.getIdEmpresa();
+            EmpresaCliente empresaClienteOld = persistentTarefa.getEmpresaCliente();
+            EmpresaCliente empresaClienteNew = tarefa.getEmpresaCliente();
+            Tarefa idTarefaPaiOld = persistentTarefa.getIdTarefaPai();
+            Tarefa idTarefaPaiNew = tarefa.getIdTarefaPai();
+            Usuario idUsuarioInclusaoOld = persistentTarefa.getIdUsuarioInclusao();
+            Usuario idUsuarioInclusaoNew = tarefa.getIdUsuarioInclusao();
+            Usuario idUsuarioSolicitanteOld = persistentTarefa.getIdUsuarioSolicitante();
+            Usuario idUsuarioSolicitanteNew = tarefa.getIdUsuarioSolicitante();
+            Usuario idUsuarioResponsavelOld = persistentTarefa.getIdUsuarioResponsavel();
+            Usuario idUsuarioResponsavelNew = tarefa.getIdUsuarioResponsavel();
+            StatusTarefa statusOld = persistentTarefa.getStatus();
+            StatusTarefa statusNew = tarefa.getStatus();
+            Tarefa idProximaTarefaOld = persistentTarefa.getIdProximaTarefa();
+            Tarefa idProximaTarefaNew = tarefa.getIdProximaTarefa();
+            TipoTarefa tipoOld = persistentTarefa.getTipo();
+            TipoTarefa tipoNew = tarefa.getTipo();
+            List<FavoritosTarefaMeta> favoritadosOld = persistentTarefa.getFavoritados();
+            List<FavoritosTarefaMeta> favoritadosNew = tarefa.getFavoritados();
+            List<Tarefa> subTarefasOld = persistentTarefa.getSubTarefas();
+            List<Tarefa> subTarefasNew = tarefa.getSubTarefas();
+            List<ParicipanteTarefa> paricipantesOld = persistentTarefa.getParicipantes();
+            List<ParicipanteTarefa> paricipantesNew = tarefa.getParicipantes();
+            List<AvaliacaoMetaTarefa> avaliacoesOld = persistentTarefa.getAvaliacoes();
+            List<AvaliacaoMetaTarefa> avaliacoesNew = tarefa.getAvaliacoes();
+            List<OrcamentoTarefa> orcamentosOld = persistentTarefa.getOrcamentos();
+            List<OrcamentoTarefa> orcamentosNew = tarefa.getOrcamentos();
             List<ApontamentoTarefa> apontamentoTarefaListOld = persistentTarefa.getApontamentoTarefaList();
             List<ApontamentoTarefa> apontamentoTarefaListNew = tarefa.getApontamentoTarefaList();
-            List<AnexoTarefa> anexoTarefaListOld = persistentTarefa.getAnexoTarefaList();
-            List<AnexoTarefa> anexoTarefaListNew = tarefa.getAnexoTarefaList();
+            List<AnexoTarefa> anexosOld = persistentTarefa.getAnexos();
+            List<AnexoTarefa> anexosNew = tarefa.getAnexos();
             List<String> illegalOrphanMessages = null;
-            for (FavoritosTarefaMeta favoritosTarefaMetaListOldFavoritosTarefaMeta : favoritosTarefaMetaListOld) {
-                if (!favoritosTarefaMetaListNew.contains(favoritosTarefaMetaListOldFavoritosTarefaMeta)) {
+            for (FavoritosTarefaMeta favoritadosOldFavoritosTarefaMeta : favoritadosOld) {
+                if (!favoritadosNew.contains(favoritadosOldFavoritosTarefaMeta)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain FavoritosTarefaMeta " + favoritosTarefaMetaListOldFavoritosTarefaMeta + " since its idtarefa field is not nullable.");
+                    illegalOrphanMessages.add("You must retain FavoritosTarefaMeta " + favoritadosOldFavoritosTarefaMeta + " since its idTarefa field is not nullable.");
                 }
             }
-            for (Tarefa tarefaListOldTarefa : tarefaListOld) {
-                if (!tarefaListNew.contains(tarefaListOldTarefa)) {
+            for (ParicipanteTarefa paricipantesOldParicipanteTarefa : paricipantesOld) {
+                if (!paricipantesNew.contains(paricipantesOldParicipanteTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Tarefa " + tarefaListOldTarefa + " since its idtarefaproxima field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + paricipantesOldParicipanteTarefa + " since its idTarefa field is not nullable.");
                 }
             }
-            for (Tarefa tarefaList1OldTarefa : tarefaList1Old) {
-                if (!tarefaList1New.contains(tarefaList1OldTarefa)) {
+            for (AvaliacaoMetaTarefa avaliacoesOldAvaliacaoMetaTarefa : avaliacoesOld) {
+                if (!avaliacoesNew.contains(avaliacoesOldAvaliacaoMetaTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Tarefa " + tarefaList1OldTarefa + " since its idtarefaanterior field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AvaliacaoMetaTarefa " + avaliacoesOldAvaliacaoMetaTarefa + " since its idTarefa field is not nullable.");
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaListOldParicipanteTarefa : paricipanteTarefaListOld) {
-                if (!paricipanteTarefaListNew.contains(paricipanteTarefaListOldParicipanteTarefa)) {
+            for (OrcamentoTarefa orcamentosOldOrcamentoTarefa : orcamentosOld) {
+                if (!orcamentosNew.contains(orcamentosOldOrcamentoTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + paricipanteTarefaListOldParicipanteTarefa + " since its idtarefa field is not nullable.");
-                }
-            }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListOldAvaliacaoMetaTarefa : avaliacaoMetaTarefaListOld) {
-                if (!avaliacaoMetaTarefaListNew.contains(avaliacaoMetaTarefaListOldAvaliacaoMetaTarefa)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain AvaliacaoMetaTarefa " + avaliacaoMetaTarefaListOldAvaliacaoMetaTarefa + " since its idtarefa field is not nullable.");
-                }
-            }
-            for (OrcamentoTarefa orcamentoTarefaListOldOrcamentoTarefa : orcamentoTarefaListOld) {
-                if (!orcamentoTarefaListNew.contains(orcamentoTarefaListOldOrcamentoTarefa)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain OrcamentoTarefa " + orcamentoTarefaListOldOrcamentoTarefa + " since its idtarefa field is not nullable.");
+                    illegalOrphanMessages.add("You must retain OrcamentoTarefa " + orcamentosOldOrcamentoTarefa + " since its idTarefa field is not nullable.");
                 }
             }
             for (ApontamentoTarefa apontamentoTarefaListOldApontamentoTarefa : apontamentoTarefaListOld) {
@@ -404,109 +373,103 @@ public class TarefaDAO implements Serializable {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ApontamentoTarefa " + apontamentoTarefaListOldApontamentoTarefa + " since its idtarefa field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ApontamentoTarefa " + apontamentoTarefaListOldApontamentoTarefa + " since its idTarefa field is not nullable.");
                 }
             }
-            for (AnexoTarefa anexoTarefaListOldAnexoTarefa : anexoTarefaListOld) {
-                if (!anexoTarefaListNew.contains(anexoTarefaListOldAnexoTarefa)) {
+            for (AnexoTarefa anexosOldAnexoTarefa : anexosOld) {
+                if (!anexosNew.contains(anexosOldAnexoTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain AnexoTarefa " + anexoTarefaListOldAnexoTarefa + " since its idtarefa field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AnexoTarefa " + anexosOldAnexoTarefa + " since its idTarefa field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (idcentrocustoNew != null) {
-                idcentrocustoNew = em.getReference(idcentrocustoNew.getClass(), idcentrocustoNew.getId());
-                tarefa.setIdcentrocusto(idcentrocustoNew);
+            if (prioridadeNew != null) {
+                prioridadeNew = em.getReference(prioridadeNew.getClass(), prioridadeNew.getPrioridadetarefa());
+                tarefa.setPrioridade(prioridadeNew);
             }
-            if (iddepartamentoNew != null) {
-                iddepartamentoNew = em.getReference(iddepartamentoNew.getClass(), iddepartamentoNew.getId());
-                tarefa.setIddepartamento(iddepartamentoNew);
+            if (idCentroCustoNew != null) {
+                idCentroCustoNew = em.getReference(idCentroCustoNew.getClass(), idCentroCustoNew.getId());
+                tarefa.setIdCentroCusto(idCentroCustoNew);
             }
-            if (idempresaNew != null) {
-                idempresaNew = em.getReference(idempresaNew.getClass(), idempresaNew.getId());
-                tarefa.setIdempresa(idempresaNew);
+            if (idDepartamentoNew != null) {
+                idDepartamentoNew = em.getReference(idDepartamentoNew.getClass(), idDepartamentoNew.getId());
+                tarefa.setIdDepartamento(idDepartamentoNew);
             }
-            if (idempresaclienteNew != null) {
-                idempresaclienteNew = em.getReference(idempresaclienteNew.getClass(), idempresaclienteNew.getId());
-                tarefa.setIdempresacliente(idempresaclienteNew);
+            if (idEmpresaNew != null) {
+                idEmpresaNew = em.getReference(idEmpresaNew.getClass(), idEmpresaNew.getId());
+                tarefa.setIdEmpresa(idEmpresaNew);
             }
-            if (idtarefaproximaNew != null) {
-                idtarefaproximaNew = em.getReference(idtarefaproximaNew.getClass(), idtarefaproximaNew.getId());
-                tarefa.setIdtarefaproxima(idtarefaproximaNew);
+            if (empresaClienteNew != null) {
+                empresaClienteNew = em.getReference(empresaClienteNew.getClass(), empresaClienteNew.getId());
+                tarefa.setEmpresaCliente(empresaClienteNew);
             }
-            if (idtarefaanteriorNew != null) {
-                idtarefaanteriorNew = em.getReference(idtarefaanteriorNew.getClass(), idtarefaanteriorNew.getId());
-                tarefa.setIdtarefaanterior(idtarefaanteriorNew);
+            if (idTarefaPaiNew != null) {
+                idTarefaPaiNew = em.getReference(idTarefaPaiNew.getClass(), idTarefaPaiNew.getId());
+                tarefa.setIdTarefaPai(idTarefaPaiNew);
             }
-            if (idtarefapaiNew != null) {
-                idtarefapaiNew = em.getReference(idtarefapaiNew.getClass(), idtarefapaiNew.getId());
-                tarefa.setIdtarefapai(idtarefapaiNew);
+            if (idUsuarioInclusaoNew != null) {
+                idUsuarioInclusaoNew = em.getReference(idUsuarioInclusaoNew.getClass(), idUsuarioInclusaoNew.getId());
+                tarefa.setIdUsuarioInclusao(idUsuarioInclusaoNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                tarefa.setIdusuarioinclusao(idusuarioinclusaoNew);
+            if (idUsuarioSolicitanteNew != null) {
+                idUsuarioSolicitanteNew = em.getReference(idUsuarioSolicitanteNew.getClass(), idUsuarioSolicitanteNew.getId());
+                tarefa.setIdUsuarioSolicitante(idUsuarioSolicitanteNew);
             }
-            if (idusuariosolicitanteNew != null) {
-                idusuariosolicitanteNew = em.getReference(idusuariosolicitanteNew.getClass(), idusuariosolicitanteNew.getId());
-                tarefa.setIdusuariosolicitante(idusuariosolicitanteNew);
+            if (idUsuarioResponsavelNew != null) {
+                idUsuarioResponsavelNew = em.getReference(idUsuarioResponsavelNew.getClass(), idUsuarioResponsavelNew.getId());
+                tarefa.setIdUsuarioResponsavel(idUsuarioResponsavelNew);
             }
-            if (idusuarioresponsavelNew != null) {
-                idusuarioresponsavelNew = em.getReference(idusuarioresponsavelNew.getClass(), idusuarioresponsavelNew.getId());
-                tarefa.setIdusuarioresponsavel(idusuarioresponsavelNew);
+            if (statusNew != null) {
+                statusNew = em.getReference(statusNew.getClass(), statusNew.getStatustarefa());
+                tarefa.setStatus(statusNew);
             }
-            List<FavoritosTarefaMeta> attachedFavoritosTarefaMetaListNew = new ArrayList<FavoritosTarefaMeta>();
-            for (FavoritosTarefaMeta favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach : favoritosTarefaMetaListNew) {
-                favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach = em.getReference(favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach.getClass(), favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach.getId());
-                attachedFavoritosTarefaMetaListNew.add(favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach);
+            if (idProximaTarefaNew != null) {
+                idProximaTarefaNew = em.getReference(idProximaTarefaNew.getClass(), idProximaTarefaNew.getId());
+                tarefa.setIdProximaTarefa(idProximaTarefaNew);
             }
-            favoritosTarefaMetaListNew = attachedFavoritosTarefaMetaListNew;
-            tarefa.setFavoritosTarefaMetaList(favoritosTarefaMetaListNew);
-            List<Tarefa> attachedTarefaListNew = new ArrayList<Tarefa>();
-            for (Tarefa tarefaListNewTarefaToAttach : tarefaListNew) {
-                tarefaListNewTarefaToAttach = em.getReference(tarefaListNewTarefaToAttach.getClass(), tarefaListNewTarefaToAttach.getId());
-                attachedTarefaListNew.add(tarefaListNewTarefaToAttach);
+            if (tipoNew != null) {
+                tipoNew = em.getReference(tipoNew.getClass(), tipoNew.getTipotarefa());
+                tarefa.setTipo(tipoNew);
             }
-            tarefaListNew = attachedTarefaListNew;
-            tarefa.setTarefaList(tarefaListNew);
-            List<Tarefa> attachedTarefaList1New = new ArrayList<Tarefa>();
-            for (Tarefa tarefaList1NewTarefaToAttach : tarefaList1New) {
-                tarefaList1NewTarefaToAttach = em.getReference(tarefaList1NewTarefaToAttach.getClass(), tarefaList1NewTarefaToAttach.getId());
-                attachedTarefaList1New.add(tarefaList1NewTarefaToAttach);
+            List<FavoritosTarefaMeta> attachedFavoritadosNew = new ArrayList<FavoritosTarefaMeta>();
+            for (FavoritosTarefaMeta favoritadosNewFavoritosTarefaMetaToAttach : favoritadosNew) {
+                favoritadosNewFavoritosTarefaMetaToAttach = em.getReference(favoritadosNewFavoritosTarefaMetaToAttach.getClass(), favoritadosNewFavoritosTarefaMetaToAttach.getId());
+                attachedFavoritadosNew.add(favoritadosNewFavoritosTarefaMetaToAttach);
             }
-            tarefaList1New = attachedTarefaList1New;
-            tarefa.setTarefaList1(tarefaList1New);
-            List<Tarefa> attachedTarefaList2New = new ArrayList<Tarefa>();
-            for (Tarefa tarefaList2NewTarefaToAttach : tarefaList2New) {
-                tarefaList2NewTarefaToAttach = em.getReference(tarefaList2NewTarefaToAttach.getClass(), tarefaList2NewTarefaToAttach.getId());
-                attachedTarefaList2New.add(tarefaList2NewTarefaToAttach);
+            favoritadosNew = attachedFavoritadosNew;
+            tarefa.setFavoritados(favoritadosNew);
+            List<Tarefa> attachedSubTarefasNew = new ArrayList<Tarefa>();
+            for (Tarefa subTarefasNewTarefaToAttach : subTarefasNew) {
+                subTarefasNewTarefaToAttach = em.getReference(subTarefasNewTarefaToAttach.getClass(), subTarefasNewTarefaToAttach.getId());
+                attachedSubTarefasNew.add(subTarefasNewTarefaToAttach);
             }
-            tarefaList2New = attachedTarefaList2New;
-            tarefa.setTarefaList2(tarefaList2New);
-            List<ParicipanteTarefa> attachedParicipanteTarefaListNew = new ArrayList<ParicipanteTarefa>();
-            for (ParicipanteTarefa paricipanteTarefaListNewParicipanteTarefaToAttach : paricipanteTarefaListNew) {
-                paricipanteTarefaListNewParicipanteTarefaToAttach = em.getReference(paricipanteTarefaListNewParicipanteTarefaToAttach.getClass(), paricipanteTarefaListNewParicipanteTarefaToAttach.getId());
-                attachedParicipanteTarefaListNew.add(paricipanteTarefaListNewParicipanteTarefaToAttach);
+            subTarefasNew = attachedSubTarefasNew;
+            tarefa.setSubTarefas(subTarefasNew);
+            List<ParicipanteTarefa> attachedParicipantesNew = new ArrayList<ParicipanteTarefa>();
+            for (ParicipanteTarefa paricipantesNewParicipanteTarefaToAttach : paricipantesNew) {
+                paricipantesNewParicipanteTarefaToAttach = em.getReference(paricipantesNewParicipanteTarefaToAttach.getClass(), paricipantesNewParicipanteTarefaToAttach.getId());
+                attachedParicipantesNew.add(paricipantesNewParicipanteTarefaToAttach);
             }
-            paricipanteTarefaListNew = attachedParicipanteTarefaListNew;
-            tarefa.setParicipanteTarefaList(paricipanteTarefaListNew);
-            List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaListNew = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach : avaliacaoMetaTarefaListNew) {
-                avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach.getId());
-                attachedAvaliacaoMetaTarefaListNew.add(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach);
+            paricipantesNew = attachedParicipantesNew;
+            tarefa.setParicipantes(paricipantesNew);
+            List<AvaliacaoMetaTarefa> attachedAvaliacoesNew = new ArrayList<AvaliacaoMetaTarefa>();
+            for (AvaliacaoMetaTarefa avaliacoesNewAvaliacaoMetaTarefaToAttach : avaliacoesNew) {
+                avaliacoesNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesNewAvaliacaoMetaTarefaToAttach.getId());
+                attachedAvaliacoesNew.add(avaliacoesNewAvaliacaoMetaTarefaToAttach);
             }
-            avaliacaoMetaTarefaListNew = attachedAvaliacaoMetaTarefaListNew;
-            tarefa.setAvaliacaoMetaTarefaList(avaliacaoMetaTarefaListNew);
-            List<OrcamentoTarefa> attachedOrcamentoTarefaListNew = new ArrayList<OrcamentoTarefa>();
-            for (OrcamentoTarefa orcamentoTarefaListNewOrcamentoTarefaToAttach : orcamentoTarefaListNew) {
-                orcamentoTarefaListNewOrcamentoTarefaToAttach = em.getReference(orcamentoTarefaListNewOrcamentoTarefaToAttach.getClass(), orcamentoTarefaListNewOrcamentoTarefaToAttach.getId());
-                attachedOrcamentoTarefaListNew.add(orcamentoTarefaListNewOrcamentoTarefaToAttach);
+            avaliacoesNew = attachedAvaliacoesNew;
+            tarefa.setAvaliacoes(avaliacoesNew);
+            List<OrcamentoTarefa> attachedOrcamentosNew = new ArrayList<OrcamentoTarefa>();
+            for (OrcamentoTarefa orcamentosNewOrcamentoTarefaToAttach : orcamentosNew) {
+                orcamentosNewOrcamentoTarefaToAttach = em.getReference(orcamentosNewOrcamentoTarefaToAttach.getClass(), orcamentosNewOrcamentoTarefaToAttach.getId());
+                attachedOrcamentosNew.add(orcamentosNewOrcamentoTarefaToAttach);
             }
-            orcamentoTarefaListNew = attachedOrcamentoTarefaListNew;
-            tarefa.setOrcamentoTarefaList(orcamentoTarefaListNew);
+            orcamentosNew = attachedOrcamentosNew;
+            tarefa.setOrcamentos(orcamentosNew);
             List<ApontamentoTarefa> attachedApontamentoTarefaListNew = new ArrayList<ApontamentoTarefa>();
             for (ApontamentoTarefa apontamentoTarefaListNewApontamentoTarefaToAttach : apontamentoTarefaListNew) {
                 apontamentoTarefaListNewApontamentoTarefaToAttach = em.getReference(apontamentoTarefaListNewApontamentoTarefaToAttach.getClass(), apontamentoTarefaListNewApontamentoTarefaToAttach.getId());
@@ -514,196 +477,190 @@ public class TarefaDAO implements Serializable {
             }
             apontamentoTarefaListNew = attachedApontamentoTarefaListNew;
             tarefa.setApontamentoTarefaList(apontamentoTarefaListNew);
-            List<AnexoTarefa> attachedAnexoTarefaListNew = new ArrayList<AnexoTarefa>();
-            for (AnexoTarefa anexoTarefaListNewAnexoTarefaToAttach : anexoTarefaListNew) {
-                anexoTarefaListNewAnexoTarefaToAttach = em.getReference(anexoTarefaListNewAnexoTarefaToAttach.getClass(), anexoTarefaListNewAnexoTarefaToAttach.getId());
-                attachedAnexoTarefaListNew.add(anexoTarefaListNewAnexoTarefaToAttach);
+            List<AnexoTarefa> attachedAnexosNew = new ArrayList<AnexoTarefa>();
+            for (AnexoTarefa anexosNewAnexoTarefaToAttach : anexosNew) {
+                anexosNewAnexoTarefaToAttach = em.getReference(anexosNewAnexoTarefaToAttach.getClass(), anexosNewAnexoTarefaToAttach.getId());
+                attachedAnexosNew.add(anexosNewAnexoTarefaToAttach);
             }
-            anexoTarefaListNew = attachedAnexoTarefaListNew;
-            tarefa.setAnexoTarefaList(anexoTarefaListNew);
+            anexosNew = attachedAnexosNew;
+            tarefa.setAnexos(anexosNew);
             tarefa = em.merge(tarefa);
-            if (idcentrocustoOld != null && !idcentrocustoOld.equals(idcentrocustoNew)) {
-                idcentrocustoOld.getTarefaList().remove(tarefa);
-                idcentrocustoOld = em.merge(idcentrocustoOld);
+            if (prioridadeOld != null && !prioridadeOld.equals(prioridadeNew)) {
+                prioridadeOld.getTarefas().remove(tarefa);
+                prioridadeOld = em.merge(prioridadeOld);
             }
-            if (idcentrocustoNew != null && !idcentrocustoNew.equals(idcentrocustoOld)) {
-                idcentrocustoNew.getTarefaList().add(tarefa);
-                idcentrocustoNew = em.merge(idcentrocustoNew);
+            if (prioridadeNew != null && !prioridadeNew.equals(prioridadeOld)) {
+                prioridadeNew.getTarefas().add(tarefa);
+                prioridadeNew = em.merge(prioridadeNew);
             }
-            if (iddepartamentoOld != null && !iddepartamentoOld.equals(iddepartamentoNew)) {
-                iddepartamentoOld.getTarefaList().remove(tarefa);
-                iddepartamentoOld = em.merge(iddepartamentoOld);
+            if (idCentroCustoOld != null && !idCentroCustoOld.equals(idCentroCustoNew)) {
+                idCentroCustoOld.getTarefas().remove(tarefa);
+                idCentroCustoOld = em.merge(idCentroCustoOld);
             }
-            if (iddepartamentoNew != null && !iddepartamentoNew.equals(iddepartamentoOld)) {
-                iddepartamentoNew.getTarefaList().add(tarefa);
-                iddepartamentoNew = em.merge(iddepartamentoNew);
+            if (idCentroCustoNew != null && !idCentroCustoNew.equals(idCentroCustoOld)) {
+                idCentroCustoNew.getTarefas().add(tarefa);
+                idCentroCustoNew = em.merge(idCentroCustoNew);
             }
-            if (idempresaOld != null && !idempresaOld.equals(idempresaNew)) {
-                idempresaOld.getTarefaList().remove(tarefa);
-                idempresaOld = em.merge(idempresaOld);
+            if (idDepartamentoOld != null && !idDepartamentoOld.equals(idDepartamentoNew)) {
+                idDepartamentoOld.getTarefas().remove(tarefa);
+                idDepartamentoOld = em.merge(idDepartamentoOld);
             }
-            if (idempresaNew != null && !idempresaNew.equals(idempresaOld)) {
-                idempresaNew.getTarefaList().add(tarefa);
-                idempresaNew = em.merge(idempresaNew);
+            if (idDepartamentoNew != null && !idDepartamentoNew.equals(idDepartamentoOld)) {
+                idDepartamentoNew.getTarefas().add(tarefa);
+                idDepartamentoNew = em.merge(idDepartamentoNew);
             }
-            if (idempresaclienteOld != null && !idempresaclienteOld.equals(idempresaclienteNew)) {
-                idempresaclienteOld.getTarefaList().remove(tarefa);
-                idempresaclienteOld = em.merge(idempresaclienteOld);
+            if (idEmpresaOld != null && !idEmpresaOld.equals(idEmpresaNew)) {
+                idEmpresaOld.getTarefas().remove(tarefa);
+                idEmpresaOld = em.merge(idEmpresaOld);
             }
-            if (idempresaclienteNew != null && !idempresaclienteNew.equals(idempresaclienteOld)) {
-                idempresaclienteNew.getTarefaList().add(tarefa);
-                idempresaclienteNew = em.merge(idempresaclienteNew);
+            if (idEmpresaNew != null && !idEmpresaNew.equals(idEmpresaOld)) {
+                idEmpresaNew.getTarefas().add(tarefa);
+                idEmpresaNew = em.merge(idEmpresaNew);
             }
-            if (idtarefaproximaOld != null && !idtarefaproximaOld.equals(idtarefaproximaNew)) {
-                idtarefaproximaOld.getTarefaList().remove(tarefa);
-                idtarefaproximaOld = em.merge(idtarefaproximaOld);
+            if (empresaClienteOld != null && !empresaClienteOld.equals(empresaClienteNew)) {
+                empresaClienteOld.getTarefas().remove(tarefa);
+                empresaClienteOld = em.merge(empresaClienteOld);
             }
-            if (idtarefaproximaNew != null && !idtarefaproximaNew.equals(idtarefaproximaOld)) {
-                idtarefaproximaNew.getTarefaList().add(tarefa);
-                idtarefaproximaNew = em.merge(idtarefaproximaNew);
+            if (empresaClienteNew != null && !empresaClienteNew.equals(empresaClienteOld)) {
+                empresaClienteNew.getTarefas().add(tarefa);
+                empresaClienteNew = em.merge(empresaClienteNew);
             }
-            if (idtarefaanteriorOld != null && !idtarefaanteriorOld.equals(idtarefaanteriorNew)) {
-                idtarefaanteriorOld.getTarefaList().remove(tarefa);
-                idtarefaanteriorOld = em.merge(idtarefaanteriorOld);
+            if (idTarefaPaiOld != null && !idTarefaPaiOld.equals(idTarefaPaiNew)) {
+                idTarefaPaiOld.getSubTarefas().remove(tarefa);
+                idTarefaPaiOld = em.merge(idTarefaPaiOld);
             }
-            if (idtarefaanteriorNew != null && !idtarefaanteriorNew.equals(idtarefaanteriorOld)) {
-                idtarefaanteriorNew.getTarefaList().add(tarefa);
-                idtarefaanteriorNew = em.merge(idtarefaanteriorNew);
+            if (idTarefaPaiNew != null && !idTarefaPaiNew.equals(idTarefaPaiOld)) {
+                idTarefaPaiNew.getSubTarefas().add(tarefa);
+                idTarefaPaiNew = em.merge(idTarefaPaiNew);
             }
-            if (idtarefapaiOld != null && !idtarefapaiOld.equals(idtarefapaiNew)) {
-                idtarefapaiOld.getTarefaList().remove(tarefa);
-                idtarefapaiOld = em.merge(idtarefapaiOld);
+            if (idUsuarioInclusaoOld != null && !idUsuarioInclusaoOld.equals(idUsuarioInclusaoNew)) {
+                idUsuarioInclusaoOld.getTarefaList().remove(tarefa);
+                idUsuarioInclusaoOld = em.merge(idUsuarioInclusaoOld);
             }
-            if (idtarefapaiNew != null && !idtarefapaiNew.equals(idtarefapaiOld)) {
-                idtarefapaiNew.getTarefaList().add(tarefa);
-                idtarefapaiNew = em.merge(idtarefapaiNew);
+            if (idUsuarioInclusaoNew != null && !idUsuarioInclusaoNew.equals(idUsuarioInclusaoOld)) {
+                idUsuarioInclusaoNew.getTarefaList().add(tarefa);
+                idUsuarioInclusaoNew = em.merge(idUsuarioInclusaoNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getTarefaList().remove(tarefa);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (idUsuarioSolicitanteOld != null && !idUsuarioSolicitanteOld.equals(idUsuarioSolicitanteNew)) {
+                idUsuarioSolicitanteOld.getTarefaList().remove(tarefa);
+                idUsuarioSolicitanteOld = em.merge(idUsuarioSolicitanteOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getTarefaList().add(tarefa);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (idUsuarioSolicitanteNew != null && !idUsuarioSolicitanteNew.equals(idUsuarioSolicitanteOld)) {
+                idUsuarioSolicitanteNew.getTarefaList().add(tarefa);
+                idUsuarioSolicitanteNew = em.merge(idUsuarioSolicitanteNew);
             }
-            if (idusuariosolicitanteOld != null && !idusuariosolicitanteOld.equals(idusuariosolicitanteNew)) {
-                idusuariosolicitanteOld.getTarefaList().remove(tarefa);
-                idusuariosolicitanteOld = em.merge(idusuariosolicitanteOld);
+            if (idUsuarioResponsavelOld != null && !idUsuarioResponsavelOld.equals(idUsuarioResponsavelNew)) {
+                idUsuarioResponsavelOld.getTarefaList().remove(tarefa);
+                idUsuarioResponsavelOld = em.merge(idUsuarioResponsavelOld);
             }
-            if (idusuariosolicitanteNew != null && !idusuariosolicitanteNew.equals(idusuariosolicitanteOld)) {
-                idusuariosolicitanteNew.getTarefaList().add(tarefa);
-                idusuariosolicitanteNew = em.merge(idusuariosolicitanteNew);
+            if (idUsuarioResponsavelNew != null && !idUsuarioResponsavelNew.equals(idUsuarioResponsavelOld)) {
+                idUsuarioResponsavelNew.getTarefaList().add(tarefa);
+                idUsuarioResponsavelNew = em.merge(idUsuarioResponsavelNew);
             }
-            if (idusuarioresponsavelOld != null && !idusuarioresponsavelOld.equals(idusuarioresponsavelNew)) {
-                idusuarioresponsavelOld.getTarefaList().remove(tarefa);
-                idusuarioresponsavelOld = em.merge(idusuarioresponsavelOld);
+            if (statusOld != null && !statusOld.equals(statusNew)) {
+                statusOld.getTarefaSet().remove(tarefa);
+                statusOld = em.merge(statusOld);
             }
-            if (idusuarioresponsavelNew != null && !idusuarioresponsavelNew.equals(idusuarioresponsavelOld)) {
-                idusuarioresponsavelNew.getTarefaList().add(tarefa);
-                idusuarioresponsavelNew = em.merge(idusuarioresponsavelNew);
+            if (statusNew != null && !statusNew.equals(statusOld)) {
+                statusNew.getTarefaSet().add(tarefa);
+                statusNew = em.merge(statusNew);
             }
-            for (FavoritosTarefaMeta favoritosTarefaMetaListNewFavoritosTarefaMeta : favoritosTarefaMetaListNew) {
-                if (!favoritosTarefaMetaListOld.contains(favoritosTarefaMetaListNewFavoritosTarefaMeta)) {
-                    Tarefa oldIdtarefaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = favoritosTarefaMetaListNewFavoritosTarefaMeta.getIdtarefa();
-                    favoritosTarefaMetaListNewFavoritosTarefaMeta.setIdtarefa(tarefa);
-                    favoritosTarefaMetaListNewFavoritosTarefaMeta = em.merge(favoritosTarefaMetaListNewFavoritosTarefaMeta);
-                    if (oldIdtarefaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta != null && !oldIdtarefaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.equals(tarefa)) {
-                        oldIdtarefaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.getFavoritosTarefaMetaList().remove(favoritosTarefaMetaListNewFavoritosTarefaMeta);
-                        oldIdtarefaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = em.merge(oldIdtarefaOfFavoritosTarefaMetaListNewFavoritosTarefaMeta);
+            if (idProximaTarefaOld != null && !idProximaTarefaOld.equals(idProximaTarefaNew)) {
+                idProximaTarefaOld.getSubTarefas().remove(tarefa);
+                idProximaTarefaOld = em.merge(idProximaTarefaOld);
+            }
+            if (idProximaTarefaNew != null && !idProximaTarefaNew.equals(idProximaTarefaOld)) {
+                idProximaTarefaNew.getSubTarefas().add(tarefa);
+                idProximaTarefaNew = em.merge(idProximaTarefaNew);
+            }
+            if (tipoOld != null && !tipoOld.equals(tipoNew)) {
+                tipoOld.getTarefas().remove(tarefa);
+                tipoOld = em.merge(tipoOld);
+            }
+            if (tipoNew != null && !tipoNew.equals(tipoOld)) {
+                tipoNew.getTarefas().add(tarefa);
+                tipoNew = em.merge(tipoNew);
+            }
+            for (FavoritosTarefaMeta favoritadosNewFavoritosTarefaMeta : favoritadosNew) {
+                if (!favoritadosOld.contains(favoritadosNewFavoritosTarefaMeta)) {
+                    Tarefa oldIdTarefaOfFavoritadosNewFavoritosTarefaMeta = favoritadosNewFavoritosTarefaMeta.getIdTarefa();
+                    favoritadosNewFavoritosTarefaMeta.setIdTarefa(tarefa);
+                    favoritadosNewFavoritosTarefaMeta = em.merge(favoritadosNewFavoritosTarefaMeta);
+                    if (oldIdTarefaOfFavoritadosNewFavoritosTarefaMeta != null && !oldIdTarefaOfFavoritadosNewFavoritosTarefaMeta.equals(tarefa)) {
+                        oldIdTarefaOfFavoritadosNewFavoritosTarefaMeta.getFavoritados().remove(favoritadosNewFavoritosTarefaMeta);
+                        oldIdTarefaOfFavoritadosNewFavoritosTarefaMeta = em.merge(oldIdTarefaOfFavoritadosNewFavoritosTarefaMeta);
                     }
                 }
             }
-            for (Tarefa tarefaListNewTarefa : tarefaListNew) {
-                if (!tarefaListOld.contains(tarefaListNewTarefa)) {
-                    Tarefa oldIdtarefaproximaOfTarefaListNewTarefa = tarefaListNewTarefa.getIdtarefaproxima();
-                    tarefaListNewTarefa.setIdtarefaproxima(tarefa);
-                    tarefaListNewTarefa = em.merge(tarefaListNewTarefa);
-                    if (oldIdtarefaproximaOfTarefaListNewTarefa != null && !oldIdtarefaproximaOfTarefaListNewTarefa.equals(tarefa)) {
-                        oldIdtarefaproximaOfTarefaListNewTarefa.getTarefaList().remove(tarefaListNewTarefa);
-                        oldIdtarefaproximaOfTarefaListNewTarefa = em.merge(oldIdtarefaproximaOfTarefaListNewTarefa);
+            for (Tarefa subTarefasOldTarefa : subTarefasOld) {
+                if (!subTarefasNew.contains(subTarefasOldTarefa)) {
+                    subTarefasOldTarefa.setIdTarefaPai(null);
+                    subTarefasOldTarefa = em.merge(subTarefasOldTarefa);
+                }
+            }
+            for (Tarefa subTarefasNewTarefa : subTarefasNew) {
+                if (!subTarefasOld.contains(subTarefasNewTarefa)) {
+                    Tarefa oldIdTarefaPaiOfSubTarefasNewTarefa = subTarefasNewTarefa.getIdTarefaPai();
+                    subTarefasNewTarefa.setIdTarefaPai(tarefa);
+                    subTarefasNewTarefa = em.merge(subTarefasNewTarefa);
+                    if (oldIdTarefaPaiOfSubTarefasNewTarefa != null && !oldIdTarefaPaiOfSubTarefasNewTarefa.equals(tarefa)) {
+                        oldIdTarefaPaiOfSubTarefasNewTarefa.getSubTarefas().remove(subTarefasNewTarefa);
+                        oldIdTarefaPaiOfSubTarefasNewTarefa = em.merge(oldIdTarefaPaiOfSubTarefasNewTarefa);
                     }
                 }
             }
-            for (Tarefa tarefaList1NewTarefa : tarefaList1New) {
-                if (!tarefaList1Old.contains(tarefaList1NewTarefa)) {
-                    Tarefa oldIdtarefaanteriorOfTarefaList1NewTarefa = tarefaList1NewTarefa.getIdtarefaanterior();
-                    tarefaList1NewTarefa.setIdtarefaanterior(tarefa);
-                    tarefaList1NewTarefa = em.merge(tarefaList1NewTarefa);
-                    if (oldIdtarefaanteriorOfTarefaList1NewTarefa != null && !oldIdtarefaanteriorOfTarefaList1NewTarefa.equals(tarefa)) {
-                        oldIdtarefaanteriorOfTarefaList1NewTarefa.getTarefaList1().remove(tarefaList1NewTarefa);
-                        oldIdtarefaanteriorOfTarefaList1NewTarefa = em.merge(oldIdtarefaanteriorOfTarefaList1NewTarefa);
+            for (ParicipanteTarefa paricipantesNewParicipanteTarefa : paricipantesNew) {
+                if (!paricipantesOld.contains(paricipantesNewParicipanteTarefa)) {
+                    Tarefa oldIdTarefaOfParicipantesNewParicipanteTarefa = paricipantesNewParicipanteTarefa.getIdTarefa();
+                    paricipantesNewParicipanteTarefa.setIdTarefa(tarefa);
+                    paricipantesNewParicipanteTarefa = em.merge(paricipantesNewParicipanteTarefa);
+                    if (oldIdTarefaOfParicipantesNewParicipanteTarefa != null && !oldIdTarefaOfParicipantesNewParicipanteTarefa.equals(tarefa)) {
+                        oldIdTarefaOfParicipantesNewParicipanteTarefa.getParicipantes().remove(paricipantesNewParicipanteTarefa);
+                        oldIdTarefaOfParicipantesNewParicipanteTarefa = em.merge(oldIdTarefaOfParicipantesNewParicipanteTarefa);
                     }
                 }
             }
-            for (Tarefa tarefaList2OldTarefa : tarefaList2Old) {
-                if (!tarefaList2New.contains(tarefaList2OldTarefa)) {
-                    tarefaList2OldTarefa.setIdtarefapai(null);
-                    tarefaList2OldTarefa = em.merge(tarefaList2OldTarefa);
-                }
-            }
-            for (Tarefa tarefaList2NewTarefa : tarefaList2New) {
-                if (!tarefaList2Old.contains(tarefaList2NewTarefa)) {
-                    Tarefa oldIdtarefapaiOfTarefaList2NewTarefa = tarefaList2NewTarefa.getIdtarefapai();
-                    tarefaList2NewTarefa.setIdtarefapai(tarefa);
-                    tarefaList2NewTarefa = em.merge(tarefaList2NewTarefa);
-                    if (oldIdtarefapaiOfTarefaList2NewTarefa != null && !oldIdtarefapaiOfTarefaList2NewTarefa.equals(tarefa)) {
-                        oldIdtarefapaiOfTarefaList2NewTarefa.getTarefaList2().remove(tarefaList2NewTarefa);
-                        oldIdtarefapaiOfTarefaList2NewTarefa = em.merge(oldIdtarefapaiOfTarefaList2NewTarefa);
+            for (AvaliacaoMetaTarefa avaliacoesNewAvaliacaoMetaTarefa : avaliacoesNew) {
+                if (!avaliacoesOld.contains(avaliacoesNewAvaliacaoMetaTarefa)) {
+                    Tarefa oldIdTarefaOfAvaliacoesNewAvaliacaoMetaTarefa = avaliacoesNewAvaliacaoMetaTarefa.getIdTarefa();
+                    avaliacoesNewAvaliacaoMetaTarefa.setIdTarefa(tarefa);
+                    avaliacoesNewAvaliacaoMetaTarefa = em.merge(avaliacoesNewAvaliacaoMetaTarefa);
+                    if (oldIdTarefaOfAvaliacoesNewAvaliacaoMetaTarefa != null && !oldIdTarefaOfAvaliacoesNewAvaliacaoMetaTarefa.equals(tarefa)) {
+                        oldIdTarefaOfAvaliacoesNewAvaliacaoMetaTarefa.getAvaliacoes().remove(avaliacoesNewAvaliacaoMetaTarefa);
+                        oldIdTarefaOfAvaliacoesNewAvaliacaoMetaTarefa = em.merge(oldIdTarefaOfAvaliacoesNewAvaliacaoMetaTarefa);
                     }
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaListNewParicipanteTarefa : paricipanteTarefaListNew) {
-                if (!paricipanteTarefaListOld.contains(paricipanteTarefaListNewParicipanteTarefa)) {
-                    Tarefa oldIdtarefaOfParicipanteTarefaListNewParicipanteTarefa = paricipanteTarefaListNewParicipanteTarefa.getIdtarefa();
-                    paricipanteTarefaListNewParicipanteTarefa.setIdtarefa(tarefa);
-                    paricipanteTarefaListNewParicipanteTarefa = em.merge(paricipanteTarefaListNewParicipanteTarefa);
-                    if (oldIdtarefaOfParicipanteTarefaListNewParicipanteTarefa != null && !oldIdtarefaOfParicipanteTarefaListNewParicipanteTarefa.equals(tarefa)) {
-                        oldIdtarefaOfParicipanteTarefaListNewParicipanteTarefa.getParicipanteTarefaList().remove(paricipanteTarefaListNewParicipanteTarefa);
-                        oldIdtarefaOfParicipanteTarefaListNewParicipanteTarefa = em.merge(oldIdtarefaOfParicipanteTarefaListNewParicipanteTarefa);
-                    }
-                }
-            }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa : avaliacaoMetaTarefaListNew) {
-                if (!avaliacaoMetaTarefaListOld.contains(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa)) {
-                    Tarefa oldIdtarefaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getIdtarefa();
-                    avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.setIdtarefa(tarefa);
-                    avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
-                    if (oldIdtarefaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa != null && !oldIdtarefaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.equals(tarefa)) {
-                        oldIdtarefaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
-                        oldIdtarefaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = em.merge(oldIdtarefaOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
-                    }
-                }
-            }
-            for (OrcamentoTarefa orcamentoTarefaListNewOrcamentoTarefa : orcamentoTarefaListNew) {
-                if (!orcamentoTarefaListOld.contains(orcamentoTarefaListNewOrcamentoTarefa)) {
-                    Tarefa oldIdtarefaOfOrcamentoTarefaListNewOrcamentoTarefa = orcamentoTarefaListNewOrcamentoTarefa.getIdtarefa();
-                    orcamentoTarefaListNewOrcamentoTarefa.setIdtarefa(tarefa);
-                    orcamentoTarefaListNewOrcamentoTarefa = em.merge(orcamentoTarefaListNewOrcamentoTarefa);
-                    if (oldIdtarefaOfOrcamentoTarefaListNewOrcamentoTarefa != null && !oldIdtarefaOfOrcamentoTarefaListNewOrcamentoTarefa.equals(tarefa)) {
-                        oldIdtarefaOfOrcamentoTarefaListNewOrcamentoTarefa.getOrcamentoTarefaList().remove(orcamentoTarefaListNewOrcamentoTarefa);
-                        oldIdtarefaOfOrcamentoTarefaListNewOrcamentoTarefa = em.merge(oldIdtarefaOfOrcamentoTarefaListNewOrcamentoTarefa);
+            for (OrcamentoTarefa orcamentosNewOrcamentoTarefa : orcamentosNew) {
+                if (!orcamentosOld.contains(orcamentosNewOrcamentoTarefa)) {
+                    Tarefa oldIdTarefaOfOrcamentosNewOrcamentoTarefa = orcamentosNewOrcamentoTarefa.getIdTarefa();
+                    orcamentosNewOrcamentoTarefa.setIdTarefa(tarefa);
+                    orcamentosNewOrcamentoTarefa = em.merge(orcamentosNewOrcamentoTarefa);
+                    if (oldIdTarefaOfOrcamentosNewOrcamentoTarefa != null && !oldIdTarefaOfOrcamentosNewOrcamentoTarefa.equals(tarefa)) {
+                        oldIdTarefaOfOrcamentosNewOrcamentoTarefa.getOrcamentos().remove(orcamentosNewOrcamentoTarefa);
+                        oldIdTarefaOfOrcamentosNewOrcamentoTarefa = em.merge(oldIdTarefaOfOrcamentosNewOrcamentoTarefa);
                     }
                 }
             }
             for (ApontamentoTarefa apontamentoTarefaListNewApontamentoTarefa : apontamentoTarefaListNew) {
                 if (!apontamentoTarefaListOld.contains(apontamentoTarefaListNewApontamentoTarefa)) {
-                    Tarefa oldIdtarefaOfApontamentoTarefaListNewApontamentoTarefa = apontamentoTarefaListNewApontamentoTarefa.getIdTarefa();
+                    Tarefa oldIdTarefaOfApontamentoTarefaListNewApontamentoTarefa = apontamentoTarefaListNewApontamentoTarefa.getIdTarefa();
                     apontamentoTarefaListNewApontamentoTarefa.setIdTarefa(tarefa);
                     apontamentoTarefaListNewApontamentoTarefa = em.merge(apontamentoTarefaListNewApontamentoTarefa);
-                    if (oldIdtarefaOfApontamentoTarefaListNewApontamentoTarefa != null && !oldIdtarefaOfApontamentoTarefaListNewApontamentoTarefa.equals(tarefa)) {
-                        oldIdtarefaOfApontamentoTarefaListNewApontamentoTarefa.getApontamentoTarefaList().remove(apontamentoTarefaListNewApontamentoTarefa);
-                        oldIdtarefaOfApontamentoTarefaListNewApontamentoTarefa = em.merge(oldIdtarefaOfApontamentoTarefaListNewApontamentoTarefa);
+                    if (oldIdTarefaOfApontamentoTarefaListNewApontamentoTarefa != null && !oldIdTarefaOfApontamentoTarefaListNewApontamentoTarefa.equals(tarefa)) {
+                        oldIdTarefaOfApontamentoTarefaListNewApontamentoTarefa.getApontamentoTarefaList().remove(apontamentoTarefaListNewApontamentoTarefa);
+                        oldIdTarefaOfApontamentoTarefaListNewApontamentoTarefa = em.merge(oldIdTarefaOfApontamentoTarefaListNewApontamentoTarefa);
                     }
                 }
             }
-            for (AnexoTarefa anexoTarefaListNewAnexoTarefa : anexoTarefaListNew) {
-                if (!anexoTarefaListOld.contains(anexoTarefaListNewAnexoTarefa)) {
-                    Tarefa oldIdtarefaOfAnexoTarefaListNewAnexoTarefa = anexoTarefaListNewAnexoTarefa.getIdTarefa();
-                    anexoTarefaListNewAnexoTarefa.setIdTarefa(tarefa);
-                    anexoTarefaListNewAnexoTarefa = em.merge(anexoTarefaListNewAnexoTarefa);
-                    if (oldIdtarefaOfAnexoTarefaListNewAnexoTarefa != null && !oldIdtarefaOfAnexoTarefaListNewAnexoTarefa.equals(tarefa)) {
-                        oldIdtarefaOfAnexoTarefaListNewAnexoTarefa.getAnexoTarefaList().remove(anexoTarefaListNewAnexoTarefa);
-                        oldIdtarefaOfAnexoTarefaListNewAnexoTarefa = em.merge(oldIdtarefaOfAnexoTarefaListNewAnexoTarefa);
+            for (AnexoTarefa anexosNewAnexoTarefa : anexosNew) {
+                if (!anexosOld.contains(anexosNewAnexoTarefa)) {
+                    Tarefa oldIdTarefaOfAnexosNewAnexoTarefa = anexosNewAnexoTarefa.getIdTarefa();
+                    anexosNewAnexoTarefa.setIdTarefa(tarefa);
+                    anexosNewAnexoTarefa = em.merge(anexosNewAnexoTarefa);
+                    if (oldIdTarefaOfAnexosNewAnexoTarefa != null && !oldIdTarefaOfAnexosNewAnexoTarefa.equals(tarefa)) {
+                        oldIdTarefaOfAnexosNewAnexoTarefa.getAnexos().remove(anexosNewAnexoTarefa);
+                        oldIdTarefaOfAnexosNewAnexoTarefa = em.merge(oldIdTarefaOfAnexosNewAnexoTarefa);
                     }
                 }
             }
@@ -737,119 +694,115 @@ public class TarefaDAO implements Serializable {
                 throw new NonexistentEntityException("The tarefa with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListOrphanCheck = tarefa.getFavoritosTarefaMetaList();
-            for (FavoritosTarefaMeta favoritosTarefaMetaListOrphanCheckFavoritosTarefaMeta : favoritosTarefaMetaListOrphanCheck) {
+            List<FavoritosTarefaMeta> favoritadosOrphanCheck = tarefa.getFavoritados();
+            for (FavoritosTarefaMeta favoritadosOrphanCheckFavoritosTarefaMeta : favoritadosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the FavoritosTarefaMeta " + favoritosTarefaMetaListOrphanCheckFavoritosTarefaMeta + " in its favoritosTarefaMetaList field has a non-nullable idtarefa field.");
+                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the FavoritosTarefaMeta " + favoritadosOrphanCheckFavoritosTarefaMeta + " in its favoritados field has a non-nullable idTarefa field.");
             }
-            List<Tarefa> tarefaListOrphanCheck = tarefa.getTarefaList();
-            for (Tarefa tarefaListOrphanCheckTarefa : tarefaListOrphanCheck) {
+            List<ParicipanteTarefa> paricipantesOrphanCheck = tarefa.getParicipantes();
+            for (ParicipanteTarefa paricipantesOrphanCheckParicipanteTarefa : paricipantesOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the Tarefa " + tarefaListOrphanCheckTarefa + " in its tarefaList field has a non-nullable idtarefaproxima field.");
+                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the ParicipanteTarefa " + paricipantesOrphanCheckParicipanteTarefa + " in its paricipantes field has a non-nullable idTarefa field.");
             }
-            List<Tarefa> tarefaList1OrphanCheck = tarefa.getTarefaList1();
-            for (Tarefa tarefaList1OrphanCheckTarefa : tarefaList1OrphanCheck) {
+            List<AvaliacaoMetaTarefa> avaliacoesOrphanCheck = tarefa.getAvaliacoes();
+            for (AvaliacaoMetaTarefa avaliacoesOrphanCheckAvaliacaoMetaTarefa : avaliacoesOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the Tarefa " + tarefaList1OrphanCheckTarefa + " in its tarefaList1 field has a non-nullable idtarefaanterior field.");
+                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the AvaliacaoMetaTarefa " + avaliacoesOrphanCheckAvaliacaoMetaTarefa + " in its avaliacoes field has a non-nullable idTarefa field.");
             }
-            List<ParicipanteTarefa> paricipanteTarefaListOrphanCheck = tarefa.getParicipanteTarefaList();
-            for (ParicipanteTarefa paricipanteTarefaListOrphanCheckParicipanteTarefa : paricipanteTarefaListOrphanCheck) {
+            List<OrcamentoTarefa> orcamentosOrphanCheck = tarefa.getOrcamentos();
+            for (OrcamentoTarefa orcamentosOrphanCheckOrcamentoTarefa : orcamentosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the ParicipanteTarefa " + paricipanteTarefaListOrphanCheckParicipanteTarefa + " in its paricipanteTarefaList field has a non-nullable idtarefa field.");
-            }
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListOrphanCheck = tarefa.getAvaliacaoMetaTarefaList();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListOrphanCheckAvaliacaoMetaTarefa : avaliacaoMetaTarefaListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the AvaliacaoMetaTarefa " + avaliacaoMetaTarefaListOrphanCheckAvaliacaoMetaTarefa + " in its avaliacaoMetaTarefaList field has a non-nullable idtarefa field.");
-            }
-            List<OrcamentoTarefa> orcamentoTarefaListOrphanCheck = tarefa.getOrcamentoTarefaList();
-            for (OrcamentoTarefa orcamentoTarefaListOrphanCheckOrcamentoTarefa : orcamentoTarefaListOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the OrcamentoTarefa " + orcamentoTarefaListOrphanCheckOrcamentoTarefa + " in its orcamentoTarefaList field has a non-nullable idtarefa field.");
+                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the OrcamentoTarefa " + orcamentosOrphanCheckOrcamentoTarefa + " in its orcamentos field has a non-nullable idTarefa field.");
             }
             List<ApontamentoTarefa> apontamentoTarefaListOrphanCheck = tarefa.getApontamentoTarefaList();
             for (ApontamentoTarefa apontamentoTarefaListOrphanCheckApontamentoTarefa : apontamentoTarefaListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the ApontamentoTarefa " + apontamentoTarefaListOrphanCheckApontamentoTarefa + " in its apontamentoTarefaList field has a non-nullable idtarefa field.");
+                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the ApontamentoTarefa " + apontamentoTarefaListOrphanCheckApontamentoTarefa + " in its apontamentoTarefaList field has a non-nullable idTarefa field.");
             }
-            List<AnexoTarefa> anexoTarefaListOrphanCheck = tarefa.getAnexoTarefaList();
-            for (AnexoTarefa anexoTarefaListOrphanCheckAnexoTarefa : anexoTarefaListOrphanCheck) {
+            List<AnexoTarefa> anexosOrphanCheck = tarefa.getAnexos();
+            for (AnexoTarefa anexosOrphanCheckAnexoTarefa : anexosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the AnexoTarefa " + anexoTarefaListOrphanCheckAnexoTarefa + " in its anexoTarefaList field has a non-nullable idtarefa field.");
+                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the AnexoTarefa " + anexosOrphanCheckAnexoTarefa + " in its anexos field has a non-nullable idTarefa field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            CentroCusto idcentrocusto = tarefa.getIdcentrocusto();
-            if (idcentrocusto != null) {
-                idcentrocusto.getTarefaList().remove(tarefa);
-                idcentrocusto = em.merge(idcentrocusto);
+            PrioridadeTarefa prioridade = tarefa.getPrioridade();
+            if (prioridade != null) {
+                prioridade.getTarefas().remove(tarefa);
+                prioridade = em.merge(prioridade);
             }
-            Departamento iddepartamento = tarefa.getIddepartamento();
-            if (iddepartamento != null) {
-                iddepartamento.getTarefaList().remove(tarefa);
-                iddepartamento = em.merge(iddepartamento);
+            CentroCusto idCentroCusto = tarefa.getIdCentroCusto();
+            if (idCentroCusto != null) {
+                idCentroCusto.getTarefas().remove(tarefa);
+                idCentroCusto = em.merge(idCentroCusto);
             }
-            Empresa idempresa = tarefa.getIdempresa();
-            if (idempresa != null) {
-                idempresa.getTarefaList().remove(tarefa);
-                idempresa = em.merge(idempresa);
+            Departamento idDepartamento = tarefa.getIdDepartamento();
+            if (idDepartamento != null) {
+                idDepartamento.getTarefas().remove(tarefa);
+                idDepartamento = em.merge(idDepartamento);
             }
-            EmpresaCliente idempresacliente = tarefa.getIdempresacliente();
-            if (idempresacliente != null) {
-                idempresacliente.getTarefaList().remove(tarefa);
-                idempresacliente = em.merge(idempresacliente);
+            Empresa idEmpresa = tarefa.getIdEmpresa();
+            if (idEmpresa != null) {
+                idEmpresa.getTarefas().remove(tarefa);
+                idEmpresa = em.merge(idEmpresa);
             }
-            Tarefa idtarefaproxima = tarefa.getIdtarefaproxima();
-            if (idtarefaproxima != null) {
-                idtarefaproxima.getTarefaList().remove(tarefa);
-                idtarefaproxima = em.merge(idtarefaproxima);
+            EmpresaCliente empresaCliente = tarefa.getEmpresaCliente();
+            if (empresaCliente != null) {
+                empresaCliente.getTarefas().remove(tarefa);
+                empresaCliente = em.merge(empresaCliente);
             }
-            Tarefa idtarefaanterior = tarefa.getIdtarefaanterior();
-            if (idtarefaanterior != null) {
-                idtarefaanterior.getTarefaList().remove(tarefa);
-                idtarefaanterior = em.merge(idtarefaanterior);
+            Tarefa idTarefaPai = tarefa.getIdTarefaPai();
+            if (idTarefaPai != null) {
+                idTarefaPai.getSubTarefas().remove(tarefa);
+                idTarefaPai = em.merge(idTarefaPai);
             }
-            Tarefa idtarefapai = tarefa.getIdtarefapai();
-            if (idtarefapai != null) {
-                idtarefapai.getTarefaList().remove(tarefa);
-                idtarefapai = em.merge(idtarefapai);
+            Usuario idUsuarioInclusao = tarefa.getIdUsuarioInclusao();
+            if (idUsuarioInclusao != null) {
+                idUsuarioInclusao.getTarefaList().remove(tarefa);
+                idUsuarioInclusao = em.merge(idUsuarioInclusao);
             }
-            Usuario idusuarioinclusao = tarefa.getIdusuarioinclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getTarefaList().remove(tarefa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario idUsuarioSolicitante = tarefa.getIdUsuarioSolicitante();
+            if (idUsuarioSolicitante != null) {
+                idUsuarioSolicitante.getTarefaList().remove(tarefa);
+                idUsuarioSolicitante = em.merge(idUsuarioSolicitante);
             }
-            Usuario idusuariosolicitante = tarefa.getIdusuariosolicitante();
-            if (idusuariosolicitante != null) {
-                idusuariosolicitante.getTarefaList().remove(tarefa);
-                idusuariosolicitante = em.merge(idusuariosolicitante);
+            Usuario idUsuarioResponsavel = tarefa.getIdUsuarioResponsavel();
+            if (idUsuarioResponsavel != null) {
+                idUsuarioResponsavel.getTarefaList().remove(tarefa);
+                idUsuarioResponsavel = em.merge(idUsuarioResponsavel);
             }
-            Usuario idusuarioresponsavel = tarefa.getIdusuarioresponsavel();
-            if (idusuarioresponsavel != null) {
-                idusuarioresponsavel.getTarefaList().remove(tarefa);
-                idusuarioresponsavel = em.merge(idusuarioresponsavel);
+            StatusTarefa status = tarefa.getStatus();
+            if (status != null) {
+                status.getTarefaSet().remove(tarefa);
+                status = em.merge(status);
             }
-            List<Tarefa> tarefaList2 = tarefa.getTarefaList2();
-            for (Tarefa tarefaList2Tarefa : tarefaList2) {
-                tarefaList2Tarefa.setIdtarefapai(null);
-                tarefaList2Tarefa = em.merge(tarefaList2Tarefa);
+            Tarefa idProximaTarefa = tarefa.getIdProximaTarefa();
+            if (idProximaTarefa != null) {
+                idProximaTarefa.getSubTarefas().remove(tarefa);
+                idProximaTarefa = em.merge(idProximaTarefa);
+            }
+            TipoTarefa tipo = tarefa.getTipo();
+            if (tipo != null) {
+                tipo.getTarefas().remove(tarefa);
+                tipo = em.merge(tipo);
+            }
+            List<Tarefa> subTarefas = tarefa.getSubTarefas();
+            for (Tarefa subTarefasTarefa : subTarefas) {
+                subTarefasTarefa.setIdTarefaPai(null);
+                subTarefasTarefa = em.merge(subTarefasTarefa);
             }
             em.remove(tarefa);
             em.getTransaction().commit();

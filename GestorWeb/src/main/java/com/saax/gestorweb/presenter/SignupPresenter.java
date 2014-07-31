@@ -441,11 +441,19 @@ public class SignupPresenter implements SignupViewListener {
         }
         //
                                        
+        Button removerUsuarioButton = new Button("Remover");
+        removerUsuarioButton.addClickListener((Button.ClickEvent event) -> {
+            // pegar a linha do evento
+            // solicitar confirmação do usuario para remover
+            // remover o elemento
+            
+        });
         
-        view.getUsuariosTable().addItem(new Object[] {nomeUsuario,sobrenomeUsuario,email, Adm, new Button("Remover")}, new Integer(1));
+        view.getUsuariosTable().addItem(new Object[] {nomeUsuario,sobrenomeUsuario,email, Adm, removerUsuarioButton}, new Integer(1));
        
          
     }
+    
     
      /**
      * Evento disparado ao ser acionado o botão para efetuar a inclusão das Coligadas na grid 

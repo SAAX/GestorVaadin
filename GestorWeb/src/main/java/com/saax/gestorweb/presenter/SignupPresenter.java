@@ -11,6 +11,7 @@ import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import java.util.HashSet;
@@ -440,7 +441,8 @@ public class SignupPresenter implements SignupViewListener {
         }
         //
                                        
-        view.getUsuariosTable().addItem(new Object[] {1, nomeUsuario,sobrenomeUsuario,email, Adm, "Editar", "Remover"}, new Integer(1));
+        
+        view.getUsuariosTable().addItem(new Object[] {nomeUsuario,sobrenomeUsuario,email, Adm, new Button("Remover")}, new Integer(1));
        
          
     }
@@ -449,12 +451,13 @@ public class SignupPresenter implements SignupViewListener {
      * Evento disparado ao ser acionado o botão para efetuar a inclusão das Coligadas na grid 
      * Obtém o nome, sobrenome e e-mail
      */
-    //@Override
+    @Override
     public void incluirColigadas() {
         
         String nomeColigada = view.getNomeColigadaTextField().getValue();
         String cnpjColigada = view.getCnpjColigadaTextField().getValue();
-       
+        
+            
                                        
         view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada,"Editar", "Remover"}, new Integer(1));
        
@@ -465,7 +468,7 @@ public class SignupPresenter implements SignupViewListener {
      * Evento disparado ao ser acionado o botão para efetuar a inclusão das Coligadas na grid 
      * Obtém o nome, sobrenome e e-mail
      */
-    //@Override
+    @Override
     public void incluirFiliais() {
         
         String nomeFilial = view.getNomeFilialTextField().getValue();

@@ -9,6 +9,8 @@ public interface SignupViewListener {
 
     public void cancelButtonClicked();
     public void incluirUsuario();
+    public void incluirColigadas();
+    public void incluirFiliais();
     public void okButtonClicked();
     
 }

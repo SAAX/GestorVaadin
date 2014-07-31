@@ -265,8 +265,8 @@ public class SignupView extends Window {
         containerAba3.addComponent(containerHorizontal1); // adiciona o container de datas no superior
 
         setTipoPessoaOptionGroup(new OptionGroup());
-        tipoPessoaOptionGroup.addItem("Pessoa FÃ­sica");
-        tipoPessoaOptionGroup.addItem("Pessoa JurÃ­dica");
+        tipoPessoaOptionGroup.addItem("Pessoa Física");
+        tipoPessoaOptionGroup.addItem("Pessoa Jurídica");
         containerHorizontal1.addComponent(tipoPessoaOptionGroup);
         
         
@@ -370,9 +370,14 @@ public class SignupView extends Window {
         containerAba5.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
         // botÃ£o para Confirmar
-        final Button adicionarColigadaButton = new Button(getMensagens().getString("SignupView.adicionarColigadaButton.label"), (Button.ClickEvent event) -> {
-            getListener().okButtonClicked();
+        final Button adicionarColigadaButton = new Button(getMensagens().getString("SignupView.adicionarColigadaButton.label"), new Button.ClickListener() {
+             @Override
+            public void buttonClick(Button.ClickEvent event) {
+               listener.incluirColigadas();
+            }
         });
+        
+        
         
         containerHorizontal.addComponent(adicionarColigadaButton);
         adicionarColigadaButton.addStyleName("small default");
@@ -415,9 +420,15 @@ public class SignupView extends Window {
        
         
         // botÃ£o para Confirmar
-        final Button adicionarFilialButton = new Button(getMensagens().getString("SignupView.adicionarFilialButton.label"), (Button.ClickEvent event) -> {
-            getListener().okButtonClicked();
+        final Button adicionarFilialButton = new Button(getMensagens().getString("SignupView.adicionarFilialButton.label"), new Button.ClickListener() {
+             @Override
+            public void buttonClick(Button.ClickEvent event) {
+               listener.incluirFiliais();
+            }
         });
+        
+              
+          
         
        
         
@@ -432,7 +443,6 @@ public class SignupView extends Window {
        
         filiaisTable.addContainerProperty("Nome", String.class, null);
         filiaisTable.addContainerProperty("CNPJ", String.class, null);
-        filiaisTable.addContainerProperty("Ativa", String.class, null);
         filiaisTable.addContainerProperty("Editar", String.class, null);
         filiaisTable.addContainerProperty("Remover", String.class, null);
         
@@ -503,13 +513,13 @@ public class SignupView extends Window {
         containerAba4.addComponent(usuariosTable);
         usuariosTable.setHeight("150px");
         
-        usuariosTable.addContainerProperty("Cod", Integer.class, null);
+        
         usuariosTable.addContainerProperty("Nome", String.class, null);
         usuariosTable.addContainerProperty("Sobrenome", String.class, null);
         usuariosTable.addContainerProperty("E-mail", String.class, null);
         usuariosTable.addContainerProperty("Administrador", String.class, null);
-        usuariosTable.addContainerProperty("Editar", String.class, null);
-        usuariosTable.addContainerProperty("Remover", String.class, null);
+        //usuariosTable.addContainerProperty("Editar", Button.class, null);
+        usuariosTable.addContainerProperty("Remover", Button.class, null);
           
          
         return containerAba4;

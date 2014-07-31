@@ -35,33 +35,33 @@ public class FavoritosTarefaMetaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Meta idmeta = favoritosTarefaMeta.getIdMeta();
-            if (idmeta != null) {
-                idmeta = em.getReference(idmeta.getClass(), idmeta.getId());
-                favoritosTarefaMeta.setIdMeta(idmeta);
+            Meta meta = favoritosTarefaMeta.getMeta();
+            if (meta != null) {
+                meta = em.getReference(meta.getClass(), meta.getId());
+                favoritosTarefaMeta.setMeta(meta);
             }
-            Tarefa idtarefa = favoritosTarefaMeta.getIdTarefa();
-            if (idtarefa != null) {
-                idtarefa = em.getReference(idtarefa.getClass(), idtarefa.getId());
-                favoritosTarefaMeta.setIdTarefa(idtarefa);
+            Tarefa tarefa = favoritosTarefaMeta.getTarefa();
+            if (tarefa != null) {
+                tarefa = em.getReference(tarefa.getClass(), tarefa.getId());
+                favoritosTarefaMeta.setTarefa(tarefa);
             }
-            Usuario idusuarioinclusao = favoritosTarefaMeta.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                favoritosTarefaMeta.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = favoritosTarefaMeta.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                favoritosTarefaMeta.setUsuarioInclusao(usuarioInclusao);
             }
             em.persist(favoritosTarefaMeta);
-            if (idmeta != null) {
-                idmeta.getFavoritados().add(favoritosTarefaMeta);
-                idmeta = em.merge(idmeta);
+            if (meta != null) {
+                meta.getFavoritados().add(favoritosTarefaMeta);
+                meta = em.merge(meta);
             }
-            if (idtarefa != null) {
-                idtarefa.getFavoritados().add(favoritosTarefaMeta);
-                idtarefa = em.merge(idtarefa);
+            if (tarefa != null) {
+                tarefa.getFavoritados().add(favoritosTarefaMeta);
+                tarefa = em.merge(tarefa);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getFavoritosTarefaMetaList().add(favoritosTarefaMeta);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getFavoritosIncluidos().add(favoritosTarefaMeta);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             em.getTransaction().commit();
         } finally {
@@ -77,48 +77,48 @@ public class FavoritosTarefaMetaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             FavoritosTarefaMeta persistentFavoritosTarefaMeta = em.find(FavoritosTarefaMeta.class, favoritosTarefaMeta.getId());
-            Meta idmetaOld = persistentFavoritosTarefaMeta.getIdMeta();
-            Meta idmetaNew = favoritosTarefaMeta.getIdMeta();
-            Tarefa idtarefaOld = persistentFavoritosTarefaMeta.getIdTarefa();
-            Tarefa idtarefaNew = favoritosTarefaMeta.getIdTarefa();
-            Usuario idusuarioinclusaoOld = persistentFavoritosTarefaMeta.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = favoritosTarefaMeta.getIdUsuarioInclusao();
-            if (idmetaNew != null) {
-                idmetaNew = em.getReference(idmetaNew.getClass(), idmetaNew.getId());
-                favoritosTarefaMeta.setIdMeta(idmetaNew);
+            Meta metaOld = persistentFavoritosTarefaMeta.getMeta();
+            Meta metaNew = favoritosTarefaMeta.getMeta();
+            Tarefa tarefaOld = persistentFavoritosTarefaMeta.getTarefa();
+            Tarefa tarefaNew = favoritosTarefaMeta.getTarefa();
+            Usuario usuarioInclusaoOld = persistentFavoritosTarefaMeta.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = favoritosTarefaMeta.getUsuarioInclusao();
+            if (metaNew != null) {
+                metaNew = em.getReference(metaNew.getClass(), metaNew.getId());
+                favoritosTarefaMeta.setMeta(metaNew);
             }
-            if (idtarefaNew != null) {
-                idtarefaNew = em.getReference(idtarefaNew.getClass(), idtarefaNew.getId());
-                favoritosTarefaMeta.setIdTarefa(idtarefaNew);
+            if (tarefaNew != null) {
+                tarefaNew = em.getReference(tarefaNew.getClass(), tarefaNew.getId());
+                favoritosTarefaMeta.setTarefa(tarefaNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                favoritosTarefaMeta.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                favoritosTarefaMeta.setUsuarioInclusao(usuarioInclusaoNew);
             }
             favoritosTarefaMeta = em.merge(favoritosTarefaMeta);
-            if (idmetaOld != null && !idmetaOld.equals(idmetaNew)) {
-                idmetaOld.getFavoritados().remove(favoritosTarefaMeta);
-                idmetaOld = em.merge(idmetaOld);
+            if (metaOld != null && !metaOld.equals(metaNew)) {
+                metaOld.getFavoritados().remove(favoritosTarefaMeta);
+                metaOld = em.merge(metaOld);
             }
-            if (idmetaNew != null && !idmetaNew.equals(idmetaOld)) {
-                idmetaNew.getFavoritados().add(favoritosTarefaMeta);
-                idmetaNew = em.merge(idmetaNew);
+            if (metaNew != null && !metaNew.equals(metaOld)) {
+                metaNew.getFavoritados().add(favoritosTarefaMeta);
+                metaNew = em.merge(metaNew);
             }
-            if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getFavoritados().remove(favoritosTarefaMeta);
-                idtarefaOld = em.merge(idtarefaOld);
+            if (tarefaOld != null && !tarefaOld.equals(tarefaNew)) {
+                tarefaOld.getFavoritados().remove(favoritosTarefaMeta);
+                tarefaOld = em.merge(tarefaOld);
             }
-            if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getFavoritados().add(favoritosTarefaMeta);
-                idtarefaNew = em.merge(idtarefaNew);
+            if (tarefaNew != null && !tarefaNew.equals(tarefaOld)) {
+                tarefaNew.getFavoritados().add(favoritosTarefaMeta);
+                tarefaNew = em.merge(tarefaNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getFavoritosTarefaMetaList().remove(favoritosTarefaMeta);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getFavoritosIncluidos().remove(favoritosTarefaMeta);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getFavoritosTarefaMetaList().add(favoritosTarefaMeta);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getFavoritosIncluidos().add(favoritosTarefaMeta);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -149,20 +149,20 @@ public class FavoritosTarefaMetaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The favoritosTarefaMeta with id " + id + " no longer exists.", enfe);
             }
-            Meta idmeta = favoritosTarefaMeta.getIdMeta();
-            if (idmeta != null) {
-                idmeta.getFavoritados().remove(favoritosTarefaMeta);
-                idmeta = em.merge(idmeta);
+            Meta meta = favoritosTarefaMeta.getMeta();
+            if (meta != null) {
+                meta.getFavoritados().remove(favoritosTarefaMeta);
+                meta = em.merge(meta);
             }
-            Tarefa idtarefa = favoritosTarefaMeta.getIdTarefa();
-            if (idtarefa != null) {
-                idtarefa.getFavoritados().remove(favoritosTarefaMeta);
-                idtarefa = em.merge(idtarefa);
+            Tarefa tarefa = favoritosTarefaMeta.getTarefa();
+            if (tarefa != null) {
+                tarefa.getFavoritados().remove(favoritosTarefaMeta);
+                tarefa = em.merge(tarefa);
             }
-            Usuario idusuarioinclusao = favoritosTarefaMeta.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getFavoritosTarefaMetaList().remove(favoritosTarefaMeta);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = favoritosTarefaMeta.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getFavoritosIncluidos().remove(favoritosTarefaMeta);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             em.remove(favoritosTarefaMeta);
             em.getTransaction().commit();

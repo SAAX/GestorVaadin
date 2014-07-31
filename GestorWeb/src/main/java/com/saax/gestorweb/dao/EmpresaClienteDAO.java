@@ -55,10 +55,10 @@ public class EmpresaClienteDAO implements Serializable {
                 endereco = em.getReference(endereco.getClass(), endereco.getId());
                 empresaCliente.setEndereco(endereco);
             }
-            Usuario idUsuarioInclusao = empresaCliente.getIdUsuarioInclusao();
+            Usuario idUsuarioInclusao = empresaCliente.getUsuarioInclusao();
             if (idUsuarioInclusao != null) {
                 idUsuarioInclusao = em.getReference(idUsuarioInclusao.getClass(), idUsuarioInclusao.getId());
-                empresaCliente.setIdUsuarioInclusao(idUsuarioInclusao);
+                empresaCliente.setUsuarioInclusao(idUsuarioInclusao);
             }
             List<FilialCliente> attachedFiliais = new ArrayList<FilialCliente>();
             for (FilialCliente filiaisFilialClienteToAttach : empresaCliente.getFiliais()) {
@@ -82,7 +82,7 @@ public class EmpresaClienteDAO implements Serializable {
                 endereco = em.merge(endereco);
             }
             if (idUsuarioInclusao != null) {
-                idUsuarioInclusao.getEmpresaClienteList().add(empresaCliente);
+                idUsuarioInclusao.getEmpresasClienteIncluidas().add(empresaCliente);
                 idUsuarioInclusao = em.merge(idUsuarioInclusao);
             }
             for (FilialCliente filiaisFilialCliente : empresaCliente.getFiliais()) {
@@ -121,8 +121,8 @@ public class EmpresaClienteDAO implements Serializable {
             Empresa empresaNew = empresaCliente.getEmpresa();
             Endereco enderecoOld = persistentEmpresaCliente.getEndereco();
             Endereco enderecoNew = empresaCliente.getEndereco();
-            Usuario idUsuarioInclusaoOld = persistentEmpresaCliente.getIdUsuarioInclusao();
-            Usuario idUsuarioInclusaoNew = empresaCliente.getIdUsuarioInclusao();
+            Usuario idUsuarioInclusaoOld = persistentEmpresaCliente.getUsuarioInclusao();
+            Usuario idUsuarioInclusaoNew = empresaCliente.getUsuarioInclusao();
             List<FilialCliente> filiaisOld = persistentEmpresaCliente.getFiliais();
             List<FilialCliente> filiaisNew = empresaCliente.getFiliais();
             List<Tarefa> tarefasOld = persistentEmpresaCliente.getTarefas();
@@ -149,7 +149,7 @@ public class EmpresaClienteDAO implements Serializable {
             }
             if (idUsuarioInclusaoNew != null) {
                 idUsuarioInclusaoNew = em.getReference(idUsuarioInclusaoNew.getClass(), idUsuarioInclusaoNew.getId());
-                empresaCliente.setIdUsuarioInclusao(idUsuarioInclusaoNew);
+                empresaCliente.setUsuarioInclusao(idUsuarioInclusaoNew);
             }
             List<FilialCliente> attachedFiliaisNew = new ArrayList<FilialCliente>();
             for (FilialCliente filiaisNewFilialClienteToAttach : filiaisNew) {
@@ -183,11 +183,11 @@ public class EmpresaClienteDAO implements Serializable {
                 enderecoNew = em.merge(enderecoNew);
             }
             if (idUsuarioInclusaoOld != null && !idUsuarioInclusaoOld.equals(idUsuarioInclusaoNew)) {
-                idUsuarioInclusaoOld.getEmpresaClienteList().remove(empresaCliente);
+                idUsuarioInclusaoOld.getEmpresasClienteIncluidas().remove(empresaCliente);
                 idUsuarioInclusaoOld = em.merge(idUsuarioInclusaoOld);
             }
             if (idUsuarioInclusaoNew != null && !idUsuarioInclusaoNew.equals(idUsuarioInclusaoOld)) {
-                idUsuarioInclusaoNew.getEmpresaClienteList().add(empresaCliente);
+                idUsuarioInclusaoNew.getEmpresasClienteIncluidas().add(empresaCliente);
                 idUsuarioInclusaoNew = em.merge(idUsuarioInclusaoNew);
             }
             for (FilialCliente filiaisNewFilialCliente : filiaisNew) {
@@ -268,9 +268,9 @@ public class EmpresaClienteDAO implements Serializable {
                 endereco.getEmpresasCliente().remove(empresaCliente);
                 endereco = em.merge(endereco);
             }
-            Usuario idUsuarioInclusao = empresaCliente.getIdUsuarioInclusao();
+            Usuario idUsuarioInclusao = empresaCliente.getUsuarioInclusao();
             if (idUsuarioInclusao != null) {
-                idUsuarioInclusao.getEmpresaClienteList().remove(empresaCliente);
+                idUsuarioInclusao.getEmpresasClienteIncluidas().remove(empresaCliente);
                 idUsuarioInclusao = em.merge(idUsuarioInclusao);
             }
             List<Tarefa> tarefas = empresaCliente.getTarefas();

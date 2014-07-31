@@ -50,77 +50,77 @@ public class UsuarioDAO implements Serializable {
         if (usuario.getEmpresas() == null) {
             usuario.setEmpresas(new ArrayList<UsuarioEmpresa>());
         }
-        if (usuario.getMetasResponsaveis() == null) {
-            usuario.setMetasResponsaveis(new ArrayList<Meta>());
+        if (usuario.getMetasSobResponsabilidade() == null) {
+            usuario.setMetasSobResponsabilidade(new ArrayList<Meta>());
         }
-        if (usuario.getFavoritosTarefaMetaList() == null) {
-            usuario.setFavoritosTarefaMetaList(new ArrayList<FavoritosTarefaMeta>());
+        if (usuario.getFavoritosIncluidos() == null) {
+            usuario.setFavoritosIncluidos(new ArrayList<FavoritosTarefaMeta>());
         }
-        if (usuario.getCentroCustoList() == null) {
-            usuario.setCentroCustoList(new ArrayList<CentroCusto>());
+        if (usuario.getCentrosCustoIncluidos() == null) {
+            usuario.setCentrosCustoIncluidos(new ArrayList<CentroCusto>());
         }
-        if (usuario.getEnderecoList() == null) {
-            usuario.setEnderecoList(new ArrayList<Endereco>());
+        if (usuario.getEnderecosIncluidos() == null) {
+            usuario.setEnderecosIncluidos(new ArrayList<Endereco>());
         }
-        if (usuario.getTarefaList() == null) {
-            usuario.setTarefaList(new ArrayList<Tarefa>());
+        if (usuario.getTarefasIncluidas() == null) {
+            usuario.setTarefasIncluidas(new ArrayList<Tarefa>());
         }
-        if (usuario.getTarefaList1() == null) {
-            usuario.setTarefaList1(new ArrayList<Tarefa>());
+        if (usuario.getTarefasSolicitadas() == null) {
+            usuario.setTarefasSolicitadas(new ArrayList<Tarefa>());
         }
-        if (usuario.getTarefaList2() == null) {
-            usuario.setTarefaList2(new ArrayList<Tarefa>());
+        if (usuario.getTarefasSobResponsabilidade() == null) {
+            usuario.setTarefasSobResponsabilidade(new ArrayList<Tarefa>());
         }
-        if (usuario.getParicipanteTarefaList() == null) {
-            usuario.setParicipanteTarefaList(new ArrayList<ParicipanteTarefa>());
+        if (usuario.getParicipacoesIncluidas() == null) {
+            usuario.setParicipacoesIncluidas(new ArrayList<ParicipanteTarefa>());
         }
-        if (usuario.getParicipanteTarefaList1() == null) {
-            usuario.setParicipanteTarefaList1(new ArrayList<ParicipanteTarefa>());
+        if (usuario.getTarefasParticipantes() == null) {
+            usuario.setTarefasParticipantes(new ArrayList<ParicipanteTarefa>());
         }
-        if (usuario.getFilialClienteList() == null) {
-            usuario.setFilialClienteList(new ArrayList<FilialCliente>());
+        if (usuario.getFiliaisClientesIncluidas() == null) {
+            usuario.setFiliaisClientesIncluidas(new ArrayList<FilialCliente>());
         }
-        if (usuario.getFilialEmpresaList() == null) {
-            usuario.setFilialEmpresaList(new ArrayList<FilialEmpresa>());
+        if (usuario.getFiliaisEmpresaIncluidas() == null) {
+            usuario.setFiliaisEmpresaIncluidas(new ArrayList<FilialEmpresa>());
         }
-        if (usuario.getAvaliacaoMetaTarefaList() == null) {
-            usuario.setAvaliacaoMetaTarefaList(new ArrayList<AvaliacaoMetaTarefa>());
+        if (usuario.getAvaliacoesIncluidas() == null) {
+            usuario.setAvaliacoesIncluidas(new ArrayList<AvaliacaoMetaTarefa>());
         }
-        if (usuario.getAvaliacaoMetaTarefaList1() == null) {
-            usuario.setAvaliacaoMetaTarefaList1(new ArrayList<AvaliacaoMetaTarefa>());
+        if (usuario.getAvaliacoesSubmetidas() == null) {
+            usuario.setAvaliacoesSubmetidas(new ArrayList<AvaliacaoMetaTarefa>());
         }
-        if (usuario.getAvaliacaoMetaTarefaList2() == null) {
-            usuario.setAvaliacaoMetaTarefaList2(new ArrayList<AvaliacaoMetaTarefa>());
+        if (usuario.getAvaliacoesRecebidas() == null) {
+            usuario.setAvaliacoesRecebidas(new ArrayList<AvaliacaoMetaTarefa>());
         }
-        if (usuario.getOrcamentoTarefaList() == null) {
-            usuario.setOrcamentoTarefaList(new ArrayList<OrcamentoTarefa>());
+        if (usuario.getOrcamentosIncluidos() == null) {
+            usuario.setOrcamentosIncluidos(new ArrayList<OrcamentoTarefa>());
         }
-        if (usuario.getApontamentoTarefaList() == null) {
-            usuario.setApontamentoTarefaList(new ArrayList<ApontamentoTarefa>());
+        if (usuario.getApontamentosIncluidos() == null) {
+            usuario.setApontamentosIncluidos(new ArrayList<ApontamentoTarefa>());
         }
-        if (usuario.getDepartamentoList() == null) {
-            usuario.setDepartamentoList(new ArrayList<Departamento>());
+        if (usuario.getDepartamentosIncluidos() == null) {
+            usuario.setDepartamentosIncluidos(new ArrayList<Departamento>());
         }
-        if (usuario.getUsuarioList() == null) {
-            usuario.setUsuarioList(new ArrayList<Usuario>());
+        if (usuario.getUsuariosIncluidos() == null) {
+            usuario.setUsuariosIncluidos(new ArrayList<Usuario>());
         }
-        if (usuario.getEmpresaList() == null) {
-            usuario.setEmpresaList(new ArrayList<Empresa>());
+        if (usuario.getEmpresasIncluidas() == null) {
+            usuario.setEmpresasIncluidas(new ArrayList<Empresa>());
         }
-        if (usuario.getEmpresaClienteList() == null) {
-            usuario.setEmpresaClienteList(new ArrayList<EmpresaCliente>());
+        if (usuario.getEmpresasClienteIncluidas() == null) {
+            usuario.setEmpresasClienteIncluidas(new ArrayList<EmpresaCliente>());
         }
-        if (usuario.getAnexoTarefaList() == null) {
-            usuario.setAnexoTarefaList(new ArrayList<AnexoTarefa>());
+        if (usuario.getAnexosTarefaIncluidos() == null) {
+            usuario.setAnexosTarefaIncluidos(new ArrayList<AnexoTarefa>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Usuario idusuarioinclusao = usuario.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                usuario.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = usuario.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                usuario.setUsuarioInclusao(usuarioInclusao);
             }
             Collection<UsuarioEmpresa> attachedEmpresas = new ArrayList<UsuarioEmpresa>();
             for (UsuarioEmpresa empresasUsuarioEmpresaToAttach : usuario.getEmpresas()) {
@@ -128,136 +128,136 @@ public class UsuarioDAO implements Serializable {
                 attachedEmpresas.add(empresasUsuarioEmpresaToAttach);
             }
             usuario.setEmpresas(attachedEmpresas);
-            Collection<Meta> attachedMetasResponsaveis = new ArrayList<Meta>();
-            for (Meta metasResponsaveisMetaToAttach : usuario.getMetasResponsaveis()) {
-                metasResponsaveisMetaToAttach = em.getReference(metasResponsaveisMetaToAttach.getClass(), metasResponsaveisMetaToAttach.getId());
-                attachedMetasResponsaveis.add(metasResponsaveisMetaToAttach);
+            Collection<Meta> attachedMetasSobResponsabilidade = new ArrayList<Meta>();
+            for (Meta metasSobResponsabilidadeMetaToAttach : usuario.getMetasSobResponsabilidade()) {
+                metasSobResponsabilidadeMetaToAttach = em.getReference(metasSobResponsabilidadeMetaToAttach.getClass(), metasSobResponsabilidadeMetaToAttach.getId());
+                attachedMetasSobResponsabilidade.add(metasSobResponsabilidadeMetaToAttach);
             }
-            usuario.setMetasResponsaveis(attachedMetasResponsaveis);
-            List<FavoritosTarefaMeta> attachedFavoritosTarefaMetaList = new ArrayList<FavoritosTarefaMeta>();
-            for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMetaToAttach : usuario.getFavoritosTarefaMetaList()) {
-                favoritosTarefaMetaListFavoritosTarefaMetaToAttach = em.getReference(favoritosTarefaMetaListFavoritosTarefaMetaToAttach.getClass(), favoritosTarefaMetaListFavoritosTarefaMetaToAttach.getId());
-                attachedFavoritosTarefaMetaList.add(favoritosTarefaMetaListFavoritosTarefaMetaToAttach);
+            usuario.setMetasSobResponsabilidade(attachedMetasSobResponsabilidade);
+            List<FavoritosTarefaMeta> attachedFavoritosIncluidos = new ArrayList<FavoritosTarefaMeta>();
+            for (FavoritosTarefaMeta favoritosIncluidosFavoritosTarefaMetaToAttach : usuario.getFavoritosIncluidos()) {
+                favoritosIncluidosFavoritosTarefaMetaToAttach = em.getReference(favoritosIncluidosFavoritosTarefaMetaToAttach.getClass(), favoritosIncluidosFavoritosTarefaMetaToAttach.getId());
+                attachedFavoritosIncluidos.add(favoritosIncluidosFavoritosTarefaMetaToAttach);
             }
-            usuario.setFavoritosTarefaMetaList(attachedFavoritosTarefaMetaList);
-            List<CentroCusto> attachedCentroCustoList = new ArrayList<CentroCusto>();
-            for (CentroCusto centroCustoListCentroCustoToAttach : usuario.getCentroCustoList()) {
-                centroCustoListCentroCustoToAttach = em.getReference(centroCustoListCentroCustoToAttach.getClass(), centroCustoListCentroCustoToAttach.getId());
-                attachedCentroCustoList.add(centroCustoListCentroCustoToAttach);
+            usuario.setFavoritosIncluidos(attachedFavoritosIncluidos);
+            List<CentroCusto> attachedCentrosCustoIncluidos = new ArrayList<CentroCusto>();
+            for (CentroCusto centrosCustoIncluidosCentroCustoToAttach : usuario.getCentrosCustoIncluidos()) {
+                centrosCustoIncluidosCentroCustoToAttach = em.getReference(centrosCustoIncluidosCentroCustoToAttach.getClass(), centrosCustoIncluidosCentroCustoToAttach.getId());
+                attachedCentrosCustoIncluidos.add(centrosCustoIncluidosCentroCustoToAttach);
             }
-            usuario.setCentroCustoList(attachedCentroCustoList);
-            List<Endereco> attachedEnderecoList = new ArrayList<Endereco>();
-            for (Endereco enderecoListEnderecoToAttach : usuario.getEnderecoList()) {
-                enderecoListEnderecoToAttach = em.getReference(enderecoListEnderecoToAttach.getClass(), enderecoListEnderecoToAttach.getId());
-                attachedEnderecoList.add(enderecoListEnderecoToAttach);
+            usuario.setCentrosCustoIncluidos(attachedCentrosCustoIncluidos);
+            List<Endereco> attachedEnderecosIncluidos = new ArrayList<Endereco>();
+            for (Endereco enderecosIncluidosEnderecoToAttach : usuario.getEnderecosIncluidos()) {
+                enderecosIncluidosEnderecoToAttach = em.getReference(enderecosIncluidosEnderecoToAttach.getClass(), enderecosIncluidosEnderecoToAttach.getId());
+                attachedEnderecosIncluidos.add(enderecosIncluidosEnderecoToAttach);
             }
-            usuario.setEnderecoList(attachedEnderecoList);
-            List<Tarefa> attachedTarefaList = new ArrayList<Tarefa>();
-            for (Tarefa tarefaListTarefaToAttach : usuario.getTarefaList()) {
-                tarefaListTarefaToAttach = em.getReference(tarefaListTarefaToAttach.getClass(), tarefaListTarefaToAttach.getId());
-                attachedTarefaList.add(tarefaListTarefaToAttach);
+            usuario.setEnderecosIncluidos(attachedEnderecosIncluidos);
+            List<Tarefa> attachedTarefasIncluidas = new ArrayList<Tarefa>();
+            for (Tarefa tarefasIncluidasTarefaToAttach : usuario.getTarefasIncluidas()) {
+                tarefasIncluidasTarefaToAttach = em.getReference(tarefasIncluidasTarefaToAttach.getClass(), tarefasIncluidasTarefaToAttach.getId());
+                attachedTarefasIncluidas.add(tarefasIncluidasTarefaToAttach);
             }
-            usuario.setTarefaList(attachedTarefaList);
-            List<Tarefa> attachedTarefaList1 = new ArrayList<Tarefa>();
-            for (Tarefa tarefaList1TarefaToAttach : usuario.getTarefaList1()) {
-                tarefaList1TarefaToAttach = em.getReference(tarefaList1TarefaToAttach.getClass(), tarefaList1TarefaToAttach.getId());
-                attachedTarefaList1.add(tarefaList1TarefaToAttach);
+            usuario.setTarefasIncluidas(attachedTarefasIncluidas);
+            List<Tarefa> attachedTarefasSolicitadas = new ArrayList<Tarefa>();
+            for (Tarefa tarefasSolicitadasTarefaToAttach : usuario.getTarefasSolicitadas()) {
+                tarefasSolicitadasTarefaToAttach = em.getReference(tarefasSolicitadasTarefaToAttach.getClass(), tarefasSolicitadasTarefaToAttach.getId());
+                attachedTarefasSolicitadas.add(tarefasSolicitadasTarefaToAttach);
             }
-            usuario.setTarefaList1(attachedTarefaList1);
-            List<Tarefa> attachedTarefaList2 = new ArrayList<Tarefa>();
-            for (Tarefa tarefaList2TarefaToAttach : usuario.getTarefaList2()) {
-                tarefaList2TarefaToAttach = em.getReference(tarefaList2TarefaToAttach.getClass(), tarefaList2TarefaToAttach.getId());
-                attachedTarefaList2.add(tarefaList2TarefaToAttach);
+            usuario.setTarefasSolicitadas(attachedTarefasSolicitadas);
+            List<Tarefa> attachedTarefasSobResponsabilidade = new ArrayList<Tarefa>();
+            for (Tarefa tarefasSobResponsabilidadeTarefaToAttach : usuario.getTarefasSobResponsabilidade()) {
+                tarefasSobResponsabilidadeTarefaToAttach = em.getReference(tarefasSobResponsabilidadeTarefaToAttach.getClass(), tarefasSobResponsabilidadeTarefaToAttach.getId());
+                attachedTarefasSobResponsabilidade.add(tarefasSobResponsabilidadeTarefaToAttach);
             }
-            usuario.setTarefaList2(attachedTarefaList2);
-            List<ParicipanteTarefa> attachedParicipanteTarefaList = new ArrayList<ParicipanteTarefa>();
-            for (ParicipanteTarefa paricipanteTarefaListParicipanteTarefaToAttach : usuario.getParicipanteTarefaList()) {
-                paricipanteTarefaListParicipanteTarefaToAttach = em.getReference(paricipanteTarefaListParicipanteTarefaToAttach.getClass(), paricipanteTarefaListParicipanteTarefaToAttach.getId());
-                attachedParicipanteTarefaList.add(paricipanteTarefaListParicipanteTarefaToAttach);
+            usuario.setTarefasSobResponsabilidade(attachedTarefasSobResponsabilidade);
+            List<ParicipanteTarefa> attachedParicipacoesIncluidas = new ArrayList<ParicipanteTarefa>();
+            for (ParicipanteTarefa paricipacoesIncluidasParicipanteTarefaToAttach : usuario.getParicipacoesIncluidas()) {
+                paricipacoesIncluidasParicipanteTarefaToAttach = em.getReference(paricipacoesIncluidasParicipanteTarefaToAttach.getClass(), paricipacoesIncluidasParicipanteTarefaToAttach.getId());
+                attachedParicipacoesIncluidas.add(paricipacoesIncluidasParicipanteTarefaToAttach);
             }
-            usuario.setParicipanteTarefaList(attachedParicipanteTarefaList);
-            List<ParicipanteTarefa> attachedParicipanteTarefaList1 = new ArrayList<ParicipanteTarefa>();
-            for (ParicipanteTarefa paricipanteTarefaList1ParicipanteTarefaToAttach : usuario.getParicipanteTarefaList1()) {
-                paricipanteTarefaList1ParicipanteTarefaToAttach = em.getReference(paricipanteTarefaList1ParicipanteTarefaToAttach.getClass(), paricipanteTarefaList1ParicipanteTarefaToAttach.getId());
-                attachedParicipanteTarefaList1.add(paricipanteTarefaList1ParicipanteTarefaToAttach);
+            usuario.setParicipacoesIncluidas(attachedParicipacoesIncluidas);
+            List<ParicipanteTarefa> attachedTarefasParticipantes = new ArrayList<ParicipanteTarefa>();
+            for (ParicipanteTarefa tarefasParticipantesParicipanteTarefaToAttach : usuario.getTarefasParticipantes()) {
+                tarefasParticipantesParicipanteTarefaToAttach = em.getReference(tarefasParticipantesParicipanteTarefaToAttach.getClass(), tarefasParticipantesParicipanteTarefaToAttach.getId());
+                attachedTarefasParticipantes.add(tarefasParticipantesParicipanteTarefaToAttach);
             }
-            usuario.setParicipanteTarefaList1(attachedParicipanteTarefaList1);
-            List<FilialCliente> attachedFilialClienteList = new ArrayList<FilialCliente>();
-            for (FilialCliente filialClienteListFilialClienteToAttach : usuario.getFilialClienteList()) {
-                filialClienteListFilialClienteToAttach = em.getReference(filialClienteListFilialClienteToAttach.getClass(), filialClienteListFilialClienteToAttach.getId());
-                attachedFilialClienteList.add(filialClienteListFilialClienteToAttach);
+            usuario.setTarefasParticipantes(attachedTarefasParticipantes);
+            List<FilialCliente> attachedFiliaisClientesIncluidas = new ArrayList<FilialCliente>();
+            for (FilialCliente filiaisClientesIncluidasFilialClienteToAttach : usuario.getFiliaisClientesIncluidas()) {
+                filiaisClientesIncluidasFilialClienteToAttach = em.getReference(filiaisClientesIncluidasFilialClienteToAttach.getClass(), filiaisClientesIncluidasFilialClienteToAttach.getId());
+                attachedFiliaisClientesIncluidas.add(filiaisClientesIncluidasFilialClienteToAttach);
             }
-            usuario.setFilialClienteList(attachedFilialClienteList);
-            List<FilialEmpresa> attachedFilialEmpresaList = new ArrayList<FilialEmpresa>();
-            for (FilialEmpresa filialEmpresaListFilialEmpresaToAttach : usuario.getFilialEmpresaList()) {
-                filialEmpresaListFilialEmpresaToAttach = em.getReference(filialEmpresaListFilialEmpresaToAttach.getClass(), filialEmpresaListFilialEmpresaToAttach.getId());
-                attachedFilialEmpresaList.add(filialEmpresaListFilialEmpresaToAttach);
+            usuario.setFiliaisClientesIncluidas(attachedFiliaisClientesIncluidas);
+            List<FilialEmpresa> attachedFiliaisEmpresaIncluidas = new ArrayList<FilialEmpresa>();
+            for (FilialEmpresa filiaisEmpresaIncluidasFilialEmpresaToAttach : usuario.getFiliaisEmpresaIncluidas()) {
+                filiaisEmpresaIncluidasFilialEmpresaToAttach = em.getReference(filiaisEmpresaIncluidasFilialEmpresaToAttach.getClass(), filiaisEmpresaIncluidasFilialEmpresaToAttach.getId());
+                attachedFiliaisEmpresaIncluidas.add(filiaisEmpresaIncluidasFilialEmpresaToAttach);
             }
-            usuario.setFilialEmpresaList(attachedFilialEmpresaList);
-            List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaList = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach : usuario.getAvaliacaoMetaTarefaList()) {
-                avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach.getId());
-                attachedAvaliacaoMetaTarefaList.add(avaliacaoMetaTarefaListAvaliacaoMetaTarefaToAttach);
+            usuario.setFiliaisEmpresaIncluidas(attachedFiliaisEmpresaIncluidas);
+            List<AvaliacaoMetaTarefa> attachedAvaliacoesIncluidas = new ArrayList<AvaliacaoMetaTarefa>();
+            for (AvaliacaoMetaTarefa avaliacoesIncluidasAvaliacaoMetaTarefaToAttach : usuario.getAvaliacoesIncluidas()) {
+                avaliacoesIncluidasAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesIncluidasAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesIncluidasAvaliacaoMetaTarefaToAttach.getId());
+                attachedAvaliacoesIncluidas.add(avaliacoesIncluidasAvaliacaoMetaTarefaToAttach);
             }
-            usuario.setAvaliacaoMetaTarefaList(attachedAvaliacaoMetaTarefaList);
-            List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaList1 = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList1AvaliacaoMetaTarefaToAttach : usuario.getAvaliacaoMetaTarefaList1()) {
-                avaliacaoMetaTarefaList1AvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaList1AvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaList1AvaliacaoMetaTarefaToAttach.getId());
-                attachedAvaliacaoMetaTarefaList1.add(avaliacaoMetaTarefaList1AvaliacaoMetaTarefaToAttach);
+            usuario.setAvaliacoesIncluidas(attachedAvaliacoesIncluidas);
+            List<AvaliacaoMetaTarefa> attachedAvaliacoesSubmetidas = new ArrayList<AvaliacaoMetaTarefa>();
+            for (AvaliacaoMetaTarefa avaliacoesSubmetidasAvaliacaoMetaTarefaToAttach : usuario.getAvaliacoesSubmetidas()) {
+                avaliacoesSubmetidasAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesSubmetidasAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesSubmetidasAvaliacaoMetaTarefaToAttach.getId());
+                attachedAvaliacoesSubmetidas.add(avaliacoesSubmetidasAvaliacaoMetaTarefaToAttach);
             }
-            usuario.setAvaliacaoMetaTarefaList1(attachedAvaliacaoMetaTarefaList1);
-            List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaList2 = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList2AvaliacaoMetaTarefaToAttach : usuario.getAvaliacaoMetaTarefaList2()) {
-                avaliacaoMetaTarefaList2AvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaList2AvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaList2AvaliacaoMetaTarefaToAttach.getId());
-                attachedAvaliacaoMetaTarefaList2.add(avaliacaoMetaTarefaList2AvaliacaoMetaTarefaToAttach);
+            usuario.setAvaliacoesSubmetidas(attachedAvaliacoesSubmetidas);
+            List<AvaliacaoMetaTarefa> attachedAvaliacoesRecebidas = new ArrayList<AvaliacaoMetaTarefa>();
+            for (AvaliacaoMetaTarefa avaliacoesRecebidasAvaliacaoMetaTarefaToAttach : usuario.getAvaliacoesRecebidas()) {
+                avaliacoesRecebidasAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesRecebidasAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesRecebidasAvaliacaoMetaTarefaToAttach.getId());
+                attachedAvaliacoesRecebidas.add(avaliacoesRecebidasAvaliacaoMetaTarefaToAttach);
             }
-            usuario.setAvaliacaoMetaTarefaList2(attachedAvaliacaoMetaTarefaList2);
-            List<OrcamentoTarefa> attachedOrcamentoTarefaList = new ArrayList<OrcamentoTarefa>();
-            for (OrcamentoTarefa orcamentoTarefaListOrcamentoTarefaToAttach : usuario.getOrcamentoTarefaList()) {
-                orcamentoTarefaListOrcamentoTarefaToAttach = em.getReference(orcamentoTarefaListOrcamentoTarefaToAttach.getClass(), orcamentoTarefaListOrcamentoTarefaToAttach.getId());
-                attachedOrcamentoTarefaList.add(orcamentoTarefaListOrcamentoTarefaToAttach);
+            usuario.setAvaliacoesRecebidas(attachedAvaliacoesRecebidas);
+            List<OrcamentoTarefa> attachedOrcamentosIncluidos = new ArrayList<OrcamentoTarefa>();
+            for (OrcamentoTarefa orcamentosIncluidosOrcamentoTarefaToAttach : usuario.getOrcamentosIncluidos()) {
+                orcamentosIncluidosOrcamentoTarefaToAttach = em.getReference(orcamentosIncluidosOrcamentoTarefaToAttach.getClass(), orcamentosIncluidosOrcamentoTarefaToAttach.getId());
+                attachedOrcamentosIncluidos.add(orcamentosIncluidosOrcamentoTarefaToAttach);
             }
-            usuario.setOrcamentoTarefaList(attachedOrcamentoTarefaList);
-            List<ApontamentoTarefa> attachedApontamentoTarefaList = new ArrayList<ApontamentoTarefa>();
-            for (ApontamentoTarefa apontamentoTarefaListApontamentoTarefaToAttach : usuario.getApontamentoTarefaList()) {
-                apontamentoTarefaListApontamentoTarefaToAttach = em.getReference(apontamentoTarefaListApontamentoTarefaToAttach.getClass(), apontamentoTarefaListApontamentoTarefaToAttach.getId());
-                attachedApontamentoTarefaList.add(apontamentoTarefaListApontamentoTarefaToAttach);
+            usuario.setOrcamentosIncluidos(attachedOrcamentosIncluidos);
+            List<ApontamentoTarefa> attachedApontamentosIncluidos = new ArrayList<ApontamentoTarefa>();
+            for (ApontamentoTarefa apontamentosIncluidosApontamentoTarefaToAttach : usuario.getApontamentosIncluidos()) {
+                apontamentosIncluidosApontamentoTarefaToAttach = em.getReference(apontamentosIncluidosApontamentoTarefaToAttach.getClass(), apontamentosIncluidosApontamentoTarefaToAttach.getId());
+                attachedApontamentosIncluidos.add(apontamentosIncluidosApontamentoTarefaToAttach);
             }
-            usuario.setApontamentoTarefaList(attachedApontamentoTarefaList);
-            List<Departamento> attachedDepartamentoList = new ArrayList<Departamento>();
-            for (Departamento departamentoListDepartamentoToAttach : usuario.getDepartamentoList()) {
-                departamentoListDepartamentoToAttach = em.getReference(departamentoListDepartamentoToAttach.getClass(), departamentoListDepartamentoToAttach.getId());
-                attachedDepartamentoList.add(departamentoListDepartamentoToAttach);
+            usuario.setApontamentosIncluidos(attachedApontamentosIncluidos);
+            List<Departamento> attachedDepartamentosIncluidos = new ArrayList<Departamento>();
+            for (Departamento departamentosIncluidosDepartamentoToAttach : usuario.getDepartamentosIncluidos()) {
+                departamentosIncluidosDepartamentoToAttach = em.getReference(departamentosIncluidosDepartamentoToAttach.getClass(), departamentosIncluidosDepartamentoToAttach.getId());
+                attachedDepartamentosIncluidos.add(departamentosIncluidosDepartamentoToAttach);
             }
-            usuario.setDepartamentoList(attachedDepartamentoList);
-            List<Usuario> attachedUsuarioList = new ArrayList<Usuario>();
-            for (Usuario usuarioListUsuarioToAttach : usuario.getUsuarioList()) {
-                usuarioListUsuarioToAttach = em.getReference(usuarioListUsuarioToAttach.getClass(), usuarioListUsuarioToAttach.getId());
-                attachedUsuarioList.add(usuarioListUsuarioToAttach);
+            usuario.setDepartamentosIncluidos(attachedDepartamentosIncluidos);
+            List<Usuario> attachedUsuariosIncluidos = new ArrayList<Usuario>();
+            for (Usuario usuariosIncluidosUsuarioToAttach : usuario.getUsuariosIncluidos()) {
+                usuariosIncluidosUsuarioToAttach = em.getReference(usuariosIncluidosUsuarioToAttach.getClass(), usuariosIncluidosUsuarioToAttach.getId());
+                attachedUsuariosIncluidos.add(usuariosIncluidosUsuarioToAttach);
             }
-            usuario.setUsuarioList(attachedUsuarioList);
-            List<Empresa> attachedEmpresaList = new ArrayList<Empresa>();
-            for (Empresa empresaListEmpresaToAttach : usuario.getEmpresaList()) {
-                empresaListEmpresaToAttach = em.getReference(empresaListEmpresaToAttach.getClass(), empresaListEmpresaToAttach.getId());
-                attachedEmpresaList.add(empresaListEmpresaToAttach);
+            usuario.setUsuariosIncluidos(attachedUsuariosIncluidos);
+            List<Empresa> attachedEmpresasIncluidas = new ArrayList<Empresa>();
+            for (Empresa empresasIncluidasEmpresaToAttach : usuario.getEmpresasIncluidas()) {
+                empresasIncluidasEmpresaToAttach = em.getReference(empresasIncluidasEmpresaToAttach.getClass(), empresasIncluidasEmpresaToAttach.getId());
+                attachedEmpresasIncluidas.add(empresasIncluidasEmpresaToAttach);
             }
-            usuario.setEmpresaList(attachedEmpresaList);
-            List<EmpresaCliente> attachedEmpresaClienteList = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente empresaClienteListEmpresaClienteToAttach : usuario.getEmpresaClienteList()) {
-                empresaClienteListEmpresaClienteToAttach = em.getReference(empresaClienteListEmpresaClienteToAttach.getClass(), empresaClienteListEmpresaClienteToAttach.getId());
-                attachedEmpresaClienteList.add(empresaClienteListEmpresaClienteToAttach);
+            usuario.setEmpresasIncluidas(attachedEmpresasIncluidas);
+            List<EmpresaCliente> attachedEmpresasClienteIncluidas = new ArrayList<EmpresaCliente>();
+            for (EmpresaCliente empresasClienteIncluidasEmpresaClienteToAttach : usuario.getEmpresasClienteIncluidas()) {
+                empresasClienteIncluidasEmpresaClienteToAttach = em.getReference(empresasClienteIncluidasEmpresaClienteToAttach.getClass(), empresasClienteIncluidasEmpresaClienteToAttach.getId());
+                attachedEmpresasClienteIncluidas.add(empresasClienteIncluidasEmpresaClienteToAttach);
             }
-            usuario.setEmpresaClienteList(attachedEmpresaClienteList);
-            List<AnexoTarefa> attachedAnexoTarefaList = new ArrayList<AnexoTarefa>();
-            for (AnexoTarefa anexoTarefaListAnexoTarefaToAttach : usuario.getAnexoTarefaList()) {
-                anexoTarefaListAnexoTarefaToAttach = em.getReference(anexoTarefaListAnexoTarefaToAttach.getClass(), anexoTarefaListAnexoTarefaToAttach.getId());
-                attachedAnexoTarefaList.add(anexoTarefaListAnexoTarefaToAttach);
+            usuario.setEmpresasClienteIncluidas(attachedEmpresasClienteIncluidas);
+            List<AnexoTarefa> attachedAnexosTarefaIncluidos = new ArrayList<AnexoTarefa>();
+            for (AnexoTarefa anexosTarefaIncluidosAnexoTarefaToAttach : usuario.getAnexosTarefaIncluidos()) {
+                anexosTarefaIncluidosAnexoTarefaToAttach = em.getReference(anexosTarefaIncluidosAnexoTarefaToAttach.getClass(), anexosTarefaIncluidosAnexoTarefaToAttach.getId());
+                attachedAnexosTarefaIncluidos.add(anexosTarefaIncluidosAnexoTarefaToAttach);
             }
-            usuario.setAnexoTarefaList(attachedAnexoTarefaList);
+            usuario.setAnexosTarefaIncluidos(attachedAnexosTarefaIncluidos);
             em.persist(usuario);
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getUsuarioList().add(usuario);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getUsuariosIncluidos().add(usuario);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             for (UsuarioEmpresa empresasUsuarioEmpresa : usuario.getEmpresas()) {
                 Usuario oldUsuarioOfEmpresasUsuarioEmpresa = empresasUsuarioEmpresa.getUsuario();
@@ -268,193 +268,193 @@ public class UsuarioDAO implements Serializable {
                     oldUsuarioOfEmpresasUsuarioEmpresa = em.merge(oldUsuarioOfEmpresasUsuarioEmpresa);
                 }
             }
-            for (Meta metasResponsaveisMeta : usuario.getMetasResponsaveis()) {
-                Usuario oldResponsavelOfMetasResponsaveisMeta = metasResponsaveisMeta.getResponsavel();
-                metasResponsaveisMeta.setResponsavel(usuario);
-                metasResponsaveisMeta = em.merge(metasResponsaveisMeta);
-                if (oldResponsavelOfMetasResponsaveisMeta != null) {
-                    oldResponsavelOfMetasResponsaveisMeta.getMetasResponsaveis().remove(metasResponsaveisMeta);
-                    oldResponsavelOfMetasResponsaveisMeta = em.merge(oldResponsavelOfMetasResponsaveisMeta);
+            for (Meta metasSobResponsabilidadeMeta : usuario.getMetasSobResponsabilidade()) {
+                Usuario oldUsuarioResponsavelOfMetasSobResponsabilidadeMeta = metasSobResponsabilidadeMeta.getUsuarioResponsavel();
+                metasSobResponsabilidadeMeta.setUsuarioResponsavel(usuario);
+                metasSobResponsabilidadeMeta = em.merge(metasSobResponsabilidadeMeta);
+                if (oldUsuarioResponsavelOfMetasSobResponsabilidadeMeta != null) {
+                    oldUsuarioResponsavelOfMetasSobResponsabilidadeMeta.getMetasSobResponsabilidade().remove(metasSobResponsabilidadeMeta);
+                    oldUsuarioResponsavelOfMetasSobResponsabilidadeMeta = em.merge(oldUsuarioResponsavelOfMetasSobResponsabilidadeMeta);
                 }
             }
-            for (FavoritosTarefaMeta favoritosTarefaMetaListFavoritosTarefaMeta : usuario.getFavoritosTarefaMetaList()) {
-                Usuario oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta = favoritosTarefaMetaListFavoritosTarefaMeta.getIdUsuarioInclusao();
-                favoritosTarefaMetaListFavoritosTarefaMeta.setIdUsuarioInclusao(usuario);
-                favoritosTarefaMetaListFavoritosTarefaMeta = em.merge(favoritosTarefaMetaListFavoritosTarefaMeta);
-                if (oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta != null) {
-                    oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta.getFavoritosTarefaMetaList().remove(favoritosTarefaMetaListFavoritosTarefaMeta);
-                    oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta = em.merge(oldIdusuarioinclusaoOfFavoritosTarefaMetaListFavoritosTarefaMeta);
+            for (FavoritosTarefaMeta favoritosIncluidosFavoritosTarefaMeta : usuario.getFavoritosIncluidos()) {
+                Usuario oldUsuarioInclusaoOfFavoritosIncluidosFavoritosTarefaMeta = favoritosIncluidosFavoritosTarefaMeta.getUsuarioInclusao();
+                favoritosIncluidosFavoritosTarefaMeta.setUsuarioInclusao(usuario);
+                favoritosIncluidosFavoritosTarefaMeta = em.merge(favoritosIncluidosFavoritosTarefaMeta);
+                if (oldUsuarioInclusaoOfFavoritosIncluidosFavoritosTarefaMeta != null) {
+                    oldUsuarioInclusaoOfFavoritosIncluidosFavoritosTarefaMeta.getFavoritosIncluidos().remove(favoritosIncluidosFavoritosTarefaMeta);
+                    oldUsuarioInclusaoOfFavoritosIncluidosFavoritosTarefaMeta = em.merge(oldUsuarioInclusaoOfFavoritosIncluidosFavoritosTarefaMeta);
                 }
             }
-            for (CentroCusto centroCustoListCentroCusto : usuario.getCentroCustoList()) {
-                Usuario oldIdusuarioinclusaoOfCentroCustoListCentroCusto = centroCustoListCentroCusto.getIdUsuarioInclusao();
-                centroCustoListCentroCusto.setIdUsuarioInclusao(usuario);
-                centroCustoListCentroCusto = em.merge(centroCustoListCentroCusto);
-                if (oldIdusuarioinclusaoOfCentroCustoListCentroCusto != null) {
-                    oldIdusuarioinclusaoOfCentroCustoListCentroCusto.getCentroCustoList().remove(centroCustoListCentroCusto);
-                    oldIdusuarioinclusaoOfCentroCustoListCentroCusto = em.merge(oldIdusuarioinclusaoOfCentroCustoListCentroCusto);
+            for (CentroCusto centrosCustoIncluidosCentroCusto : usuario.getCentrosCustoIncluidos()) {
+                Usuario oldUsuarioInclusaoOfCentrosCustoIncluidosCentroCusto = centrosCustoIncluidosCentroCusto.getUsuarioInclusao();
+                centrosCustoIncluidosCentroCusto.setUsuarioInclusao(usuario);
+                centrosCustoIncluidosCentroCusto = em.merge(centrosCustoIncluidosCentroCusto);
+                if (oldUsuarioInclusaoOfCentrosCustoIncluidosCentroCusto != null) {
+                    oldUsuarioInclusaoOfCentrosCustoIncluidosCentroCusto.getCentrosCustoIncluidos().remove(centrosCustoIncluidosCentroCusto);
+                    oldUsuarioInclusaoOfCentrosCustoIncluidosCentroCusto = em.merge(oldUsuarioInclusaoOfCentrosCustoIncluidosCentroCusto);
                 }
             }
-            for (Endereco enderecoListEndereco : usuario.getEnderecoList()) {
-                Usuario oldIdusuarioinclusaoOfEnderecoListEndereco = enderecoListEndereco.getIdUsuarioInclusao();
-                enderecoListEndereco.setIdUsuarioInclusao(usuario);
-                enderecoListEndereco = em.merge(enderecoListEndereco);
-                if (oldIdusuarioinclusaoOfEnderecoListEndereco != null) {
-                    oldIdusuarioinclusaoOfEnderecoListEndereco.getEnderecoList().remove(enderecoListEndereco);
-                    oldIdusuarioinclusaoOfEnderecoListEndereco = em.merge(oldIdusuarioinclusaoOfEnderecoListEndereco);
+            for (Endereco enderecosIncluidosEndereco : usuario.getEnderecosIncluidos()) {
+                Usuario oldUsuarioInclusaoOfEnderecosIncluidosEndereco = enderecosIncluidosEndereco.getUsuarioInclusao();
+                enderecosIncluidosEndereco.setUsuarioInclusao(usuario);
+                enderecosIncluidosEndereco = em.merge(enderecosIncluidosEndereco);
+                if (oldUsuarioInclusaoOfEnderecosIncluidosEndereco != null) {
+                    oldUsuarioInclusaoOfEnderecosIncluidosEndereco.getEnderecosIncluidos().remove(enderecosIncluidosEndereco);
+                    oldUsuarioInclusaoOfEnderecosIncluidosEndereco = em.merge(oldUsuarioInclusaoOfEnderecosIncluidosEndereco);
                 }
             }
-            for (Tarefa tarefaListTarefa : usuario.getTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfTarefaListTarefa = tarefaListTarefa.getIdUsuarioInclusao();
-                tarefaListTarefa.setIdUsuarioInclusao(usuario);
-                tarefaListTarefa = em.merge(tarefaListTarefa);
-                if (oldIdusuarioinclusaoOfTarefaListTarefa != null) {
-                    oldIdusuarioinclusaoOfTarefaListTarefa.getTarefaList().remove(tarefaListTarefa);
-                    oldIdusuarioinclusaoOfTarefaListTarefa = em.merge(oldIdusuarioinclusaoOfTarefaListTarefa);
+            for (Tarefa tarefasIncluidasTarefa : usuario.getTarefasIncluidas()) {
+                Usuario oldUsuarioInclusaoOfTarefasIncluidasTarefa = tarefasIncluidasTarefa.getUsuarioInclusao();
+                tarefasIncluidasTarefa.setUsuarioInclusao(usuario);
+                tarefasIncluidasTarefa = em.merge(tarefasIncluidasTarefa);
+                if (oldUsuarioInclusaoOfTarefasIncluidasTarefa != null) {
+                    oldUsuarioInclusaoOfTarefasIncluidasTarefa.getTarefasIncluidas().remove(tarefasIncluidasTarefa);
+                    oldUsuarioInclusaoOfTarefasIncluidasTarefa = em.merge(oldUsuarioInclusaoOfTarefasIncluidasTarefa);
                 }
             }
-            for (Tarefa tarefaList1Tarefa : usuario.getTarefaList1()) {
-                Usuario oldIdusuariosolicitanteOfTarefaList1Tarefa = tarefaList1Tarefa.getIdUsuarioSolicitante();
-                tarefaList1Tarefa.setIdUsuarioSolicitante(usuario);
-                tarefaList1Tarefa = em.merge(tarefaList1Tarefa);
-                if (oldIdusuariosolicitanteOfTarefaList1Tarefa != null) {
-                    oldIdusuariosolicitanteOfTarefaList1Tarefa.getTarefaList1().remove(tarefaList1Tarefa);
-                    oldIdusuariosolicitanteOfTarefaList1Tarefa = em.merge(oldIdusuariosolicitanteOfTarefaList1Tarefa);
+            for (Tarefa tarefasSolicitadasTarefa : usuario.getTarefasSolicitadas()) {
+                Usuario oldUsuarioSolicitanteOfTarefasSolicitadasTarefa = tarefasSolicitadasTarefa.getUsuarioSolicitante();
+                tarefasSolicitadasTarefa.setUsuarioSolicitante(usuario);
+                tarefasSolicitadasTarefa = em.merge(tarefasSolicitadasTarefa);
+                if (oldUsuarioSolicitanteOfTarefasSolicitadasTarefa != null) {
+                    oldUsuarioSolicitanteOfTarefasSolicitadasTarefa.getTarefasSolicitadas().remove(tarefasSolicitadasTarefa);
+                    oldUsuarioSolicitanteOfTarefasSolicitadasTarefa = em.merge(oldUsuarioSolicitanteOfTarefasSolicitadasTarefa);
                 }
             }
-            for (Tarefa tarefaList2Tarefa : usuario.getTarefaList2()) {
-                Usuario oldIdusuarioresponsavelOfTarefaList2Tarefa = tarefaList2Tarefa.getIdUsuarioResponsavel();
-                tarefaList2Tarefa.setIdUsuarioResponsavel(usuario);
-                tarefaList2Tarefa = em.merge(tarefaList2Tarefa);
-                if (oldIdusuarioresponsavelOfTarefaList2Tarefa != null) {
-                    oldIdusuarioresponsavelOfTarefaList2Tarefa.getTarefaList2().remove(tarefaList2Tarefa);
-                    oldIdusuarioresponsavelOfTarefaList2Tarefa = em.merge(oldIdusuarioresponsavelOfTarefaList2Tarefa);
+            for (Tarefa tarefasSobResponsabilidadeTarefa : usuario.getTarefasSobResponsabilidade()) {
+                Usuario oldUsuarioResponsavelOfTarefasSobResponsabilidadeTarefa = tarefasSobResponsabilidadeTarefa.getUsuarioResponsavel();
+                tarefasSobResponsabilidadeTarefa.setUsuarioResponsavel(usuario);
+                tarefasSobResponsabilidadeTarefa = em.merge(tarefasSobResponsabilidadeTarefa);
+                if (oldUsuarioResponsavelOfTarefasSobResponsabilidadeTarefa != null) {
+                    oldUsuarioResponsavelOfTarefasSobResponsabilidadeTarefa.getTarefasSobResponsabilidade().remove(tarefasSobResponsabilidadeTarefa);
+                    oldUsuarioResponsavelOfTarefasSobResponsabilidadeTarefa = em.merge(oldUsuarioResponsavelOfTarefasSobResponsabilidadeTarefa);
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaListParicipanteTarefa : usuario.getParicipanteTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa = paricipanteTarefaListParicipanteTarefa.getIdUsuarioInclusao();
-                paricipanteTarefaListParicipanteTarefa.setIdUsuarioInclusao(usuario);
-                paricipanteTarefaListParicipanteTarefa = em.merge(paricipanteTarefaListParicipanteTarefa);
-                if (oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa != null) {
-                    oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa.getParicipanteTarefaList().remove(paricipanteTarefaListParicipanteTarefa);
-                    oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa = em.merge(oldIdusuarioinclusaoOfParicipanteTarefaListParicipanteTarefa);
+            for (ParicipanteTarefa paricipacoesIncluidasParicipanteTarefa : usuario.getParicipacoesIncluidas()) {
+                Usuario oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa = paricipacoesIncluidasParicipanteTarefa.getUsuarioInclusao();
+                paricipacoesIncluidasParicipanteTarefa.setUsuarioInclusao(usuario);
+                paricipacoesIncluidasParicipanteTarefa = em.merge(paricipacoesIncluidasParicipanteTarefa);
+                if (oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa != null) {
+                    oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa.getParicipacoesIncluidas().remove(paricipacoesIncluidasParicipanteTarefa);
+                    oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa = em.merge(oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa);
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaList1ParicipanteTarefa : usuario.getParicipanteTarefaList1()) {
-                Usuario oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa = paricipanteTarefaList1ParicipanteTarefa.getIdUsuarioParticipante();
-                paricipanteTarefaList1ParicipanteTarefa.setIdUsuarioParticipante(usuario);
-                paricipanteTarefaList1ParicipanteTarefa = em.merge(paricipanteTarefaList1ParicipanteTarefa);
-                if (oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa != null) {
-                    oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa.getParicipanteTarefaList1().remove(paricipanteTarefaList1ParicipanteTarefa);
-                    oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa = em.merge(oldIdusuarioparticipanteOfParicipanteTarefaList1ParicipanteTarefa);
+            for (ParicipanteTarefa tarefasParticipantesParicipanteTarefa : usuario.getTarefasParticipantes()) {
+                Usuario oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa = tarefasParticipantesParicipanteTarefa.getUsuarioParticipante();
+                tarefasParticipantesParicipanteTarefa.setUsuarioParticipante(usuario);
+                tarefasParticipantesParicipanteTarefa = em.merge(tarefasParticipantesParicipanteTarefa);
+                if (oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa != null) {
+                    oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa.getTarefasParticipantes().remove(tarefasParticipantesParicipanteTarefa);
+                    oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa = em.merge(oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa);
                 }
             }
-            for (FilialCliente filialClienteListFilialCliente : usuario.getFilialClienteList()) {
-                Usuario oldIdusuarioinclusaoOfFilialClienteListFilialCliente = filialClienteListFilialCliente.getIdUsuarioInclusao();
-                filialClienteListFilialCliente.setIdUsuarioInclusao(usuario);
-                filialClienteListFilialCliente = em.merge(filialClienteListFilialCliente);
-                if (oldIdusuarioinclusaoOfFilialClienteListFilialCliente != null) {
-                    oldIdusuarioinclusaoOfFilialClienteListFilialCliente.getFilialClienteList().remove(filialClienteListFilialCliente);
-                    oldIdusuarioinclusaoOfFilialClienteListFilialCliente = em.merge(oldIdusuarioinclusaoOfFilialClienteListFilialCliente);
+            for (FilialCliente filiaisClientesIncluidasFilialCliente : usuario.getFiliaisClientesIncluidas()) {
+                Usuario oldUsuarioInclusaoOfFiliaisClientesIncluidasFilialCliente = filiaisClientesIncluidasFilialCliente.getUsuarioInclusao();
+                filiaisClientesIncluidasFilialCliente.setUsuarioInclusao(usuario);
+                filiaisClientesIncluidasFilialCliente = em.merge(filiaisClientesIncluidasFilialCliente);
+                if (oldUsuarioInclusaoOfFiliaisClientesIncluidasFilialCliente != null) {
+                    oldUsuarioInclusaoOfFiliaisClientesIncluidasFilialCliente.getFiliaisClientesIncluidas().remove(filiaisClientesIncluidasFilialCliente);
+                    oldUsuarioInclusaoOfFiliaisClientesIncluidasFilialCliente = em.merge(oldUsuarioInclusaoOfFiliaisClientesIncluidasFilialCliente);
                 }
             }
-            for (FilialEmpresa filialEmpresaListFilialEmpresa : usuario.getFilialEmpresaList()) {
-                Usuario oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa = filialEmpresaListFilialEmpresa.getIdUsuarioInclusao();
-                filialEmpresaListFilialEmpresa.setIdUsuarioInclusao(usuario);
-                filialEmpresaListFilialEmpresa = em.merge(filialEmpresaListFilialEmpresa);
-                if (oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa != null) {
-                    oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa.getFilialEmpresaList().remove(filialEmpresaListFilialEmpresa);
-                    oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa = em.merge(oldIdusuarioinclusaoOfFilialEmpresaListFilialEmpresa);
+            for (FilialEmpresa filiaisEmpresaIncluidasFilialEmpresa : usuario.getFiliaisEmpresaIncluidas()) {
+                Usuario oldUsuarioInclusaoOfFiliaisEmpresaIncluidasFilialEmpresa = filiaisEmpresaIncluidasFilialEmpresa.getUsuarioInclusao();
+                filiaisEmpresaIncluidasFilialEmpresa.setUsuarioInclusao(usuario);
+                filiaisEmpresaIncluidasFilialEmpresa = em.merge(filiaisEmpresaIncluidasFilialEmpresa);
+                if (oldUsuarioInclusaoOfFiliaisEmpresaIncluidasFilialEmpresa != null) {
+                    oldUsuarioInclusaoOfFiliaisEmpresaIncluidasFilialEmpresa.getFiliaisEmpresaIncluidas().remove(filiaisEmpresaIncluidasFilialEmpresa);
+                    oldUsuarioInclusaoOfFiliaisEmpresaIncluidasFilialEmpresa = em.merge(oldUsuarioInclusaoOfFiliaisEmpresaIncluidasFilialEmpresa);
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListAvaliacaoMetaTarefa : usuario.getAvaliacaoMetaTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = avaliacaoMetaTarefaListAvaliacaoMetaTarefa.getIdUsuarioInclusao();
-                avaliacaoMetaTarefaListAvaliacaoMetaTarefa.setIdUsuarioInclusao(usuario);
-                avaliacaoMetaTarefaListAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
-                if (oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa != null) {
-                    oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefaListAvaliacaoMetaTarefa);
-                    oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa = em.merge(oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListAvaliacaoMetaTarefa);
+            for (AvaliacaoMetaTarefa avaliacoesIncluidasAvaliacaoMetaTarefa : usuario.getAvaliacoesIncluidas()) {
+                Usuario oldUsuarioInclusaoOfAvaliacoesIncluidasAvaliacaoMetaTarefa = avaliacoesIncluidasAvaliacaoMetaTarefa.getUsuarioInclusao();
+                avaliacoesIncluidasAvaliacaoMetaTarefa.setUsuarioInclusao(usuario);
+                avaliacoesIncluidasAvaliacaoMetaTarefa = em.merge(avaliacoesIncluidasAvaliacaoMetaTarefa);
+                if (oldUsuarioInclusaoOfAvaliacoesIncluidasAvaliacaoMetaTarefa != null) {
+                    oldUsuarioInclusaoOfAvaliacoesIncluidasAvaliacaoMetaTarefa.getAvaliacoesIncluidas().remove(avaliacoesIncluidasAvaliacaoMetaTarefa);
+                    oldUsuarioInclusaoOfAvaliacoesIncluidasAvaliacaoMetaTarefa = em.merge(oldUsuarioInclusaoOfAvaliacoesIncluidasAvaliacaoMetaTarefa);
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList1AvaliacaoMetaTarefa : usuario.getAvaliacaoMetaTarefaList1()) {
-                Usuario oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa = avaliacaoMetaTarefaList1AvaliacaoMetaTarefa.getIdUsuarioAvaliador();
-                avaliacaoMetaTarefaList1AvaliacaoMetaTarefa.setIdUsuarioAvaliador(usuario);
-                avaliacaoMetaTarefaList1AvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaList1AvaliacaoMetaTarefa);
-                if (oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa != null) {
-                    oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList1().remove(avaliacaoMetaTarefaList1AvaliacaoMetaTarefa);
-                    oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa = em.merge(oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1AvaliacaoMetaTarefa);
+            for (AvaliacaoMetaTarefa avaliacoesSubmetidasAvaliacaoMetaTarefa : usuario.getAvaliacoesSubmetidas()) {
+                Usuario oldUsuarioAvaliadorOfAvaliacoesSubmetidasAvaliacaoMetaTarefa = avaliacoesSubmetidasAvaliacaoMetaTarefa.getUsuarioAvaliador();
+                avaliacoesSubmetidasAvaliacaoMetaTarefa.setUsuarioAvaliador(usuario);
+                avaliacoesSubmetidasAvaliacaoMetaTarefa = em.merge(avaliacoesSubmetidasAvaliacaoMetaTarefa);
+                if (oldUsuarioAvaliadorOfAvaliacoesSubmetidasAvaliacaoMetaTarefa != null) {
+                    oldUsuarioAvaliadorOfAvaliacoesSubmetidasAvaliacaoMetaTarefa.getAvaliacoesSubmetidas().remove(avaliacoesSubmetidasAvaliacaoMetaTarefa);
+                    oldUsuarioAvaliadorOfAvaliacoesSubmetidasAvaliacaoMetaTarefa = em.merge(oldUsuarioAvaliadorOfAvaliacoesSubmetidasAvaliacaoMetaTarefa);
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList2AvaliacaoMetaTarefa : usuario.getAvaliacaoMetaTarefaList2()) {
-                Usuario oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa = avaliacaoMetaTarefaList2AvaliacaoMetaTarefa.getIdUsuarioAvaliado();
-                avaliacaoMetaTarefaList2AvaliacaoMetaTarefa.setIdUsuarioAvaliado(usuario);
-                avaliacaoMetaTarefaList2AvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaList2AvaliacaoMetaTarefa);
-                if (oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa != null) {
-                    oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList2().remove(avaliacaoMetaTarefaList2AvaliacaoMetaTarefa);
-                    oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa = em.merge(oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2AvaliacaoMetaTarefa);
+            for (AvaliacaoMetaTarefa avaliacoesRecebidasAvaliacaoMetaTarefa : usuario.getAvaliacoesRecebidas()) {
+                Usuario oldUsuarioAvaliadoOfAvaliacoesRecebidasAvaliacaoMetaTarefa = avaliacoesRecebidasAvaliacaoMetaTarefa.getUsuarioAvaliado();
+                avaliacoesRecebidasAvaliacaoMetaTarefa.setUsuarioAvaliado(usuario);
+                avaliacoesRecebidasAvaliacaoMetaTarefa = em.merge(avaliacoesRecebidasAvaliacaoMetaTarefa);
+                if (oldUsuarioAvaliadoOfAvaliacoesRecebidasAvaliacaoMetaTarefa != null) {
+                    oldUsuarioAvaliadoOfAvaliacoesRecebidasAvaliacaoMetaTarefa.getAvaliacoesRecebidas().remove(avaliacoesRecebidasAvaliacaoMetaTarefa);
+                    oldUsuarioAvaliadoOfAvaliacoesRecebidasAvaliacaoMetaTarefa = em.merge(oldUsuarioAvaliadoOfAvaliacoesRecebidasAvaliacaoMetaTarefa);
                 }
             }
-            for (OrcamentoTarefa orcamentoTarefaListOrcamentoTarefa : usuario.getOrcamentoTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa = orcamentoTarefaListOrcamentoTarefa.getIdUsuarioInclusao();
-                orcamentoTarefaListOrcamentoTarefa.setIdUsuarioInclusao(usuario);
-                orcamentoTarefaListOrcamentoTarefa = em.merge(orcamentoTarefaListOrcamentoTarefa);
-                if (oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa != null) {
-                    oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa.getOrcamentoTarefaList().remove(orcamentoTarefaListOrcamentoTarefa);
-                    oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa = em.merge(oldIdusuarioinclusaoOfOrcamentoTarefaListOrcamentoTarefa);
+            for (OrcamentoTarefa orcamentosIncluidosOrcamentoTarefa : usuario.getOrcamentosIncluidos()) {
+                Usuario oldUsuarioInclusaoOfOrcamentosIncluidosOrcamentoTarefa = orcamentosIncluidosOrcamentoTarefa.getUsuarioInclusao();
+                orcamentosIncluidosOrcamentoTarefa.setUsuarioInclusao(usuario);
+                orcamentosIncluidosOrcamentoTarefa = em.merge(orcamentosIncluidosOrcamentoTarefa);
+                if (oldUsuarioInclusaoOfOrcamentosIncluidosOrcamentoTarefa != null) {
+                    oldUsuarioInclusaoOfOrcamentosIncluidosOrcamentoTarefa.getOrcamentosIncluidos().remove(orcamentosIncluidosOrcamentoTarefa);
+                    oldUsuarioInclusaoOfOrcamentosIncluidosOrcamentoTarefa = em.merge(oldUsuarioInclusaoOfOrcamentosIncluidosOrcamentoTarefa);
                 }
             }
-            for (ApontamentoTarefa apontamentoTarefaListApontamentoTarefa : usuario.getApontamentoTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfApontamentoTarefaListApontamentoTarefa = apontamentoTarefaListApontamentoTarefa.getIdUsuarioInclusao();
-                apontamentoTarefaListApontamentoTarefa.setIdUsuarioInclusao(usuario);
-                apontamentoTarefaListApontamentoTarefa = em.merge(apontamentoTarefaListApontamentoTarefa);
-                if (oldIdusuarioinclusaoOfApontamentoTarefaListApontamentoTarefa != null) {
-                    oldIdusuarioinclusaoOfApontamentoTarefaListApontamentoTarefa.getApontamentoTarefaList().remove(apontamentoTarefaListApontamentoTarefa);
-                    oldIdusuarioinclusaoOfApontamentoTarefaListApontamentoTarefa = em.merge(oldIdusuarioinclusaoOfApontamentoTarefaListApontamentoTarefa);
+            for (ApontamentoTarefa apontamentosIncluidosApontamentoTarefa : usuario.getApontamentosIncluidos()) {
+                Usuario oldUsuarioInclusaoOfApontamentosIncluidosApontamentoTarefa = apontamentosIncluidosApontamentoTarefa.getUsuarioInclusao();
+                apontamentosIncluidosApontamentoTarefa.setUsuarioInclusao(usuario);
+                apontamentosIncluidosApontamentoTarefa = em.merge(apontamentosIncluidosApontamentoTarefa);
+                if (oldUsuarioInclusaoOfApontamentosIncluidosApontamentoTarefa != null) {
+                    oldUsuarioInclusaoOfApontamentosIncluidosApontamentoTarefa.getApontamentosIncluidos().remove(apontamentosIncluidosApontamentoTarefa);
+                    oldUsuarioInclusaoOfApontamentosIncluidosApontamentoTarefa = em.merge(oldUsuarioInclusaoOfApontamentosIncluidosApontamentoTarefa);
                 }
             }
-            for (Departamento departamentoListDepartamento : usuario.getDepartamentoList()) {
-                Usuario oldIdusuarioinclusaoOfDepartamentoListDepartamento = departamentoListDepartamento.getIdUsuarioInclusao();
-                departamentoListDepartamento.setIdUsuarioInclusao(usuario);
-                departamentoListDepartamento = em.merge(departamentoListDepartamento);
-                if (oldIdusuarioinclusaoOfDepartamentoListDepartamento != null) {
-                    oldIdusuarioinclusaoOfDepartamentoListDepartamento.getDepartamentoList().remove(departamentoListDepartamento);
-                    oldIdusuarioinclusaoOfDepartamentoListDepartamento = em.merge(oldIdusuarioinclusaoOfDepartamentoListDepartamento);
+            for (Departamento departamentosIncluidosDepartamento : usuario.getDepartamentosIncluidos()) {
+                Usuario oldUsuarioInclusaoOfDepartamentosIncluidosDepartamento = departamentosIncluidosDepartamento.getUsuarioInclusao();
+                departamentosIncluidosDepartamento.setUsuarioInclusao(usuario);
+                departamentosIncluidosDepartamento = em.merge(departamentosIncluidosDepartamento);
+                if (oldUsuarioInclusaoOfDepartamentosIncluidosDepartamento != null) {
+                    oldUsuarioInclusaoOfDepartamentosIncluidosDepartamento.getDepartamentosIncluidos().remove(departamentosIncluidosDepartamento);
+                    oldUsuarioInclusaoOfDepartamentosIncluidosDepartamento = em.merge(oldUsuarioInclusaoOfDepartamentosIncluidosDepartamento);
                 }
             }
-            for (Usuario usuarioListUsuario : usuario.getUsuarioList()) {
-                Usuario oldIdusuarioinclusaoOfUsuarioListUsuario = usuarioListUsuario.getIdUsuarioInclusao();
-                usuarioListUsuario.setIdUsuarioInclusao(usuario);
-                usuarioListUsuario = em.merge(usuarioListUsuario);
-                if (oldIdusuarioinclusaoOfUsuarioListUsuario != null) {
-                    oldIdusuarioinclusaoOfUsuarioListUsuario.getUsuarioList().remove(usuarioListUsuario);
-                    oldIdusuarioinclusaoOfUsuarioListUsuario = em.merge(oldIdusuarioinclusaoOfUsuarioListUsuario);
+            for (Usuario usuariosIncluidosUsuario : usuario.getUsuariosIncluidos()) {
+                Usuario oldUsuarioInclusaoOfUsuariosIncluidosUsuario = usuariosIncluidosUsuario.getUsuarioInclusao();
+                usuariosIncluidosUsuario.setUsuarioInclusao(usuario);
+                usuariosIncluidosUsuario = em.merge(usuariosIncluidosUsuario);
+                if (oldUsuarioInclusaoOfUsuariosIncluidosUsuario != null) {
+                    oldUsuarioInclusaoOfUsuariosIncluidosUsuario.getUsuariosIncluidos().remove(usuariosIncluidosUsuario);
+                    oldUsuarioInclusaoOfUsuariosIncluidosUsuario = em.merge(oldUsuarioInclusaoOfUsuariosIncluidosUsuario);
                 }
             }
-            for (Empresa empresaListEmpresa : usuario.getEmpresaList()) {
-                Usuario oldIdusuarioinclusaoOfEmpresaListEmpresa = empresaListEmpresa.getIdUsuarioInclusao();
-                empresaListEmpresa.setIdUsuarioInclusao(usuario);
-                empresaListEmpresa = em.merge(empresaListEmpresa);
-                if (oldIdusuarioinclusaoOfEmpresaListEmpresa != null) {
-                    oldIdusuarioinclusaoOfEmpresaListEmpresa.getEmpresaList().remove(empresaListEmpresa);
-                    oldIdusuarioinclusaoOfEmpresaListEmpresa = em.merge(oldIdusuarioinclusaoOfEmpresaListEmpresa);
+            for (Empresa empresasIncluidasEmpresa : usuario.getEmpresasIncluidas()) {
+                Usuario oldUsuarioInclusaoOfEmpresasIncluidasEmpresa = empresasIncluidasEmpresa.getUsuarioInclusao();
+                empresasIncluidasEmpresa.setUsuarioInclusao(usuario);
+                empresasIncluidasEmpresa = em.merge(empresasIncluidasEmpresa);
+                if (oldUsuarioInclusaoOfEmpresasIncluidasEmpresa != null) {
+                    oldUsuarioInclusaoOfEmpresasIncluidasEmpresa.getEmpresasIncluidas().remove(empresasIncluidasEmpresa);
+                    oldUsuarioInclusaoOfEmpresasIncluidasEmpresa = em.merge(oldUsuarioInclusaoOfEmpresasIncluidasEmpresa);
                 }
             }
-            for (EmpresaCliente empresaClienteListEmpresaCliente : usuario.getEmpresaClienteList()) {
-                Usuario oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente = empresaClienteListEmpresaCliente.getIdUsuarioInclusao();
-                empresaClienteListEmpresaCliente.setIdUsuarioInclusao(usuario);
-                empresaClienteListEmpresaCliente = em.merge(empresaClienteListEmpresaCliente);
-                if (oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente != null) {
-                    oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente.getEmpresaClienteList().remove(empresaClienteListEmpresaCliente);
-                    oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente = em.merge(oldIdusuarioinclusaoOfEmpresaClienteListEmpresaCliente);
+            for (EmpresaCliente empresasClienteIncluidasEmpresaCliente : usuario.getEmpresasClienteIncluidas()) {
+                Usuario oldUsuarioInclusaoOfEmpresasClienteIncluidasEmpresaCliente = empresasClienteIncluidasEmpresaCliente.getUsuarioInclusao();
+                empresasClienteIncluidasEmpresaCliente.setUsuarioInclusao(usuario);
+                empresasClienteIncluidasEmpresaCliente = em.merge(empresasClienteIncluidasEmpresaCliente);
+                if (oldUsuarioInclusaoOfEmpresasClienteIncluidasEmpresaCliente != null) {
+                    oldUsuarioInclusaoOfEmpresasClienteIncluidasEmpresaCliente.getEmpresasClienteIncluidas().remove(empresasClienteIncluidasEmpresaCliente);
+                    oldUsuarioInclusaoOfEmpresasClienteIncluidasEmpresaCliente = em.merge(oldUsuarioInclusaoOfEmpresasClienteIncluidasEmpresaCliente);
                 }
             }
-            for (AnexoTarefa anexoTarefaListAnexoTarefa : usuario.getAnexoTarefaList()) {
-                Usuario oldIdusuarioinclusaoOfAnexoTarefaListAnexoTarefa = anexoTarefaListAnexoTarefa.getIdUsuarioInclusao();
-                anexoTarefaListAnexoTarefa.setIdUsuarioInclusao(usuario);
-                anexoTarefaListAnexoTarefa = em.merge(anexoTarefaListAnexoTarefa);
-                if (oldIdusuarioinclusaoOfAnexoTarefaListAnexoTarefa != null) {
-                    oldIdusuarioinclusaoOfAnexoTarefaListAnexoTarefa.getAnexoTarefaList().remove(anexoTarefaListAnexoTarefa);
-                    oldIdusuarioinclusaoOfAnexoTarefaListAnexoTarefa = em.merge(oldIdusuarioinclusaoOfAnexoTarefaListAnexoTarefa);
+            for (AnexoTarefa anexosTarefaIncluidosAnexoTarefa : usuario.getAnexosTarefaIncluidos()) {
+                Usuario oldUsuarioInclusaoOfAnexosTarefaIncluidosAnexoTarefa = anexosTarefaIncluidosAnexoTarefa.getUsuarioInclusao();
+                anexosTarefaIncluidosAnexoTarefa.setUsuarioInclusao(usuario);
+                anexosTarefaIncluidosAnexoTarefa = em.merge(anexosTarefaIncluidosAnexoTarefa);
+                if (oldUsuarioInclusaoOfAnexosTarefaIncluidosAnexoTarefa != null) {
+                    oldUsuarioInclusaoOfAnexosTarefaIncluidosAnexoTarefa.getAnexosTarefaIncluidos().remove(anexosTarefaIncluidosAnexoTarefa);
+                    oldUsuarioInclusaoOfAnexosTarefaIncluidosAnexoTarefa = em.merge(oldUsuarioInclusaoOfAnexosTarefaIncluidosAnexoTarefa);
                 }
             }
             em.getTransaction().commit();
@@ -471,52 +471,52 @@ public class UsuarioDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Usuario persistentUsuario = em.find(Usuario.class, usuario.getId());
-            Usuario idusuarioinclusaoOld = persistentUsuario.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = usuario.getIdUsuarioInclusao();
+            Usuario usuarioInclusaoOld = persistentUsuario.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = usuario.getUsuarioInclusao();
             Collection<UsuarioEmpresa> empresasOld = persistentUsuario.getEmpresas();
             Collection<UsuarioEmpresa> empresasNew = usuario.getEmpresas();
-            Collection<Meta> metasResponsaveisOld = persistentUsuario.getMetasResponsaveis();
-            Collection<Meta> metasResponsaveisNew = usuario.getMetasResponsaveis();
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListOld = persistentUsuario.getFavoritosTarefaMetaList();
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListNew = usuario.getFavoritosTarefaMetaList();
-            List<CentroCusto> centroCustoListOld = persistentUsuario.getCentroCustoList();
-            List<CentroCusto> centroCustoListNew = usuario.getCentroCustoList();
-            List<Endereco> enderecoListOld = persistentUsuario.getEnderecoList();
-            List<Endereco> enderecoListNew = usuario.getEnderecoList();
-            List<Tarefa> tarefaListOld = persistentUsuario.getTarefaList();
-            List<Tarefa> tarefaListNew = usuario.getTarefaList();
-            List<Tarefa> tarefaList1Old = persistentUsuario.getTarefaList1();
-            List<Tarefa> tarefaList1New = usuario.getTarefaList1();
-            List<Tarefa> tarefaList2Old = persistentUsuario.getTarefaList2();
-            List<Tarefa> tarefaList2New = usuario.getTarefaList2();
-            List<ParicipanteTarefa> paricipanteTarefaListOld = persistentUsuario.getParicipanteTarefaList();
-            List<ParicipanteTarefa> paricipanteTarefaListNew = usuario.getParicipanteTarefaList();
-            List<ParicipanteTarefa> paricipanteTarefaList1Old = persistentUsuario.getParicipanteTarefaList1();
-            List<ParicipanteTarefa> paricipanteTarefaList1New = usuario.getParicipanteTarefaList1();
-            List<FilialCliente> filialClienteListOld = persistentUsuario.getFilialClienteList();
-            List<FilialCliente> filialClienteListNew = usuario.getFilialClienteList();
-            List<FilialEmpresa> filialEmpresaListOld = persistentUsuario.getFilialEmpresaList();
-            List<FilialEmpresa> filialEmpresaListNew = usuario.getFilialEmpresaList();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListOld = persistentUsuario.getAvaliacaoMetaTarefaList();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListNew = usuario.getAvaliacaoMetaTarefaList();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList1Old = persistentUsuario.getAvaliacaoMetaTarefaList1();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList1New = usuario.getAvaliacaoMetaTarefaList1();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList2Old = persistentUsuario.getAvaliacaoMetaTarefaList2();
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList2New = usuario.getAvaliacaoMetaTarefaList2();
-            List<OrcamentoTarefa> orcamentoTarefaListOld = persistentUsuario.getOrcamentoTarefaList();
-            List<OrcamentoTarefa> orcamentoTarefaListNew = usuario.getOrcamentoTarefaList();
-            List<ApontamentoTarefa> apontamentoTarefaListOld = persistentUsuario.getApontamentoTarefaList();
-            List<ApontamentoTarefa> apontamentoTarefaListNew = usuario.getApontamentoTarefaList();
-            List<Departamento> departamentoListOld = persistentUsuario.getDepartamentoList();
-            List<Departamento> departamentoListNew = usuario.getDepartamentoList();
-            List<Usuario> usuarioListOld = persistentUsuario.getUsuarioList();
-            List<Usuario> usuarioListNew = usuario.getUsuarioList();
-            List<Empresa> empresaListOld = persistentUsuario.getEmpresaList();
-            List<Empresa> empresaListNew = usuario.getEmpresaList();
-            List<EmpresaCliente> empresaClienteListOld = persistentUsuario.getEmpresaClienteList();
-            List<EmpresaCliente> empresaClienteListNew = usuario.getEmpresaClienteList();
-            List<AnexoTarefa> anexoTarefaListOld = persistentUsuario.getAnexoTarefaList();
-            List<AnexoTarefa> anexoTarefaListNew = usuario.getAnexoTarefaList();
+            Collection<Meta> metasSobResponsabilidadeOld = persistentUsuario.getMetasSobResponsabilidade();
+            Collection<Meta> metasSobResponsabilidadeNew = usuario.getMetasSobResponsabilidade();
+            List<FavoritosTarefaMeta> favoritosIncluidosOld = persistentUsuario.getFavoritosIncluidos();
+            List<FavoritosTarefaMeta> favoritosIncluidosNew = usuario.getFavoritosIncluidos();
+            List<CentroCusto> centrosCustoIncluidosOld = persistentUsuario.getCentrosCustoIncluidos();
+            List<CentroCusto> centrosCustoIncluidosNew = usuario.getCentrosCustoIncluidos();
+            List<Endereco> enderecosIncluidosOld = persistentUsuario.getEnderecosIncluidos();
+            List<Endereco> enderecosIncluidosNew = usuario.getEnderecosIncluidos();
+            List<Tarefa> tarefasIncluidasOld = persistentUsuario.getTarefasIncluidas();
+            List<Tarefa> tarefasIncluidasNew = usuario.getTarefasIncluidas();
+            List<Tarefa> tarefasSolicitadasOld = persistentUsuario.getTarefasSolicitadas();
+            List<Tarefa> tarefasSolicitadasNew = usuario.getTarefasSolicitadas();
+            List<Tarefa> tarefasSobResponsabilidadeOld = persistentUsuario.getTarefasSobResponsabilidade();
+            List<Tarefa> tarefasSobResponsabilidadeNew = usuario.getTarefasSobResponsabilidade();
+            List<ParicipanteTarefa> paricipacoesIncluidasOld = persistentUsuario.getParicipacoesIncluidas();
+            List<ParicipanteTarefa> paricipacoesIncluidasNew = usuario.getParicipacoesIncluidas();
+            List<ParicipanteTarefa> tarefasParticipantesOld = persistentUsuario.getTarefasParticipantes();
+            List<ParicipanteTarefa> tarefasParticipantesNew = usuario.getTarefasParticipantes();
+            List<FilialCliente> filiaisClientesIncluidasOld = persistentUsuario.getFiliaisClientesIncluidas();
+            List<FilialCliente> filiaisClientesIncluidasNew = usuario.getFiliaisClientesIncluidas();
+            List<FilialEmpresa> filiaisEmpresaIncluidasOld = persistentUsuario.getFiliaisEmpresaIncluidas();
+            List<FilialEmpresa> filiaisEmpresaIncluidasNew = usuario.getFiliaisEmpresaIncluidas();
+            List<AvaliacaoMetaTarefa> avaliacoesIncluidasOld = persistentUsuario.getAvaliacoesIncluidas();
+            List<AvaliacaoMetaTarefa> avaliacoesIncluidasNew = usuario.getAvaliacoesIncluidas();
+            List<AvaliacaoMetaTarefa> avaliacoesSubmetidasOld = persistentUsuario.getAvaliacoesSubmetidas();
+            List<AvaliacaoMetaTarefa> avaliacoesSubmetidasNew = usuario.getAvaliacoesSubmetidas();
+            List<AvaliacaoMetaTarefa> avaliacoesRecebidasOld = persistentUsuario.getAvaliacoesRecebidas();
+            List<AvaliacaoMetaTarefa> avaliacoesRecebidasNew = usuario.getAvaliacoesRecebidas();
+            List<OrcamentoTarefa> orcamentosIncluidosOld = persistentUsuario.getOrcamentosIncluidos();
+            List<OrcamentoTarefa> orcamentosIncluidosNew = usuario.getOrcamentosIncluidos();
+            List<ApontamentoTarefa> apontamentosIncluidosOld = persistentUsuario.getApontamentosIncluidos();
+            List<ApontamentoTarefa> apontamentosIncluidosNew = usuario.getApontamentosIncluidos();
+            List<Departamento> departamentosIncluidosOld = persistentUsuario.getDepartamentosIncluidos();
+            List<Departamento> departamentosIncluidosNew = usuario.getDepartamentosIncluidos();
+            List<Usuario> usuariosIncluidosOld = persistentUsuario.getUsuariosIncluidos();
+            List<Usuario> usuariosIncluidosNew = usuario.getUsuariosIncluidos();
+            List<Empresa> empresasIncluidasOld = persistentUsuario.getEmpresasIncluidas();
+            List<Empresa> empresasIncluidasNew = usuario.getEmpresasIncluidas();
+            List<EmpresaCliente> empresasClienteIncluidasOld = persistentUsuario.getEmpresasClienteIncluidas();
+            List<EmpresaCliente> empresasClienteIncluidasNew = usuario.getEmpresasClienteIncluidas();
+            List<AnexoTarefa> anexosTarefaIncluidosOld = persistentUsuario.getAnexosTarefaIncluidos();
+            List<AnexoTarefa> anexosTarefaIncluidosNew = usuario.getAnexosTarefaIncluidos();
             List<String> illegalOrphanMessages = null;
             for (UsuarioEmpresa empresasOldUsuarioEmpresa : empresasOld) {
                 if (!empresasNew.contains(empresasOldUsuarioEmpresa)) {
@@ -526,164 +526,164 @@ public class UsuarioDAO implements Serializable {
                     illegalOrphanMessages.add("You must retain UsuarioEmpresa " + empresasOldUsuarioEmpresa + " since its usuario field is not nullable.");
                 }
             }
-            for (Meta metasResponsaveisOldMeta : metasResponsaveisOld) {
-                if (!metasResponsaveisNew.contains(metasResponsaveisOldMeta)) {
+            for (Meta metasSobResponsabilidadeOldMeta : metasSobResponsabilidadeOld) {
+                if (!metasSobResponsabilidadeNew.contains(metasSobResponsabilidadeOldMeta)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Meta " + metasResponsaveisOldMeta + " since its responsavel field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Meta " + metasSobResponsabilidadeOldMeta + " since its usuarioResponsavel field is not nullable.");
                 }
             }
-            for (FavoritosTarefaMeta favoritosTarefaMetaListOldFavoritosTarefaMeta : favoritosTarefaMetaListOld) {
-                if (!favoritosTarefaMetaListNew.contains(favoritosTarefaMetaListOldFavoritosTarefaMeta)) {
+            for (FavoritosTarefaMeta favoritosIncluidosOldFavoritosTarefaMeta : favoritosIncluidosOld) {
+                if (!favoritosIncluidosNew.contains(favoritosIncluidosOldFavoritosTarefaMeta)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain FavoritosTarefaMeta " + favoritosTarefaMetaListOldFavoritosTarefaMeta + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain FavoritosTarefaMeta " + favoritosIncluidosOldFavoritosTarefaMeta + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (CentroCusto centroCustoListOldCentroCusto : centroCustoListOld) {
-                if (!centroCustoListNew.contains(centroCustoListOldCentroCusto)) {
+            for (CentroCusto centrosCustoIncluidosOldCentroCusto : centrosCustoIncluidosOld) {
+                if (!centrosCustoIncluidosNew.contains(centrosCustoIncluidosOldCentroCusto)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain CentroCusto " + centroCustoListOldCentroCusto + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain CentroCusto " + centrosCustoIncluidosOldCentroCusto + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (Endereco enderecoListOldEndereco : enderecoListOld) {
-                if (!enderecoListNew.contains(enderecoListOldEndereco)) {
+            for (Endereco enderecosIncluidosOldEndereco : enderecosIncluidosOld) {
+                if (!enderecosIncluidosNew.contains(enderecosIncluidosOldEndereco)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Endereco " + enderecoListOldEndereco + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Endereco " + enderecosIncluidosOldEndereco + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (Tarefa tarefaList1OldTarefa : tarefaList1Old) {
-                if (!tarefaList1New.contains(tarefaList1OldTarefa)) {
+            for (Tarefa tarefasSolicitadasOldTarefa : tarefasSolicitadasOld) {
+                if (!tarefasSolicitadasNew.contains(tarefasSolicitadasOldTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Tarefa " + tarefaList1OldTarefa + " since its idusuariosolicitante field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Tarefa " + tarefasSolicitadasOldTarefa + " since its usuarioSolicitante field is not nullable.");
                 }
             }
-            for (Tarefa tarefaList2OldTarefa : tarefaList2Old) {
-                if (!tarefaList2New.contains(tarefaList2OldTarefa)) {
+            for (Tarefa tarefasSobResponsabilidadeOldTarefa : tarefasSobResponsabilidadeOld) {
+                if (!tarefasSobResponsabilidadeNew.contains(tarefasSobResponsabilidadeOldTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Tarefa " + tarefaList2OldTarefa + " since its idusuarioresponsavel field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Tarefa " + tarefasSobResponsabilidadeOldTarefa + " since its usuarioResponsavel field is not nullable.");
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaListOldParicipanteTarefa : paricipanteTarefaListOld) {
-                if (!paricipanteTarefaListNew.contains(paricipanteTarefaListOldParicipanteTarefa)) {
+            for (ParicipanteTarefa paricipacoesIncluidasOldParicipanteTarefa : paricipacoesIncluidasOld) {
+                if (!paricipacoesIncluidasNew.contains(paricipacoesIncluidasOldParicipanteTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + paricipanteTarefaListOldParicipanteTarefa + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + paricipacoesIncluidasOldParicipanteTarefa + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaList1OldParicipanteTarefa : paricipanteTarefaList1Old) {
-                if (!paricipanteTarefaList1New.contains(paricipanteTarefaList1OldParicipanteTarefa)) {
+            for (ParicipanteTarefa tarefasParticipantesOldParicipanteTarefa : tarefasParticipantesOld) {
+                if (!tarefasParticipantesNew.contains(tarefasParticipantesOldParicipanteTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + paricipanteTarefaList1OldParicipanteTarefa + " since its idusuarioparticipante field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + tarefasParticipantesOldParicipanteTarefa + " since its usuarioParticipante field is not nullable.");
                 }
             }
-            for (FilialCliente filialClienteListOldFilialCliente : filialClienteListOld) {
-                if (!filialClienteListNew.contains(filialClienteListOldFilialCliente)) {
+            for (FilialCliente filiaisClientesIncluidasOldFilialCliente : filiaisClientesIncluidasOld) {
+                if (!filiaisClientesIncluidasNew.contains(filiaisClientesIncluidasOldFilialCliente)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain FilialCliente " + filialClienteListOldFilialCliente + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain FilialCliente " + filiaisClientesIncluidasOldFilialCliente + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (FilialEmpresa filialEmpresaListOldFilialEmpresa : filialEmpresaListOld) {
-                if (!filialEmpresaListNew.contains(filialEmpresaListOldFilialEmpresa)) {
+            for (FilialEmpresa filiaisEmpresaIncluidasOldFilialEmpresa : filiaisEmpresaIncluidasOld) {
+                if (!filiaisEmpresaIncluidasNew.contains(filiaisEmpresaIncluidasOldFilialEmpresa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain FilialEmpresa " + filialEmpresaListOldFilialEmpresa + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain FilialEmpresa " + filiaisEmpresaIncluidasOldFilialEmpresa + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListOldAvaliacaoMetaTarefa : avaliacaoMetaTarefaListOld) {
-                if (!avaliacaoMetaTarefaListNew.contains(avaliacaoMetaTarefaListOldAvaliacaoMetaTarefa)) {
+            for (AvaliacaoMetaTarefa avaliacoesIncluidasOldAvaliacaoMetaTarefa : avaliacoesIncluidasOld) {
+                if (!avaliacoesIncluidasNew.contains(avaliacoesIncluidasOldAvaliacaoMetaTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain AvaliacaoMetaTarefa " + avaliacaoMetaTarefaListOldAvaliacaoMetaTarefa + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AvaliacaoMetaTarefa " + avaliacoesIncluidasOldAvaliacaoMetaTarefa + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList1OldAvaliacaoMetaTarefa : avaliacaoMetaTarefaList1Old) {
-                if (!avaliacaoMetaTarefaList1New.contains(avaliacaoMetaTarefaList1OldAvaliacaoMetaTarefa)) {
+            for (AvaliacaoMetaTarefa avaliacoesSubmetidasOldAvaliacaoMetaTarefa : avaliacoesSubmetidasOld) {
+                if (!avaliacoesSubmetidasNew.contains(avaliacoesSubmetidasOldAvaliacaoMetaTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain AvaliacaoMetaTarefa " + avaliacaoMetaTarefaList1OldAvaliacaoMetaTarefa + " since its idusuarioavaliador field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AvaliacaoMetaTarefa " + avaliacoesSubmetidasOldAvaliacaoMetaTarefa + " since its usuarioAvaliador field is not nullable.");
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList2OldAvaliacaoMetaTarefa : avaliacaoMetaTarefaList2Old) {
-                if (!avaliacaoMetaTarefaList2New.contains(avaliacaoMetaTarefaList2OldAvaliacaoMetaTarefa)) {
+            for (AvaliacaoMetaTarefa avaliacoesRecebidasOldAvaliacaoMetaTarefa : avaliacoesRecebidasOld) {
+                if (!avaliacoesRecebidasNew.contains(avaliacoesRecebidasOldAvaliacaoMetaTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain AvaliacaoMetaTarefa " + avaliacaoMetaTarefaList2OldAvaliacaoMetaTarefa + " since its idusuarioavaliado field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AvaliacaoMetaTarefa " + avaliacoesRecebidasOldAvaliacaoMetaTarefa + " since its usuarioAvaliado field is not nullable.");
                 }
             }
-            for (OrcamentoTarefa orcamentoTarefaListOldOrcamentoTarefa : orcamentoTarefaListOld) {
-                if (!orcamentoTarefaListNew.contains(orcamentoTarefaListOldOrcamentoTarefa)) {
+            for (OrcamentoTarefa orcamentosIncluidosOldOrcamentoTarefa : orcamentosIncluidosOld) {
+                if (!orcamentosIncluidosNew.contains(orcamentosIncluidosOldOrcamentoTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain OrcamentoTarefa " + orcamentoTarefaListOldOrcamentoTarefa + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain OrcamentoTarefa " + orcamentosIncluidosOldOrcamentoTarefa + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (ApontamentoTarefa apontamentoTarefaListOldApontamentoTarefa : apontamentoTarefaListOld) {
-                if (!apontamentoTarefaListNew.contains(apontamentoTarefaListOldApontamentoTarefa)) {
+            for (ApontamentoTarefa apontamentosIncluidosOldApontamentoTarefa : apontamentosIncluidosOld) {
+                if (!apontamentosIncluidosNew.contains(apontamentosIncluidosOldApontamentoTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ApontamentoTarefa " + apontamentoTarefaListOldApontamentoTarefa + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ApontamentoTarefa " + apontamentosIncluidosOldApontamentoTarefa + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (Departamento departamentoListOldDepartamento : departamentoListOld) {
-                if (!departamentoListNew.contains(departamentoListOldDepartamento)) {
+            for (Departamento departamentosIncluidosOldDepartamento : departamentosIncluidosOld) {
+                if (!departamentosIncluidosNew.contains(departamentosIncluidosOldDepartamento)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Departamento " + departamentoListOldDepartamento + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Departamento " + departamentosIncluidosOldDepartamento + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (Empresa empresaListOldEmpresa : empresaListOld) {
-                if (!empresaListNew.contains(empresaListOldEmpresa)) {
+            for (Empresa empresasIncluidasOldEmpresa : empresasIncluidasOld) {
+                if (!empresasIncluidasNew.contains(empresasIncluidasOldEmpresa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Empresa " + empresaListOldEmpresa + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Empresa " + empresasIncluidasOldEmpresa + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (EmpresaCliente empresaClienteListOldEmpresaCliente : empresaClienteListOld) {
-                if (!empresaClienteListNew.contains(empresaClienteListOldEmpresaCliente)) {
+            for (EmpresaCliente empresasClienteIncluidasOldEmpresaCliente : empresasClienteIncluidasOld) {
+                if (!empresasClienteIncluidasNew.contains(empresasClienteIncluidasOldEmpresaCliente)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain EmpresaCliente " + empresaClienteListOldEmpresaCliente + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain EmpresaCliente " + empresasClienteIncluidasOldEmpresaCliente + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (AnexoTarefa anexoTarefaListOldAnexoTarefa : anexoTarefaListOld) {
-                if (!anexoTarefaListNew.contains(anexoTarefaListOldAnexoTarefa)) {
+            for (AnexoTarefa anexosTarefaIncluidosOldAnexoTarefa : anexosTarefaIncluidosOld) {
+                if (!anexosTarefaIncluidosNew.contains(anexosTarefaIncluidosOldAnexoTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain AnexoTarefa " + anexoTarefaListOldAnexoTarefa + " since its idusuarioinclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain AnexoTarefa " + anexosTarefaIncluidosOldAnexoTarefa + " since its usuarioInclusao field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                usuario.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                usuario.setUsuarioInclusao(usuarioInclusaoNew);
             }
             Collection<UsuarioEmpresa> attachedEmpresasNew = new ArrayList<UsuarioEmpresa>();
             for (UsuarioEmpresa empresasNewUsuarioEmpresaToAttach : empresasNew) {
@@ -692,161 +692,161 @@ public class UsuarioDAO implements Serializable {
             }
             empresasNew = attachedEmpresasNew;
             usuario.setEmpresas(empresasNew);
-            Collection<Meta> attachedMetasResponsaveisNew = new ArrayList<Meta>();
-            for (Meta metasResponsaveisNewMetaToAttach : metasResponsaveisNew) {
-                metasResponsaveisNewMetaToAttach = em.getReference(metasResponsaveisNewMetaToAttach.getClass(), metasResponsaveisNewMetaToAttach.getId());
-                attachedMetasResponsaveisNew.add(metasResponsaveisNewMetaToAttach);
+            Collection<Meta> attachedMetasSobResponsabilidadeNew = new ArrayList<Meta>();
+            for (Meta metasSobResponsabilidadeNewMetaToAttach : metasSobResponsabilidadeNew) {
+                metasSobResponsabilidadeNewMetaToAttach = em.getReference(metasSobResponsabilidadeNewMetaToAttach.getClass(), metasSobResponsabilidadeNewMetaToAttach.getId());
+                attachedMetasSobResponsabilidadeNew.add(metasSobResponsabilidadeNewMetaToAttach);
             }
-            metasResponsaveisNew = attachedMetasResponsaveisNew;
-            usuario.setMetasResponsaveis(metasResponsaveisNew);
-            List<FavoritosTarefaMeta> attachedFavoritosTarefaMetaListNew = new ArrayList<FavoritosTarefaMeta>();
-            for (FavoritosTarefaMeta favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach : favoritosTarefaMetaListNew) {
-                favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach = em.getReference(favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach.getClass(), favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach.getId());
-                attachedFavoritosTarefaMetaListNew.add(favoritosTarefaMetaListNewFavoritosTarefaMetaToAttach);
+            metasSobResponsabilidadeNew = attachedMetasSobResponsabilidadeNew;
+            usuario.setMetasSobResponsabilidade(metasSobResponsabilidadeNew);
+            List<FavoritosTarefaMeta> attachedFavoritosIncluidosNew = new ArrayList<FavoritosTarefaMeta>();
+            for (FavoritosTarefaMeta favoritosIncluidosNewFavoritosTarefaMetaToAttach : favoritosIncluidosNew) {
+                favoritosIncluidosNewFavoritosTarefaMetaToAttach = em.getReference(favoritosIncluidosNewFavoritosTarefaMetaToAttach.getClass(), favoritosIncluidosNewFavoritosTarefaMetaToAttach.getId());
+                attachedFavoritosIncluidosNew.add(favoritosIncluidosNewFavoritosTarefaMetaToAttach);
             }
-            favoritosTarefaMetaListNew = attachedFavoritosTarefaMetaListNew;
-            usuario.setFavoritosTarefaMetaList(favoritosTarefaMetaListNew);
-            List<CentroCusto> attachedCentroCustoListNew = new ArrayList<CentroCusto>();
-            for (CentroCusto centroCustoListNewCentroCustoToAttach : centroCustoListNew) {
-                centroCustoListNewCentroCustoToAttach = em.getReference(centroCustoListNewCentroCustoToAttach.getClass(), centroCustoListNewCentroCustoToAttach.getId());
-                attachedCentroCustoListNew.add(centroCustoListNewCentroCustoToAttach);
+            favoritosIncluidosNew = attachedFavoritosIncluidosNew;
+            usuario.setFavoritosIncluidos(favoritosIncluidosNew);
+            List<CentroCusto> attachedCentrosCustoIncluidosNew = new ArrayList<CentroCusto>();
+            for (CentroCusto centrosCustoIncluidosNewCentroCustoToAttach : centrosCustoIncluidosNew) {
+                centrosCustoIncluidosNewCentroCustoToAttach = em.getReference(centrosCustoIncluidosNewCentroCustoToAttach.getClass(), centrosCustoIncluidosNewCentroCustoToAttach.getId());
+                attachedCentrosCustoIncluidosNew.add(centrosCustoIncluidosNewCentroCustoToAttach);
             }
-            centroCustoListNew = attachedCentroCustoListNew;
-            usuario.setCentroCustoList(centroCustoListNew);
-            List<Endereco> attachedEnderecoListNew = new ArrayList<Endereco>();
-            for (Endereco enderecoListNewEnderecoToAttach : enderecoListNew) {
-                enderecoListNewEnderecoToAttach = em.getReference(enderecoListNewEnderecoToAttach.getClass(), enderecoListNewEnderecoToAttach.getId());
-                attachedEnderecoListNew.add(enderecoListNewEnderecoToAttach);
+            centrosCustoIncluidosNew = attachedCentrosCustoIncluidosNew;
+            usuario.setCentrosCustoIncluidos(centrosCustoIncluidosNew);
+            List<Endereco> attachedEnderecosIncluidosNew = new ArrayList<Endereco>();
+            for (Endereco enderecosIncluidosNewEnderecoToAttach : enderecosIncluidosNew) {
+                enderecosIncluidosNewEnderecoToAttach = em.getReference(enderecosIncluidosNewEnderecoToAttach.getClass(), enderecosIncluidosNewEnderecoToAttach.getId());
+                attachedEnderecosIncluidosNew.add(enderecosIncluidosNewEnderecoToAttach);
             }
-            enderecoListNew = attachedEnderecoListNew;
-            usuario.setEnderecoList(enderecoListNew);
-            List<Tarefa> attachedTarefaListNew = new ArrayList<Tarefa>();
-            for (Tarefa tarefaListNewTarefaToAttach : tarefaListNew) {
-                tarefaListNewTarefaToAttach = em.getReference(tarefaListNewTarefaToAttach.getClass(), tarefaListNewTarefaToAttach.getId());
-                attachedTarefaListNew.add(tarefaListNewTarefaToAttach);
+            enderecosIncluidosNew = attachedEnderecosIncluidosNew;
+            usuario.setEnderecosIncluidos(enderecosIncluidosNew);
+            List<Tarefa> attachedTarefasIncluidasNew = new ArrayList<Tarefa>();
+            for (Tarefa tarefasIncluidasNewTarefaToAttach : tarefasIncluidasNew) {
+                tarefasIncluidasNewTarefaToAttach = em.getReference(tarefasIncluidasNewTarefaToAttach.getClass(), tarefasIncluidasNewTarefaToAttach.getId());
+                attachedTarefasIncluidasNew.add(tarefasIncluidasNewTarefaToAttach);
             }
-            tarefaListNew = attachedTarefaListNew;
-            usuario.setTarefaList(tarefaListNew);
-            List<Tarefa> attachedTarefaList1New = new ArrayList<Tarefa>();
-            for (Tarefa tarefaList1NewTarefaToAttach : tarefaList1New) {
-                tarefaList1NewTarefaToAttach = em.getReference(tarefaList1NewTarefaToAttach.getClass(), tarefaList1NewTarefaToAttach.getId());
-                attachedTarefaList1New.add(tarefaList1NewTarefaToAttach);
+            tarefasIncluidasNew = attachedTarefasIncluidasNew;
+            usuario.setTarefasIncluidas(tarefasIncluidasNew);
+            List<Tarefa> attachedTarefasSolicitadasNew = new ArrayList<Tarefa>();
+            for (Tarefa tarefasSolicitadasNewTarefaToAttach : tarefasSolicitadasNew) {
+                tarefasSolicitadasNewTarefaToAttach = em.getReference(tarefasSolicitadasNewTarefaToAttach.getClass(), tarefasSolicitadasNewTarefaToAttach.getId());
+                attachedTarefasSolicitadasNew.add(tarefasSolicitadasNewTarefaToAttach);
             }
-            tarefaList1New = attachedTarefaList1New;
-            usuario.setTarefaList1(tarefaList1New);
-            List<Tarefa> attachedTarefaList2New = new ArrayList<Tarefa>();
-            for (Tarefa tarefaList2NewTarefaToAttach : tarefaList2New) {
-                tarefaList2NewTarefaToAttach = em.getReference(tarefaList2NewTarefaToAttach.getClass(), tarefaList2NewTarefaToAttach.getId());
-                attachedTarefaList2New.add(tarefaList2NewTarefaToAttach);
+            tarefasSolicitadasNew = attachedTarefasSolicitadasNew;
+            usuario.setTarefasSolicitadas(tarefasSolicitadasNew);
+            List<Tarefa> attachedTarefasSobResponsabilidadeNew = new ArrayList<Tarefa>();
+            for (Tarefa tarefasSobResponsabilidadeNewTarefaToAttach : tarefasSobResponsabilidadeNew) {
+                tarefasSobResponsabilidadeNewTarefaToAttach = em.getReference(tarefasSobResponsabilidadeNewTarefaToAttach.getClass(), tarefasSobResponsabilidadeNewTarefaToAttach.getId());
+                attachedTarefasSobResponsabilidadeNew.add(tarefasSobResponsabilidadeNewTarefaToAttach);
             }
-            tarefaList2New = attachedTarefaList2New;
-            usuario.setTarefaList2(tarefaList2New);
-            List<ParicipanteTarefa> attachedParicipanteTarefaListNew = new ArrayList<ParicipanteTarefa>();
-            for (ParicipanteTarefa paricipanteTarefaListNewParicipanteTarefaToAttach : paricipanteTarefaListNew) {
-                paricipanteTarefaListNewParicipanteTarefaToAttach = em.getReference(paricipanteTarefaListNewParicipanteTarefaToAttach.getClass(), paricipanteTarefaListNewParicipanteTarefaToAttach.getId());
-                attachedParicipanteTarefaListNew.add(paricipanteTarefaListNewParicipanteTarefaToAttach);
+            tarefasSobResponsabilidadeNew = attachedTarefasSobResponsabilidadeNew;
+            usuario.setTarefasSobResponsabilidade(tarefasSobResponsabilidadeNew);
+            List<ParicipanteTarefa> attachedParicipacoesIncluidasNew = new ArrayList<ParicipanteTarefa>();
+            for (ParicipanteTarefa paricipacoesIncluidasNewParicipanteTarefaToAttach : paricipacoesIncluidasNew) {
+                paricipacoesIncluidasNewParicipanteTarefaToAttach = em.getReference(paricipacoesIncluidasNewParicipanteTarefaToAttach.getClass(), paricipacoesIncluidasNewParicipanteTarefaToAttach.getId());
+                attachedParicipacoesIncluidasNew.add(paricipacoesIncluidasNewParicipanteTarefaToAttach);
             }
-            paricipanteTarefaListNew = attachedParicipanteTarefaListNew;
-            usuario.setParicipanteTarefaList(paricipanteTarefaListNew);
-            List<ParicipanteTarefa> attachedParicipanteTarefaList1New = new ArrayList<ParicipanteTarefa>();
-            for (ParicipanteTarefa paricipanteTarefaList1NewParicipanteTarefaToAttach : paricipanteTarefaList1New) {
-                paricipanteTarefaList1NewParicipanteTarefaToAttach = em.getReference(paricipanteTarefaList1NewParicipanteTarefaToAttach.getClass(), paricipanteTarefaList1NewParicipanteTarefaToAttach.getId());
-                attachedParicipanteTarefaList1New.add(paricipanteTarefaList1NewParicipanteTarefaToAttach);
+            paricipacoesIncluidasNew = attachedParicipacoesIncluidasNew;
+            usuario.setParicipacoesIncluidas(paricipacoesIncluidasNew);
+            List<ParicipanteTarefa> attachedTarefasParticipantesNew = new ArrayList<ParicipanteTarefa>();
+            for (ParicipanteTarefa tarefasParticipantesNewParicipanteTarefaToAttach : tarefasParticipantesNew) {
+                tarefasParticipantesNewParicipanteTarefaToAttach = em.getReference(tarefasParticipantesNewParicipanteTarefaToAttach.getClass(), tarefasParticipantesNewParicipanteTarefaToAttach.getId());
+                attachedTarefasParticipantesNew.add(tarefasParticipantesNewParicipanteTarefaToAttach);
             }
-            paricipanteTarefaList1New = attachedParicipanteTarefaList1New;
-            usuario.setParicipanteTarefaList1(paricipanteTarefaList1New);
-            List<FilialCliente> attachedFilialClienteListNew = new ArrayList<FilialCliente>();
-            for (FilialCliente filialClienteListNewFilialClienteToAttach : filialClienteListNew) {
-                filialClienteListNewFilialClienteToAttach = em.getReference(filialClienteListNewFilialClienteToAttach.getClass(), filialClienteListNewFilialClienteToAttach.getId());
-                attachedFilialClienteListNew.add(filialClienteListNewFilialClienteToAttach);
+            tarefasParticipantesNew = attachedTarefasParticipantesNew;
+            usuario.setTarefasParticipantes(tarefasParticipantesNew);
+            List<FilialCliente> attachedFiliaisClientesIncluidasNew = new ArrayList<FilialCliente>();
+            for (FilialCliente filiaisClientesIncluidasNewFilialClienteToAttach : filiaisClientesIncluidasNew) {
+                filiaisClientesIncluidasNewFilialClienteToAttach = em.getReference(filiaisClientesIncluidasNewFilialClienteToAttach.getClass(), filiaisClientesIncluidasNewFilialClienteToAttach.getId());
+                attachedFiliaisClientesIncluidasNew.add(filiaisClientesIncluidasNewFilialClienteToAttach);
             }
-            filialClienteListNew = attachedFilialClienteListNew;
-            usuario.setFilialClienteList(filialClienteListNew);
-            List<FilialEmpresa> attachedFilialEmpresaListNew = new ArrayList<FilialEmpresa>();
-            for (FilialEmpresa filialEmpresaListNewFilialEmpresaToAttach : filialEmpresaListNew) {
-                filialEmpresaListNewFilialEmpresaToAttach = em.getReference(filialEmpresaListNewFilialEmpresaToAttach.getClass(), filialEmpresaListNewFilialEmpresaToAttach.getId());
-                attachedFilialEmpresaListNew.add(filialEmpresaListNewFilialEmpresaToAttach);
+            filiaisClientesIncluidasNew = attachedFiliaisClientesIncluidasNew;
+            usuario.setFiliaisClientesIncluidas(filiaisClientesIncluidasNew);
+            List<FilialEmpresa> attachedFiliaisEmpresaIncluidasNew = new ArrayList<FilialEmpresa>();
+            for (FilialEmpresa filiaisEmpresaIncluidasNewFilialEmpresaToAttach : filiaisEmpresaIncluidasNew) {
+                filiaisEmpresaIncluidasNewFilialEmpresaToAttach = em.getReference(filiaisEmpresaIncluidasNewFilialEmpresaToAttach.getClass(), filiaisEmpresaIncluidasNewFilialEmpresaToAttach.getId());
+                attachedFiliaisEmpresaIncluidasNew.add(filiaisEmpresaIncluidasNewFilialEmpresaToAttach);
             }
-            filialEmpresaListNew = attachedFilialEmpresaListNew;
-            usuario.setFilialEmpresaList(filialEmpresaListNew);
-            List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaListNew = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach : avaliacaoMetaTarefaListNew) {
-                avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach.getId());
-                attachedAvaliacaoMetaTarefaListNew.add(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefaToAttach);
+            filiaisEmpresaIncluidasNew = attachedFiliaisEmpresaIncluidasNew;
+            usuario.setFiliaisEmpresaIncluidas(filiaisEmpresaIncluidasNew);
+            List<AvaliacaoMetaTarefa> attachedAvaliacoesIncluidasNew = new ArrayList<AvaliacaoMetaTarefa>();
+            for (AvaliacaoMetaTarefa avaliacoesIncluidasNewAvaliacaoMetaTarefaToAttach : avaliacoesIncluidasNew) {
+                avaliacoesIncluidasNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesIncluidasNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesIncluidasNewAvaliacaoMetaTarefaToAttach.getId());
+                attachedAvaliacoesIncluidasNew.add(avaliacoesIncluidasNewAvaliacaoMetaTarefaToAttach);
             }
-            avaliacaoMetaTarefaListNew = attachedAvaliacaoMetaTarefaListNew;
-            usuario.setAvaliacaoMetaTarefaList(avaliacaoMetaTarefaListNew);
-            List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaList1New = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefaToAttach : avaliacaoMetaTarefaList1New) {
-                avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefaToAttach.getId());
-                attachedAvaliacaoMetaTarefaList1New.add(avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefaToAttach);
+            avaliacoesIncluidasNew = attachedAvaliacoesIncluidasNew;
+            usuario.setAvaliacoesIncluidas(avaliacoesIncluidasNew);
+            List<AvaliacaoMetaTarefa> attachedAvaliacoesSubmetidasNew = new ArrayList<AvaliacaoMetaTarefa>();
+            for (AvaliacaoMetaTarefa avaliacoesSubmetidasNewAvaliacaoMetaTarefaToAttach : avaliacoesSubmetidasNew) {
+                avaliacoesSubmetidasNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesSubmetidasNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesSubmetidasNewAvaliacaoMetaTarefaToAttach.getId());
+                attachedAvaliacoesSubmetidasNew.add(avaliacoesSubmetidasNewAvaliacaoMetaTarefaToAttach);
             }
-            avaliacaoMetaTarefaList1New = attachedAvaliacaoMetaTarefaList1New;
-            usuario.setAvaliacaoMetaTarefaList1(avaliacaoMetaTarefaList1New);
-            List<AvaliacaoMetaTarefa> attachedAvaliacaoMetaTarefaList2New = new ArrayList<AvaliacaoMetaTarefa>();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefaToAttach : avaliacaoMetaTarefaList2New) {
-                avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefaToAttach.getClass(), avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefaToAttach.getId());
-                attachedAvaliacaoMetaTarefaList2New.add(avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefaToAttach);
+            avaliacoesSubmetidasNew = attachedAvaliacoesSubmetidasNew;
+            usuario.setAvaliacoesSubmetidas(avaliacoesSubmetidasNew);
+            List<AvaliacaoMetaTarefa> attachedAvaliacoesRecebidasNew = new ArrayList<AvaliacaoMetaTarefa>();
+            for (AvaliacaoMetaTarefa avaliacoesRecebidasNewAvaliacaoMetaTarefaToAttach : avaliacoesRecebidasNew) {
+                avaliacoesRecebidasNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesRecebidasNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesRecebidasNewAvaliacaoMetaTarefaToAttach.getId());
+                attachedAvaliacoesRecebidasNew.add(avaliacoesRecebidasNewAvaliacaoMetaTarefaToAttach);
             }
-            avaliacaoMetaTarefaList2New = attachedAvaliacaoMetaTarefaList2New;
-            usuario.setAvaliacaoMetaTarefaList2(avaliacaoMetaTarefaList2New);
-            List<OrcamentoTarefa> attachedOrcamentoTarefaListNew = new ArrayList<OrcamentoTarefa>();
-            for (OrcamentoTarefa orcamentoTarefaListNewOrcamentoTarefaToAttach : orcamentoTarefaListNew) {
-                orcamentoTarefaListNewOrcamentoTarefaToAttach = em.getReference(orcamentoTarefaListNewOrcamentoTarefaToAttach.getClass(), orcamentoTarefaListNewOrcamentoTarefaToAttach.getId());
-                attachedOrcamentoTarefaListNew.add(orcamentoTarefaListNewOrcamentoTarefaToAttach);
+            avaliacoesRecebidasNew = attachedAvaliacoesRecebidasNew;
+            usuario.setAvaliacoesRecebidas(avaliacoesRecebidasNew);
+            List<OrcamentoTarefa> attachedOrcamentosIncluidosNew = new ArrayList<OrcamentoTarefa>();
+            for (OrcamentoTarefa orcamentosIncluidosNewOrcamentoTarefaToAttach : orcamentosIncluidosNew) {
+                orcamentosIncluidosNewOrcamentoTarefaToAttach = em.getReference(orcamentosIncluidosNewOrcamentoTarefaToAttach.getClass(), orcamentosIncluidosNewOrcamentoTarefaToAttach.getId());
+                attachedOrcamentosIncluidosNew.add(orcamentosIncluidosNewOrcamentoTarefaToAttach);
             }
-            orcamentoTarefaListNew = attachedOrcamentoTarefaListNew;
-            usuario.setOrcamentoTarefaList(orcamentoTarefaListNew);
-            List<ApontamentoTarefa> attachedApontamentoTarefaListNew = new ArrayList<ApontamentoTarefa>();
-            for (ApontamentoTarefa apontamentoTarefaListNewApontamentoTarefaToAttach : apontamentoTarefaListNew) {
-                apontamentoTarefaListNewApontamentoTarefaToAttach = em.getReference(apontamentoTarefaListNewApontamentoTarefaToAttach.getClass(), apontamentoTarefaListNewApontamentoTarefaToAttach.getId());
-                attachedApontamentoTarefaListNew.add(apontamentoTarefaListNewApontamentoTarefaToAttach);
+            orcamentosIncluidosNew = attachedOrcamentosIncluidosNew;
+            usuario.setOrcamentosIncluidos(orcamentosIncluidosNew);
+            List<ApontamentoTarefa> attachedApontamentosIncluidosNew = new ArrayList<ApontamentoTarefa>();
+            for (ApontamentoTarefa apontamentosIncluidosNewApontamentoTarefaToAttach : apontamentosIncluidosNew) {
+                apontamentosIncluidosNewApontamentoTarefaToAttach = em.getReference(apontamentosIncluidosNewApontamentoTarefaToAttach.getClass(), apontamentosIncluidosNewApontamentoTarefaToAttach.getId());
+                attachedApontamentosIncluidosNew.add(apontamentosIncluidosNewApontamentoTarefaToAttach);
             }
-            apontamentoTarefaListNew = attachedApontamentoTarefaListNew;
-            usuario.setApontamentoTarefaList(apontamentoTarefaListNew);
-            List<Departamento> attachedDepartamentoListNew = new ArrayList<Departamento>();
-            for (Departamento departamentoListNewDepartamentoToAttach : departamentoListNew) {
-                departamentoListNewDepartamentoToAttach = em.getReference(departamentoListNewDepartamentoToAttach.getClass(), departamentoListNewDepartamentoToAttach.getId());
-                attachedDepartamentoListNew.add(departamentoListNewDepartamentoToAttach);
+            apontamentosIncluidosNew = attachedApontamentosIncluidosNew;
+            usuario.setApontamentosIncluidos(apontamentosIncluidosNew);
+            List<Departamento> attachedDepartamentosIncluidosNew = new ArrayList<Departamento>();
+            for (Departamento departamentosIncluidosNewDepartamentoToAttach : departamentosIncluidosNew) {
+                departamentosIncluidosNewDepartamentoToAttach = em.getReference(departamentosIncluidosNewDepartamentoToAttach.getClass(), departamentosIncluidosNewDepartamentoToAttach.getId());
+                attachedDepartamentosIncluidosNew.add(departamentosIncluidosNewDepartamentoToAttach);
             }
-            departamentoListNew = attachedDepartamentoListNew;
-            usuario.setDepartamentoList(departamentoListNew);
-            List<Usuario> attachedUsuarioListNew = new ArrayList<Usuario>();
-            for (Usuario usuarioListNewUsuarioToAttach : usuarioListNew) {
-                usuarioListNewUsuarioToAttach = em.getReference(usuarioListNewUsuarioToAttach.getClass(), usuarioListNewUsuarioToAttach.getId());
-                attachedUsuarioListNew.add(usuarioListNewUsuarioToAttach);
+            departamentosIncluidosNew = attachedDepartamentosIncluidosNew;
+            usuario.setDepartamentosIncluidos(departamentosIncluidosNew);
+            List<Usuario> attachedUsuariosIncluidosNew = new ArrayList<Usuario>();
+            for (Usuario usuariosIncluidosNewUsuarioToAttach : usuariosIncluidosNew) {
+                usuariosIncluidosNewUsuarioToAttach = em.getReference(usuariosIncluidosNewUsuarioToAttach.getClass(), usuariosIncluidosNewUsuarioToAttach.getId());
+                attachedUsuariosIncluidosNew.add(usuariosIncluidosNewUsuarioToAttach);
             }
-            usuarioListNew = attachedUsuarioListNew;
-            usuario.setUsuarioList(usuarioListNew);
-            List<Empresa> attachedEmpresaListNew = new ArrayList<Empresa>();
-            for (Empresa empresaListNewEmpresaToAttach : empresaListNew) {
-                empresaListNewEmpresaToAttach = em.getReference(empresaListNewEmpresaToAttach.getClass(), empresaListNewEmpresaToAttach.getId());
-                attachedEmpresaListNew.add(empresaListNewEmpresaToAttach);
+            usuariosIncluidosNew = attachedUsuariosIncluidosNew;
+            usuario.setUsuariosIncluidos(usuariosIncluidosNew);
+            List<Empresa> attachedEmpresasIncluidasNew = new ArrayList<Empresa>();
+            for (Empresa empresasIncluidasNewEmpresaToAttach : empresasIncluidasNew) {
+                empresasIncluidasNewEmpresaToAttach = em.getReference(empresasIncluidasNewEmpresaToAttach.getClass(), empresasIncluidasNewEmpresaToAttach.getId());
+                attachedEmpresasIncluidasNew.add(empresasIncluidasNewEmpresaToAttach);
             }
-            empresaListNew = attachedEmpresaListNew;
-            usuario.setEmpresaList(empresaListNew);
-            List<EmpresaCliente> attachedEmpresaClienteListNew = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente empresaClienteListNewEmpresaClienteToAttach : empresaClienteListNew) {
-                empresaClienteListNewEmpresaClienteToAttach = em.getReference(empresaClienteListNewEmpresaClienteToAttach.getClass(), empresaClienteListNewEmpresaClienteToAttach.getId());
-                attachedEmpresaClienteListNew.add(empresaClienteListNewEmpresaClienteToAttach);
+            empresasIncluidasNew = attachedEmpresasIncluidasNew;
+            usuario.setEmpresasIncluidas(empresasIncluidasNew);
+            List<EmpresaCliente> attachedEmpresasClienteIncluidasNew = new ArrayList<EmpresaCliente>();
+            for (EmpresaCliente empresasClienteIncluidasNewEmpresaClienteToAttach : empresasClienteIncluidasNew) {
+                empresasClienteIncluidasNewEmpresaClienteToAttach = em.getReference(empresasClienteIncluidasNewEmpresaClienteToAttach.getClass(), empresasClienteIncluidasNewEmpresaClienteToAttach.getId());
+                attachedEmpresasClienteIncluidasNew.add(empresasClienteIncluidasNewEmpresaClienteToAttach);
             }
-            empresaClienteListNew = attachedEmpresaClienteListNew;
-            usuario.setEmpresaClienteList(empresaClienteListNew);
-            List<AnexoTarefa> attachedAnexoTarefaListNew = new ArrayList<AnexoTarefa>();
-            for (AnexoTarefa anexoTarefaListNewAnexoTarefaToAttach : anexoTarefaListNew) {
-                anexoTarefaListNewAnexoTarefaToAttach = em.getReference(anexoTarefaListNewAnexoTarefaToAttach.getClass(), anexoTarefaListNewAnexoTarefaToAttach.getId());
-                attachedAnexoTarefaListNew.add(anexoTarefaListNewAnexoTarefaToAttach);
+            empresasClienteIncluidasNew = attachedEmpresasClienteIncluidasNew;
+            usuario.setEmpresasClienteIncluidas(empresasClienteIncluidasNew);
+            List<AnexoTarefa> attachedAnexosTarefaIncluidosNew = new ArrayList<AnexoTarefa>();
+            for (AnexoTarefa anexosTarefaIncluidosNewAnexoTarefaToAttach : anexosTarefaIncluidosNew) {
+                anexosTarefaIncluidosNewAnexoTarefaToAttach = em.getReference(anexosTarefaIncluidosNewAnexoTarefaToAttach.getClass(), anexosTarefaIncluidosNewAnexoTarefaToAttach.getId());
+                attachedAnexosTarefaIncluidosNew.add(anexosTarefaIncluidosNewAnexoTarefaToAttach);
             }
-            anexoTarefaListNew = attachedAnexoTarefaListNew;
-            usuario.setAnexoTarefaList(anexoTarefaListNew);
+            anexosTarefaIncluidosNew = attachedAnexosTarefaIncluidosNew;
+            usuario.setAnexosTarefaIncluidos(anexosTarefaIncluidosNew);
             usuario = em.merge(usuario);
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getUsuarioList().remove(usuario);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getUsuariosIncluidos().remove(usuario);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getUsuarioList().add(usuario);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getUsuariosIncluidos().add(usuario);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
             for (UsuarioEmpresa empresasNewUsuarioEmpresa : empresasNew) {
                 if (!empresasOld.contains(empresasNewUsuarioEmpresa)) {
@@ -859,246 +859,246 @@ public class UsuarioDAO implements Serializable {
                     }
                 }
             }
-            for (Meta metasResponsaveisNewMeta : metasResponsaveisNew) {
-                if (!metasResponsaveisOld.contains(metasResponsaveisNewMeta)) {
-                    Usuario oldResponsavelOfMetasResponsaveisNewMeta = metasResponsaveisNewMeta.getResponsavel();
-                    metasResponsaveisNewMeta.setResponsavel(usuario);
-                    metasResponsaveisNewMeta = em.merge(metasResponsaveisNewMeta);
-                    if (oldResponsavelOfMetasResponsaveisNewMeta != null && !oldResponsavelOfMetasResponsaveisNewMeta.equals(usuario)) {
-                        oldResponsavelOfMetasResponsaveisNewMeta.getMetasResponsaveis().remove(metasResponsaveisNewMeta);
-                        oldResponsavelOfMetasResponsaveisNewMeta = em.merge(oldResponsavelOfMetasResponsaveisNewMeta);
+            for (Meta metasSobResponsabilidadeNewMeta : metasSobResponsabilidadeNew) {
+                if (!metasSobResponsabilidadeOld.contains(metasSobResponsabilidadeNewMeta)) {
+                    Usuario oldUsuarioResponsavelOfMetasSobResponsabilidadeNewMeta = metasSobResponsabilidadeNewMeta.getUsuarioResponsavel();
+                    metasSobResponsabilidadeNewMeta.setUsuarioResponsavel(usuario);
+                    metasSobResponsabilidadeNewMeta = em.merge(metasSobResponsabilidadeNewMeta);
+                    if (oldUsuarioResponsavelOfMetasSobResponsabilidadeNewMeta != null && !oldUsuarioResponsavelOfMetasSobResponsabilidadeNewMeta.equals(usuario)) {
+                        oldUsuarioResponsavelOfMetasSobResponsabilidadeNewMeta.getMetasSobResponsabilidade().remove(metasSobResponsabilidadeNewMeta);
+                        oldUsuarioResponsavelOfMetasSobResponsabilidadeNewMeta = em.merge(oldUsuarioResponsavelOfMetasSobResponsabilidadeNewMeta);
                     }
                 }
             }
-            for (FavoritosTarefaMeta favoritosTarefaMetaListNewFavoritosTarefaMeta : favoritosTarefaMetaListNew) {
-                if (!favoritosTarefaMetaListOld.contains(favoritosTarefaMetaListNewFavoritosTarefaMeta)) {
-                    Usuario oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = favoritosTarefaMetaListNewFavoritosTarefaMeta.getIdUsuarioInclusao();
-                    favoritosTarefaMetaListNewFavoritosTarefaMeta.setIdUsuarioInclusao(usuario);
-                    favoritosTarefaMetaListNewFavoritosTarefaMeta = em.merge(favoritosTarefaMetaListNewFavoritosTarefaMeta);
-                    if (oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta != null && !oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.equals(usuario)) {
-                        oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta.getFavoritosTarefaMetaList().remove(favoritosTarefaMetaListNewFavoritosTarefaMeta);
-                        oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta = em.merge(oldIdusuarioinclusaoOfFavoritosTarefaMetaListNewFavoritosTarefaMeta);
+            for (FavoritosTarefaMeta favoritosIncluidosNewFavoritosTarefaMeta : favoritosIncluidosNew) {
+                if (!favoritosIncluidosOld.contains(favoritosIncluidosNewFavoritosTarefaMeta)) {
+                    Usuario oldUsuarioInclusaoOfFavoritosIncluidosNewFavoritosTarefaMeta = favoritosIncluidosNewFavoritosTarefaMeta.getUsuarioInclusao();
+                    favoritosIncluidosNewFavoritosTarefaMeta.setUsuarioInclusao(usuario);
+                    favoritosIncluidosNewFavoritosTarefaMeta = em.merge(favoritosIncluidosNewFavoritosTarefaMeta);
+                    if (oldUsuarioInclusaoOfFavoritosIncluidosNewFavoritosTarefaMeta != null && !oldUsuarioInclusaoOfFavoritosIncluidosNewFavoritosTarefaMeta.equals(usuario)) {
+                        oldUsuarioInclusaoOfFavoritosIncluidosNewFavoritosTarefaMeta.getFavoritosIncluidos().remove(favoritosIncluidosNewFavoritosTarefaMeta);
+                        oldUsuarioInclusaoOfFavoritosIncluidosNewFavoritosTarefaMeta = em.merge(oldUsuarioInclusaoOfFavoritosIncluidosNewFavoritosTarefaMeta);
                     }
                 }
             }
-            for (CentroCusto centroCustoListNewCentroCusto : centroCustoListNew) {
-                if (!centroCustoListOld.contains(centroCustoListNewCentroCusto)) {
-                    Usuario oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto = centroCustoListNewCentroCusto.getIdUsuarioInclusao();
-                    centroCustoListNewCentroCusto.setIdUsuarioInclusao(usuario);
-                    centroCustoListNewCentroCusto = em.merge(centroCustoListNewCentroCusto);
-                    if (oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto != null && !oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto.equals(usuario)) {
-                        oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto.getCentroCustoList().remove(centroCustoListNewCentroCusto);
-                        oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto = em.merge(oldIdusuarioinclusaoOfCentroCustoListNewCentroCusto);
+            for (CentroCusto centrosCustoIncluidosNewCentroCusto : centrosCustoIncluidosNew) {
+                if (!centrosCustoIncluidosOld.contains(centrosCustoIncluidosNewCentroCusto)) {
+                    Usuario oldUsuarioInclusaoOfCentrosCustoIncluidosNewCentroCusto = centrosCustoIncluidosNewCentroCusto.getUsuarioInclusao();
+                    centrosCustoIncluidosNewCentroCusto.setUsuarioInclusao(usuario);
+                    centrosCustoIncluidosNewCentroCusto = em.merge(centrosCustoIncluidosNewCentroCusto);
+                    if (oldUsuarioInclusaoOfCentrosCustoIncluidosNewCentroCusto != null && !oldUsuarioInclusaoOfCentrosCustoIncluidosNewCentroCusto.equals(usuario)) {
+                        oldUsuarioInclusaoOfCentrosCustoIncluidosNewCentroCusto.getCentrosCustoIncluidos().remove(centrosCustoIncluidosNewCentroCusto);
+                        oldUsuarioInclusaoOfCentrosCustoIncluidosNewCentroCusto = em.merge(oldUsuarioInclusaoOfCentrosCustoIncluidosNewCentroCusto);
                     }
                 }
             }
-            for (Endereco enderecoListNewEndereco : enderecoListNew) {
-                if (!enderecoListOld.contains(enderecoListNewEndereco)) {
-                    Usuario oldIdusuarioinclusaoOfEnderecoListNewEndereco = enderecoListNewEndereco.getIdUsuarioInclusao();
-                    enderecoListNewEndereco.setIdUsuarioInclusao(usuario);
-                    enderecoListNewEndereco = em.merge(enderecoListNewEndereco);
-                    if (oldIdusuarioinclusaoOfEnderecoListNewEndereco != null && !oldIdusuarioinclusaoOfEnderecoListNewEndereco.equals(usuario)) {
-                        oldIdusuarioinclusaoOfEnderecoListNewEndereco.getEnderecoList().remove(enderecoListNewEndereco);
-                        oldIdusuarioinclusaoOfEnderecoListNewEndereco = em.merge(oldIdusuarioinclusaoOfEnderecoListNewEndereco);
+            for (Endereco enderecosIncluidosNewEndereco : enderecosIncluidosNew) {
+                if (!enderecosIncluidosOld.contains(enderecosIncluidosNewEndereco)) {
+                    Usuario oldUsuarioInclusaoOfEnderecosIncluidosNewEndereco = enderecosIncluidosNewEndereco.getUsuarioInclusao();
+                    enderecosIncluidosNewEndereco.setUsuarioInclusao(usuario);
+                    enderecosIncluidosNewEndereco = em.merge(enderecosIncluidosNewEndereco);
+                    if (oldUsuarioInclusaoOfEnderecosIncluidosNewEndereco != null && !oldUsuarioInclusaoOfEnderecosIncluidosNewEndereco.equals(usuario)) {
+                        oldUsuarioInclusaoOfEnderecosIncluidosNewEndereco.getEnderecosIncluidos().remove(enderecosIncluidosNewEndereco);
+                        oldUsuarioInclusaoOfEnderecosIncluidosNewEndereco = em.merge(oldUsuarioInclusaoOfEnderecosIncluidosNewEndereco);
                     }
                 }
             }
-            for (Tarefa tarefaListOldTarefa : tarefaListOld) {
-                if (!tarefaListNew.contains(tarefaListOldTarefa)) {
-                    tarefaListOldTarefa.setIdUsuarioInclusao(null);
-                    tarefaListOldTarefa = em.merge(tarefaListOldTarefa);
+            for (Tarefa tarefasIncluidasOldTarefa : tarefasIncluidasOld) {
+                if (!tarefasIncluidasNew.contains(tarefasIncluidasOldTarefa)) {
+                    tarefasIncluidasOldTarefa.setUsuarioInclusao(null);
+                    tarefasIncluidasOldTarefa = em.merge(tarefasIncluidasOldTarefa);
                 }
             }
-            for (Tarefa tarefaListNewTarefa : tarefaListNew) {
-                if (!tarefaListOld.contains(tarefaListNewTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfTarefaListNewTarefa = tarefaListNewTarefa.getIdUsuarioInclusao();
-                    tarefaListNewTarefa.setIdUsuarioInclusao(usuario);
-                    tarefaListNewTarefa = em.merge(tarefaListNewTarefa);
-                    if (oldIdusuarioinclusaoOfTarefaListNewTarefa != null && !oldIdusuarioinclusaoOfTarefaListNewTarefa.equals(usuario)) {
-                        oldIdusuarioinclusaoOfTarefaListNewTarefa.getTarefaList().remove(tarefaListNewTarefa);
-                        oldIdusuarioinclusaoOfTarefaListNewTarefa = em.merge(oldIdusuarioinclusaoOfTarefaListNewTarefa);
+            for (Tarefa tarefasIncluidasNewTarefa : tarefasIncluidasNew) {
+                if (!tarefasIncluidasOld.contains(tarefasIncluidasNewTarefa)) {
+                    Usuario oldUsuarioInclusaoOfTarefasIncluidasNewTarefa = tarefasIncluidasNewTarefa.getUsuarioInclusao();
+                    tarefasIncluidasNewTarefa.setUsuarioInclusao(usuario);
+                    tarefasIncluidasNewTarefa = em.merge(tarefasIncluidasNewTarefa);
+                    if (oldUsuarioInclusaoOfTarefasIncluidasNewTarefa != null && !oldUsuarioInclusaoOfTarefasIncluidasNewTarefa.equals(usuario)) {
+                        oldUsuarioInclusaoOfTarefasIncluidasNewTarefa.getTarefasIncluidas().remove(tarefasIncluidasNewTarefa);
+                        oldUsuarioInclusaoOfTarefasIncluidasNewTarefa = em.merge(oldUsuarioInclusaoOfTarefasIncluidasNewTarefa);
                     }
                 }
             }
-            for (Tarefa tarefaList1NewTarefa : tarefaList1New) {
-                if (!tarefaList1Old.contains(tarefaList1NewTarefa)) {
-                    Usuario oldIdusuariosolicitanteOfTarefaList1NewTarefa = tarefaList1NewTarefa.getIdUsuarioSolicitante();
-                    tarefaList1NewTarefa.setIdUsuarioSolicitante(usuario);
-                    tarefaList1NewTarefa = em.merge(tarefaList1NewTarefa);
-                    if (oldIdusuariosolicitanteOfTarefaList1NewTarefa != null && !oldIdusuariosolicitanteOfTarefaList1NewTarefa.equals(usuario)) {
-                        oldIdusuariosolicitanteOfTarefaList1NewTarefa.getTarefaList1().remove(tarefaList1NewTarefa);
-                        oldIdusuariosolicitanteOfTarefaList1NewTarefa = em.merge(oldIdusuariosolicitanteOfTarefaList1NewTarefa);
+            for (Tarefa tarefasSolicitadasNewTarefa : tarefasSolicitadasNew) {
+                if (!tarefasSolicitadasOld.contains(tarefasSolicitadasNewTarefa)) {
+                    Usuario oldUsuarioSolicitanteOfTarefasSolicitadasNewTarefa = tarefasSolicitadasNewTarefa.getUsuarioSolicitante();
+                    tarefasSolicitadasNewTarefa.setUsuarioSolicitante(usuario);
+                    tarefasSolicitadasNewTarefa = em.merge(tarefasSolicitadasNewTarefa);
+                    if (oldUsuarioSolicitanteOfTarefasSolicitadasNewTarefa != null && !oldUsuarioSolicitanteOfTarefasSolicitadasNewTarefa.equals(usuario)) {
+                        oldUsuarioSolicitanteOfTarefasSolicitadasNewTarefa.getTarefasSolicitadas().remove(tarefasSolicitadasNewTarefa);
+                        oldUsuarioSolicitanteOfTarefasSolicitadasNewTarefa = em.merge(oldUsuarioSolicitanteOfTarefasSolicitadasNewTarefa);
                     }
                 }
             }
-            for (Tarefa tarefaList2NewTarefa : tarefaList2New) {
-                if (!tarefaList2Old.contains(tarefaList2NewTarefa)) {
-                    Usuario oldIdusuarioresponsavelOfTarefaList2NewTarefa = tarefaList2NewTarefa.getIdUsuarioResponsavel();
-                    tarefaList2NewTarefa.setIdUsuarioResponsavel(usuario);
-                    tarefaList2NewTarefa = em.merge(tarefaList2NewTarefa);
-                    if (oldIdusuarioresponsavelOfTarefaList2NewTarefa != null && !oldIdusuarioresponsavelOfTarefaList2NewTarefa.equals(usuario)) {
-                        oldIdusuarioresponsavelOfTarefaList2NewTarefa.getTarefaList2().remove(tarefaList2NewTarefa);
-                        oldIdusuarioresponsavelOfTarefaList2NewTarefa = em.merge(oldIdusuarioresponsavelOfTarefaList2NewTarefa);
+            for (Tarefa tarefasSobResponsabilidadeNewTarefa : tarefasSobResponsabilidadeNew) {
+                if (!tarefasSobResponsabilidadeOld.contains(tarefasSobResponsabilidadeNewTarefa)) {
+                    Usuario oldUsuarioResponsavelOfTarefasSobResponsabilidadeNewTarefa = tarefasSobResponsabilidadeNewTarefa.getUsuarioResponsavel();
+                    tarefasSobResponsabilidadeNewTarefa.setUsuarioResponsavel(usuario);
+                    tarefasSobResponsabilidadeNewTarefa = em.merge(tarefasSobResponsabilidadeNewTarefa);
+                    if (oldUsuarioResponsavelOfTarefasSobResponsabilidadeNewTarefa != null && !oldUsuarioResponsavelOfTarefasSobResponsabilidadeNewTarefa.equals(usuario)) {
+                        oldUsuarioResponsavelOfTarefasSobResponsabilidadeNewTarefa.getTarefasSobResponsabilidade().remove(tarefasSobResponsabilidadeNewTarefa);
+                        oldUsuarioResponsavelOfTarefasSobResponsabilidadeNewTarefa = em.merge(oldUsuarioResponsavelOfTarefasSobResponsabilidadeNewTarefa);
                     }
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaListNewParicipanteTarefa : paricipanteTarefaListNew) {
-                if (!paricipanteTarefaListOld.contains(paricipanteTarefaListNewParicipanteTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa = paricipanteTarefaListNewParicipanteTarefa.getIdUsuarioInclusao();
-                    paricipanteTarefaListNewParicipanteTarefa.setIdUsuarioInclusao(usuario);
-                    paricipanteTarefaListNewParicipanteTarefa = em.merge(paricipanteTarefaListNewParicipanteTarefa);
-                    if (oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa != null && !oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa.equals(usuario)) {
-                        oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa.getParicipanteTarefaList().remove(paricipanteTarefaListNewParicipanteTarefa);
-                        oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa = em.merge(oldIdusuarioinclusaoOfParicipanteTarefaListNewParicipanteTarefa);
+            for (ParicipanteTarefa paricipacoesIncluidasNewParicipanteTarefa : paricipacoesIncluidasNew) {
+                if (!paricipacoesIncluidasOld.contains(paricipacoesIncluidasNewParicipanteTarefa)) {
+                    Usuario oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa = paricipacoesIncluidasNewParicipanteTarefa.getUsuarioInclusao();
+                    paricipacoesIncluidasNewParicipanteTarefa.setUsuarioInclusao(usuario);
+                    paricipacoesIncluidasNewParicipanteTarefa = em.merge(paricipacoesIncluidasNewParicipanteTarefa);
+                    if (oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa != null && !oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa.equals(usuario)) {
+                        oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa.getParicipacoesIncluidas().remove(paricipacoesIncluidasNewParicipanteTarefa);
+                        oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa = em.merge(oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa);
                     }
                 }
             }
-            for (ParicipanteTarefa paricipanteTarefaList1NewParicipanteTarefa : paricipanteTarefaList1New) {
-                if (!paricipanteTarefaList1Old.contains(paricipanteTarefaList1NewParicipanteTarefa)) {
-                    Usuario oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa = paricipanteTarefaList1NewParicipanteTarefa.getIdUsuarioParticipante();
-                    paricipanteTarefaList1NewParicipanteTarefa.setIdUsuarioParticipante(usuario);
-                    paricipanteTarefaList1NewParicipanteTarefa = em.merge(paricipanteTarefaList1NewParicipanteTarefa);
-                    if (oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa != null && !oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa.equals(usuario)) {
-                        oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa.getParicipanteTarefaList1().remove(paricipanteTarefaList1NewParicipanteTarefa);
-                        oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa = em.merge(oldIdusuarioparticipanteOfParicipanteTarefaList1NewParicipanteTarefa);
+            for (ParicipanteTarefa tarefasParticipantesNewParicipanteTarefa : tarefasParticipantesNew) {
+                if (!tarefasParticipantesOld.contains(tarefasParticipantesNewParicipanteTarefa)) {
+                    Usuario oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa = tarefasParticipantesNewParicipanteTarefa.getUsuarioParticipante();
+                    tarefasParticipantesNewParicipanteTarefa.setUsuarioParticipante(usuario);
+                    tarefasParticipantesNewParicipanteTarefa = em.merge(tarefasParticipantesNewParicipanteTarefa);
+                    if (oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa != null && !oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa.equals(usuario)) {
+                        oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa.getTarefasParticipantes().remove(tarefasParticipantesNewParicipanteTarefa);
+                        oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa = em.merge(oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa);
                     }
                 }
             }
-            for (FilialCliente filialClienteListNewFilialCliente : filialClienteListNew) {
-                if (!filialClienteListOld.contains(filialClienteListNewFilialCliente)) {
-                    Usuario oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente = filialClienteListNewFilialCliente.getIdUsuarioInclusao();
-                    filialClienteListNewFilialCliente.setIdUsuarioInclusao(usuario);
-                    filialClienteListNewFilialCliente = em.merge(filialClienteListNewFilialCliente);
-                    if (oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente != null && !oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente.equals(usuario)) {
-                        oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente.getFilialClienteList().remove(filialClienteListNewFilialCliente);
-                        oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente = em.merge(oldIdusuarioinclusaoOfFilialClienteListNewFilialCliente);
+            for (FilialCliente filiaisClientesIncluidasNewFilialCliente : filiaisClientesIncluidasNew) {
+                if (!filiaisClientesIncluidasOld.contains(filiaisClientesIncluidasNewFilialCliente)) {
+                    Usuario oldUsuarioInclusaoOfFiliaisClientesIncluidasNewFilialCliente = filiaisClientesIncluidasNewFilialCliente.getUsuarioInclusao();
+                    filiaisClientesIncluidasNewFilialCliente.setUsuarioInclusao(usuario);
+                    filiaisClientesIncluidasNewFilialCliente = em.merge(filiaisClientesIncluidasNewFilialCliente);
+                    if (oldUsuarioInclusaoOfFiliaisClientesIncluidasNewFilialCliente != null && !oldUsuarioInclusaoOfFiliaisClientesIncluidasNewFilialCliente.equals(usuario)) {
+                        oldUsuarioInclusaoOfFiliaisClientesIncluidasNewFilialCliente.getFiliaisClientesIncluidas().remove(filiaisClientesIncluidasNewFilialCliente);
+                        oldUsuarioInclusaoOfFiliaisClientesIncluidasNewFilialCliente = em.merge(oldUsuarioInclusaoOfFiliaisClientesIncluidasNewFilialCliente);
                     }
                 }
             }
-            for (FilialEmpresa filialEmpresaListNewFilialEmpresa : filialEmpresaListNew) {
-                if (!filialEmpresaListOld.contains(filialEmpresaListNewFilialEmpresa)) {
-                    Usuario oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa = filialEmpresaListNewFilialEmpresa.getIdUsuarioInclusao();
-                    filialEmpresaListNewFilialEmpresa.setIdUsuarioInclusao(usuario);
-                    filialEmpresaListNewFilialEmpresa = em.merge(filialEmpresaListNewFilialEmpresa);
-                    if (oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa != null && !oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa.equals(usuario)) {
-                        oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa.getFilialEmpresaList().remove(filialEmpresaListNewFilialEmpresa);
-                        oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa = em.merge(oldIdusuarioinclusaoOfFilialEmpresaListNewFilialEmpresa);
+            for (FilialEmpresa filiaisEmpresaIncluidasNewFilialEmpresa : filiaisEmpresaIncluidasNew) {
+                if (!filiaisEmpresaIncluidasOld.contains(filiaisEmpresaIncluidasNewFilialEmpresa)) {
+                    Usuario oldUsuarioInclusaoOfFiliaisEmpresaIncluidasNewFilialEmpresa = filiaisEmpresaIncluidasNewFilialEmpresa.getUsuarioInclusao();
+                    filiaisEmpresaIncluidasNewFilialEmpresa.setUsuarioInclusao(usuario);
+                    filiaisEmpresaIncluidasNewFilialEmpresa = em.merge(filiaisEmpresaIncluidasNewFilialEmpresa);
+                    if (oldUsuarioInclusaoOfFiliaisEmpresaIncluidasNewFilialEmpresa != null && !oldUsuarioInclusaoOfFiliaisEmpresaIncluidasNewFilialEmpresa.equals(usuario)) {
+                        oldUsuarioInclusaoOfFiliaisEmpresaIncluidasNewFilialEmpresa.getFiliaisEmpresaIncluidas().remove(filiaisEmpresaIncluidasNewFilialEmpresa);
+                        oldUsuarioInclusaoOfFiliaisEmpresaIncluidasNewFilialEmpresa = em.merge(oldUsuarioInclusaoOfFiliaisEmpresaIncluidasNewFilialEmpresa);
                     }
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa : avaliacaoMetaTarefaListNew) {
-                if (!avaliacaoMetaTarefaListOld.contains(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getIdUsuarioInclusao();
-                    avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.setIdUsuarioInclusao(usuario);
-                    avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
-                    if (oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa != null && !oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.equals(usuario)) {
-                        oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList().remove(avaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
-                        oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa = em.merge(oldIdusuarioinclusaoOfAvaliacaoMetaTarefaListNewAvaliacaoMetaTarefa);
+            for (AvaliacaoMetaTarefa avaliacoesIncluidasNewAvaliacaoMetaTarefa : avaliacoesIncluidasNew) {
+                if (!avaliacoesIncluidasOld.contains(avaliacoesIncluidasNewAvaliacaoMetaTarefa)) {
+                    Usuario oldUsuarioInclusaoOfAvaliacoesIncluidasNewAvaliacaoMetaTarefa = avaliacoesIncluidasNewAvaliacaoMetaTarefa.getUsuarioInclusao();
+                    avaliacoesIncluidasNewAvaliacaoMetaTarefa.setUsuarioInclusao(usuario);
+                    avaliacoesIncluidasNewAvaliacaoMetaTarefa = em.merge(avaliacoesIncluidasNewAvaliacaoMetaTarefa);
+                    if (oldUsuarioInclusaoOfAvaliacoesIncluidasNewAvaliacaoMetaTarefa != null && !oldUsuarioInclusaoOfAvaliacoesIncluidasNewAvaliacaoMetaTarefa.equals(usuario)) {
+                        oldUsuarioInclusaoOfAvaliacoesIncluidasNewAvaliacaoMetaTarefa.getAvaliacoesIncluidas().remove(avaliacoesIncluidasNewAvaliacaoMetaTarefa);
+                        oldUsuarioInclusaoOfAvaliacoesIncluidasNewAvaliacaoMetaTarefa = em.merge(oldUsuarioInclusaoOfAvaliacoesIncluidasNewAvaliacaoMetaTarefa);
                     }
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa : avaliacaoMetaTarefaList1New) {
-                if (!avaliacaoMetaTarefaList1Old.contains(avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa)) {
-                    Usuario oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa = avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.getIdUsuarioAvaliador();
-                    avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.setIdUsuarioAvaliador(usuario);
-                    avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa);
-                    if (oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa != null && !oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.equals(usuario)) {
-                        oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList1().remove(avaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa);
-                        oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa = em.merge(oldIdusuarioavaliadorOfAvaliacaoMetaTarefaList1NewAvaliacaoMetaTarefa);
+            for (AvaliacaoMetaTarefa avaliacoesSubmetidasNewAvaliacaoMetaTarefa : avaliacoesSubmetidasNew) {
+                if (!avaliacoesSubmetidasOld.contains(avaliacoesSubmetidasNewAvaliacaoMetaTarefa)) {
+                    Usuario oldUsuarioAvaliadorOfAvaliacoesSubmetidasNewAvaliacaoMetaTarefa = avaliacoesSubmetidasNewAvaliacaoMetaTarefa.getUsuarioAvaliador();
+                    avaliacoesSubmetidasNewAvaliacaoMetaTarefa.setUsuarioAvaliador(usuario);
+                    avaliacoesSubmetidasNewAvaliacaoMetaTarefa = em.merge(avaliacoesSubmetidasNewAvaliacaoMetaTarefa);
+                    if (oldUsuarioAvaliadorOfAvaliacoesSubmetidasNewAvaliacaoMetaTarefa != null && !oldUsuarioAvaliadorOfAvaliacoesSubmetidasNewAvaliacaoMetaTarefa.equals(usuario)) {
+                        oldUsuarioAvaliadorOfAvaliacoesSubmetidasNewAvaliacaoMetaTarefa.getAvaliacoesSubmetidas().remove(avaliacoesSubmetidasNewAvaliacaoMetaTarefa);
+                        oldUsuarioAvaliadorOfAvaliacoesSubmetidasNewAvaliacaoMetaTarefa = em.merge(oldUsuarioAvaliadorOfAvaliacoesSubmetidasNewAvaliacaoMetaTarefa);
                     }
                 }
             }
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa : avaliacaoMetaTarefaList2New) {
-                if (!avaliacaoMetaTarefaList2Old.contains(avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa)) {
-                    Usuario oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa = avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.getIdUsuarioAvaliado();
-                    avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.setIdUsuarioAvaliado(usuario);
-                    avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa = em.merge(avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa);
-                    if (oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa != null && !oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.equals(usuario)) {
-                        oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa.getAvaliacaoMetaTarefaList2().remove(avaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa);
-                        oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa = em.merge(oldIdusuarioavaliadoOfAvaliacaoMetaTarefaList2NewAvaliacaoMetaTarefa);
+            for (AvaliacaoMetaTarefa avaliacoesRecebidasNewAvaliacaoMetaTarefa : avaliacoesRecebidasNew) {
+                if (!avaliacoesRecebidasOld.contains(avaliacoesRecebidasNewAvaliacaoMetaTarefa)) {
+                    Usuario oldUsuarioAvaliadoOfAvaliacoesRecebidasNewAvaliacaoMetaTarefa = avaliacoesRecebidasNewAvaliacaoMetaTarefa.getUsuarioAvaliado();
+                    avaliacoesRecebidasNewAvaliacaoMetaTarefa.setUsuarioAvaliado(usuario);
+                    avaliacoesRecebidasNewAvaliacaoMetaTarefa = em.merge(avaliacoesRecebidasNewAvaliacaoMetaTarefa);
+                    if (oldUsuarioAvaliadoOfAvaliacoesRecebidasNewAvaliacaoMetaTarefa != null && !oldUsuarioAvaliadoOfAvaliacoesRecebidasNewAvaliacaoMetaTarefa.equals(usuario)) {
+                        oldUsuarioAvaliadoOfAvaliacoesRecebidasNewAvaliacaoMetaTarefa.getAvaliacoesRecebidas().remove(avaliacoesRecebidasNewAvaliacaoMetaTarefa);
+                        oldUsuarioAvaliadoOfAvaliacoesRecebidasNewAvaliacaoMetaTarefa = em.merge(oldUsuarioAvaliadoOfAvaliacoesRecebidasNewAvaliacaoMetaTarefa);
                     }
                 }
             }
-            for (OrcamentoTarefa orcamentoTarefaListNewOrcamentoTarefa : orcamentoTarefaListNew) {
-                if (!orcamentoTarefaListOld.contains(orcamentoTarefaListNewOrcamentoTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa = orcamentoTarefaListNewOrcamentoTarefa.getIdUsuarioInclusao();
-                    orcamentoTarefaListNewOrcamentoTarefa.setIdUsuarioInclusao(usuario);
-                    orcamentoTarefaListNewOrcamentoTarefa = em.merge(orcamentoTarefaListNewOrcamentoTarefa);
-                    if (oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa != null && !oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa.equals(usuario)) {
-                        oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa.getOrcamentoTarefaList().remove(orcamentoTarefaListNewOrcamentoTarefa);
-                        oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa = em.merge(oldIdusuarioinclusaoOfOrcamentoTarefaListNewOrcamentoTarefa);
+            for (OrcamentoTarefa orcamentosIncluidosNewOrcamentoTarefa : orcamentosIncluidosNew) {
+                if (!orcamentosIncluidosOld.contains(orcamentosIncluidosNewOrcamentoTarefa)) {
+                    Usuario oldUsuarioInclusaoOfOrcamentosIncluidosNewOrcamentoTarefa = orcamentosIncluidosNewOrcamentoTarefa.getUsuarioInclusao();
+                    orcamentosIncluidosNewOrcamentoTarefa.setUsuarioInclusao(usuario);
+                    orcamentosIncluidosNewOrcamentoTarefa = em.merge(orcamentosIncluidosNewOrcamentoTarefa);
+                    if (oldUsuarioInclusaoOfOrcamentosIncluidosNewOrcamentoTarefa != null && !oldUsuarioInclusaoOfOrcamentosIncluidosNewOrcamentoTarefa.equals(usuario)) {
+                        oldUsuarioInclusaoOfOrcamentosIncluidosNewOrcamentoTarefa.getOrcamentosIncluidos().remove(orcamentosIncluidosNewOrcamentoTarefa);
+                        oldUsuarioInclusaoOfOrcamentosIncluidosNewOrcamentoTarefa = em.merge(oldUsuarioInclusaoOfOrcamentosIncluidosNewOrcamentoTarefa);
                     }
                 }
             }
-            for (ApontamentoTarefa apontamentoTarefaListNewApontamentoTarefa : apontamentoTarefaListNew) {
-                if (!apontamentoTarefaListOld.contains(apontamentoTarefaListNewApontamentoTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfApontamentoTarefaListNewApontamentoTarefa = apontamentoTarefaListNewApontamentoTarefa.getIdUsuarioInclusao();
-                    apontamentoTarefaListNewApontamentoTarefa.setIdUsuarioInclusao(usuario);
-                    apontamentoTarefaListNewApontamentoTarefa = em.merge(apontamentoTarefaListNewApontamentoTarefa);
-                    if (oldIdusuarioinclusaoOfApontamentoTarefaListNewApontamentoTarefa != null && !oldIdusuarioinclusaoOfApontamentoTarefaListNewApontamentoTarefa.equals(usuario)) {
-                        oldIdusuarioinclusaoOfApontamentoTarefaListNewApontamentoTarefa.getApontamentoTarefaList().remove(apontamentoTarefaListNewApontamentoTarefa);
-                        oldIdusuarioinclusaoOfApontamentoTarefaListNewApontamentoTarefa = em.merge(oldIdusuarioinclusaoOfApontamentoTarefaListNewApontamentoTarefa);
+            for (ApontamentoTarefa apontamentosIncluidosNewApontamentoTarefa : apontamentosIncluidosNew) {
+                if (!apontamentosIncluidosOld.contains(apontamentosIncluidosNewApontamentoTarefa)) {
+                    Usuario oldUsuarioInclusaoOfApontamentosIncluidosNewApontamentoTarefa = apontamentosIncluidosNewApontamentoTarefa.getUsuarioInclusao();
+                    apontamentosIncluidosNewApontamentoTarefa.setUsuarioInclusao(usuario);
+                    apontamentosIncluidosNewApontamentoTarefa = em.merge(apontamentosIncluidosNewApontamentoTarefa);
+                    if (oldUsuarioInclusaoOfApontamentosIncluidosNewApontamentoTarefa != null && !oldUsuarioInclusaoOfApontamentosIncluidosNewApontamentoTarefa.equals(usuario)) {
+                        oldUsuarioInclusaoOfApontamentosIncluidosNewApontamentoTarefa.getApontamentosIncluidos().remove(apontamentosIncluidosNewApontamentoTarefa);
+                        oldUsuarioInclusaoOfApontamentosIncluidosNewApontamentoTarefa = em.merge(oldUsuarioInclusaoOfApontamentosIncluidosNewApontamentoTarefa);
                     }
                 }
             }
-            for (Departamento departamentoListNewDepartamento : departamentoListNew) {
-                if (!departamentoListOld.contains(departamentoListNewDepartamento)) {
-                    Usuario oldIdusuarioinclusaoOfDepartamentoListNewDepartamento = departamentoListNewDepartamento.getIdUsuarioInclusao();
-                    departamentoListNewDepartamento.setIdUsuarioInclusao(usuario);
-                    departamentoListNewDepartamento = em.merge(departamentoListNewDepartamento);
-                    if (oldIdusuarioinclusaoOfDepartamentoListNewDepartamento != null && !oldIdusuarioinclusaoOfDepartamentoListNewDepartamento.equals(usuario)) {
-                        oldIdusuarioinclusaoOfDepartamentoListNewDepartamento.getDepartamentoList().remove(departamentoListNewDepartamento);
-                        oldIdusuarioinclusaoOfDepartamentoListNewDepartamento = em.merge(oldIdusuarioinclusaoOfDepartamentoListNewDepartamento);
+            for (Departamento departamentosIncluidosNewDepartamento : departamentosIncluidosNew) {
+                if (!departamentosIncluidosOld.contains(departamentosIncluidosNewDepartamento)) {
+                    Usuario oldUsuarioInclusaoOfDepartamentosIncluidosNewDepartamento = departamentosIncluidosNewDepartamento.getUsuarioInclusao();
+                    departamentosIncluidosNewDepartamento.setUsuarioInclusao(usuario);
+                    departamentosIncluidosNewDepartamento = em.merge(departamentosIncluidosNewDepartamento);
+                    if (oldUsuarioInclusaoOfDepartamentosIncluidosNewDepartamento != null && !oldUsuarioInclusaoOfDepartamentosIncluidosNewDepartamento.equals(usuario)) {
+                        oldUsuarioInclusaoOfDepartamentosIncluidosNewDepartamento.getDepartamentosIncluidos().remove(departamentosIncluidosNewDepartamento);
+                        oldUsuarioInclusaoOfDepartamentosIncluidosNewDepartamento = em.merge(oldUsuarioInclusaoOfDepartamentosIncluidosNewDepartamento);
                     }
                 }
             }
-            for (Usuario usuarioListOldUsuario : usuarioListOld) {
-                if (!usuarioListNew.contains(usuarioListOldUsuario)) {
-                    usuarioListOldUsuario.setIdUsuarioInclusao(null);
-                    usuarioListOldUsuario = em.merge(usuarioListOldUsuario);
+            for (Usuario usuariosIncluidosOldUsuario : usuariosIncluidosOld) {
+                if (!usuariosIncluidosNew.contains(usuariosIncluidosOldUsuario)) {
+                    usuariosIncluidosOldUsuario.setUsuarioInclusao(null);
+                    usuariosIncluidosOldUsuario = em.merge(usuariosIncluidosOldUsuario);
                 }
             }
-            for (Usuario usuarioListNewUsuario : usuarioListNew) {
-                if (!usuarioListOld.contains(usuarioListNewUsuario)) {
-                    Usuario oldIdusuarioinclusaoOfUsuarioListNewUsuario = usuarioListNewUsuario.getIdUsuarioInclusao();
-                    usuarioListNewUsuario.setIdUsuarioInclusao(usuario);
-                    usuarioListNewUsuario = em.merge(usuarioListNewUsuario);
-                    if (oldIdusuarioinclusaoOfUsuarioListNewUsuario != null && !oldIdusuarioinclusaoOfUsuarioListNewUsuario.equals(usuario)) {
-                        oldIdusuarioinclusaoOfUsuarioListNewUsuario.getUsuarioList().remove(usuarioListNewUsuario);
-                        oldIdusuarioinclusaoOfUsuarioListNewUsuario = em.merge(oldIdusuarioinclusaoOfUsuarioListNewUsuario);
+            for (Usuario usuariosIncluidosNewUsuario : usuariosIncluidosNew) {
+                if (!usuariosIncluidosOld.contains(usuariosIncluidosNewUsuario)) {
+                    Usuario oldUsuarioInclusaoOfUsuariosIncluidosNewUsuario = usuariosIncluidosNewUsuario.getUsuarioInclusao();
+                    usuariosIncluidosNewUsuario.setUsuarioInclusao(usuario);
+                    usuariosIncluidosNewUsuario = em.merge(usuariosIncluidosNewUsuario);
+                    if (oldUsuarioInclusaoOfUsuariosIncluidosNewUsuario != null && !oldUsuarioInclusaoOfUsuariosIncluidosNewUsuario.equals(usuario)) {
+                        oldUsuarioInclusaoOfUsuariosIncluidosNewUsuario.getUsuariosIncluidos().remove(usuariosIncluidosNewUsuario);
+                        oldUsuarioInclusaoOfUsuariosIncluidosNewUsuario = em.merge(oldUsuarioInclusaoOfUsuariosIncluidosNewUsuario);
                     }
                 }
             }
-            for (Empresa empresaListNewEmpresa : empresaListNew) {
-                if (!empresaListOld.contains(empresaListNewEmpresa)) {
-                    Usuario oldIdusuarioinclusaoOfEmpresaListNewEmpresa = empresaListNewEmpresa.getIdUsuarioInclusao();
-                    empresaListNewEmpresa.setIdUsuarioInclusao(usuario);
-                    empresaListNewEmpresa = em.merge(empresaListNewEmpresa);
-                    if (oldIdusuarioinclusaoOfEmpresaListNewEmpresa != null && !oldIdusuarioinclusaoOfEmpresaListNewEmpresa.equals(usuario)) {
-                        oldIdusuarioinclusaoOfEmpresaListNewEmpresa.getEmpresaList().remove(empresaListNewEmpresa);
-                        oldIdusuarioinclusaoOfEmpresaListNewEmpresa = em.merge(oldIdusuarioinclusaoOfEmpresaListNewEmpresa);
+            for (Empresa empresasIncluidasNewEmpresa : empresasIncluidasNew) {
+                if (!empresasIncluidasOld.contains(empresasIncluidasNewEmpresa)) {
+                    Usuario oldUsuarioInclusaoOfEmpresasIncluidasNewEmpresa = empresasIncluidasNewEmpresa.getUsuarioInclusao();
+                    empresasIncluidasNewEmpresa.setUsuarioInclusao(usuario);
+                    empresasIncluidasNewEmpresa = em.merge(empresasIncluidasNewEmpresa);
+                    if (oldUsuarioInclusaoOfEmpresasIncluidasNewEmpresa != null && !oldUsuarioInclusaoOfEmpresasIncluidasNewEmpresa.equals(usuario)) {
+                        oldUsuarioInclusaoOfEmpresasIncluidasNewEmpresa.getEmpresasIncluidas().remove(empresasIncluidasNewEmpresa);
+                        oldUsuarioInclusaoOfEmpresasIncluidasNewEmpresa = em.merge(oldUsuarioInclusaoOfEmpresasIncluidasNewEmpresa);
                     }
                 }
             }
-            for (EmpresaCliente empresaClienteListNewEmpresaCliente : empresaClienteListNew) {
-                if (!empresaClienteListOld.contains(empresaClienteListNewEmpresaCliente)) {
-                    Usuario oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente = empresaClienteListNewEmpresaCliente.getIdUsuarioInclusao();
-                    empresaClienteListNewEmpresaCliente.setIdUsuarioInclusao(usuario);
-                    empresaClienteListNewEmpresaCliente = em.merge(empresaClienteListNewEmpresaCliente);
-                    if (oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente != null && !oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente.equals(usuario)) {
-                        oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente.getEmpresaClienteList().remove(empresaClienteListNewEmpresaCliente);
-                        oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente = em.merge(oldIdusuarioinclusaoOfEmpresaClienteListNewEmpresaCliente);
+            for (EmpresaCliente empresasClienteIncluidasNewEmpresaCliente : empresasClienteIncluidasNew) {
+                if (!empresasClienteIncluidasOld.contains(empresasClienteIncluidasNewEmpresaCliente)) {
+                    Usuario oldUsuarioInclusaoOfEmpresasClienteIncluidasNewEmpresaCliente = empresasClienteIncluidasNewEmpresaCliente.getUsuarioInclusao();
+                    empresasClienteIncluidasNewEmpresaCliente.setUsuarioInclusao(usuario);
+                    empresasClienteIncluidasNewEmpresaCliente = em.merge(empresasClienteIncluidasNewEmpresaCliente);
+                    if (oldUsuarioInclusaoOfEmpresasClienteIncluidasNewEmpresaCliente != null && !oldUsuarioInclusaoOfEmpresasClienteIncluidasNewEmpresaCliente.equals(usuario)) {
+                        oldUsuarioInclusaoOfEmpresasClienteIncluidasNewEmpresaCliente.getEmpresasClienteIncluidas().remove(empresasClienteIncluidasNewEmpresaCliente);
+                        oldUsuarioInclusaoOfEmpresasClienteIncluidasNewEmpresaCliente = em.merge(oldUsuarioInclusaoOfEmpresasClienteIncluidasNewEmpresaCliente);
                     }
                 }
             }
-            for (AnexoTarefa anexoTarefaListNewAnexoTarefa : anexoTarefaListNew) {
-                if (!anexoTarefaListOld.contains(anexoTarefaListNewAnexoTarefa)) {
-                    Usuario oldIdusuarioinclusaoOfAnexoTarefaListNewAnexoTarefa = anexoTarefaListNewAnexoTarefa.getIdUsuarioInclusao();
-                    anexoTarefaListNewAnexoTarefa.setIdUsuarioInclusao(usuario);
-                    anexoTarefaListNewAnexoTarefa = em.merge(anexoTarefaListNewAnexoTarefa);
-                    if (oldIdusuarioinclusaoOfAnexoTarefaListNewAnexoTarefa != null && !oldIdusuarioinclusaoOfAnexoTarefaListNewAnexoTarefa.equals(usuario)) {
-                        oldIdusuarioinclusaoOfAnexoTarefaListNewAnexoTarefa.getAnexoTarefaList().remove(anexoTarefaListNewAnexoTarefa);
-                        oldIdusuarioinclusaoOfAnexoTarefaListNewAnexoTarefa = em.merge(oldIdusuarioinclusaoOfAnexoTarefaListNewAnexoTarefa);
+            for (AnexoTarefa anexosTarefaIncluidosNewAnexoTarefa : anexosTarefaIncluidosNew) {
+                if (!anexosTarefaIncluidosOld.contains(anexosTarefaIncluidosNewAnexoTarefa)) {
+                    Usuario oldUsuarioInclusaoOfAnexosTarefaIncluidosNewAnexoTarefa = anexosTarefaIncluidosNewAnexoTarefa.getUsuarioInclusao();
+                    anexosTarefaIncluidosNewAnexoTarefa.setUsuarioInclusao(usuario);
+                    anexosTarefaIncluidosNewAnexoTarefa = em.merge(anexosTarefaIncluidosNewAnexoTarefa);
+                    if (oldUsuarioInclusaoOfAnexosTarefaIncluidosNewAnexoTarefa != null && !oldUsuarioInclusaoOfAnexosTarefaIncluidosNewAnexoTarefa.equals(usuario)) {
+                        oldUsuarioInclusaoOfAnexosTarefaIncluidosNewAnexoTarefa.getAnexosTarefaIncluidos().remove(anexosTarefaIncluidosNewAnexoTarefa);
+                        oldUsuarioInclusaoOfAnexosTarefaIncluidosNewAnexoTarefa = em.merge(oldUsuarioInclusaoOfAnexosTarefaIncluidosNewAnexoTarefa);
                     }
                 }
             }
@@ -1139,156 +1139,156 @@ public class UsuarioDAO implements Serializable {
                 }
                 illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the UsuarioEmpresa " + empresasOrphanCheckUsuarioEmpresa + " in its empresas field has a non-nullable usuario field.");
             }
-            Collection<Meta> metasResponsaveisOrphanCheck = usuario.getMetasResponsaveis();
-            for (Meta metasResponsaveisOrphanCheckMeta : metasResponsaveisOrphanCheck) {
+            Collection<Meta> metasSobResponsabilidadeOrphanCheck = usuario.getMetasSobResponsabilidade();
+            for (Meta metasSobResponsabilidadeOrphanCheckMeta : metasSobResponsabilidadeOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Meta " + metasResponsaveisOrphanCheckMeta + " in its metasResponsaveis field has a non-nullable responsavel field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Meta " + metasSobResponsabilidadeOrphanCheckMeta + " in its metasSobResponsabilidade field has a non-nullable usuarioResponsavel field.");
             }
-            List<FavoritosTarefaMeta> favoritosTarefaMetaListOrphanCheck = usuario.getFavoritosTarefaMetaList();
-            for (FavoritosTarefaMeta favoritosTarefaMetaListOrphanCheckFavoritosTarefaMeta : favoritosTarefaMetaListOrphanCheck) {
+            List<FavoritosTarefaMeta> favoritosIncluidosOrphanCheck = usuario.getFavoritosIncluidos();
+            for (FavoritosTarefaMeta favoritosIncluidosOrphanCheckFavoritosTarefaMeta : favoritosIncluidosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the FavoritosTarefaMeta " + favoritosTarefaMetaListOrphanCheckFavoritosTarefaMeta + " in its favoritosTarefaMetaList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the FavoritosTarefaMeta " + favoritosIncluidosOrphanCheckFavoritosTarefaMeta + " in its favoritosIncluidos field has a non-nullable usuarioInclusao field.");
             }
-            List<CentroCusto> centroCustoListOrphanCheck = usuario.getCentroCustoList();
-            for (CentroCusto centroCustoListOrphanCheckCentroCusto : centroCustoListOrphanCheck) {
+            List<CentroCusto> centrosCustoIncluidosOrphanCheck = usuario.getCentrosCustoIncluidos();
+            for (CentroCusto centrosCustoIncluidosOrphanCheckCentroCusto : centrosCustoIncluidosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the CentroCusto " + centroCustoListOrphanCheckCentroCusto + " in its centroCustoList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the CentroCusto " + centrosCustoIncluidosOrphanCheckCentroCusto + " in its centrosCustoIncluidos field has a non-nullable usuarioInclusao field.");
             }
-            List<Endereco> enderecoListOrphanCheck = usuario.getEnderecoList();
-            for (Endereco enderecoListOrphanCheckEndereco : enderecoListOrphanCheck) {
+            List<Endereco> enderecosIncluidosOrphanCheck = usuario.getEnderecosIncluidos();
+            for (Endereco enderecosIncluidosOrphanCheckEndereco : enderecosIncluidosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Endereco " + enderecoListOrphanCheckEndereco + " in its enderecoList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Endereco " + enderecosIncluidosOrphanCheckEndereco + " in its enderecosIncluidos field has a non-nullable usuarioInclusao field.");
             }
-            List<Tarefa> tarefaList1OrphanCheck = usuario.getTarefaList1();
-            for (Tarefa tarefaList1OrphanCheckTarefa : tarefaList1OrphanCheck) {
+            List<Tarefa> tarefasSolicitadasOrphanCheck = usuario.getTarefasSolicitadas();
+            for (Tarefa tarefasSolicitadasOrphanCheckTarefa : tarefasSolicitadasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Tarefa " + tarefaList1OrphanCheckTarefa + " in its tarefaList1 field has a non-nullable idusuariosolicitante field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Tarefa " + tarefasSolicitadasOrphanCheckTarefa + " in its tarefasSolicitadas field has a non-nullable usuarioSolicitante field.");
             }
-            List<Tarefa> tarefaList2OrphanCheck = usuario.getTarefaList2();
-            for (Tarefa tarefaList2OrphanCheckTarefa : tarefaList2OrphanCheck) {
+            List<Tarefa> tarefasSobResponsabilidadeOrphanCheck = usuario.getTarefasSobResponsabilidade();
+            for (Tarefa tarefasSobResponsabilidadeOrphanCheckTarefa : tarefasSobResponsabilidadeOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Tarefa " + tarefaList2OrphanCheckTarefa + " in its tarefaList2 field has a non-nullable idusuarioresponsavel field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Tarefa " + tarefasSobResponsabilidadeOrphanCheckTarefa + " in its tarefasSobResponsabilidade field has a non-nullable usuarioResponsavel field.");
             }
-            List<ParicipanteTarefa> paricipanteTarefaListOrphanCheck = usuario.getParicipanteTarefaList();
-            for (ParicipanteTarefa paricipanteTarefaListOrphanCheckParicipanteTarefa : paricipanteTarefaListOrphanCheck) {
+            List<ParicipanteTarefa> paricipacoesIncluidasOrphanCheck = usuario.getParicipacoesIncluidas();
+            for (ParicipanteTarefa paricipacoesIncluidasOrphanCheckParicipanteTarefa : paricipacoesIncluidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ParicipanteTarefa " + paricipanteTarefaListOrphanCheckParicipanteTarefa + " in its paricipanteTarefaList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ParicipanteTarefa " + paricipacoesIncluidasOrphanCheckParicipanteTarefa + " in its paricipacoesIncluidas field has a non-nullable usuarioInclusao field.");
             }
-            List<ParicipanteTarefa> paricipanteTarefaList1OrphanCheck = usuario.getParicipanteTarefaList1();
-            for (ParicipanteTarefa paricipanteTarefaList1OrphanCheckParicipanteTarefa : paricipanteTarefaList1OrphanCheck) {
+            List<ParicipanteTarefa> tarefasParticipantesOrphanCheck = usuario.getTarefasParticipantes();
+            for (ParicipanteTarefa tarefasParticipantesOrphanCheckParicipanteTarefa : tarefasParticipantesOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ParicipanteTarefa " + paricipanteTarefaList1OrphanCheckParicipanteTarefa + " in its paricipanteTarefaList1 field has a non-nullable idusuarioparticipante field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ParicipanteTarefa " + tarefasParticipantesOrphanCheckParicipanteTarefa + " in its tarefasParticipantes field has a non-nullable usuarioParticipante field.");
             }
-            List<FilialCliente> filialClienteListOrphanCheck = usuario.getFilialClienteList();
-            for (FilialCliente filialClienteListOrphanCheckFilialCliente : filialClienteListOrphanCheck) {
+            List<FilialCliente> filiaisClientesIncluidasOrphanCheck = usuario.getFiliaisClientesIncluidas();
+            for (FilialCliente filiaisClientesIncluidasOrphanCheckFilialCliente : filiaisClientesIncluidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the FilialCliente " + filialClienteListOrphanCheckFilialCliente + " in its filialClienteList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the FilialCliente " + filiaisClientesIncluidasOrphanCheckFilialCliente + " in its filiaisClientesIncluidas field has a non-nullable usuarioInclusao field.");
             }
-            List<FilialEmpresa> filialEmpresaListOrphanCheck = usuario.getFilialEmpresaList();
-            for (FilialEmpresa filialEmpresaListOrphanCheckFilialEmpresa : filialEmpresaListOrphanCheck) {
+            List<FilialEmpresa> filiaisEmpresaIncluidasOrphanCheck = usuario.getFiliaisEmpresaIncluidas();
+            for (FilialEmpresa filiaisEmpresaIncluidasOrphanCheckFilialEmpresa : filiaisEmpresaIncluidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the FilialEmpresa " + filialEmpresaListOrphanCheckFilialEmpresa + " in its filialEmpresaList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the FilialEmpresa " + filiaisEmpresaIncluidasOrphanCheckFilialEmpresa + " in its filiaisEmpresaIncluidas field has a non-nullable usuarioInclusao field.");
             }
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaListOrphanCheck = usuario.getAvaliacaoMetaTarefaList();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaListOrphanCheckAvaliacaoMetaTarefa : avaliacaoMetaTarefaListOrphanCheck) {
+            List<AvaliacaoMetaTarefa> avaliacoesIncluidasOrphanCheck = usuario.getAvaliacoesIncluidas();
+            for (AvaliacaoMetaTarefa avaliacoesIncluidasOrphanCheckAvaliacaoMetaTarefa : avaliacoesIncluidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the AvaliacaoMetaTarefa " + avaliacaoMetaTarefaListOrphanCheckAvaliacaoMetaTarefa + " in its avaliacaoMetaTarefaList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the AvaliacaoMetaTarefa " + avaliacoesIncluidasOrphanCheckAvaliacaoMetaTarefa + " in its avaliacoesIncluidas field has a non-nullable usuarioInclusao field.");
             }
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList1OrphanCheck = usuario.getAvaliacaoMetaTarefaList1();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList1OrphanCheckAvaliacaoMetaTarefa : avaliacaoMetaTarefaList1OrphanCheck) {
+            List<AvaliacaoMetaTarefa> avaliacoesSubmetidasOrphanCheck = usuario.getAvaliacoesSubmetidas();
+            for (AvaliacaoMetaTarefa avaliacoesSubmetidasOrphanCheckAvaliacaoMetaTarefa : avaliacoesSubmetidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the AvaliacaoMetaTarefa " + avaliacaoMetaTarefaList1OrphanCheckAvaliacaoMetaTarefa + " in its avaliacaoMetaTarefaList1 field has a non-nullable idusuarioavaliador field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the AvaliacaoMetaTarefa " + avaliacoesSubmetidasOrphanCheckAvaliacaoMetaTarefa + " in its avaliacoesSubmetidas field has a non-nullable usuarioAvaliador field.");
             }
-            List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList2OrphanCheck = usuario.getAvaliacaoMetaTarefaList2();
-            for (AvaliacaoMetaTarefa avaliacaoMetaTarefaList2OrphanCheckAvaliacaoMetaTarefa : avaliacaoMetaTarefaList2OrphanCheck) {
+            List<AvaliacaoMetaTarefa> avaliacoesRecebidasOrphanCheck = usuario.getAvaliacoesRecebidas();
+            for (AvaliacaoMetaTarefa avaliacoesRecebidasOrphanCheckAvaliacaoMetaTarefa : avaliacoesRecebidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the AvaliacaoMetaTarefa " + avaliacaoMetaTarefaList2OrphanCheckAvaliacaoMetaTarefa + " in its avaliacaoMetaTarefaList2 field has a non-nullable idusuarioavaliado field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the AvaliacaoMetaTarefa " + avaliacoesRecebidasOrphanCheckAvaliacaoMetaTarefa + " in its avaliacoesRecebidas field has a non-nullable usuarioAvaliado field.");
             }
-            List<OrcamentoTarefa> orcamentoTarefaListOrphanCheck = usuario.getOrcamentoTarefaList();
-            for (OrcamentoTarefa orcamentoTarefaListOrphanCheckOrcamentoTarefa : orcamentoTarefaListOrphanCheck) {
+            List<OrcamentoTarefa> orcamentosIncluidosOrphanCheck = usuario.getOrcamentosIncluidos();
+            for (OrcamentoTarefa orcamentosIncluidosOrphanCheckOrcamentoTarefa : orcamentosIncluidosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the OrcamentoTarefa " + orcamentoTarefaListOrphanCheckOrcamentoTarefa + " in its orcamentoTarefaList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the OrcamentoTarefa " + orcamentosIncluidosOrphanCheckOrcamentoTarefa + " in its orcamentosIncluidos field has a non-nullable usuarioInclusao field.");
             }
-            List<ApontamentoTarefa> apontamentoTarefaListOrphanCheck = usuario.getApontamentoTarefaList();
-            for (ApontamentoTarefa apontamentoTarefaListOrphanCheckApontamentoTarefa : apontamentoTarefaListOrphanCheck) {
+            List<ApontamentoTarefa> apontamentosIncluidosOrphanCheck = usuario.getApontamentosIncluidos();
+            for (ApontamentoTarefa apontamentosIncluidosOrphanCheckApontamentoTarefa : apontamentosIncluidosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ApontamentoTarefa " + apontamentoTarefaListOrphanCheckApontamentoTarefa + " in its apontamentoTarefaList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ApontamentoTarefa " + apontamentosIncluidosOrphanCheckApontamentoTarefa + " in its apontamentosIncluidos field has a non-nullable usuarioInclusao field.");
             }
-            List<Departamento> departamentoListOrphanCheck = usuario.getDepartamentoList();
-            for (Departamento departamentoListOrphanCheckDepartamento : departamentoListOrphanCheck) {
+            List<Departamento> departamentosIncluidosOrphanCheck = usuario.getDepartamentosIncluidos();
+            for (Departamento departamentosIncluidosOrphanCheckDepartamento : departamentosIncluidosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Departamento " + departamentoListOrphanCheckDepartamento + " in its departamentoList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Departamento " + departamentosIncluidosOrphanCheckDepartamento + " in its departamentosIncluidos field has a non-nullable usuarioInclusao field.");
             }
-            List<Empresa> empresaListOrphanCheck = usuario.getEmpresaList();
-            for (Empresa empresaListOrphanCheckEmpresa : empresaListOrphanCheck) {
+            List<Empresa> empresasIncluidasOrphanCheck = usuario.getEmpresasIncluidas();
+            for (Empresa empresasIncluidasOrphanCheckEmpresa : empresasIncluidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Empresa " + empresaListOrphanCheckEmpresa + " in its empresaList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Empresa " + empresasIncluidasOrphanCheckEmpresa + " in its empresasIncluidas field has a non-nullable usuarioInclusao field.");
             }
-            List<EmpresaCliente> empresaClienteListOrphanCheck = usuario.getEmpresaClienteList();
-            for (EmpresaCliente empresaClienteListOrphanCheckEmpresaCliente : empresaClienteListOrphanCheck) {
+            List<EmpresaCliente> empresasClienteIncluidasOrphanCheck = usuario.getEmpresasClienteIncluidas();
+            for (EmpresaCliente empresasClienteIncluidasOrphanCheckEmpresaCliente : empresasClienteIncluidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the EmpresaCliente " + empresaClienteListOrphanCheckEmpresaCliente + " in its empresaClienteList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the EmpresaCliente " + empresasClienteIncluidasOrphanCheckEmpresaCliente + " in its empresasClienteIncluidas field has a non-nullable usuarioInclusao field.");
             }
-            List<AnexoTarefa> anexoTarefaListOrphanCheck = usuario.getAnexoTarefaList();
-            for (AnexoTarefa anexoTarefaListOrphanCheckAnexoTarefa : anexoTarefaListOrphanCheck) {
+            List<AnexoTarefa> anexosTarefaIncluidosOrphanCheck = usuario.getAnexosTarefaIncluidos();
+            for (AnexoTarefa anexosTarefaIncluidosOrphanCheckAnexoTarefa : anexosTarefaIncluidosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the AnexoTarefa " + anexoTarefaListOrphanCheckAnexoTarefa + " in its anexoTarefaList field has a non-nullable idusuarioinclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the AnexoTarefa " + anexosTarefaIncluidosOrphanCheckAnexoTarefa + " in its anexosTarefaIncluidos field has a non-nullable usuarioInclusao field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Usuario idusuarioinclusao = usuario.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getUsuarioList().remove(usuario);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = usuario.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getUsuariosIncluidos().remove(usuario);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
-            List<Tarefa> tarefaList = usuario.getTarefaList();
-            for (Tarefa tarefaListTarefa : tarefaList) {
-                tarefaListTarefa.setIdUsuarioInclusao(null);
-                tarefaListTarefa = em.merge(tarefaListTarefa);
+            List<Tarefa> tarefasIncluidas = usuario.getTarefasIncluidas();
+            for (Tarefa tarefasIncluidasTarefa : tarefasIncluidas) {
+                tarefasIncluidasTarefa.setUsuarioInclusao(null);
+                tarefasIncluidasTarefa = em.merge(tarefasIncluidasTarefa);
             }
-            List<Usuario> usuarioList = usuario.getUsuarioList();
-            for (Usuario usuarioListUsuario : usuarioList) {
-                usuarioListUsuario.setIdUsuarioInclusao(null);
-                usuarioListUsuario = em.merge(usuarioListUsuario);
+            List<Usuario> usuariosIncluidos = usuario.getUsuariosIncluidos();
+            for (Usuario usuariosIncluidosUsuario : usuariosIncluidos) {
+                usuariosIncluidosUsuario.setUsuarioInclusao(null);
+                usuariosIncluidosUsuario = em.merge(usuariosIncluidosUsuario);
             }
             em.remove(usuario);
             em.getTransaction().commit();
@@ -1345,7 +1345,7 @@ public class UsuarioDAO implements Serializable {
         }
     }
 
-        /**
+    /**
      * Busca um Usuairo pelo seu Login
      * @param login
      * @return 

@@ -115,12 +115,12 @@ public class Empresa implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmpresa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<Tarefa> tarefas;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioInclusao;
+    private Usuario usuarioInclusao;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<EmpresaCliente> clientes;
@@ -310,12 +310,12 @@ public class Empresa implements Serializable {
         this.tarefas = tarefas;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
 
 }

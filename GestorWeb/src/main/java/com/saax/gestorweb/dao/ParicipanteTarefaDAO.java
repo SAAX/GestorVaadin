@@ -34,33 +34,33 @@ public class ParicipanteTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Tarefa idtarefa = paricipanteTarefa.getIdTarefa();
-            if (idtarefa != null) {
-                idtarefa = em.getReference(idtarefa.getClass(), idtarefa.getId());
-                paricipanteTarefa.setIdTarefa(idtarefa);
+            Tarefa tarefa = paricipanteTarefa.getTarefa();
+            if (tarefa != null) {
+                tarefa = em.getReference(tarefa.getClass(), tarefa.getId());
+                paricipanteTarefa.setTarefa(tarefa);
             }
-            Usuario idusuarioinclusao = paricipanteTarefa.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                paricipanteTarefa.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = paricipanteTarefa.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                paricipanteTarefa.setUsuarioInclusao(usuarioInclusao);
             }
-            Usuario idusuarioparticipante = paricipanteTarefa.getIdUsuarioParticipante();
-            if (idusuarioparticipante != null) {
-                idusuarioparticipante = em.getReference(idusuarioparticipante.getClass(), idusuarioparticipante.getId());
-                paricipanteTarefa.setIdUsuarioParticipante(idusuarioparticipante);
+            Usuario usuarioParticipante = paricipanteTarefa.getUsuarioParticipante();
+            if (usuarioParticipante != null) {
+                usuarioParticipante = em.getReference(usuarioParticipante.getClass(), usuarioParticipante.getId());
+                paricipanteTarefa.setUsuarioParticipante(usuarioParticipante);
             }
             em.persist(paricipanteTarefa);
-            if (idtarefa != null) {
-                idtarefa.getParicipantes().add(paricipanteTarefa);
-                idtarefa = em.merge(idtarefa);
+            if (tarefa != null) {
+                tarefa.getParicipantes().add(paricipanteTarefa);
+                tarefa = em.merge(tarefa);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getParicipanteTarefaList().add(paricipanteTarefa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getParicipacoesIncluidas().add(paricipanteTarefa);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
-            if (idusuarioparticipante != null) {
-                idusuarioparticipante.getParicipanteTarefaList().add(paricipanteTarefa);
-                idusuarioparticipante = em.merge(idusuarioparticipante);
+            if (usuarioParticipante != null) {
+                usuarioParticipante.getParicipacoesIncluidas().add(paricipanteTarefa);
+                usuarioParticipante = em.merge(usuarioParticipante);
             }
             em.getTransaction().commit();
         } finally {
@@ -76,48 +76,48 @@ public class ParicipanteTarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             ParicipanteTarefa persistentParicipanteTarefa = em.find(ParicipanteTarefa.class, paricipanteTarefa.getId());
-            Tarefa idtarefaOld = persistentParicipanteTarefa.getIdTarefa();
-            Tarefa idtarefaNew = paricipanteTarefa.getIdTarefa();
-            Usuario idusuarioinclusaoOld = persistentParicipanteTarefa.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = paricipanteTarefa.getIdUsuarioInclusao();
-            Usuario idusuarioparticipanteOld = persistentParicipanteTarefa.getIdUsuarioParticipante();
-            Usuario idusuarioparticipanteNew = paricipanteTarefa.getIdUsuarioParticipante();
-            if (idtarefaNew != null) {
-                idtarefaNew = em.getReference(idtarefaNew.getClass(), idtarefaNew.getId());
-                paricipanteTarefa.setIdTarefa(idtarefaNew);
+            Tarefa tarefaOld = persistentParicipanteTarefa.getTarefa();
+            Tarefa tarefaNew = paricipanteTarefa.getTarefa();
+            Usuario usuarioInclusaoOld = persistentParicipanteTarefa.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = paricipanteTarefa.getUsuarioInclusao();
+            Usuario usuarioParticipanteOld = persistentParicipanteTarefa.getUsuarioParticipante();
+            Usuario usuarioParticipanteNew = paricipanteTarefa.getUsuarioParticipante();
+            if (tarefaNew != null) {
+                tarefaNew = em.getReference(tarefaNew.getClass(), tarefaNew.getId());
+                paricipanteTarefa.setTarefa(tarefaNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                paricipanteTarefa.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                paricipanteTarefa.setUsuarioInclusao(usuarioInclusaoNew);
             }
-            if (idusuarioparticipanteNew != null) {
-                idusuarioparticipanteNew = em.getReference(idusuarioparticipanteNew.getClass(), idusuarioparticipanteNew.getId());
-                paricipanteTarefa.setIdUsuarioParticipante(idusuarioparticipanteNew);
+            if (usuarioParticipanteNew != null) {
+                usuarioParticipanteNew = em.getReference(usuarioParticipanteNew.getClass(), usuarioParticipanteNew.getId());
+                paricipanteTarefa.setUsuarioParticipante(usuarioParticipanteNew);
             }
             paricipanteTarefa = em.merge(paricipanteTarefa);
-            if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getParicipantes().remove(paricipanteTarefa);
-                idtarefaOld = em.merge(idtarefaOld);
+            if (tarefaOld != null && !tarefaOld.equals(tarefaNew)) {
+                tarefaOld.getParicipantes().remove(paricipanteTarefa);
+                tarefaOld = em.merge(tarefaOld);
             }
-            if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getParicipantes().add(paricipanteTarefa);
-                idtarefaNew = em.merge(idtarefaNew);
+            if (tarefaNew != null && !tarefaNew.equals(tarefaOld)) {
+                tarefaNew.getParicipantes().add(paricipanteTarefa);
+                tarefaNew = em.merge(tarefaNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getParicipanteTarefaList().remove(paricipanteTarefa);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getParicipacoesIncluidas().remove(paricipanteTarefa);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getParicipanteTarefaList().add(paricipanteTarefa);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getParicipacoesIncluidas().add(paricipanteTarefa);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
-            if (idusuarioparticipanteOld != null && !idusuarioparticipanteOld.equals(idusuarioparticipanteNew)) {
-                idusuarioparticipanteOld.getParicipanteTarefaList().remove(paricipanteTarefa);
-                idusuarioparticipanteOld = em.merge(idusuarioparticipanteOld);
+            if (usuarioParticipanteOld != null && !usuarioParticipanteOld.equals(usuarioParticipanteNew)) {
+                usuarioParticipanteOld.getParicipacoesIncluidas().remove(paricipanteTarefa);
+                usuarioParticipanteOld = em.merge(usuarioParticipanteOld);
             }
-            if (idusuarioparticipanteNew != null && !idusuarioparticipanteNew.equals(idusuarioparticipanteOld)) {
-                idusuarioparticipanteNew.getParicipanteTarefaList().add(paricipanteTarefa);
-                idusuarioparticipanteNew = em.merge(idusuarioparticipanteNew);
+            if (usuarioParticipanteNew != null && !usuarioParticipanteNew.equals(usuarioParticipanteOld)) {
+                usuarioParticipanteNew.getParicipacoesIncluidas().add(paricipanteTarefa);
+                usuarioParticipanteNew = em.merge(usuarioParticipanteNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -148,20 +148,20 @@ public class ParicipanteTarefaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The paricipanteTarefa with id " + id + " no longer exists.", enfe);
             }
-            Tarefa idtarefa = paricipanteTarefa.getIdTarefa();
-            if (idtarefa != null) {
-                idtarefa.getParicipantes().remove(paricipanteTarefa);
-                idtarefa = em.merge(idtarefa);
+            Tarefa tarefa = paricipanteTarefa.getTarefa();
+            if (tarefa != null) {
+                tarefa.getParicipantes().remove(paricipanteTarefa);
+                tarefa = em.merge(tarefa);
             }
-            Usuario idusuarioinclusao = paricipanteTarefa.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getParicipanteTarefaList().remove(paricipanteTarefa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = paricipanteTarefa.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getParicipacoesIncluidas().remove(paricipanteTarefa);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
-            Usuario idusuarioparticipante = paricipanteTarefa.getIdUsuarioParticipante();
-            if (idusuarioparticipante != null) {
-                idusuarioparticipante.getParicipanteTarefaList().remove(paricipanteTarefa);
-                idusuarioparticipante = em.merge(idusuarioparticipante);
+            Usuario usuarioParticipante = paricipanteTarefa.getUsuarioParticipante();
+            if (usuarioParticipante != null) {
+                usuarioParticipante.getParicipacoesIncluidas().remove(paricipanteTarefa);
+                usuarioParticipante = em.merge(usuarioParticipante);
             }
             em.remove(paricipanteTarefa);
             em.getTransaction().commit();

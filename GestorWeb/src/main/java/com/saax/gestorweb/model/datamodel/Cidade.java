@@ -51,7 +51,7 @@ public class Cidade implements Serializable {
     private Estado estado;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cidade")
-    private List<Endereco> enderecoList;
+    private List<Endereco> enderecos;
 
     public Cidade() {
     }
@@ -89,12 +89,12 @@ public class Cidade implements Serializable {
         this.estado = estado;
     }
 
-    public List<Endereco> getEnderecoList() {
-        return enderecoList;
+    public List<Endereco> getEnderecos() {
+        return enderecos;
     }
 
-    public void setEnderecoList(List<Endereco> enderecoList) {
-        this.enderecoList = enderecoList;
+    public void setEnderecos(List<Endereco> enderecos) {
+        this.enderecos = enderecos;
     }
 
     @Override

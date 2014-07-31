@@ -34,24 +34,24 @@ public class OrcamentoTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Tarefa idtarefa = orcamentoTarefa.getIdTarefa();
-            if (idtarefa != null) {
-                idtarefa = em.getReference(idtarefa.getClass(), idtarefa.getId());
-                orcamentoTarefa.setIdTarefa(idtarefa);
+            Tarefa tarefa = orcamentoTarefa.getTarefa();
+            if (tarefa != null) {
+                tarefa = em.getReference(tarefa.getClass(), tarefa.getId());
+                orcamentoTarefa.setTarefa(tarefa);
             }
-            Usuario idusuarioinclusao = orcamentoTarefa.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                orcamentoTarefa.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = orcamentoTarefa.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                orcamentoTarefa.setUsuarioInclusao(usuarioInclusao);
             }
             em.persist(orcamentoTarefa);
-            if (idtarefa != null) {
-                idtarefa.getOrcamentos().add(orcamentoTarefa);
-                idtarefa = em.merge(idtarefa);
+            if (tarefa != null) {
+                tarefa.getOrcamentos().add(orcamentoTarefa);
+                tarefa = em.merge(tarefa);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getOrcamentoTarefaList().add(orcamentoTarefa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getOrcamentosIncluidos().add(orcamentoTarefa);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             em.getTransaction().commit();
         } finally {
@@ -67,34 +67,34 @@ public class OrcamentoTarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             OrcamentoTarefa persistentOrcamentoTarefa = em.find(OrcamentoTarefa.class, orcamentoTarefa.getId());
-            Tarefa idtarefaOld = persistentOrcamentoTarefa.getIdTarefa();
-            Tarefa idtarefaNew = orcamentoTarefa.getIdTarefa();
-            Usuario idusuarioinclusaoOld = persistentOrcamentoTarefa.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = orcamentoTarefa.getIdUsuarioInclusao();
-            if (idtarefaNew != null) {
-                idtarefaNew = em.getReference(idtarefaNew.getClass(), idtarefaNew.getId());
-                orcamentoTarefa.setIdTarefa(idtarefaNew);
+            Tarefa tarefaOld = persistentOrcamentoTarefa.getTarefa();
+            Tarefa tarefaNew = orcamentoTarefa.getTarefa();
+            Usuario usuarioInclusaoOld = persistentOrcamentoTarefa.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = orcamentoTarefa.getUsuarioInclusao();
+            if (tarefaNew != null) {
+                tarefaNew = em.getReference(tarefaNew.getClass(), tarefaNew.getId());
+                orcamentoTarefa.setTarefa(tarefaNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                orcamentoTarefa.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                orcamentoTarefa.setUsuarioInclusao(usuarioInclusaoNew);
             }
             orcamentoTarefa = em.merge(orcamentoTarefa);
-            if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getOrcamentos().remove(orcamentoTarefa);
-                idtarefaOld = em.merge(idtarefaOld);
+            if (tarefaOld != null && !tarefaOld.equals(tarefaNew)) {
+                tarefaOld.getOrcamentos().remove(orcamentoTarefa);
+                tarefaOld = em.merge(tarefaOld);
             }
-            if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getOrcamentos().add(orcamentoTarefa);
-                idtarefaNew = em.merge(idtarefaNew);
+            if (tarefaNew != null && !tarefaNew.equals(tarefaOld)) {
+                tarefaNew.getOrcamentos().add(orcamentoTarefa);
+                tarefaNew = em.merge(tarefaNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getOrcamentoTarefaList().remove(orcamentoTarefa);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getOrcamentosIncluidos().remove(orcamentoTarefa);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getOrcamentoTarefaList().add(orcamentoTarefa);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getOrcamentosIncluidos().add(orcamentoTarefa);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -125,15 +125,15 @@ public class OrcamentoTarefaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The orcamentoTarefa with id " + id + " no longer exists.", enfe);
             }
-            Tarefa idtarefa = orcamentoTarefa.getIdTarefa();
-            if (idtarefa != null) {
-                idtarefa.getOrcamentos().remove(orcamentoTarefa);
-                idtarefa = em.merge(idtarefa);
+            Tarefa tarefa = orcamentoTarefa.getTarefa();
+            if (tarefa != null) {
+                tarefa.getOrcamentos().remove(orcamentoTarefa);
+                tarefa = em.merge(tarefa);
             }
-            Usuario idusuarioinclusao = orcamentoTarefa.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getOrcamentoTarefaList().remove(orcamentoTarefa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = orcamentoTarefa.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getOrcamentosIncluidos().remove(orcamentoTarefa);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             em.remove(orcamentoTarefa);
             em.getTransaction().commit();

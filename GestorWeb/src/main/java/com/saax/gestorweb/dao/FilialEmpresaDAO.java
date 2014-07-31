@@ -39,10 +39,10 @@ public class FilialEmpresaDAO implements Serializable {
                 matriz = em.getReference(matriz.getClass(), matriz.getId());
                 filialEmpresa.setMatriz(matriz);
             }
-            Usuario idusuarioinclusao = filialEmpresa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusao = filialEmpresa.getUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                filialEmpresa.setIdUsuarioInclusao(idusuarioinclusao);
+                filialEmpresa.setUsuarioInclusao(idusuarioinclusao);
             }
             em.persist(filialEmpresa);
             if (matriz != null) {
@@ -50,7 +50,7 @@ public class FilialEmpresaDAO implements Serializable {
                 matriz = em.merge(matriz);
             }
             if (idusuarioinclusao != null) {
-                idusuarioinclusao.getFilialEmpresaList().add(filialEmpresa);
+                idusuarioinclusao.getFiliaisEmpresaIncluidas().add(filialEmpresa);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.getTransaction().commit();
@@ -69,15 +69,15 @@ public class FilialEmpresaDAO implements Serializable {
             FilialEmpresa persistentFilialEmpresa = em.find(FilialEmpresa.class, filialEmpresa.getId());
             Empresa matrizOld = persistentFilialEmpresa.getMatriz();
             Empresa matrizNew = filialEmpresa.getMatriz();
-            Usuario idusuarioinclusaoOld = persistentFilialEmpresa.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = filialEmpresa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusaoOld = persistentFilialEmpresa.getUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = filialEmpresa.getUsuarioInclusao();
             if (matrizNew != null) {
                 matrizNew = em.getReference(matrizNew.getClass(), matrizNew.getId());
                 filialEmpresa.setMatriz(matrizNew);
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                filialEmpresa.setIdUsuarioInclusao(idusuarioinclusaoNew);
+                filialEmpresa.setUsuarioInclusao(idusuarioinclusaoNew);
             }
             filialEmpresa = em.merge(filialEmpresa);
             if (matrizOld != null && !matrizOld.equals(matrizNew)) {
@@ -89,11 +89,11 @@ public class FilialEmpresaDAO implements Serializable {
                 matrizNew = em.merge(matrizNew);
             }
             if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getFilialEmpresaList().remove(filialEmpresa);
+                idusuarioinclusaoOld.getFiliaisEmpresaIncluidas().remove(filialEmpresa);
                 idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
             }
             if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getFilialEmpresaList().add(filialEmpresa);
+                idusuarioinclusaoNew.getFiliaisEmpresaIncluidas().add(filialEmpresa);
                 idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
             }
             em.getTransaction().commit();
@@ -130,9 +130,9 @@ public class FilialEmpresaDAO implements Serializable {
                 matriz.getFiliais().remove(filialEmpresa);
                 matriz = em.merge(matriz);
             }
-            Usuario idusuarioinclusao = filialEmpresa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusao = filialEmpresa.getUsuarioInclusao();
             if (idusuarioinclusao != null) {
-                idusuarioinclusao.getFilialEmpresaList().remove(filialEmpresa);
+                idusuarioinclusao.getFiliaisEmpresaIncluidas().remove(filialEmpresa);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.remove(filialEmpresa);

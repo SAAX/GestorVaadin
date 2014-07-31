@@ -84,7 +84,7 @@ public class Endereco implements Serializable {
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioInclusao;
+    private Usuario usuarioInclusao;
     
     @OneToMany(mappedBy = "endereco")
     private List<EmpresaCliente> empresasCliente;
@@ -204,12 +204,12 @@ public class Endereco implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
     
 }

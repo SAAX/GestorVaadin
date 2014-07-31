@@ -48,48 +48,48 @@ public class EnderecoDAO implements Serializable {
                 cidade = em.getReference(cidade.getClass(), cidade.getId());
                 endereco.setCidade(cidade);
             }
-            Usuario idusuarioinclusao = endereco.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                endereco.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = endereco.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                endereco.setUsuarioInclusao(usuarioInclusao);
             }
-            List<Empresa> attachedEmpresaList = new ArrayList<Empresa>();
-            for (Empresa empresaListEmpresaToAttach : endereco.getEmpresas()) {
-                empresaListEmpresaToAttach = em.getReference(empresaListEmpresaToAttach.getClass(), empresaListEmpresaToAttach.getId());
-                attachedEmpresaList.add(empresaListEmpresaToAttach);
+            List<Empresa> attachedEmpresas = new ArrayList<Empresa>();
+            for (Empresa empresasEmpresaToAttach : endereco.getEmpresas()) {
+                empresasEmpresaToAttach = em.getReference(empresasEmpresaToAttach.getClass(), empresasEmpresaToAttach.getId());
+                attachedEmpresas.add(empresasEmpresaToAttach);
             }
-            endereco.setEmpresas(attachedEmpresaList);
-            List<EmpresaCliente> attachedEmpresaClienteList = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente empresaClienteListEmpresaClienteToAttach : endereco.getEmpresasCliente()) {
-                empresaClienteListEmpresaClienteToAttach = em.getReference(empresaClienteListEmpresaClienteToAttach.getClass(), empresaClienteListEmpresaClienteToAttach.getId());
-                attachedEmpresaClienteList.add(empresaClienteListEmpresaClienteToAttach);
+            endereco.setEmpresas(attachedEmpresas);
+            List<EmpresaCliente> attachedEmpresasCliente = new ArrayList<EmpresaCliente>();
+            for (EmpresaCliente empresasClienteEmpresaClienteToAttach : endereco.getEmpresasCliente()) {
+                empresasClienteEmpresaClienteToAttach = em.getReference(empresasClienteEmpresaClienteToAttach.getClass(), empresasClienteEmpresaClienteToAttach.getId());
+                attachedEmpresasCliente.add(empresasClienteEmpresaClienteToAttach);
             }
-            endereco.setEmpresasCliente(attachedEmpresaClienteList);
+            endereco.setEmpresasCliente(attachedEmpresasCliente);
             em.persist(endereco);
             if (cidade != null) {
-                cidade.getEnderecoList().add(endereco);
+                cidade.getEnderecos().add(endereco);
                 cidade = em.merge(cidade);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getEnderecoList().add(endereco);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getEnderecosIncluidos().add(endereco);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
-            for (Empresa empresaListEmpresa : endereco.getEmpresas()) {
-                Endereco oldEnderecoOfEmpresaListEmpresa = empresaListEmpresa.getEndereco();
-                empresaListEmpresa.setEndereco(endereco);
-                empresaListEmpresa = em.merge(empresaListEmpresa);
-                if (oldEnderecoOfEmpresaListEmpresa != null) {
-                    oldEnderecoOfEmpresaListEmpresa.getEmpresas().remove(empresaListEmpresa);
-                    oldEnderecoOfEmpresaListEmpresa = em.merge(oldEnderecoOfEmpresaListEmpresa);
+            for (Empresa empresasEmpresa : endereco.getEmpresas()) {
+                Endereco oldEnderecoOfEmpresasEmpresa = empresasEmpresa.getEndereco();
+                empresasEmpresa.setEndereco(endereco);
+                empresasEmpresa = em.merge(empresasEmpresa);
+                if (oldEnderecoOfEmpresasEmpresa != null) {
+                    oldEnderecoOfEmpresasEmpresa.getEmpresas().remove(empresasEmpresa);
+                    oldEnderecoOfEmpresasEmpresa = em.merge(oldEnderecoOfEmpresasEmpresa);
                 }
             }
-            for (EmpresaCliente empresaClienteListEmpresaCliente : endereco.getEmpresasCliente()) {
-                Endereco oldEnderecoOfEmpresaClienteListEmpresaCliente = empresaClienteListEmpresaCliente.getEndereco();
-                empresaClienteListEmpresaCliente.setEndereco(endereco);
-                empresaClienteListEmpresaCliente = em.merge(empresaClienteListEmpresaCliente);
-                if (oldEnderecoOfEmpresaClienteListEmpresaCliente != null) {
-                    oldEnderecoOfEmpresaClienteListEmpresaCliente.getEmpresasCliente().remove(empresaClienteListEmpresaCliente);
-                    oldEnderecoOfEmpresaClienteListEmpresaCliente = em.merge(oldEnderecoOfEmpresaClienteListEmpresaCliente);
+            for (EmpresaCliente empresasClienteEmpresaCliente : endereco.getEmpresasCliente()) {
+                Endereco oldEnderecoOfEmpresasClienteEmpresaCliente = empresasClienteEmpresaCliente.getEndereco();
+                empresasClienteEmpresaCliente.setEndereco(endereco);
+                empresasClienteEmpresaCliente = em.merge(empresasClienteEmpresaCliente);
+                if (oldEnderecoOfEmpresasClienteEmpresaCliente != null) {
+                    oldEnderecoOfEmpresasClienteEmpresaCliente.getEmpresasCliente().remove(empresasClienteEmpresaCliente);
+                    oldEnderecoOfEmpresasClienteEmpresaCliente = em.merge(oldEnderecoOfEmpresasClienteEmpresaCliente);
                 }
             }
             em.getTransaction().commit();
@@ -108,82 +108,82 @@ public class EnderecoDAO implements Serializable {
             Endereco persistentEndereco = em.find(Endereco.class, endereco.getId());
             Cidade cidadeOld = persistentEndereco.getCidade();
             Cidade cidadeNew = endereco.getCidade();
-            Usuario idusuarioinclusaoOld = persistentEndereco.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = endereco.getIdUsuarioInclusao();
-            List<Empresa> empresaListOld = persistentEndereco.getEmpresas();
-            List<Empresa> empresaListNew = endereco.getEmpresas();
-            List<EmpresaCliente> empresaClienteListOld = persistentEndereco.getEmpresasCliente();
-            List<EmpresaCliente> empresaClienteListNew = endereco.getEmpresasCliente();
+            Usuario usuarioInclusaoOld = persistentEndereco.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = endereco.getUsuarioInclusao();
+            List<Empresa> empresasOld = persistentEndereco.getEmpresas();
+            List<Empresa> empresasNew = endereco.getEmpresas();
+            List<EmpresaCliente> empresasClienteOld = persistentEndereco.getEmpresasCliente();
+            List<EmpresaCliente> empresasClienteNew = endereco.getEmpresasCliente();
             if (cidadeNew != null) {
                 cidadeNew = em.getReference(cidadeNew.getClass(), cidadeNew.getId());
                 endereco.setCidade(cidadeNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                endereco.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                endereco.setUsuarioInclusao(usuarioInclusaoNew);
             }
-            List<Empresa> attachedEmpresaListNew = new ArrayList<Empresa>();
-            for (Empresa empresaListNewEmpresaToAttach : empresaListNew) {
-                empresaListNewEmpresaToAttach = em.getReference(empresaListNewEmpresaToAttach.getClass(), empresaListNewEmpresaToAttach.getId());
-                attachedEmpresaListNew.add(empresaListNewEmpresaToAttach);
+            List<Empresa> attachedEmpresasNew = new ArrayList<Empresa>();
+            for (Empresa empresasNewEmpresaToAttach : empresasNew) {
+                empresasNewEmpresaToAttach = em.getReference(empresasNewEmpresaToAttach.getClass(), empresasNewEmpresaToAttach.getId());
+                attachedEmpresasNew.add(empresasNewEmpresaToAttach);
             }
-            empresaListNew = attachedEmpresaListNew;
-            endereco.setEmpresas(empresaListNew);
-            List<EmpresaCliente> attachedEmpresaClienteListNew = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente empresaClienteListNewEmpresaClienteToAttach : empresaClienteListNew) {
-                empresaClienteListNewEmpresaClienteToAttach = em.getReference(empresaClienteListNewEmpresaClienteToAttach.getClass(), empresaClienteListNewEmpresaClienteToAttach.getId());
-                attachedEmpresaClienteListNew.add(empresaClienteListNewEmpresaClienteToAttach);
+            empresasNew = attachedEmpresasNew;
+            endereco.setEmpresas(empresasNew);
+            List<EmpresaCliente> attachedEmpresasClienteNew = new ArrayList<EmpresaCliente>();
+            for (EmpresaCliente empresasClienteNewEmpresaClienteToAttach : empresasClienteNew) {
+                empresasClienteNewEmpresaClienteToAttach = em.getReference(empresasClienteNewEmpresaClienteToAttach.getClass(), empresasClienteNewEmpresaClienteToAttach.getId());
+                attachedEmpresasClienteNew.add(empresasClienteNewEmpresaClienteToAttach);
             }
-            empresaClienteListNew = attachedEmpresaClienteListNew;
-            endereco.setEmpresasCliente(empresaClienteListNew);
+            empresasClienteNew = attachedEmpresasClienteNew;
+            endereco.setEmpresasCliente(empresasClienteNew);
             endereco = em.merge(endereco);
             if (cidadeOld != null && !cidadeOld.equals(cidadeNew)) {
-                cidadeOld.getEnderecoList().remove(endereco);
+                cidadeOld.getEnderecos().remove(endereco);
                 cidadeOld = em.merge(cidadeOld);
             }
             if (cidadeNew != null && !cidadeNew.equals(cidadeOld)) {
-                cidadeNew.getEnderecoList().add(endereco);
+                cidadeNew.getEnderecos().add(endereco);
                 cidadeNew = em.merge(cidadeNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getEnderecoList().remove(endereco);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getEnderecosIncluidos().remove(endereco);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getEnderecoList().add(endereco);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getEnderecosIncluidos().add(endereco);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
-            for (Empresa empresaListOldEmpresa : empresaListOld) {
-                if (!empresaListNew.contains(empresaListOldEmpresa)) {
-                    empresaListOldEmpresa.setEndereco(null);
-                    empresaListOldEmpresa = em.merge(empresaListOldEmpresa);
+            for (Empresa empresasOldEmpresa : empresasOld) {
+                if (!empresasNew.contains(empresasOldEmpresa)) {
+                    empresasOldEmpresa.setEndereco(null);
+                    empresasOldEmpresa = em.merge(empresasOldEmpresa);
                 }
             }
-            for (Empresa empresaListNewEmpresa : empresaListNew) {
-                if (!empresaListOld.contains(empresaListNewEmpresa)) {
-                    Endereco oldEnderecoOfEmpresaListNewEmpresa = empresaListNewEmpresa.getEndereco();
-                    empresaListNewEmpresa.setEndereco(endereco);
-                    empresaListNewEmpresa = em.merge(empresaListNewEmpresa);
-                    if (oldEnderecoOfEmpresaListNewEmpresa != null && !oldEnderecoOfEmpresaListNewEmpresa.equals(endereco)) {
-                        oldEnderecoOfEmpresaListNewEmpresa.getEmpresas().remove(empresaListNewEmpresa);
-                        oldEnderecoOfEmpresaListNewEmpresa = em.merge(oldEnderecoOfEmpresaListNewEmpresa);
+            for (Empresa empresasNewEmpresa : empresasNew) {
+                if (!empresasOld.contains(empresasNewEmpresa)) {
+                    Endereco oldEnderecoOfEmpresasNewEmpresa = empresasNewEmpresa.getEndereco();
+                    empresasNewEmpresa.setEndereco(endereco);
+                    empresasNewEmpresa = em.merge(empresasNewEmpresa);
+                    if (oldEnderecoOfEmpresasNewEmpresa != null && !oldEnderecoOfEmpresasNewEmpresa.equals(endereco)) {
+                        oldEnderecoOfEmpresasNewEmpresa.getEmpresas().remove(empresasNewEmpresa);
+                        oldEnderecoOfEmpresasNewEmpresa = em.merge(oldEnderecoOfEmpresasNewEmpresa);
                     }
                 }
             }
-            for (EmpresaCliente empresaClienteListOldEmpresaCliente : empresaClienteListOld) {
-                if (!empresaClienteListNew.contains(empresaClienteListOldEmpresaCliente)) {
-                    empresaClienteListOldEmpresaCliente.setEndereco(null);
-                    empresaClienteListOldEmpresaCliente = em.merge(empresaClienteListOldEmpresaCliente);
+            for (EmpresaCliente empresasClienteOldEmpresaCliente : empresasClienteOld) {
+                if (!empresasClienteNew.contains(empresasClienteOldEmpresaCliente)) {
+                    empresasClienteOldEmpresaCliente.setEndereco(null);
+                    empresasClienteOldEmpresaCliente = em.merge(empresasClienteOldEmpresaCliente);
                 }
             }
-            for (EmpresaCliente empresaClienteListNewEmpresaCliente : empresaClienteListNew) {
-                if (!empresaClienteListOld.contains(empresaClienteListNewEmpresaCliente)) {
-                    Endereco oldEnderecoOfEmpresaClienteListNewEmpresaCliente = empresaClienteListNewEmpresaCliente.getEndereco();
-                    empresaClienteListNewEmpresaCliente.setEndereco(endereco);
-                    empresaClienteListNewEmpresaCliente = em.merge(empresaClienteListNewEmpresaCliente);
-                    if (oldEnderecoOfEmpresaClienteListNewEmpresaCliente != null && !oldEnderecoOfEmpresaClienteListNewEmpresaCliente.equals(endereco)) {
-                        oldEnderecoOfEmpresaClienteListNewEmpresaCliente.getEmpresasCliente().remove(empresaClienteListNewEmpresaCliente);
-                        oldEnderecoOfEmpresaClienteListNewEmpresaCliente = em.merge(oldEnderecoOfEmpresaClienteListNewEmpresaCliente);
+            for (EmpresaCliente empresasClienteNewEmpresaCliente : empresasClienteNew) {
+                if (!empresasClienteOld.contains(empresasClienteNewEmpresaCliente)) {
+                    Endereco oldEnderecoOfEmpresasClienteNewEmpresaCliente = empresasClienteNewEmpresaCliente.getEndereco();
+                    empresasClienteNewEmpresaCliente.setEndereco(endereco);
+                    empresasClienteNewEmpresaCliente = em.merge(empresasClienteNewEmpresaCliente);
+                    if (oldEnderecoOfEmpresasClienteNewEmpresaCliente != null && !oldEnderecoOfEmpresasClienteNewEmpresaCliente.equals(endereco)) {
+                        oldEnderecoOfEmpresasClienteNewEmpresaCliente.getEmpresasCliente().remove(empresasClienteNewEmpresaCliente);
+                        oldEnderecoOfEmpresasClienteNewEmpresaCliente = em.merge(oldEnderecoOfEmpresasClienteNewEmpresaCliente);
                     }
                 }
             }
@@ -218,23 +218,23 @@ public class EnderecoDAO implements Serializable {
             }
             Cidade cidade = endereco.getCidade();
             if (cidade != null) {
-                cidade.getEnderecoList().remove(endereco);
+                cidade.getEnderecos().remove(endereco);
                 cidade = em.merge(cidade);
             }
-            Usuario idusuarioinclusao = endereco.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getEnderecoList().remove(endereco);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = endereco.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getEnderecosIncluidos().remove(endereco);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
-            List<Empresa> empresaList = endereco.getEmpresas();
-            for (Empresa empresaListEmpresa : empresaList) {
-                empresaListEmpresa.setEndereco(null);
-                empresaListEmpresa = em.merge(empresaListEmpresa);
+            List<Empresa> empresas = endereco.getEmpresas();
+            for (Empresa empresasEmpresa : empresas) {
+                empresasEmpresa.setEndereco(null);
+                empresasEmpresa = em.merge(empresasEmpresa);
             }
-            List<EmpresaCliente> empresaClienteList = endereco.getEmpresasCliente();
-            for (EmpresaCliente empresaClienteListEmpresaCliente : empresaClienteList) {
-                empresaClienteListEmpresaCliente.setEndereco(null);
-                empresaClienteListEmpresaCliente = em.merge(empresaClienteListEmpresaCliente);
+            List<EmpresaCliente> empresasCliente = endereco.getEmpresasCliente();
+            for (EmpresaCliente empresasClienteEmpresaCliente : empresasCliente) {
+                empresasClienteEmpresaCliente.setEndereco(null);
+                empresasClienteEmpresaCliente = em.merge(empresasClienteEmpresaCliente);
             }
             em.remove(endereco);
             em.getTransaction().commit();

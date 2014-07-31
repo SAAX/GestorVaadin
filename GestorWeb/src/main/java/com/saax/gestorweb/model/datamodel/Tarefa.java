@@ -104,31 +104,31 @@ public class Tarefa implements Serializable {
     private boolean orcamentoControlado;
     
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
     private List<FavoritosTarefaMeta> favoritados;
     
     @JoinColumn(name = "idcentrocusto", referencedColumnName = "idcentrocusto")
     @ManyToOne
-    private CentroCusto idCentroCusto;
+    private CentroCusto centroCusto;
     
     @JoinColumn(name = "iddepartamento", referencedColumnName = "iddepartamento")
     @ManyToOne
-    private Departamento idDepartamento;
+    private Departamento departamento;
     
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
-    private Empresa idEmpresa;
+    private Empresa empresa;
     
     @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
     @ManyToOne
     private EmpresaCliente empresaCliente;
     
-    @OneToMany(mappedBy = "idTarefaPai")
+    @OneToMany(mappedBy = "tarefaPai")
     private List<Tarefa> subTarefas;
     
     @JoinColumn(name = "idproximatarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa idProximaTarefa;
+    private Tarefa proximaTarefa;
     
     @JoinColumn(name = "tipo", referencedColumnName = "tipotarefa")
     @ManyToOne(optional = false)
@@ -136,33 +136,33 @@ public class Tarefa implements Serializable {
     
     @JoinColumn(name = "idtarefapai", referencedColumnName = "idtarefa")
     @ManyToOne
-    private Tarefa idTarefaPai;
+    private Tarefa tarefaPai;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne
-    private Usuario idUsuarioInclusao;
+    private Usuario usuarioInclusao;
 
     @JoinColumn(name = "idusuariosolicitante", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioSolicitante;
+    private Usuario usuarioSolicitante;
     
     @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioResponsavel;
+    private Usuario usuarioResponsavel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
     private List<ParicipanteTarefa> paricipantes;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
     private List<AvaliacaoMetaTarefa> avaliacoes;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
     private List<OrcamentoTarefa> orcamentos;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
-    private List<ApontamentoTarefa> apontamentoTarefaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+    private List<ApontamentoTarefa> apontamentos;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTarefa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
     private List<AnexoTarefa> anexos;
 
     @Basic(optional = false)
@@ -276,28 +276,28 @@ public class Tarefa implements Serializable {
         this.favoritados = favoritados;
     }
 
-    public CentroCusto getIdCentroCusto() {
-        return idCentroCusto;
+    public CentroCusto getCentroCusto() {
+        return centroCusto;
     }
 
-    public void setIdCentroCusto(CentroCusto idCentroCusto) {
-        this.idCentroCusto = idCentroCusto;
+    public void setCentroCusto(CentroCusto centroCusto) {
+        this.centroCusto = centroCusto;
     }
 
-    public Departamento getIdDepartamento() {
-        return idDepartamento;
+    public Departamento getDepartamento() {
+        return departamento;
     }
 
-    public void setIdDepartamento(Departamento idDepartamento) {
-        this.idDepartamento = idDepartamento;
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
     }
 
-    public Empresa getIdEmpresa() {
-        return idEmpresa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setIdEmpresa(Empresa idEmpresa) {
-        this.idEmpresa = idEmpresa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     public EmpresaCliente getEmpresaCliente() {
@@ -316,36 +316,36 @@ public class Tarefa implements Serializable {
         this.subTarefas = subTarefas;
     }
 
-    public Tarefa getIdTarefaPai() {
-        return idTarefaPai;
+    public Tarefa getTarefaPai() {
+        return tarefaPai;
     }
 
-    public void setIdTarefaPai(Tarefa idTarefaPai) {
-        this.idTarefaPai = idTarefaPai;
+    public void setTarefaPai(Tarefa tarefaPai) {
+        this.tarefaPai = tarefaPai;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
 
-    public Usuario getIdUsuarioSolicitante() {
-        return idUsuarioSolicitante;
+    public Usuario getUsuarioSolicitante() {
+        return usuarioSolicitante;
     }
 
-    public void setIdUsuarioSolicitante(Usuario idUsuarioSolicitante) {
-        this.idUsuarioSolicitante = idUsuarioSolicitante;
+    public void setUsuarioSolicitante(Usuario usuarioSolicitante) {
+        this.usuarioSolicitante = usuarioSolicitante;
     }
 
-    public Usuario getIdUsuarioResponsavel() {
-        return idUsuarioResponsavel;
+    public Usuario getUsuarioResponsavel() {
+        return usuarioResponsavel;
     }
 
-    public void setIdUsuarioResponsavel(Usuario idUsuarioResponsavel) {
-        this.idUsuarioResponsavel = idUsuarioResponsavel;
+    public void setUsuarioResponsavel(Usuario usuarioResponsavel) {
+        this.usuarioResponsavel = usuarioResponsavel;
     }
 
     public List<ParicipanteTarefa> getParicipantes() {
@@ -372,12 +372,12 @@ public class Tarefa implements Serializable {
         this.orcamentos = orcamentos;
     }
 
-    public List<ApontamentoTarefa> getApontamentoTarefaList() {
-        return apontamentoTarefaList;
+    public List<ApontamentoTarefa> getApontamentos() {
+        return apontamentos;
     }
 
-    public void setApontamentoTarefaList(List<ApontamentoTarefa> apontamentoTarefaList) {
-        this.apontamentoTarefaList = apontamentoTarefaList;
+    public void setApontamentos(List<ApontamentoTarefa> apontamentos) {
+        this.apontamentos = apontamentos;
     }
 
     public List<AnexoTarefa> getAnexos() {
@@ -421,12 +421,12 @@ public class Tarefa implements Serializable {
         this.status = status;
     }
 
-    public Tarefa getIdProximaTarefa() {
-        return idProximaTarefa;
+    public Tarefa getProximaTarefa() {
+        return proximaTarefa;
     }
 
-    public void setIdProximaTarefa(Tarefa idProximaTarefa) {
-        this.idProximaTarefa = idProximaTarefa;
+    public void setProximaTarefa(Tarefa proximaTarefa) {
+        this.proximaTarefa = proximaTarefa;
     }
 
     public TipoTarefa getTipo() {

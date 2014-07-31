@@ -37,55 +37,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login"),
     @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")})
 public class Usuario implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime dataHoraInclusao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<FavoritosTarefaMeta> favoritosTarefaMetaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<CentroCusto> centroCustoList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<Endereco> enderecoList;
-    @OneToMany(mappedBy = "idUsuarioInclusao")
-    private List<Tarefa> tarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioSolicitante")
-    private List<Tarefa> tarefaList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioResponsavel")
-    private List<Tarefa> tarefaList2;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<ParicipanteTarefa> paricipanteTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioParticipante")
-    private List<ParicipanteTarefa> paricipanteTarefaList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<FilialCliente> filialClienteList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<FilialEmpresa> filialEmpresaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioAvaliador")
-    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioAvaliado")
-    private List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList2;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<OrcamentoTarefa> orcamentoTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<ApontamentoTarefa> apontamentoTarefaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<Departamento> departamentoList;
-    @OneToMany(mappedBy = "idUsuarioInclusao")
-    private List<Usuario> usuarioList;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne
-    private Usuario idUsuarioInclusao;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<Empresa> empresaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<EmpresaCliente> empresaClienteList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsuarioInclusao")
-    private List<AnexoTarefa> anexoTarefaList;
-    
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -122,8 +74,78 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private Collection<UsuarioEmpresa> empresas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "responsavel")
-    private Collection<Meta> metasResponsaveis;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioResponsavel")
+    private Collection<Meta> metasSobResponsabilidade;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime dataHoraInclusao;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<FavoritosTarefaMeta> favoritosIncluidos;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<CentroCusto> centrosCustoIncluidos;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<Endereco> enderecosIncluidos;
+    
+    @OneToMany(mappedBy = "usuarioInclusao")
+    private List<Tarefa> tarefasIncluidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioSolicitante")
+    private List<Tarefa> tarefasSolicitadas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioResponsavel")
+    private List<Tarefa> tarefasSobResponsabilidade;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<ParicipanteTarefa> paricipacoesIncluidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioParticipante")
+    private List<ParicipanteTarefa> tarefasParticipantes;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<FilialCliente> filiaisClientesIncluidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<FilialEmpresa> filiaisEmpresaIncluidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<AvaliacaoMetaTarefa> avaliacoesIncluidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioAvaliador")
+    private List<AvaliacaoMetaTarefa> avaliacoesSubmetidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioAvaliado")
+    private List<AvaliacaoMetaTarefa> avaliacoesRecebidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<OrcamentoTarefa> orcamentosIncluidos;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<ApontamentoTarefa> apontamentosIncluidos;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<Departamento> departamentosIncluidos;
+    
+    @OneToMany(mappedBy = "usuarioInclusao")
+    private List<Usuario> usuariosIncluidos;
+    
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario usuarioInclusao;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<Empresa> empresasIncluidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<EmpresaCliente> empresasClienteIncluidas;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    private List<AnexoTarefa> anexosTarefaIncluidos;
     
     
     public Usuario() {
@@ -214,12 +236,12 @@ public class Usuario implements Serializable {
         this.empresas = empresas;
     }
 
-    public Collection<Meta> getMetasResponsaveis() {
-        return metasResponsaveis;
+    public Collection<Meta> getMetasSobResponsabilidade() {
+        return metasSobResponsabilidade;
     }
 
-    public void setMetasResponsaveis(Collection<Meta> metasResponsaveis) {
-        this.metasResponsaveis = metasResponsaveis;
+    public void setMetasSobResponsabilidade(Collection<Meta> metasSobResponsabilidade) {
+        this.metasSobResponsabilidade = metasSobResponsabilidade;
     }
 
     public LocalDateTime getDataHoraInclusao() {
@@ -230,172 +252,172 @@ public class Usuario implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<FavoritosTarefaMeta> getFavoritosTarefaMetaList() {
-        return favoritosTarefaMetaList;
+    public List<FavoritosTarefaMeta> getFavoritosIncluidos() {
+        return favoritosIncluidos;
     }
 
-    public void setFavoritosTarefaMetaList(List<FavoritosTarefaMeta> favoritosTarefaMetaList) {
-        this.favoritosTarefaMetaList = favoritosTarefaMetaList;
+    public void setFavoritosIncluidos(List<FavoritosTarefaMeta> favoritosIncluidos) {
+        this.favoritosIncluidos = favoritosIncluidos;
     }
 
-    public List<CentroCusto> getCentroCustoList() {
-        return centroCustoList;
+    public List<CentroCusto> getCentrosCustoIncluidos() {
+        return centrosCustoIncluidos;
     }
 
-    public void setCentroCustoList(List<CentroCusto> centroCustoList) {
-        this.centroCustoList = centroCustoList;
+    public void setCentrosCustoIncluidos(List<CentroCusto> centrosCustoIncluidos) {
+        this.centrosCustoIncluidos = centrosCustoIncluidos;
     }
 
-    public List<Endereco> getEnderecoList() {
-        return enderecoList;
+    public List<Endereco> getEnderecosIncluidos() {
+        return enderecosIncluidos;
     }
 
-    public void setEnderecoList(List<Endereco> enderecoList) {
-        this.enderecoList = enderecoList;
+    public void setEnderecosIncluidos(List<Endereco> enderecosIncluidos) {
+        this.enderecosIncluidos = enderecosIncluidos;
     }
 
-    public List<Tarefa> getTarefaList() {
-        return tarefaList;
+    public List<Tarefa> getTarefasIncluidas() {
+        return tarefasIncluidas;
     }
 
-    public void setTarefaList(List<Tarefa> tarefaList) {
-        this.tarefaList = tarefaList;
+    public void setTarefasIncluidas(List<Tarefa> tarefasIncluidas) {
+        this.tarefasIncluidas = tarefasIncluidas;
     }
 
-    public List<Tarefa> getTarefaList1() {
-        return tarefaList1;
+    public List<Tarefa> getTarefasSolicitadas() {
+        return tarefasSolicitadas;
     }
 
-    public void setTarefaList1(List<Tarefa> tarefaList1) {
-        this.tarefaList1 = tarefaList1;
+    public void setTarefasSolicitadas(List<Tarefa> tarefasSolicitadas) {
+        this.tarefasSolicitadas = tarefasSolicitadas;
     }
 
-    public List<Tarefa> getTarefaList2() {
-        return tarefaList2;
+    public List<Tarefa> getTarefasSobResponsabilidade() {
+        return tarefasSobResponsabilidade;
     }
 
-    public void setTarefaList2(List<Tarefa> tarefaList2) {
-        this.tarefaList2 = tarefaList2;
+    public void setTarefasSobResponsabilidade(List<Tarefa> tarefasSobResponsabilidade) {
+        this.tarefasSobResponsabilidade = tarefasSobResponsabilidade;
     }
 
-    public List<ParicipanteTarefa> getParicipanteTarefaList() {
-        return paricipanteTarefaList;
+    public List<ParicipanteTarefa> getParicipacoesIncluidas() {
+        return paricipacoesIncluidas;
     }
 
-    public void setParicipanteTarefaList(List<ParicipanteTarefa> paricipanteTarefaList) {
-        this.paricipanteTarefaList = paricipanteTarefaList;
+    public void setParicipacoesIncluidas(List<ParicipanteTarefa> paricipacoesIncluidas) {
+        this.paricipacoesIncluidas = paricipacoesIncluidas;
     }
 
-    public List<ParicipanteTarefa> getParicipanteTarefaList1() {
-        return paricipanteTarefaList1;
+    public List<ParicipanteTarefa> getTarefasParticipantes() {
+        return tarefasParticipantes;
     }
 
-    public void setParicipanteTarefaList1(List<ParicipanteTarefa> paricipanteTarefaList1) {
-        this.paricipanteTarefaList1 = paricipanteTarefaList1;
+    public void setTarefasParticipantes(List<ParicipanteTarefa> tarefasParticipantes) {
+        this.tarefasParticipantes = tarefasParticipantes;
     }
 
-    public List<FilialCliente> getFilialClienteList() {
-        return filialClienteList;
+    public List<FilialCliente> getFiliaisClientesIncluidas() {
+        return filiaisClientesIncluidas;
     }
 
-    public void setFilialClienteList(List<FilialCliente> filialClienteList) {
-        this.filialClienteList = filialClienteList;
+    public void setFiliaisClientesIncluidas(List<FilialCliente> filiaisClientesIncluidas) {
+        this.filiaisClientesIncluidas = filiaisClientesIncluidas;
     }
 
-    public List<FilialEmpresa> getFilialEmpresaList() {
-        return filialEmpresaList;
+    public List<FilialEmpresa> getFiliaisEmpresaIncluidas() {
+        return filiaisEmpresaIncluidas;
     }
 
-    public void setFilialEmpresaList(List<FilialEmpresa> filialEmpresaList) {
-        this.filialEmpresaList = filialEmpresaList;
+    public void setFiliaisEmpresaIncluidas(List<FilialEmpresa> filiaisEmpresaIncluidas) {
+        this.filiaisEmpresaIncluidas = filiaisEmpresaIncluidas;
     }
 
-    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList() {
-        return avaliacaoMetaTarefaList;
+    public List<AvaliacaoMetaTarefa> getAvaliacoesIncluidas() {
+        return avaliacoesIncluidas;
     }
 
-    public void setAvaliacaoMetaTarefaList(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList) {
-        this.avaliacaoMetaTarefaList = avaliacaoMetaTarefaList;
+    public void setAvaliacoesIncluidas(List<AvaliacaoMetaTarefa> avaliacoesIncluidas) {
+        this.avaliacoesIncluidas = avaliacoesIncluidas;
     }
 
-    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList1() {
-        return avaliacaoMetaTarefaList1;
+    public List<AvaliacaoMetaTarefa> getAvaliacoesSubmetidas() {
+        return avaliacoesSubmetidas;
     }
 
-    public void setAvaliacaoMetaTarefaList1(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList1) {
-        this.avaliacaoMetaTarefaList1 = avaliacaoMetaTarefaList1;
+    public void setAvaliacoesSubmetidas(List<AvaliacaoMetaTarefa> avaliacoesSubmetidas) {
+        this.avaliacoesSubmetidas = avaliacoesSubmetidas;
     }
 
-    public List<AvaliacaoMetaTarefa> getAvaliacaoMetaTarefaList2() {
-        return avaliacaoMetaTarefaList2;
+    public List<AvaliacaoMetaTarefa> getAvaliacoesRecebidas() {
+        return avaliacoesRecebidas;
     }
 
-    public void setAvaliacaoMetaTarefaList2(List<AvaliacaoMetaTarefa> avaliacaoMetaTarefaList2) {
-        this.avaliacaoMetaTarefaList2 = avaliacaoMetaTarefaList2;
+    public void setAvaliacoesRecebidas(List<AvaliacaoMetaTarefa> avaliacoesRecebidas) {
+        this.avaliacoesRecebidas = avaliacoesRecebidas;
     }
 
-    public List<OrcamentoTarefa> getOrcamentoTarefaList() {
-        return orcamentoTarefaList;
+    public List<OrcamentoTarefa> getOrcamentosIncluidos() {
+        return orcamentosIncluidos;
     }
 
-    public void setOrcamentoTarefaList(List<OrcamentoTarefa> orcamentoTarefaList) {
-        this.orcamentoTarefaList = orcamentoTarefaList;
+    public void setOrcamentosIncluidos(List<OrcamentoTarefa> orcamentosIncluidos) {
+        this.orcamentosIncluidos = orcamentosIncluidos;
     }
 
-    public List<ApontamentoTarefa> getApontamentoTarefaList() {
-        return apontamentoTarefaList;
+    public List<ApontamentoTarefa> getApontamentosIncluidos() {
+        return apontamentosIncluidos;
     }
 
-    public void setApontamentoTarefaList(List<ApontamentoTarefa> apontamentoTarefaList) {
-        this.apontamentoTarefaList = apontamentoTarefaList;
+    public void setApontamentosIncluidos(List<ApontamentoTarefa> apontamentosIncluidos) {
+        this.apontamentosIncluidos = apontamentosIncluidos;
     }
 
-    public List<Departamento> getDepartamentoList() {
-        return departamentoList;
+    public List<Departamento> getDepartamentosIncluidos() {
+        return departamentosIncluidos;
     }
 
-    public void setDepartamentoList(List<Departamento> departamentoList) {
-        this.departamentoList = departamentoList;
+    public void setDepartamentosIncluidos(List<Departamento> departamentosIncluidos) {
+        this.departamentosIncluidos = departamentosIncluidos;
     }
 
-    public List<Usuario> getUsuarioList() {
-        return usuarioList;
+    public List<Usuario> getUsuariosIncluidos() {
+        return usuariosIncluidos;
     }
 
-    public void setUsuarioList(List<Usuario> usuarioList) {
-        this.usuarioList = usuarioList;
+    public void setUsuariosIncluidos(List<Usuario> usuariosIncluidos) {
+        this.usuariosIncluidos = usuariosIncluidos;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
 
-    public List<Empresa> getEmpresaList() {
-        return empresaList;
+    public List<Empresa> getEmpresasIncluidas() {
+        return empresasIncluidas;
     }
 
-    public void setEmpresaList(List<Empresa> empresaList) {
-        this.empresaList = empresaList;
+    public void setEmpresasIncluidas(List<Empresa> empresasIncluidas) {
+        this.empresasIncluidas = empresasIncluidas;
     }
 
-    public List<EmpresaCliente> getEmpresaClienteList() {
-        return empresaClienteList;
+    public List<EmpresaCliente> getEmpresasClienteIncluidas() {
+        return empresasClienteIncluidas;
     }
 
-    public void setEmpresaClienteList(List<EmpresaCliente> empresaClienteList) {
-        this.empresaClienteList = empresaClienteList;
+    public void setEmpresasClienteIncluidas(List<EmpresaCliente> empresasClienteIncluidas) {
+        this.empresasClienteIncluidas = empresasClienteIncluidas;
     }
 
-    public List<AnexoTarefa> getAnexoTarefaList() {
-        return anexoTarefaList;
+    public List<AnexoTarefa> getAnexosTarefaIncluidos() {
+        return anexosTarefaIncluidos;
     }
 
-    public void setAnexoTarefaList(List<AnexoTarefa> anexoTarefaList) {
-        this.anexoTarefaList = anexoTarefaList;
+    public void setAnexosTarefaIncluidos(List<AnexoTarefa> anexosTarefaIncluidos) {
+        this.anexosTarefaIncluidos = anexosTarefaIncluidos;
     }
 
     

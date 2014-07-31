@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
  *
  * @author Rodrigo
  */
-public class PaginaInicialPresenter implements PaginaInicialViewListener {
+public class PaginaInicialPresenter implements PaginaInicialViewListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
     private final PaginaInicialView view;

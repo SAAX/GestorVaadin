@@ -106,7 +106,7 @@ public class Meta implements Serializable {
     
     @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario responsavel;
+    private Usuario usuarioResponsavel;
 
     @Basic(optional = false)
     @NotNull
@@ -114,15 +114,15 @@ public class Meta implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMeta")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meta")
     private List<FavoritosTarefaMeta> favoritados;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMeta")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meta")
     private List<AvaliacaoMetaTarefa> avaliacoes;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne
-    private Usuario idUsuarioInclusao;
+    private Usuario usuarioInclusao;
 
     public Meta() {
     }
@@ -236,12 +236,12 @@ public class Meta implements Serializable {
         this.cliente = cliente;
     }
 
-    public Usuario getResponsavel() {
-        return responsavel;
+    public Usuario getUsuarioResponsavel() {
+        return usuarioResponsavel;
     }
 
-    public void setResponsavel(Usuario responsavel) {
-        this.responsavel = responsavel;
+    public void setUsuarioResponsavel(Usuario usuarioResponsavel) {
+        this.usuarioResponsavel = usuarioResponsavel;
     }
 
     @Override
@@ -293,12 +293,12 @@ public class Meta implements Serializable {
         this.avaliacoes = avaliacoes;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
 
 }

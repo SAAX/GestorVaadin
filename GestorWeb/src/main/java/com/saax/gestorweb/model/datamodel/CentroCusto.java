@@ -70,9 +70,9 @@ public class CentroCusto implements Serializable {
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioInclusao;
+    private Usuario usuarioInclusao;
     
-    @OneToMany(mappedBy = "idCentroCusto")
+    @OneToMany(mappedBy = "centroCusto")
     private List<Tarefa> tarefas;
 
     public CentroCusto() {
@@ -157,12 +157,12 @@ public class CentroCusto implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
 
     public List<Tarefa> getTarefas() {

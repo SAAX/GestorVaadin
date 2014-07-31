@@ -38,7 +38,7 @@ public class StatusTarefa implements Serializable {
     private String statustarefa;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "status")
-    private Set<Tarefa> tarefaSet;
+    private Set<Tarefa> tarefas;
 
     public StatusTarefa() {
     }
@@ -55,12 +55,12 @@ public class StatusTarefa implements Serializable {
         this.statustarefa = statustarefa;
     }
 
-    public Set<Tarefa> getTarefaSet() {
-        return tarefaSet;
+    public Set<Tarefa> getTarefas() {
+        return tarefas;
     }
 
-    public void setTarefaSet(Set<Tarefa> tarefaSet) {
-        this.tarefaSet = tarefaSet;
+    public void setTarefas(Set<Tarefa> tarefas) {
+        this.tarefas = tarefas;
     }
 
     @Override

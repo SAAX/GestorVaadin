@@ -46,15 +46,15 @@ public class FavoritosTarefaMeta implements Serializable {
     
     @JoinColumn(name = "idmeta", referencedColumnName = "idmeta")
     @ManyToOne(optional = false)
-    private Meta idMeta;
+    private Meta meta;
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa idTarefa;
+    private Tarefa tarefa;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioInclusao;
+    private Usuario usuarioInclusao;
 
     public FavoritosTarefaMeta() {
     }
@@ -84,28 +84,28 @@ public class FavoritosTarefaMeta implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Meta getIdMeta() {
-        return idMeta;
+    public Meta getMeta() {
+        return meta;
     }
 
-    public void setIdMeta(Meta idMeta) {
-        this.idMeta = idMeta;
+    public void setMeta(Meta meta) {
+        this.meta = meta;
     }
 
-    public Tarefa getIdTarefa() {
-        return idTarefa;
+    public Tarefa getTarefa() {
+        return tarefa;
     }
 
-    public void setIdTarefa(Tarefa idTarefa) {
-        this.idTarefa = idTarefa;
+    public void setTarefa(Tarefa tarefa) {
+        this.tarefa = tarefa;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
 
     @Override

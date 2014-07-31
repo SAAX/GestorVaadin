@@ -34,26 +34,26 @@ public class StatusTarefaDAO implements Serializable {
     }
 
     public void create(StatusTarefa statustarefa) throws PreexistingEntityException, Exception {
-        if (statustarefa.getTarefaSet() == null) {
-            statustarefa.setTarefaSet(new HashSet<Tarefa>());
+        if (statustarefa.getTarefas() == null) {
+            statustarefa.setTarefas(new HashSet<Tarefa>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Set<Tarefa> attachedTarefaSet = new HashSet<Tarefa>();
-            for (Tarefa tarefaSetTarefaToAttach : statustarefa.getTarefaSet()) {
+            for (Tarefa tarefaSetTarefaToAttach : statustarefa.getTarefas()) {
                 tarefaSetTarefaToAttach = em.getReference(tarefaSetTarefaToAttach.getClass(), tarefaSetTarefaToAttach.getId());
                 attachedTarefaSet.add(tarefaSetTarefaToAttach);
             }
-            statustarefa.setTarefaSet(attachedTarefaSet);
+            statustarefa.setTarefas(attachedTarefaSet);
             em.persist(statustarefa);
-            for (Tarefa tarefaSetTarefa : statustarefa.getTarefaSet()) {
+            for (Tarefa tarefaSetTarefa : statustarefa.getTarefas()) {
                 StatusTarefa oldStatusOfTarefaSetTarefa = tarefaSetTarefa.getStatus();
                 tarefaSetTarefa.setStatus(statustarefa);
                 tarefaSetTarefa = em.merge(tarefaSetTarefa);
                 if (oldStatusOfTarefaSetTarefa != null) {
-                    oldStatusOfTarefaSetTarefa.getTarefaSet().remove(tarefaSetTarefa);
+                    oldStatusOfTarefaSetTarefa.getTarefas().remove(tarefaSetTarefa);
                     oldStatusOfTarefaSetTarefa = em.merge(oldStatusOfTarefaSetTarefa);
                 }
             }
@@ -76,8 +76,8 @@ public class StatusTarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             StatusTarefa persistentStatustarefa = em.find(StatusTarefa.class, statustarefa.getStatustarefa());
-            Set<Tarefa> tarefaSetOld = persistentStatustarefa.getTarefaSet();
-            Set<Tarefa> tarefaSetNew = statustarefa.getTarefaSet();
+            Set<Tarefa> tarefaSetOld = persistentStatustarefa.getTarefas();
+            Set<Tarefa> tarefaSetNew = statustarefa.getTarefas();
             List<String> illegalOrphanMessages = null;
             for (Tarefa tarefaSetOldTarefa : tarefaSetOld) {
                 if (!tarefaSetNew.contains(tarefaSetOldTarefa)) {
@@ -96,7 +96,7 @@ public class StatusTarefaDAO implements Serializable {
                 attachedTarefaSetNew.add(tarefaSetNewTarefaToAttach);
             }
             tarefaSetNew = attachedTarefaSetNew;
-            statustarefa.setTarefaSet(tarefaSetNew);
+            statustarefa.setTarefas(tarefaSetNew);
             statustarefa = em.merge(statustarefa);
             for (Tarefa tarefaSetNewTarefa : tarefaSetNew) {
                 if (!tarefaSetOld.contains(tarefaSetNewTarefa)) {
@@ -104,7 +104,7 @@ public class StatusTarefaDAO implements Serializable {
                     tarefaSetNewTarefa.setStatus(statustarefa);
                     tarefaSetNewTarefa = em.merge(tarefaSetNewTarefa);
                     if (oldStatusOfTarefaSetNewTarefa != null && !oldStatusOfTarefaSetNewTarefa.equals(statustarefa)) {
-                        oldStatusOfTarefaSetNewTarefa.getTarefaSet().remove(tarefaSetNewTarefa);
+                        oldStatusOfTarefaSetNewTarefa.getTarefas().remove(tarefaSetNewTarefa);
                         oldStatusOfTarefaSetNewTarefa = em.merge(oldStatusOfTarefaSetNewTarefa);
                     }
                 }
@@ -139,7 +139,7 @@ public class StatusTarefaDAO implements Serializable {
                 throw new NonexistentEntityException("The statustarefa with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Set<Tarefa> tarefaSetOrphanCheck = statustarefa.getTarefaSet();
+            Set<Tarefa> tarefaSetOrphanCheck = statustarefa.getTarefas();
             for (Tarefa tarefaSetOrphanCheckTarefa : tarefaSetOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();

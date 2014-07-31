@@ -39,19 +39,19 @@ public class FilialClienteDAO implements Serializable {
                 empresaCliente = em.getReference(empresaCliente.getClass(), empresaCliente.getId());
                 filialCliente.setEmpresaCliente(empresaCliente);
             }
-            Usuario idusuarioinclusao = filialCliente.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                filialCliente.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = filialCliente.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                filialCliente.setUsuarioInclusao(usuarioInclusao);
             }
             em.persist(filialCliente);
             if (empresaCliente != null) {
                 empresaCliente.getFiliais().add(filialCliente);
                 empresaCliente = em.merge(empresaCliente);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getFilialClienteList().add(filialCliente);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getFiliaisClientesIncluidas().add(filialCliente);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             em.getTransaction().commit();
         } finally {
@@ -69,15 +69,15 @@ public class FilialClienteDAO implements Serializable {
             FilialCliente persistentFilialCliente = em.find(FilialCliente.class, filialCliente.getId());
             EmpresaCliente empresaClienteOld = persistentFilialCliente.getEmpresaCliente();
             EmpresaCliente empresaClienteNew = filialCliente.getEmpresaCliente();
-            Usuario idusuarioinclusaoOld = persistentFilialCliente.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = filialCliente.getIdUsuarioInclusao();
+            Usuario usuarioInclusaoOld = persistentFilialCliente.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = filialCliente.getUsuarioInclusao();
             if (empresaClienteNew != null) {
                 empresaClienteNew = em.getReference(empresaClienteNew.getClass(), empresaClienteNew.getId());
                 filialCliente.setEmpresaCliente(empresaClienteNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                filialCliente.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                filialCliente.setUsuarioInclusao(usuarioInclusaoNew);
             }
             filialCliente = em.merge(filialCliente);
             if (empresaClienteOld != null && !empresaClienteOld.equals(empresaClienteNew)) {
@@ -88,13 +88,13 @@ public class FilialClienteDAO implements Serializable {
                 empresaClienteNew.getFiliais().add(filialCliente);
                 empresaClienteNew = em.merge(empresaClienteNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getFilialClienteList().remove(filialCliente);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getFiliaisClientesIncluidas().remove(filialCliente);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getFilialClienteList().add(filialCliente);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getFiliaisClientesIncluidas().add(filialCliente);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -130,10 +130,10 @@ public class FilialClienteDAO implements Serializable {
                 empresaCliente.getFiliais().remove(filialCliente);
                 empresaCliente = em.merge(empresaCliente);
             }
-            Usuario idusuarioinclusao = filialCliente.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getFilialClienteList().remove(filialCliente);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = filialCliente.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getFiliaisClientesIncluidas().remove(filialCliente);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             em.remove(filialCliente);
             em.getTransaction().commit();

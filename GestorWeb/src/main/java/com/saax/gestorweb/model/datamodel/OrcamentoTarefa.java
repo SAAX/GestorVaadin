@@ -68,11 +68,11 @@ public class OrcamentoTarefa implements Serializable {
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa idTarefa;
+    private Tarefa tarefa;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioInclusao;
+    private Usuario usuarioInclusao;
 
     public OrcamentoTarefa() {
     }
@@ -129,20 +129,20 @@ public class OrcamentoTarefa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Tarefa getIdTarefa() {
-        return idTarefa;
+    public Tarefa getTarefa() {
+        return tarefa;
     }
 
-    public void setIdTarefa(Tarefa idTarefa) {
-        this.idTarefa = idTarefa;
+    public void setTarefa(Tarefa tarefa) {
+        this.tarefa = tarefa;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
 
     @Override

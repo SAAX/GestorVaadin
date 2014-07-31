@@ -50,10 +50,10 @@ public class DepartamentoDAO implements Serializable {
                 empresa = em.getReference(empresa.getClass(), empresa.getId());
                 departamento.setEmpresa(empresa);
             }
-            Usuario idusuarioinclusao = departamento.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                departamento.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = departamento.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                departamento.setUsuarioInclusao(usuarioInclusao);
             }
             Collection<Meta> attachedMetas = new ArrayList<Meta>();
             for (Meta metasMetaToAttach : departamento.getMetas()) {
@@ -61,20 +61,20 @@ public class DepartamentoDAO implements Serializable {
                 attachedMetas.add(metasMetaToAttach);
             }
             departamento.setMetas(attachedMetas);
-            List<Tarefa> attachedTarefaList = new ArrayList<Tarefa>();
-            for (Tarefa tarefaListTarefaToAttach : departamento.getTarefas()) {
-                tarefaListTarefaToAttach = em.getReference(tarefaListTarefaToAttach.getClass(), tarefaListTarefaToAttach.getId());
-                attachedTarefaList.add(tarefaListTarefaToAttach);
+            List<Tarefa> attachedTarefas = new ArrayList<Tarefa>();
+            for (Tarefa tarefasTarefaToAttach : departamento.getTarefas()) {
+                tarefasTarefaToAttach = em.getReference(tarefasTarefaToAttach.getClass(), tarefasTarefaToAttach.getId());
+                attachedTarefas.add(tarefasTarefaToAttach);
             }
-            departamento.setTarefas(attachedTarefaList);
+            departamento.setTarefas(attachedTarefas);
             em.persist(departamento);
             if (empresa != null) {
                 empresa.getDepartamentos().add(departamento);
                 empresa = em.merge(empresa);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getDepartamentoList().add(departamento);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getDepartamentosIncluidos().add(departamento);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             for (Meta metasMeta : departamento.getMetas()) {
                 Departamento oldDepartamentoOfMetasMeta = metasMeta.getDepartamento();
@@ -85,13 +85,13 @@ public class DepartamentoDAO implements Serializable {
                     oldDepartamentoOfMetasMeta = em.merge(oldDepartamentoOfMetasMeta);
                 }
             }
-            for (Tarefa tarefaListTarefa : departamento.getTarefas()) {
-                Departamento oldIddepartamentoOfTarefaListTarefa = tarefaListTarefa.getIdDepartamento();
-                tarefaListTarefa.setIdDepartamento(departamento);
-                tarefaListTarefa = em.merge(tarefaListTarefa);
-                if (oldIddepartamentoOfTarefaListTarefa != null) {
-                    oldIddepartamentoOfTarefaListTarefa.getTarefas().remove(tarefaListTarefa);
-                    oldIddepartamentoOfTarefaListTarefa = em.merge(oldIddepartamentoOfTarefaListTarefa);
+            for (Tarefa tarefasTarefa : departamento.getTarefas()) {
+                Departamento oldDepartamentoOfTarefasTarefa = tarefasTarefa.getDepartamento();
+                tarefasTarefa.setDepartamento(departamento);
+                tarefasTarefa = em.merge(tarefasTarefa);
+                if (oldDepartamentoOfTarefasTarefa != null) {
+                    oldDepartamentoOfTarefasTarefa.getTarefas().remove(tarefasTarefa);
+                    oldDepartamentoOfTarefasTarefa = em.merge(oldDepartamentoOfTarefasTarefa);
                 }
             }
             em.getTransaction().commit();
@@ -110,19 +110,19 @@ public class DepartamentoDAO implements Serializable {
             Departamento persistentDepartamento = em.find(Departamento.class, departamento.getId());
             Empresa empresaOld = persistentDepartamento.getEmpresa();
             Empresa empresaNew = departamento.getEmpresa();
-            Usuario idusuarioinclusaoOld = persistentDepartamento.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = departamento.getIdUsuarioInclusao();
+            Usuario usuarioInclusaoOld = persistentDepartamento.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = departamento.getUsuarioInclusao();
             Collection<Meta> metasOld = persistentDepartamento.getMetas();
             Collection<Meta> metasNew = departamento.getMetas();
-            List<Tarefa> tarefaListOld = persistentDepartamento.getTarefas();
-            List<Tarefa> tarefaListNew = departamento.getTarefas();
+            List<Tarefa> tarefasOld = persistentDepartamento.getTarefas();
+            List<Tarefa> tarefasNew = departamento.getTarefas();
             if (empresaNew != null) {
                 empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getId());
                 departamento.setEmpresa(empresaNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                departamento.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                departamento.setUsuarioInclusao(usuarioInclusaoNew);
             }
             Collection<Meta> attachedMetasNew = new ArrayList<Meta>();
             for (Meta metasNewMetaToAttach : metasNew) {
@@ -131,13 +131,13 @@ public class DepartamentoDAO implements Serializable {
             }
             metasNew = attachedMetasNew;
             departamento.setMetas(metasNew);
-            List<Tarefa> attachedTarefaListNew = new ArrayList<Tarefa>();
-            for (Tarefa tarefaListNewTarefaToAttach : tarefaListNew) {
-                tarefaListNewTarefaToAttach = em.getReference(tarefaListNewTarefaToAttach.getClass(), tarefaListNewTarefaToAttach.getId());
-                attachedTarefaListNew.add(tarefaListNewTarefaToAttach);
+            List<Tarefa> attachedTarefasNew = new ArrayList<Tarefa>();
+            for (Tarefa tarefasNewTarefaToAttach : tarefasNew) {
+                tarefasNewTarefaToAttach = em.getReference(tarefasNewTarefaToAttach.getClass(), tarefasNewTarefaToAttach.getId());
+                attachedTarefasNew.add(tarefasNewTarefaToAttach);
             }
-            tarefaListNew = attachedTarefaListNew;
-            departamento.setTarefas(tarefaListNew);
+            tarefasNew = attachedTarefasNew;
+            departamento.setTarefas(tarefasNew);
             departamento = em.merge(departamento);
             if (empresaOld != null && !empresaOld.equals(empresaNew)) {
                 empresaOld.getDepartamentos().remove(departamento);
@@ -147,13 +147,13 @@ public class DepartamentoDAO implements Serializable {
                 empresaNew.getDepartamentos().add(departamento);
                 empresaNew = em.merge(empresaNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getDepartamentoList().remove(departamento);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getDepartamentosIncluidos().remove(departamento);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getDepartamentoList().add(departamento);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getDepartamentosIncluidos().add(departamento);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
             for (Meta metasOldMeta : metasOld) {
                 if (!metasNew.contains(metasOldMeta)) {
@@ -172,20 +172,20 @@ public class DepartamentoDAO implements Serializable {
                     }
                 }
             }
-            for (Tarefa tarefaListOldTarefa : tarefaListOld) {
-                if (!tarefaListNew.contains(tarefaListOldTarefa)) {
-                    tarefaListOldTarefa.setIdDepartamento(null);
-                    tarefaListOldTarefa = em.merge(tarefaListOldTarefa);
+            for (Tarefa tarefasOldTarefa : tarefasOld) {
+                if (!tarefasNew.contains(tarefasOldTarefa)) {
+                    tarefasOldTarefa.setDepartamento(null);
+                    tarefasOldTarefa = em.merge(tarefasOldTarefa);
                 }
             }
-            for (Tarefa tarefaListNewTarefa : tarefaListNew) {
-                if (!tarefaListOld.contains(tarefaListNewTarefa)) {
-                    Departamento oldIddepartamentoOfTarefaListNewTarefa = tarefaListNewTarefa.getIdDepartamento();
-                    tarefaListNewTarefa.setIdDepartamento(departamento);
-                    tarefaListNewTarefa = em.merge(tarefaListNewTarefa);
-                    if (oldIddepartamentoOfTarefaListNewTarefa != null && !oldIddepartamentoOfTarefaListNewTarefa.equals(departamento)) {
-                        oldIddepartamentoOfTarefaListNewTarefa.getTarefas().remove(tarefaListNewTarefa);
-                        oldIddepartamentoOfTarefaListNewTarefa = em.merge(oldIddepartamentoOfTarefaListNewTarefa);
+            for (Tarefa tarefasNewTarefa : tarefasNew) {
+                if (!tarefasOld.contains(tarefasNewTarefa)) {
+                    Departamento oldDepartamentoOfTarefasNewTarefa = tarefasNewTarefa.getDepartamento();
+                    tarefasNewTarefa.setDepartamento(departamento);
+                    tarefasNewTarefa = em.merge(tarefasNewTarefa);
+                    if (oldDepartamentoOfTarefasNewTarefa != null && !oldDepartamentoOfTarefasNewTarefa.equals(departamento)) {
+                        oldDepartamentoOfTarefasNewTarefa.getTarefas().remove(tarefasNewTarefa);
+                        oldDepartamentoOfTarefasNewTarefa = em.merge(oldDepartamentoOfTarefasNewTarefa);
                     }
                 }
             }
@@ -223,20 +223,20 @@ public class DepartamentoDAO implements Serializable {
                 empresa.getDepartamentos().remove(departamento);
                 empresa = em.merge(empresa);
             }
-            Usuario idusuarioinclusao = departamento.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getDepartamentoList().remove(departamento);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = departamento.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getDepartamentosIncluidos().remove(departamento);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             Collection<Meta> metas = departamento.getMetas();
             for (Meta metasMeta : metas) {
                 metasMeta.setDepartamento(null);
                 metasMeta = em.merge(metasMeta);
             }
-            List<Tarefa> tarefaList = departamento.getTarefas();
-            for (Tarefa tarefaListTarefa : tarefaList) {
-                tarefaListTarefa.setIdDepartamento(null);
-                tarefaListTarefa = em.merge(tarefaListTarefa);
+            List<Tarefa> tarefas = departamento.getTarefas();
+            for (Tarefa tarefasTarefa : tarefas) {
+                tarefasTarefa.setDepartamento(null);
+                tarefasTarefa = em.merge(tarefasTarefa);
             }
             em.remove(departamento);
             em.getTransaction().commit();
@@ -292,7 +292,6 @@ public class DepartamentoDAO implements Serializable {
             em.close();
         }
     }
-    
     
     /**
      * Obtém a lista de departamentos cadastrados para a empresa

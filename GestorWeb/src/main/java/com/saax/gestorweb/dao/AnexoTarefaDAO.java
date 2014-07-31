@@ -34,24 +34,24 @@ public class AnexoTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Tarefa idtarefa = anexoTarefa.getIdTarefa();
-            if (idtarefa != null) {
-                idtarefa = em.getReference(idtarefa.getClass(), idtarefa.getId());
-                anexoTarefa.setIdTarefa(idtarefa);
+            Tarefa tarefa = anexoTarefa.getTarefa();
+            if (tarefa != null) {
+                tarefa = em.getReference(tarefa.getClass(), tarefa.getId());
+                anexoTarefa.setTarefa(tarefa);
             }
-            Usuario idusuarioinclusao = anexoTarefa.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                anexoTarefa.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = anexoTarefa.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                anexoTarefa.setUsuarioInclusao(usuarioInclusao);
             }
             em.persist(anexoTarefa);
-            if (idtarefa != null) {
-                idtarefa.getAnexos().add(anexoTarefa);
-                idtarefa = em.merge(idtarefa);
+            if (tarefa != null) {
+                tarefa.getAnexos().add(anexoTarefa);
+                tarefa = em.merge(tarefa);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getAnexoTarefaList().add(anexoTarefa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getAnexosTarefaIncluidos().add(anexoTarefa);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             em.getTransaction().commit();
         } finally {
@@ -67,34 +67,34 @@ public class AnexoTarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             AnexoTarefa persistentAnexoTarefa = em.find(AnexoTarefa.class, anexoTarefa.getId());
-            Tarefa idtarefaOld = persistentAnexoTarefa.getIdTarefa();
-            Tarefa idtarefaNew = anexoTarefa.getIdTarefa();
-            Usuario idusuarioinclusaoOld = persistentAnexoTarefa.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = anexoTarefa.getIdUsuarioInclusao();
-            if (idtarefaNew != null) {
-                idtarefaNew = em.getReference(idtarefaNew.getClass(), idtarefaNew.getId());
-                anexoTarefa.setIdTarefa(idtarefaNew);
+            Tarefa tarefaOld = persistentAnexoTarefa.getTarefa();
+            Tarefa tarefaNew = anexoTarefa.getTarefa();
+            Usuario usuarioInclusaoOld = persistentAnexoTarefa.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = anexoTarefa.getUsuarioInclusao();
+            if (tarefaNew != null) {
+                tarefaNew = em.getReference(tarefaNew.getClass(), tarefaNew.getId());
+                anexoTarefa.setTarefa(tarefaNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                anexoTarefa.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                anexoTarefa.setUsuarioInclusao(usuarioInclusaoNew);
             }
             anexoTarefa = em.merge(anexoTarefa);
-            if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getAnexos().remove(anexoTarefa);
-                idtarefaOld = em.merge(idtarefaOld);
+            if (tarefaOld != null && !tarefaOld.equals(tarefaNew)) {
+                tarefaOld.getAnexos().remove(anexoTarefa);
+                tarefaOld = em.merge(tarefaOld);
             }
-            if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getAnexos().add(anexoTarefa);
-                idtarefaNew = em.merge(idtarefaNew);
+            if (tarefaNew != null && !tarefaNew.equals(tarefaOld)) {
+                tarefaNew.getAnexos().add(anexoTarefa);
+                tarefaNew = em.merge(tarefaNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getAnexoTarefaList().remove(anexoTarefa);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getAnexosTarefaIncluidos().remove(anexoTarefa);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getAnexoTarefaList().add(anexoTarefa);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getAnexosTarefaIncluidos().add(anexoTarefa);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -125,15 +125,15 @@ public class AnexoTarefaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The anexoTarefa with id " + id + " no longer exists.", enfe);
             }
-            Tarefa idtarefa = anexoTarefa.getIdTarefa();
-            if (idtarefa != null) {
-                idtarefa.getAnexos().remove(anexoTarefa);
-                idtarefa = em.merge(idtarefa);
+            Tarefa tarefa = anexoTarefa.getTarefa();
+            if (tarefa != null) {
+                tarefa.getAnexos().remove(anexoTarefa);
+                tarefa = em.merge(tarefa);
             }
-            Usuario idusuarioinclusao = anexoTarefa.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getAnexoTarefaList().remove(anexoTarefa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = anexoTarefa.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getAnexosTarefaIncluidos().remove(anexoTarefa);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             em.remove(anexoTarefa);
             em.getTransaction().commit();

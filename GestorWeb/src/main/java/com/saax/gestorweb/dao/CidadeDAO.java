@@ -32,8 +32,8 @@ public class CidadeDAO implements Serializable {
     }
 
     public void create(Cidade cidade) {
-        if (cidade.getEnderecoList() == null) {
-            cidade.setEnderecoList(new ArrayList<Endereco>());
+        if (cidade.getEnderecos() == null) {
+            cidade.setEnderecos(new ArrayList<Endereco>());
         }
         EntityManager em = null;
         try {
@@ -44,24 +44,24 @@ public class CidadeDAO implements Serializable {
                 estado = em.getReference(estado.getClass(), estado.getId());
                 cidade.setEstado(estado);
             }
-            List<Endereco> attachedEnderecoList = new ArrayList<Endereco>();
-            for (Endereco enderecoListEnderecoToAttach : cidade.getEnderecoList()) {
-                enderecoListEnderecoToAttach = em.getReference(enderecoListEnderecoToAttach.getClass(), enderecoListEnderecoToAttach.getId());
-                attachedEnderecoList.add(enderecoListEnderecoToAttach);
+            List<Endereco> attachedEnderecos = new ArrayList<Endereco>();
+            for (Endereco enderecosEnderecoToAttach : cidade.getEnderecos()) {
+                enderecosEnderecoToAttach = em.getReference(enderecosEnderecoToAttach.getClass(), enderecosEnderecoToAttach.getId());
+                attachedEnderecos.add(enderecosEnderecoToAttach);
             }
-            cidade.setEnderecoList(attachedEnderecoList);
+            cidade.setEnderecos(attachedEnderecos);
             em.persist(cidade);
             if (estado != null) {
                 estado.getCidades().add(cidade);
                 estado = em.merge(estado);
             }
-            for (Endereco enderecoListEndereco : cidade.getEnderecoList()) {
-                Cidade oldCidadeOfEnderecoListEndereco = enderecoListEndereco.getCidade();
-                enderecoListEndereco.setCidade(cidade);
-                enderecoListEndereco = em.merge(enderecoListEndereco);
-                if (oldCidadeOfEnderecoListEndereco != null) {
-                    oldCidadeOfEnderecoListEndereco.getEnderecoList().remove(enderecoListEndereco);
-                    oldCidadeOfEnderecoListEndereco = em.merge(oldCidadeOfEnderecoListEndereco);
+            for (Endereco enderecosEndereco : cidade.getEnderecos()) {
+                Cidade oldCidadeOfEnderecosEndereco = enderecosEndereco.getCidade();
+                enderecosEndereco.setCidade(cidade);
+                enderecosEndereco = em.merge(enderecosEndereco);
+                if (oldCidadeOfEnderecosEndereco != null) {
+                    oldCidadeOfEnderecosEndereco.getEnderecos().remove(enderecosEndereco);
+                    oldCidadeOfEnderecosEndereco = em.merge(oldCidadeOfEnderecosEndereco);
                 }
             }
             em.getTransaction().commit();
@@ -80,15 +80,15 @@ public class CidadeDAO implements Serializable {
             Cidade persistentCidade = em.find(Cidade.class, cidade.getId());
             Estado estadoOld = persistentCidade.getEstado();
             Estado estadoNew = cidade.getEstado();
-            List<Endereco> enderecoListOld = persistentCidade.getEnderecoList();
-            List<Endereco> enderecoListNew = cidade.getEnderecoList();
+            List<Endereco> enderecosOld = persistentCidade.getEnderecos();
+            List<Endereco> enderecosNew = cidade.getEnderecos();
             List<String> illegalOrphanMessages = null;
-            for (Endereco enderecoListOldEndereco : enderecoListOld) {
-                if (!enderecoListNew.contains(enderecoListOldEndereco)) {
+            for (Endereco enderecosOldEndereco : enderecosOld) {
+                if (!enderecosNew.contains(enderecosOldEndereco)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Endereco " + enderecoListOldEndereco + " since its cidade field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Endereco " + enderecosOldEndereco + " since its cidade field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -98,13 +98,13 @@ public class CidadeDAO implements Serializable {
                 estadoNew = em.getReference(estadoNew.getClass(), estadoNew.getId());
                 cidade.setEstado(estadoNew);
             }
-            List<Endereco> attachedEnderecoListNew = new ArrayList<Endereco>();
-            for (Endereco enderecoListNewEnderecoToAttach : enderecoListNew) {
-                enderecoListNewEnderecoToAttach = em.getReference(enderecoListNewEnderecoToAttach.getClass(), enderecoListNewEnderecoToAttach.getId());
-                attachedEnderecoListNew.add(enderecoListNewEnderecoToAttach);
+            List<Endereco> attachedEnderecosNew = new ArrayList<Endereco>();
+            for (Endereco enderecosNewEnderecoToAttach : enderecosNew) {
+                enderecosNewEnderecoToAttach = em.getReference(enderecosNewEnderecoToAttach.getClass(), enderecosNewEnderecoToAttach.getId());
+                attachedEnderecosNew.add(enderecosNewEnderecoToAttach);
             }
-            enderecoListNew = attachedEnderecoListNew;
-            cidade.setEnderecoList(enderecoListNew);
+            enderecosNew = attachedEnderecosNew;
+            cidade.setEnderecos(enderecosNew);
             cidade = em.merge(cidade);
             if (estadoOld != null && !estadoOld.equals(estadoNew)) {
                 estadoOld.getCidades().remove(cidade);
@@ -114,14 +114,14 @@ public class CidadeDAO implements Serializable {
                 estadoNew.getCidades().add(cidade);
                 estadoNew = em.merge(estadoNew);
             }
-            for (Endereco enderecoListNewEndereco : enderecoListNew) {
-                if (!enderecoListOld.contains(enderecoListNewEndereco)) {
-                    Cidade oldCidadeOfEnderecoListNewEndereco = enderecoListNewEndereco.getCidade();
-                    enderecoListNewEndereco.setCidade(cidade);
-                    enderecoListNewEndereco = em.merge(enderecoListNewEndereco);
-                    if (oldCidadeOfEnderecoListNewEndereco != null && !oldCidadeOfEnderecoListNewEndereco.equals(cidade)) {
-                        oldCidadeOfEnderecoListNewEndereco.getEnderecoList().remove(enderecoListNewEndereco);
-                        oldCidadeOfEnderecoListNewEndereco = em.merge(oldCidadeOfEnderecoListNewEndereco);
+            for (Endereco enderecosNewEndereco : enderecosNew) {
+                if (!enderecosOld.contains(enderecosNewEndereco)) {
+                    Cidade oldCidadeOfEnderecosNewEndereco = enderecosNewEndereco.getCidade();
+                    enderecosNewEndereco.setCidade(cidade);
+                    enderecosNewEndereco = em.merge(enderecosNewEndereco);
+                    if (oldCidadeOfEnderecosNewEndereco != null && !oldCidadeOfEnderecosNewEndereco.equals(cidade)) {
+                        oldCidadeOfEnderecosNewEndereco.getEnderecos().remove(enderecosNewEndereco);
+                        oldCidadeOfEnderecosNewEndereco = em.merge(oldCidadeOfEnderecosNewEndereco);
                     }
                 }
             }
@@ -155,12 +155,12 @@ public class CidadeDAO implements Serializable {
                 throw new NonexistentEntityException("The cidade with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            List<Endereco> enderecoListOrphanCheck = cidade.getEnderecoList();
-            for (Endereco enderecoListOrphanCheckEndereco : enderecoListOrphanCheck) {
+            List<Endereco> enderecosOrphanCheck = cidade.getEnderecos();
+            for (Endereco enderecosOrphanCheckEndereco : enderecosOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Cidade (" + cidade + ") cannot be destroyed since the Endereco " + enderecoListOrphanCheckEndereco + " in its enderecoList field has a non-nullable cidade field.");
+                illegalOrphanMessages.add("This Cidade (" + cidade + ") cannot be destroyed since the Endereco " + enderecosOrphanCheckEndereco + " in its enderecos field has a non-nullable cidade field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
@@ -224,5 +224,6 @@ public class CidadeDAO implements Serializable {
             em.close();
         }
     }
+    
     
 }

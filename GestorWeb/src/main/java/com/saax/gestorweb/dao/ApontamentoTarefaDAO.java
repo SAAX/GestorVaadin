@@ -34,23 +34,23 @@ public class ApontamentoTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Tarefa idtarefa = apontamentoTarefa.getIdTarefa();
+            Tarefa idtarefa = apontamentoTarefa.getTarefa();
             if (idtarefa != null) {
                 idtarefa = em.getReference(idtarefa.getClass(), idtarefa.getId());
-                apontamentoTarefa.setIdTarefa(idtarefa);
+                apontamentoTarefa.setTarefa(idtarefa);
             }
-            Usuario idusuarioinclusao = apontamentoTarefa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusao = apontamentoTarefa.getUsuarioInclusao();
             if (idusuarioinclusao != null) {
                 idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                apontamentoTarefa.setIdUsuarioInclusao(idusuarioinclusao);
+                apontamentoTarefa.setUsuarioInclusao(idusuarioinclusao);
             }
             em.persist(apontamentoTarefa);
             if (idtarefa != null) {
-                idtarefa.getApontamentoTarefaList().add(apontamentoTarefa);
+                idtarefa.getApontamentos().add(apontamentoTarefa);
                 idtarefa = em.merge(idtarefa);
             }
             if (idusuarioinclusao != null) {
-                idusuarioinclusao.getApontamentoTarefaList().add(apontamentoTarefa);
+                idusuarioinclusao.getApontamentosIncluidos().add(apontamentoTarefa);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.getTransaction().commit();
@@ -67,33 +67,33 @@ public class ApontamentoTarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             ApontamentoTarefa persistentApontamentoTarefa = em.find(ApontamentoTarefa.class, apontamentoTarefa.getId());
-            Tarefa idtarefaOld = persistentApontamentoTarefa.getIdTarefa();
-            Tarefa idtarefaNew = apontamentoTarefa.getIdTarefa();
-            Usuario idusuarioinclusaoOld = persistentApontamentoTarefa.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = apontamentoTarefa.getIdUsuarioInclusao();
+            Tarefa idtarefaOld = persistentApontamentoTarefa.getTarefa();
+            Tarefa idtarefaNew = apontamentoTarefa.getTarefa();
+            Usuario idusuarioinclusaoOld = persistentApontamentoTarefa.getUsuarioInclusao();
+            Usuario idusuarioinclusaoNew = apontamentoTarefa.getUsuarioInclusao();
             if (idtarefaNew != null) {
                 idtarefaNew = em.getReference(idtarefaNew.getClass(), idtarefaNew.getId());
-                apontamentoTarefa.setIdTarefa(idtarefaNew);
+                apontamentoTarefa.setTarefa(idtarefaNew);
             }
             if (idusuarioinclusaoNew != null) {
                 idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                apontamentoTarefa.setIdUsuarioInclusao(idusuarioinclusaoNew);
+                apontamentoTarefa.setUsuarioInclusao(idusuarioinclusaoNew);
             }
             apontamentoTarefa = em.merge(apontamentoTarefa);
             if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getApontamentoTarefaList().remove(apontamentoTarefa);
+                idtarefaOld.getApontamentos().remove(apontamentoTarefa);
                 idtarefaOld = em.merge(idtarefaOld);
             }
             if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getApontamentoTarefaList().add(apontamentoTarefa);
+                idtarefaNew.getApontamentos().add(apontamentoTarefa);
                 idtarefaNew = em.merge(idtarefaNew);
             }
             if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getApontamentoTarefaList().remove(apontamentoTarefa);
+                idusuarioinclusaoOld.getApontamentosIncluidos().remove(apontamentoTarefa);
                 idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
             }
             if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getApontamentoTarefaList().add(apontamentoTarefa);
+                idusuarioinclusaoNew.getApontamentosIncluidos().add(apontamentoTarefa);
                 idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
             }
             em.getTransaction().commit();
@@ -125,14 +125,14 @@ public class ApontamentoTarefaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The apontamentoTarefa with id " + id + " no longer exists.", enfe);
             }
-            Tarefa idtarefa = apontamentoTarefa.getIdTarefa();
+            Tarefa idtarefa = apontamentoTarefa.getTarefa();
             if (idtarefa != null) {
-                idtarefa.getApontamentoTarefaList().remove(apontamentoTarefa);
+                idtarefa.getApontamentos().remove(apontamentoTarefa);
                 idtarefa = em.merge(idtarefa);
             }
-            Usuario idusuarioinclusao = apontamentoTarefa.getIdUsuarioInclusao();
+            Usuario idusuarioinclusao = apontamentoTarefa.getUsuarioInclusao();
             if (idusuarioinclusao != null) {
-                idusuarioinclusao.getApontamentoTarefaList().remove(apontamentoTarefa);
+                idusuarioinclusao.getApontamentosIncluidos().remove(apontamentoTarefa);
                 idusuarioinclusao = em.merge(idusuarioinclusao);
             }
             em.remove(apontamentoTarefa);

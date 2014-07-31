@@ -60,23 +60,23 @@ public class AvaliacaoMetaTarefa implements Serializable {
     
     @JoinColumn(name = "idmeta", referencedColumnName = "idmeta")
     @ManyToOne(optional = false)
-    private Meta idMeta;
+    private Meta meta;
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa idTarefa;
+    private Tarefa tarefa;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioInclusao;
+    private Usuario usuarioInclusao;
     
     @JoinColumn(name = "idusuarioavaliador", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioAvaliador;
+    private Usuario usuarioAvaliador;
 
     @JoinColumn(name = "idusuarioavaliado", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Usuario idUsuarioAvaliado;
+    private Usuario usuarioAvaliado;
 
     public AvaliacaoMetaTarefa() {
     }
@@ -124,44 +124,44 @@ public class AvaliacaoMetaTarefa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Meta getIdMeta() {
-        return idMeta;
+    public Meta getMeta() {
+        return meta;
     }
 
-    public void setIdMeta(Meta idMeta) {
-        this.idMeta = idMeta;
+    public void setMeta(Meta meta) {
+        this.meta = meta;
     }
 
-    public Tarefa getIdTarefa() {
-        return idTarefa;
+    public Tarefa getTarefa() {
+        return tarefa;
     }
 
-    public void setIdTarefa(Tarefa idTarefa) {
-        this.idTarefa = idTarefa;
+    public void setTarefa(Tarefa tarefa) {
+        this.tarefa = tarefa;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
 
-    public Usuario getIdUsuarioAvaliador() {
-        return idUsuarioAvaliador;
+    public Usuario getUsuarioAvaliador() {
+        return usuarioAvaliador;
     }
 
-    public void setIdUsuarioAvaliador(Usuario idUsuarioAvaliador) {
-        this.idUsuarioAvaliador = idUsuarioAvaliador;
+    public void setUsuarioAvaliador(Usuario usuarioAvaliador) {
+        this.usuarioAvaliador = usuarioAvaliador;
     }
 
-    public Usuario getIdUsuarioAvaliado() {
-        return idUsuarioAvaliado;
+    public Usuario getUsuarioAvaliado() {
+        return usuarioAvaliado;
     }
 
-    public void setIdUsuarioAvaliado(Usuario idUsuarioAvaliado) {
-        this.idUsuarioAvaliado = idUsuarioAvaliado;
+    public void setUsuarioAvaliado(Usuario usuarioAvaliado) {
+        this.usuarioAvaliado = usuarioAvaliado;
     }
 
     @Override

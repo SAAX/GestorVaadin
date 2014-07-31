@@ -77,10 +77,10 @@ public class EmpresaDAO implements Serializable {
                 endereco = em.getReference(endereco.getClass(), endereco.getId());
                 empresa.setEndereco(endereco);
             }
-            Usuario idusuarioinclusao = empresa.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao = em.getReference(idusuarioinclusao.getClass(), idusuarioinclusao.getId());
-                empresa.setIdUsuarioInclusao(idusuarioinclusao);
+            Usuario usuarioInclusao = empresa.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());
+                empresa.setUsuarioInclusao(usuarioInclusao);
             }
             List<FilialEmpresa> attachedFiliais = new ArrayList<FilialEmpresa>();
             for (FilialEmpresa filiaisFilialEmpresaToAttach : empresa.getFiliais()) {
@@ -118,18 +118,18 @@ public class EmpresaDAO implements Serializable {
                 attachedSubEmpresas.add(subEmpresasEmpresaToAttach);
             }
             empresa.setSubEmpresas(attachedSubEmpresas);
-            List<EmpresaCliente> attachedEmpresaClienteList = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente empresaClienteListEmpresaClienteToAttach : empresa.getClientes()) {
-                empresaClienteListEmpresaClienteToAttach = em.getReference(empresaClienteListEmpresaClienteToAttach.getClass(), empresaClienteListEmpresaClienteToAttach.getId());
-                attachedEmpresaClienteList.add(empresaClienteListEmpresaClienteToAttach);
+            List<EmpresaCliente> attachedClientes = new ArrayList<EmpresaCliente>();
+            for (EmpresaCliente clientesEmpresaClienteToAttach : empresa.getClientes()) {
+                clientesEmpresaClienteToAttach = em.getReference(clientesEmpresaClienteToAttach.getClass(), clientesEmpresaClienteToAttach.getId());
+                attachedClientes.add(clientesEmpresaClienteToAttach);
             }
-            empresa.setClientes(attachedEmpresaClienteList);
-            List<Tarefa> attachedTarefaList = new ArrayList<Tarefa>();
-            for (Tarefa tarefaListTarefaToAttach : empresa.getTarefas()) {
-                tarefaListTarefaToAttach = em.getReference(tarefaListTarefaToAttach.getClass(), tarefaListTarefaToAttach.getId());
-                attachedTarefaList.add(tarefaListTarefaToAttach);
+            empresa.setClientes(attachedClientes);
+            List<Tarefa> attachedTarefas = new ArrayList<Tarefa>();
+            for (Tarefa tarefasTarefaToAttach : empresa.getTarefas()) {
+                tarefasTarefaToAttach = em.getReference(tarefasTarefaToAttach.getClass(), tarefasTarefaToAttach.getId());
+                attachedTarefas.add(tarefasTarefaToAttach);
             }
-            empresa.setTarefas(attachedTarefaList);
+            empresa.setTarefas(attachedTarefas);
             em.persist(empresa);
             if (empresaPrincipal != null) {
                 empresaPrincipal.getSubEmpresas().add(empresa);
@@ -139,9 +139,9 @@ public class EmpresaDAO implements Serializable {
                 endereco.getEmpresas().add(empresa);
                 endereco = em.merge(endereco);
             }
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getEmpresaList().add(empresa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getEmpresasIncluidas().add(empresa);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             for (FilialEmpresa filiaisFilialEmpresa : empresa.getFiliais()) {
                 Empresa oldMatrizOfFiliaisFilialEmpresa = filiaisFilialEmpresa.getMatriz();
@@ -197,22 +197,22 @@ public class EmpresaDAO implements Serializable {
                     oldEmpresaPrincipalOfSubEmpresasEmpresa = em.merge(oldEmpresaPrincipalOfSubEmpresasEmpresa);
                 }
             }
-            for (EmpresaCliente empresaClienteListEmpresaCliente : empresa.getClientes()) {
-                Empresa oldEmpresaOfEmpresaClienteListEmpresaCliente = empresaClienteListEmpresaCliente.getEmpresa();
-                empresaClienteListEmpresaCliente.setEmpresa(empresa);
-                empresaClienteListEmpresaCliente = em.merge(empresaClienteListEmpresaCliente);
-                if (oldEmpresaOfEmpresaClienteListEmpresaCliente != null) {
-                    oldEmpresaOfEmpresaClienteListEmpresaCliente.getClientes().remove(empresaClienteListEmpresaCliente);
-                    oldEmpresaOfEmpresaClienteListEmpresaCliente = em.merge(oldEmpresaOfEmpresaClienteListEmpresaCliente);
+            for (EmpresaCliente clientesEmpresaCliente : empresa.getClientes()) {
+                Empresa oldEmpresaOfClientesEmpresaCliente = clientesEmpresaCliente.getEmpresa();
+                clientesEmpresaCliente.setEmpresa(empresa);
+                clientesEmpresaCliente = em.merge(clientesEmpresaCliente);
+                if (oldEmpresaOfClientesEmpresaCliente != null) {
+                    oldEmpresaOfClientesEmpresaCliente.getClientes().remove(clientesEmpresaCliente);
+                    oldEmpresaOfClientesEmpresaCliente = em.merge(oldEmpresaOfClientesEmpresaCliente);
                 }
             }
-            for (Tarefa tarefaListTarefa : empresa.getTarefas()) {
-                Empresa oldIdempresaOfTarefaListTarefa = tarefaListTarefa.getIdEmpresa();
-                tarefaListTarefa.setIdEmpresa(empresa);
-                tarefaListTarefa = em.merge(tarefaListTarefa);
-                if (oldIdempresaOfTarefaListTarefa != null) {
-                    oldIdempresaOfTarefaListTarefa.getTarefas().remove(tarefaListTarefa);
-                    oldIdempresaOfTarefaListTarefa = em.merge(oldIdempresaOfTarefaListTarefa);
+            for (Tarefa tarefasTarefa : empresa.getTarefas()) {
+                Empresa oldEmpresaOfTarefasTarefa = tarefasTarefa.getEmpresa();
+                tarefasTarefa.setEmpresa(empresa);
+                tarefasTarefa = em.merge(tarefasTarefa);
+                if (oldEmpresaOfTarefasTarefa != null) {
+                    oldEmpresaOfTarefasTarefa.getTarefas().remove(tarefasTarefa);
+                    oldEmpresaOfTarefasTarefa = em.merge(oldEmpresaOfTarefasTarefa);
                 }
             }
             em.getTransaction().commit();
@@ -233,8 +233,8 @@ public class EmpresaDAO implements Serializable {
             Empresa empresaPrincipalNew = empresa.getEmpresaPrincipal();
             Endereco enderecoOld = persistentEmpresa.getEndereco();
             Endereco enderecoNew = empresa.getEndereco();
-            Usuario idusuarioinclusaoOld = persistentEmpresa.getIdUsuarioInclusao();
-            Usuario idusuarioinclusaoNew = empresa.getIdUsuarioInclusao();
+            Usuario usuarioInclusaoOld = persistentEmpresa.getUsuarioInclusao();
+            Usuario usuarioInclusaoNew = empresa.getUsuarioInclusao();
             List<FilialEmpresa> filiaisOld = persistentEmpresa.getFiliais();
             List<FilialEmpresa> filiaisNew = empresa.getFiliais();
             List<CentroCusto> centrosDeCustoOld = persistentEmpresa.getCentrosDeCusto();
@@ -247,10 +247,10 @@ public class EmpresaDAO implements Serializable {
             List<Departamento> departamentosNew = empresa.getDepartamentos();
             List<Empresa> subEmpresasOld = persistentEmpresa.getSubEmpresas();
             List<Empresa> subEmpresasNew = empresa.getSubEmpresas();
-            List<EmpresaCliente> empresaClienteListOld = persistentEmpresa.getClientes();
-            List<EmpresaCliente> empresaClienteListNew = empresa.getClientes();
-            List<Tarefa> tarefaListOld = persistentEmpresa.getTarefas();
-            List<Tarefa> tarefaListNew = empresa.getTarefas();
+            List<EmpresaCliente> clientesOld = persistentEmpresa.getClientes();
+            List<EmpresaCliente> clientesNew = empresa.getClientes();
+            List<Tarefa> tarefasOld = persistentEmpresa.getTarefas();
+            List<Tarefa> tarefasNew = empresa.getTarefas();
             List<String> illegalOrphanMessages = null;
             for (FilialEmpresa filiaisOldFilialEmpresa : filiaisOld) {
                 if (!filiaisNew.contains(filiaisOldFilialEmpresa)) {
@@ -292,20 +292,20 @@ public class EmpresaDAO implements Serializable {
                     illegalOrphanMessages.add("You must retain Departamento " + departamentosOldDepartamento + " since its empresa field is not nullable.");
                 }
             }
-            for (EmpresaCliente empresaClienteListOldEmpresaCliente : empresaClienteListOld) {
-                if (!empresaClienteListNew.contains(empresaClienteListOldEmpresaCliente)) {
+            for (EmpresaCliente clientesOldEmpresaCliente : clientesOld) {
+                if (!clientesNew.contains(clientesOldEmpresaCliente)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain EmpresaCliente " + empresaClienteListOldEmpresaCliente + " since its empresa field is not nullable.");
+                    illegalOrphanMessages.add("You must retain EmpresaCliente " + clientesOldEmpresaCliente + " since its empresa field is not nullable.");
                 }
             }
-            for (Tarefa tarefaListOldTarefa : tarefaListOld) {
-                if (!tarefaListNew.contains(tarefaListOldTarefa)) {
+            for (Tarefa tarefasOldTarefa : tarefasOld) {
+                if (!tarefasNew.contains(tarefasOldTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Tarefa " + tarefaListOldTarefa + " since its idempresa field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Tarefa " + tarefasOldTarefa + " since its empresa field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
@@ -319,9 +319,9 @@ public class EmpresaDAO implements Serializable {
                 enderecoNew = em.getReference(enderecoNew.getClass(), enderecoNew.getId());
                 empresa.setEndereco(enderecoNew);
             }
-            if (idusuarioinclusaoNew != null) {
-                idusuarioinclusaoNew = em.getReference(idusuarioinclusaoNew.getClass(), idusuarioinclusaoNew.getId());
-                empresa.setIdUsuarioInclusao(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null) {
+                usuarioInclusaoNew = em.getReference(usuarioInclusaoNew.getClass(), usuarioInclusaoNew.getId());
+                empresa.setUsuarioInclusao(usuarioInclusaoNew);
             }
             List<FilialEmpresa> attachedFiliaisNew = new ArrayList<FilialEmpresa>();
             for (FilialEmpresa filiaisNewFilialEmpresaToAttach : filiaisNew) {
@@ -365,20 +365,20 @@ public class EmpresaDAO implements Serializable {
             }
             subEmpresasNew = attachedSubEmpresasNew;
             empresa.setSubEmpresas(subEmpresasNew);
-            List<EmpresaCliente> attachedEmpresaClienteListNew = new ArrayList<EmpresaCliente>();
-            for (EmpresaCliente empresaClienteListNewEmpresaClienteToAttach : empresaClienteListNew) {
-                empresaClienteListNewEmpresaClienteToAttach = em.getReference(empresaClienteListNewEmpresaClienteToAttach.getClass(), empresaClienteListNewEmpresaClienteToAttach.getId());
-                attachedEmpresaClienteListNew.add(empresaClienteListNewEmpresaClienteToAttach);
+            List<EmpresaCliente> attachedClientesNew = new ArrayList<EmpresaCliente>();
+            for (EmpresaCliente clientesNewEmpresaClienteToAttach : clientesNew) {
+                clientesNewEmpresaClienteToAttach = em.getReference(clientesNewEmpresaClienteToAttach.getClass(), clientesNewEmpresaClienteToAttach.getId());
+                attachedClientesNew.add(clientesNewEmpresaClienteToAttach);
             }
-            empresaClienteListNew = attachedEmpresaClienteListNew;
-            empresa.setClientes(empresaClienteListNew);
-            List<Tarefa> attachedTarefaListNew = new ArrayList<Tarefa>();
-            for (Tarefa tarefaListNewTarefaToAttach : tarefaListNew) {
-                tarefaListNewTarefaToAttach = em.getReference(tarefaListNewTarefaToAttach.getClass(), tarefaListNewTarefaToAttach.getId());
-                attachedTarefaListNew.add(tarefaListNewTarefaToAttach);
+            clientesNew = attachedClientesNew;
+            empresa.setClientes(clientesNew);
+            List<Tarefa> attachedTarefasNew = new ArrayList<Tarefa>();
+            for (Tarefa tarefasNewTarefaToAttach : tarefasNew) {
+                tarefasNewTarefaToAttach = em.getReference(tarefasNewTarefaToAttach.getClass(), tarefasNewTarefaToAttach.getId());
+                attachedTarefasNew.add(tarefasNewTarefaToAttach);
             }
-            tarefaListNew = attachedTarefaListNew;
-            empresa.setTarefas(tarefaListNew);
+            tarefasNew = attachedTarefasNew;
+            empresa.setTarefas(tarefasNew);
             empresa = em.merge(empresa);
             if (empresaPrincipalOld != null && !empresaPrincipalOld.equals(empresaPrincipalNew)) {
                 empresaPrincipalOld.getSubEmpresas().remove(empresa);
@@ -396,13 +396,13 @@ public class EmpresaDAO implements Serializable {
                 enderecoNew.getEmpresas().add(empresa);
                 enderecoNew = em.merge(enderecoNew);
             }
-            if (idusuarioinclusaoOld != null && !idusuarioinclusaoOld.equals(idusuarioinclusaoNew)) {
-                idusuarioinclusaoOld.getEmpresaList().remove(empresa);
-                idusuarioinclusaoOld = em.merge(idusuarioinclusaoOld);
+            if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
+                usuarioInclusaoOld.getEmpresasIncluidas().remove(empresa);
+                usuarioInclusaoOld = em.merge(usuarioInclusaoOld);
             }
-            if (idusuarioinclusaoNew != null && !idusuarioinclusaoNew.equals(idusuarioinclusaoOld)) {
-                idusuarioinclusaoNew.getEmpresaList().add(empresa);
-                idusuarioinclusaoNew = em.merge(idusuarioinclusaoNew);
+            if (usuarioInclusaoNew != null && !usuarioInclusaoNew.equals(usuarioInclusaoOld)) {
+                usuarioInclusaoNew.getEmpresasIncluidas().add(empresa);
+                usuarioInclusaoNew = em.merge(usuarioInclusaoNew);
             }
             for (FilialEmpresa filiaisNewFilialEmpresa : filiaisNew) {
                 if (!filiaisOld.contains(filiaisNewFilialEmpresa)) {
@@ -476,25 +476,25 @@ public class EmpresaDAO implements Serializable {
                     }
                 }
             }
-            for (EmpresaCliente empresaClienteListNewEmpresaCliente : empresaClienteListNew) {
-                if (!empresaClienteListOld.contains(empresaClienteListNewEmpresaCliente)) {
-                    Empresa oldEmpresaOfEmpresaClienteListNewEmpresaCliente = empresaClienteListNewEmpresaCliente.getEmpresa();
-                    empresaClienteListNewEmpresaCliente.setEmpresa(empresa);
-                    empresaClienteListNewEmpresaCliente = em.merge(empresaClienteListNewEmpresaCliente);
-                    if (oldEmpresaOfEmpresaClienteListNewEmpresaCliente != null && !oldEmpresaOfEmpresaClienteListNewEmpresaCliente.equals(empresa)) {
-                        oldEmpresaOfEmpresaClienteListNewEmpresaCliente.getClientes().remove(empresaClienteListNewEmpresaCliente);
-                        oldEmpresaOfEmpresaClienteListNewEmpresaCliente = em.merge(oldEmpresaOfEmpresaClienteListNewEmpresaCliente);
+            for (EmpresaCliente clientesNewEmpresaCliente : clientesNew) {
+                if (!clientesOld.contains(clientesNewEmpresaCliente)) {
+                    Empresa oldEmpresaOfClientesNewEmpresaCliente = clientesNewEmpresaCliente.getEmpresa();
+                    clientesNewEmpresaCliente.setEmpresa(empresa);
+                    clientesNewEmpresaCliente = em.merge(clientesNewEmpresaCliente);
+                    if (oldEmpresaOfClientesNewEmpresaCliente != null && !oldEmpresaOfClientesNewEmpresaCliente.equals(empresa)) {
+                        oldEmpresaOfClientesNewEmpresaCliente.getClientes().remove(clientesNewEmpresaCliente);
+                        oldEmpresaOfClientesNewEmpresaCliente = em.merge(oldEmpresaOfClientesNewEmpresaCliente);
                     }
                 }
             }
-            for (Tarefa tarefaListNewTarefa : tarefaListNew) {
-                if (!tarefaListOld.contains(tarefaListNewTarefa)) {
-                    Empresa oldIdempresaOfTarefaListNewTarefa = tarefaListNewTarefa.getIdEmpresa();
-                    tarefaListNewTarefa.setIdEmpresa(empresa);
-                    tarefaListNewTarefa = em.merge(tarefaListNewTarefa);
-                    if (oldIdempresaOfTarefaListNewTarefa != null && !oldIdempresaOfTarefaListNewTarefa.equals(empresa)) {
-                        oldIdempresaOfTarefaListNewTarefa.getTarefas().remove(tarefaListNewTarefa);
-                        oldIdempresaOfTarefaListNewTarefa = em.merge(oldIdempresaOfTarefaListNewTarefa);
+            for (Tarefa tarefasNewTarefa : tarefasNew) {
+                if (!tarefasOld.contains(tarefasNewTarefa)) {
+                    Empresa oldEmpresaOfTarefasNewTarefa = tarefasNewTarefa.getEmpresa();
+                    tarefasNewTarefa.setEmpresa(empresa);
+                    tarefasNewTarefa = em.merge(tarefasNewTarefa);
+                    if (oldEmpresaOfTarefasNewTarefa != null && !oldEmpresaOfTarefasNewTarefa.equals(empresa)) {
+                        oldEmpresaOfTarefasNewTarefa.getTarefas().remove(tarefasNewTarefa);
+                        oldEmpresaOfTarefasNewTarefa = em.merge(oldEmpresaOfTarefasNewTarefa);
                     }
                 }
             }
@@ -563,19 +563,19 @@ public class EmpresaDAO implements Serializable {
                 }
                 illegalOrphanMessages.add("This Empresa (" + empresa + ") cannot be destroyed since the Departamento " + departamentosOrphanCheckDepartamento + " in its departamentos field has a non-nullable empresa field.");
             }
-            List<EmpresaCliente> empresaClienteListOrphanCheck = empresa.getClientes();
-            for (EmpresaCliente empresaClienteListOrphanCheckEmpresaCliente : empresaClienteListOrphanCheck) {
+            List<EmpresaCliente> clientesOrphanCheck = empresa.getClientes();
+            for (EmpresaCliente clientesOrphanCheckEmpresaCliente : clientesOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Empresa (" + empresa + ") cannot be destroyed since the EmpresaCliente " + empresaClienteListOrphanCheckEmpresaCliente + " in its empresaClienteList field has a non-nullable empresa field.");
+                illegalOrphanMessages.add("This Empresa (" + empresa + ") cannot be destroyed since the EmpresaCliente " + clientesOrphanCheckEmpresaCliente + " in its clientes field has a non-nullable empresa field.");
             }
-            List<Tarefa> tarefaListOrphanCheck = empresa.getTarefas();
-            for (Tarefa tarefaListOrphanCheckTarefa : tarefaListOrphanCheck) {
+            List<Tarefa> tarefasOrphanCheck = empresa.getTarefas();
+            for (Tarefa tarefasOrphanCheckTarefa : tarefasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Empresa (" + empresa + ") cannot be destroyed since the Tarefa " + tarefaListOrphanCheckTarefa + " in its tarefaList field has a non-nullable idempresa field.");
+                illegalOrphanMessages.add("This Empresa (" + empresa + ") cannot be destroyed since the Tarefa " + tarefasOrphanCheckTarefa + " in its tarefas field has a non-nullable empresa field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
@@ -590,10 +590,10 @@ public class EmpresaDAO implements Serializable {
                 endereco.getEmpresas().remove(empresa);
                 endereco = em.merge(endereco);
             }
-            Usuario idusuarioinclusao = empresa.getIdUsuarioInclusao();
-            if (idusuarioinclusao != null) {
-                idusuarioinclusao.getEmpresaList().remove(empresa);
-                idusuarioinclusao = em.merge(idusuarioinclusao);
+            Usuario usuarioInclusao = empresa.getUsuarioInclusao();
+            if (usuarioInclusao != null) {
+                usuarioInclusao.getEmpresasIncluidas().remove(empresa);
+                usuarioInclusao = em.merge(usuarioInclusao);
             }
             List<Empresa> subEmpresas = empresa.getSubEmpresas();
             for (Empresa subEmpresasEmpresa : subEmpresas) {

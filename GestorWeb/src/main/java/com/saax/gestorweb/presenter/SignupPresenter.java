@@ -11,7 +11,10 @@ import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import java.util.HashSet;
@@ -439,17 +442,42 @@ public class SignupPresenter implements SignupViewListener {
         } else{
             Adm = "NÃO";
         }
-        //
+        
                                        
-        Button removerUsuarioButton = new Button("Remover");
+        Button removerUsuarioButton = new Button(getMensagens().getString("SignupPresenter.removerButton.label"));
         removerUsuarioButton.addClickListener((Button.ClickEvent event) -> {
-            // pegar a linha do evento
-            // solicitar confirmação do usuario para remover
-            // remover o elemento
+            view.getUsuariosTable().addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+              if(event.getProperty().getValue() != null){
+             
+              } 
+            }
+        });
             
+           if(view.getUsuariosTable().getValue() != null){
+               view.getUsuariosTable().removeItem(view.getUsuariosTable().getValue());
+               view.getUsuariosTable().refreshRowCache();
+               Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+               
+           }
+                        
         });
         
-        view.getUsuariosTable().addItem(new Object[] {nomeUsuario,sobrenomeUsuario,email, Adm, removerUsuarioButton}, new Integer(1));
+        
+        
+        
+        if(view.getUsuariosTable().getItemIds().size()==0){
+        view.getUsuariosTable().addItem(new Object[] {nomeUsuario,sobrenomeUsuario,email, Adm, removerUsuarioButton}, 1);
+        }else{
+            view.getUsuariosTable().addItem(new Object[] {nomeUsuario,sobrenomeUsuario,email, Adm, removerUsuarioButton}, null);
+        }
+        
+        view.getNomeUsuarioTextField().setValue("");
+        view.getSobrenomeUsuarioTextField().setValue("");
+        view.getEmailTextField().setValue("");
+        view.getConfirmaEmailTextField().setValue("");
+        view.getUsuarioAdmCheckBox().setValue(false);
        
          
     }
@@ -489,6 +517,18 @@ public class SignupPresenter implements SignupViewListener {
          
     }
 
-     
+/**
+     * @return the mensagens
+     */
+    public ResourceBundle getMensagens() {
+        return mensagens;
+    }
+
+    /**
+     * @param mensagens the mensagens to set
+     */
+    public void setMensagens(ResourceBundle mensagens) {
+        this.mensagens = mensagens;
+    }     
    
 }

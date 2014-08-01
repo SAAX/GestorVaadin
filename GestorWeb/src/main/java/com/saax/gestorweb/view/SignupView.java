@@ -494,6 +494,9 @@ public class SignupView extends Window {
         containerHorizontal.addComponent(getUsuarioAdmCheckBox());
         
          // botÃ£o para Confirmar
+        
+        
+                
         final Button adicionarUsuarioButton = new Button(getMensagens().getString("SignupView.adicionarUsuarioButton.label"), new Button.ClickListener() {
           
 
@@ -511,8 +514,8 @@ public class SignupView extends Window {
         
         usuariosTable = new Table();
         containerAba4.addComponent(usuariosTable);
-        usuariosTable.setHeight("150px");
-        
+        usuariosTable.setSizeFull();
+            
         
         usuariosTable.addContainerProperty("Nome", String.class, null);
         usuariosTable.addContainerProperty("Sobrenome", String.class, null);
@@ -520,7 +523,8 @@ public class SignupView extends Window {
         usuariosTable.addContainerProperty("Administrador", String.class, null);
         //usuariosTable.addContainerProperty("Editar", Button.class, null);
         usuariosTable.addContainerProperty("Remover", Button.class, null);
-          
+        usuariosTable.setImmediate(true);
+        usuariosTable.setSelectable(true);
          
         return containerAba4;
     }

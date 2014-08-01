@@ -151,7 +151,7 @@ public class Tarefa implements Serializable {
     private Usuario usuarioResponsavel;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
-    private List<ParicipanteTarefa> paricipantes;
+    private List<ParticipanteTarefa> participantes;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
     private List<AvaliacaoMetaTarefa> avaliacoes;
@@ -348,12 +348,12 @@ public class Tarefa implements Serializable {
         this.usuarioResponsavel = usuarioResponsavel;
     }
 
-    public List<ParicipanteTarefa> getParicipantes() {
-        return paricipantes;
+    public List<ParticipanteTarefa> getParticipantes() {
+        return participantes;
     }
 
-    public void setParicipantes(List<ParicipanteTarefa> paricipantes) {
-        this.paricipantes = paricipantes;
+    public void setParticipantes(List<ParticipanteTarefa> participantes) {
+        this.participantes = participantes;
     }
 
     public List<AvaliacaoMetaTarefa> getAvaliacoes() {

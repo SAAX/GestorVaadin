@@ -27,6 +27,7 @@ import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.PostgresConnection;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.After;
@@ -80,7 +81,12 @@ public class SignupModelTest {
         UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
         try {
-            dao.create(new Usuario(1, "Joao", "da Silva","joao@uol.com", new Cipher().md5Sum("123")));
+            Usuario u = new Usuario(1);
+            u.setLogin(login);
+            u.setNome("Joao");
+            u.setSobrenome("da Silva");
+            u.setSenha(new Cipher().md5Sum("123"));
+            dao.create(u);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(SignupModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -185,7 +191,13 @@ public class SignupModelTest {
         tipoPessoa = 'J';
         expResult = true;
 
-        dao.create(new Empresa(1, cpf_cnpj, tipoPessoa));
+        Empresa e = new Empresa();
+        e.setId(1);
+        e.setCnpj(cpf_cnpj);
+        e.setTipoPessoa(tipoPessoa);
+        
+        dao.create(e);
+        
         try {
             result = instance.verificaEmpresaExistente(cpf_cnpj,tipoPessoa);
         } catch (GestorException ex) {
@@ -205,7 +217,11 @@ public class SignupModelTest {
         tipoPessoa = 'F';
         expResult = true;
 
-        dao.create(new Empresa(1, cpf_cnpj, tipoPessoa));
+        e = new Empresa();
+        e.setId(1);
+        e.setCpf(cpf_cnpj);
+        e.setTipoPessoa(tipoPessoa);
+        dao.create(e);
         try {
             result = instance.verificaEmpresaExistente(cpf_cnpj,tipoPessoa);
         } catch (GestorException ex) {
@@ -236,7 +252,12 @@ public class SignupModelTest {
         String email = "rodrigo@provedor.com.br";
         SignupModel instance = new SignupModel();
         
-        Usuario usuario = new Usuario(1, nome, sobreNome, email, null);
+
+        Usuario usuario = new Usuario(1);
+            usuario.setLogin(email);
+            usuario.setNome(nome);
+            usuario.setSobrenome(sobreNome);
+            usuario.setDataHoraInclusao(LocalDateTime.now());
         
         String nomeFantasia = "saax";
         String razaosocial = "saax int inc";
@@ -848,8 +869,19 @@ public class SignupModelTest {
         String email = "rodrigo@provedor.com.br";
         String senha = "123";
         SignupModel instance = new SignupModel();
+
         
-        Usuario expResult = new Usuario(1, nome, sobreNome, email, senha);
+        Usuario expResult = new Usuario(1);
+            expResult.setLogin(email);
+            expResult.setNome(nome);
+            expResult.setSobrenome(sobreNome);
+        try {
+            expResult.setSenha(new Cipher().md5Sum(senha));
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(SignupModelTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            expResult.setDataHoraInclusao(LocalDateTime.now());
+
         Usuario result = instance.criarNovoUsuario(nome, sobreNome, email, senha);
         
         assertEquals(expResult.getLogin(), result.getLogin());
@@ -868,7 +900,11 @@ public class SignupModelTest {
         String email = "rodrigo@provedor.com.br";
         SignupModel instance = new SignupModel();
         
-        Usuario expResult = new Usuario(1, nome, sobreNome, email, null);
+        Usuario expResult = new Usuario(1);
+            expResult.setLogin(email);
+            expResult.setNome(nome);
+            expResult.setSobrenome(sobreNome);
+            expResult.setDataHoraInclusao(LocalDateTime.now());
         Usuario result = instance.criarNovoUsuario(nome, sobreNome, email);
         
         assertEquals(expResult.getLogin(), result.getLogin());

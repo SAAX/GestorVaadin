@@ -128,16 +128,6 @@ public class Empresa implements Serializable {
     public Empresa() {
     }
 
-    public Empresa(Integer idempresa, String cpf_cnpj, char tipoPessoa) {
-        this.id = idempresa;
-        if (tipoPessoa == 'F'){
-            this.cpf = cpf_cnpj;
-            
-        } else {
-            this.cnpj = cpf_cnpj;
-        }
-    }
-
     public Integer getId() {
         return id;
     }

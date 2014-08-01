@@ -13,6 +13,7 @@ import com.saax.gestorweb.model.datamodel.Meta;
 import java.util.ArrayList;
 import java.util.Collection;
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -33,7 +34,12 @@ public class CentroCustoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param centroCusto 
+     */
     public void create(CentroCusto centroCusto) {
+        centroCusto.setDataHoraInclusao(LocalDateTime.now());
         if (centroCusto.getMetas() == null) {
             centroCusto.setMetas(new ArrayList<Meta>());
         }

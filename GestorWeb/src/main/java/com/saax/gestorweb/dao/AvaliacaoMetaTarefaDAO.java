@@ -10,6 +10,7 @@ import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -30,7 +31,12 @@ public class AvaliacaoMetaTarefaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param avaliacaoMetaTarefa 
+     */
     public void create(AvaliacaoMetaTarefa avaliacaoMetaTarefa) {
+        avaliacaoMetaTarefa.setDataHoraInclusao(LocalDateTime.now());
         EntityManager em = null;
         try {
             em = getEntityManager();

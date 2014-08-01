@@ -102,10 +102,10 @@ public class Usuario implements Serializable {
     private List<Tarefa> tarefasSobResponsabilidade;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
-    private List<ParicipanteTarefa> paricipacoesIncluidas;
+    private List<ParticipanteTarefa> paricipacoesIncluidas;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioParticipante")
-    private List<ParicipanteTarefa> tarefasParticipantes;
+    private List<ParticipanteTarefa> tarefasParticipantes;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
     private List<FilialCliente> filiaisClientesIncluidas;
@@ -150,17 +150,10 @@ public class Usuario implements Serializable {
     
     public Usuario() {
     }
+    
 
     public Usuario(Integer idusuario) {
         this.id = idusuario;
-    }
-
-    public Usuario(Integer idusuario, String nome, String sobrenome, String login, String senha) {
-        this.id = idusuario;
-        this.nome = nome;
-        this.sobrenome = sobrenome;
-        this.login = login;
-        this.senha = senha;
     }
 
     public Integer getId() {
@@ -300,19 +293,19 @@ public class Usuario implements Serializable {
         this.tarefasSobResponsabilidade = tarefasSobResponsabilidade;
     }
 
-    public List<ParicipanteTarefa> getParicipacoesIncluidas() {
+    public List<ParticipanteTarefa> getParicipacoesIncluidas() {
         return paricipacoesIncluidas;
     }
 
-    public void setParicipacoesIncluidas(List<ParicipanteTarefa> paricipacoesIncluidas) {
+    public void setParicipacoesIncluidas(List<ParticipanteTarefa> paricipacoesIncluidas) {
         this.paricipacoesIncluidas = paricipacoesIncluidas;
     }
 
-    public List<ParicipanteTarefa> getTarefasParticipantes() {
+    public List<ParticipanteTarefa> getTarefasParticipantes() {
         return tarefasParticipantes;
     }
 
-    public void setTarefasParticipantes(List<ParicipanteTarefa> tarefasParticipantes) {
+    public void setTarefasParticipantes(List<ParticipanteTarefa> tarefasParticipantes) {
         this.tarefasParticipantes = tarefasParticipantes;
     }
 

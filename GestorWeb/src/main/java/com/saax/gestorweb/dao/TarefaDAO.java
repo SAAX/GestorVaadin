@@ -2,30 +2,31 @@ package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
-import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
-import com.saax.gestorweb.model.datamodel.Tarefa;
-import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta;
+import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
+import com.saax.gestorweb.model.datamodel.StatusTarefa;
+import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.TipoTarefa;
+import com.saax.gestorweb.model.datamodel.Usuario;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import com.saax.gestorweb.model.datamodel.ParicipanteTarefa;
-import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
-import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
-import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
  * DAO para o entity bean: Tarefa <br><br>
@@ -43,15 +44,20 @@ public class TarefaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param tarefa 
+     */
     public void create(Tarefa tarefa) {
+        tarefa.setDataHoraInclusao(LocalDateTime.now());
         if (tarefa.getFavoritados() == null) {
             tarefa.setFavoritados(new ArrayList<FavoritosTarefaMeta>());
         }
         if (tarefa.getSubTarefas() == null) {
             tarefa.setSubTarefas(new ArrayList<Tarefa>());
         }
-        if (tarefa.getParicipantes() == null) {
-            tarefa.setParicipantes(new ArrayList<ParicipanteTarefa>());
+        if (tarefa.getParticipantes() == null) {
+            tarefa.setParticipantes(new ArrayList<ParticipanteTarefa>());
         }
         if (tarefa.getAvaliacoes() == null) {
             tarefa.setAvaliacoes(new ArrayList<AvaliacaoMetaTarefa>());
@@ -141,12 +147,12 @@ public class TarefaDAO implements Serializable {
                 attachedSubTarefas.add(subTarefasTarefaToAttach);
             }
             tarefa.setSubTarefas(attachedSubTarefas);
-            List<ParicipanteTarefa> attachedParicipantes = new ArrayList<ParicipanteTarefa>();
-            for (ParicipanteTarefa paricipantesParicipanteTarefaToAttach : tarefa.getParicipantes()) {
+            List<ParticipanteTarefa> attachedParicipantes = new ArrayList<ParticipanteTarefa>();
+            for (ParticipanteTarefa paricipantesParicipanteTarefaToAttach : tarefa.getParticipantes()) {
                 paricipantesParicipanteTarefaToAttach = em.getReference(paricipantesParicipanteTarefaToAttach.getClass(), paricipantesParicipanteTarefaToAttach.getId());
                 attachedParicipantes.add(paricipantesParicipanteTarefaToAttach);
             }
-            tarefa.setParicipantes(attachedParicipantes);
+            tarefa.setParticipantes(attachedParicipantes);
             List<AvaliacaoMetaTarefa> attachedAvaliacoes = new ArrayList<AvaliacaoMetaTarefa>();
             for (AvaliacaoMetaTarefa avaliacoesAvaliacaoMetaTarefaToAttach : tarefa.getAvaliacoes()) {
                 avaliacoesAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesAvaliacaoMetaTarefaToAttach.getId());
@@ -238,12 +244,12 @@ public class TarefaDAO implements Serializable {
                     oldTarefaPaiOfSubTarefasTarefa = em.merge(oldTarefaPaiOfSubTarefasTarefa);
                 }
             }
-            for (ParicipanteTarefa paricipantesParicipanteTarefa : tarefa.getParicipantes()) {
+            for (ParticipanteTarefa paricipantesParicipanteTarefa : tarefa.getParticipantes()) {
                 Tarefa oldTarefaOfParicipantesParicipanteTarefa = paricipantesParicipanteTarefa.getTarefa();
                 paricipantesParicipanteTarefa.setTarefa(tarefa);
                 paricipantesParicipanteTarefa = em.merge(paricipantesParicipanteTarefa);
                 if (oldTarefaOfParicipantesParicipanteTarefa != null) {
-                    oldTarefaOfParicipantesParicipanteTarefa.getParicipantes().remove(paricipantesParicipanteTarefa);
+                    oldTarefaOfParicipantesParicipanteTarefa.getParticipantes().remove(paricipantesParicipanteTarefa);
                     oldTarefaOfParicipantesParicipanteTarefa = em.merge(oldTarefaOfParicipantesParicipanteTarefa);
                 }
             }
@@ -325,8 +331,8 @@ public class TarefaDAO implements Serializable {
             List<FavoritosTarefaMeta> favoritadosNew = tarefa.getFavoritados();
             List<Tarefa> subTarefasOld = persistentTarefa.getSubTarefas();
             List<Tarefa> subTarefasNew = tarefa.getSubTarefas();
-            List<ParicipanteTarefa> paricipantesOld = persistentTarefa.getParicipantes();
-            List<ParicipanteTarefa> paricipantesNew = tarefa.getParicipantes();
+            List<ParticipanteTarefa> paricipantesOld = persistentTarefa.getParticipantes();
+            List<ParticipanteTarefa> paricipantesNew = tarefa.getParticipantes();
             List<AvaliacaoMetaTarefa> avaliacoesOld = persistentTarefa.getAvaliacoes();
             List<AvaliacaoMetaTarefa> avaliacoesNew = tarefa.getAvaliacoes();
             List<OrcamentoTarefa> orcamentosOld = persistentTarefa.getOrcamentos();
@@ -344,7 +350,7 @@ public class TarefaDAO implements Serializable {
                     illegalOrphanMessages.add("You must retain FavoritosTarefaMeta " + favoritadosOldFavoritosTarefaMeta + " since its tarefa field is not nullable.");
                 }
             }
-            for (ParicipanteTarefa paricipantesOldParicipanteTarefa : paricipantesOld) {
+            for (ParticipanteTarefa paricipantesOldParicipanteTarefa : paricipantesOld) {
                 if (!paricipantesNew.contains(paricipantesOldParicipanteTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
@@ -449,13 +455,13 @@ public class TarefaDAO implements Serializable {
             }
             subTarefasNew = attachedSubTarefasNew;
             tarefa.setSubTarefas(subTarefasNew);
-            List<ParicipanteTarefa> attachedParicipantesNew = new ArrayList<ParicipanteTarefa>();
-            for (ParicipanteTarefa paricipantesNewParicipanteTarefaToAttach : paricipantesNew) {
+            List<ParticipanteTarefa> attachedParicipantesNew = new ArrayList<ParticipanteTarefa>();
+            for (ParticipanteTarefa paricipantesNewParicipanteTarefaToAttach : paricipantesNew) {
                 paricipantesNewParicipanteTarefaToAttach = em.getReference(paricipantesNewParicipanteTarefaToAttach.getClass(), paricipantesNewParicipanteTarefaToAttach.getId());
                 attachedParicipantesNew.add(paricipantesNewParicipanteTarefaToAttach);
             }
             paricipantesNew = attachedParicipantesNew;
-            tarefa.setParicipantes(paricipantesNew);
+            tarefa.setParticipantes(paricipantesNew);
             List<AvaliacaoMetaTarefa> attachedAvaliacoesNew = new ArrayList<AvaliacaoMetaTarefa>();
             for (AvaliacaoMetaTarefa avaliacoesNewAvaliacaoMetaTarefaToAttach : avaliacoesNew) {
                 avaliacoesNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesNewAvaliacaoMetaTarefaToAttach.getId());
@@ -609,13 +615,13 @@ public class TarefaDAO implements Serializable {
                     }
                 }
             }
-            for (ParicipanteTarefa paricipantesNewParicipanteTarefa : paricipantesNew) {
+            for (ParticipanteTarefa paricipantesNewParicipanteTarefa : paricipantesNew) {
                 if (!paricipantesOld.contains(paricipantesNewParicipanteTarefa)) {
                     Tarefa oldTarefaOfParicipantesNewParicipanteTarefa = paricipantesNewParicipanteTarefa.getTarefa();
                     paricipantesNewParicipanteTarefa.setTarefa(tarefa);
                     paricipantesNewParicipanteTarefa = em.merge(paricipantesNewParicipanteTarefa);
                     if (oldTarefaOfParicipantesNewParicipanteTarefa != null && !oldTarefaOfParicipantesNewParicipanteTarefa.equals(tarefa)) {
-                        oldTarefaOfParicipantesNewParicipanteTarefa.getParicipantes().remove(paricipantesNewParicipanteTarefa);
+                        oldTarefaOfParicipantesNewParicipanteTarefa.getParticipantes().remove(paricipantesNewParicipanteTarefa);
                         oldTarefaOfParicipantesNewParicipanteTarefa = em.merge(oldTarefaOfParicipantesNewParicipanteTarefa);
                     }
                 }
@@ -701,8 +707,8 @@ public class TarefaDAO implements Serializable {
                 }
                 illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the FavoritosTarefaMeta " + favoritadosOrphanCheckFavoritosTarefaMeta + " in its favoritados field has a non-nullable tarefa field.");
             }
-            List<ParicipanteTarefa> paricipantesOrphanCheck = tarefa.getParicipantes();
-            for (ParicipanteTarefa paricipantesOrphanCheckParicipanteTarefa : paricipantesOrphanCheck) {
+            List<ParticipanteTarefa> paricipantesOrphanCheck = tarefa.getParticipantes();
+            for (ParticipanteTarefa paricipantesOrphanCheckParicipanteTarefa : paricipantesOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }

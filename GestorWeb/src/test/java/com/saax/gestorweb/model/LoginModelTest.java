@@ -28,7 +28,7 @@ public class LoginModelTest {
     @BeforeClass
     public static void setUpClass() {
         DBConnect.getInstance().assertConnection();
-        
+
     }
 
     @AfterClass
@@ -53,7 +53,7 @@ public class LoginModelTest {
 
     @Before
     public void setUp() {
-            limparBase();
+        limparBase();
 
     }
 
@@ -68,27 +68,30 @@ public class LoginModelTest {
     public void testVerificaLoginExistente() {
 
         // Teste #1 : Login não existente
-
         LoginModel instance = new LoginModel();
 
         String login = "jose@uol.com";
         boolean expResult = false;
         boolean result = instance.verificaLoginExistente(login);
         assertEquals(expResult, result);
-        
 
         // Teste #2 : Login existente
-
         UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
+        login = "joao@uol.com";
         try {
+            Usuario u = new Usuario(1);
+            u.setLogin(login);
+            u.setNome("Joao");
+            u.setSobrenome("da Silva");
+            u.setSenha(new Cipher().md5Sum("123"));
+
             // Cria um usuario para teste
-            dao.create(new Usuario(1, "Joao", "da Silva","joao@uol.com", new Cipher().md5Sum("123")));
+            dao.create(u);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        login = "joao@uol.com";
         expResult = true;
         result = instance.verificaLoginExistente(login);
         assertEquals(expResult, result);
@@ -98,26 +101,30 @@ public class LoginModelTest {
         } catch (IllegalOrphanException | NonexistentEntityException ex) {
             Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
     @org.junit.Test
     public void testGetUsuario() {
 
         // Teste #1 : Login não existente
-        
         LoginModel instance = new LoginModel();
 
         String login = "jose@uol.com";
         assertNull(instance.getUsuario(login));
 
         // Teste #2 : Login existente
-        
         UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
         try {
             // Cria um usuario para teste
-            dao.create(new Usuario(1, "Joao", "da Silva","joao@uol.com", new Cipher().md5Sum("123")));
+            Usuario u = new Usuario(1);
+            u.setLogin("joao@uol.com");
+            u.setNome("Joao");
+            u.setSobrenome("da Silva");
+            u.setSenha(new Cipher().md5Sum("123"));
+
+            dao.create(u);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -125,10 +132,9 @@ public class LoginModelTest {
         instance = new LoginModel();
 
         login = "joao@uol.com";
-        
-        assertNotNull(instance.verificaLoginExistente(login));
-        
-    }
 
+        assertNotNull(instance.verificaLoginExistente(login));
+
+    }
 
 }

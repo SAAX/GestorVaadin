@@ -335,9 +335,9 @@ CREATE TABLE Tarefa (
 
 
 -- Participante tarefa
-DROP TABLE IF EXISTS ParicipanteTarefa CASCADE;
-CREATE TABLE ParicipanteTarefa (
-    idParicipanteTarefa SERIAL NOT NULL PRIMARY KEY, 
+DROP TABLE IF EXISTS ParticipanteTarefa CASCADE;
+CREATE TABLE ParticipanteTarefa (
+    idParticipanteTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
     idUsuarioParticipante INTEGER NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,

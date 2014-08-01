@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.Meta;
+import java.time.LocalDateTime;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -36,7 +37,12 @@ public class MetaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param meta 
+     */
     public void create(Meta meta) {
+        meta.setDataHoraInclusao(LocalDateTime.now());
         if (meta.getFavoritados() == null) {
             meta.setFavoritados(new ArrayList<FavoritosTarefaMeta>());
         }

@@ -25,18 +25,18 @@ import javax.validation.constraints.NotNull;
  * @author rodrigo
  */
 @Entity
-@Table(name = "paricipantetarefa")
+@Table(name = "participantetarefa")
 @NamedQueries({
-    @NamedQuery(name = "ParicipanteTarefa.findAll", query = "SELECT p FROM ParicipanteTarefa p"),
-    @NamedQuery(name = "ParicipanteTarefa.findByDatahorainclusao", query = "SELECT p FROM ParicipanteTarefa p WHERE p.dataHoraInclusao = :dataHoraInclusao")})
-public class ParicipanteTarefa implements Serializable {
+    @NamedQuery(name = "ParticipanteTarefa.findAll", query = "SELECT p FROM ParticipanteTarefa p"),
+    @NamedQuery(name = "ParticipanteTarefa.findByDatahorainclusao", query = "SELECT p FROM ParticipanteTarefa p WHERE p.dataHoraInclusao = :dataHoraInclusao")})
+public class ParticipanteTarefa implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "idparicipantetarefa")
+    @Column(name = "idparticipantetarefa")
     private Integer id;
     
     @Basic(optional = false)
@@ -57,14 +57,14 @@ public class ParicipanteTarefa implements Serializable {
     @ManyToOne(optional = false)
     private Usuario usuarioParticipante;
 
-    public ParicipanteTarefa() {
+    public ParticipanteTarefa() {
     }
 
-    public ParicipanteTarefa(Integer idparicipantetarefa) {
+    public ParticipanteTarefa(Integer idparicipantetarefa) {
         this.id = idparicipantetarefa;
     }
 
-    public ParicipanteTarefa(Integer idparicipantetarefa, LocalDateTime dataHoraInclusao) {
+    public ParticipanteTarefa(Integer idparicipantetarefa, LocalDateTime dataHoraInclusao) {
         this.id = idparicipantetarefa;
         this.dataHoraInclusao = dataHoraInclusao;
     }
@@ -119,10 +119,10 @@ public class ParicipanteTarefa implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ParicipanteTarefa)) {
+        if (!(object instanceof ParticipanteTarefa)) {
             return false;
         }
-        ParicipanteTarefa other = (ParicipanteTarefa) object;
+        ParticipanteTarefa other = (ParticipanteTarefa) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

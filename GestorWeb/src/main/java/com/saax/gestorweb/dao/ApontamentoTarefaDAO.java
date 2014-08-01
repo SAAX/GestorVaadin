@@ -9,6 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -29,7 +30,12 @@ public class ApontamentoTarefaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param apontamentoTarefa 
+     */
     public void create(ApontamentoTarefa apontamentoTarefa) {
+        apontamentoTarefa.setDataHoraInclusao(LocalDateTime.now());
         EntityManager em = null;
         try {
             em = getEntityManager();

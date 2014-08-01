@@ -1,26 +1,27 @@
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
-import com.saax.gestorweb.model.datamodel.ParicipanteTarefa;
-import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
- * DAO para o entity bean: ParicipanteTarefa <br><br>
+ * DAO para o entity bean: ParticipanteTarefa <br><br>
  * 
  * @author rodrigo
  */
-public class ParicipanteTarefaDAO implements Serializable {
+public class ParticipanteTarefaDAO implements Serializable {
 
-    public ParicipanteTarefaDAO(EntityManagerFactory emf) {
+    public ParticipanteTarefaDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -29,7 +30,12 @@ public class ParicipanteTarefaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(ParicipanteTarefa paricipanteTarefa) {
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param paricipanteTarefa 
+     */
+    public void create(ParticipanteTarefa paricipanteTarefa) {
+        paricipanteTarefa.setDataHoraInclusao(LocalDateTime.now());
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -51,7 +57,7 @@ public class ParicipanteTarefaDAO implements Serializable {
             }
             em.persist(paricipanteTarefa);
             if (tarefa != null) {
-                tarefa.getParicipantes().add(paricipanteTarefa);
+                tarefa.getParticipantes().add(paricipanteTarefa);
                 tarefa = em.merge(tarefa);
             }
             if (usuarioInclusao != null) {
@@ -70,12 +76,12 @@ public class ParicipanteTarefaDAO implements Serializable {
         }
     }
 
-    public void edit(ParicipanteTarefa paricipanteTarefa) throws NonexistentEntityException, Exception {
+    public void edit(ParticipanteTarefa paricipanteTarefa) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            ParicipanteTarefa persistentParicipanteTarefa = em.find(ParicipanteTarefa.class, paricipanteTarefa.getId());
+            ParticipanteTarefa persistentParicipanteTarefa = em.find(ParticipanteTarefa.class, paricipanteTarefa.getId());
             Tarefa tarefaOld = persistentParicipanteTarefa.getTarefa();
             Tarefa tarefaNew = paricipanteTarefa.getTarefa();
             Usuario usuarioInclusaoOld = persistentParicipanteTarefa.getUsuarioInclusao();
@@ -96,11 +102,11 @@ public class ParicipanteTarefaDAO implements Serializable {
             }
             paricipanteTarefa = em.merge(paricipanteTarefa);
             if (tarefaOld != null && !tarefaOld.equals(tarefaNew)) {
-                tarefaOld.getParicipantes().remove(paricipanteTarefa);
+                tarefaOld.getParticipantes().remove(paricipanteTarefa);
                 tarefaOld = em.merge(tarefaOld);
             }
             if (tarefaNew != null && !tarefaNew.equals(tarefaOld)) {
-                tarefaNew.getParicipantes().add(paricipanteTarefa);
+                tarefaNew.getParticipantes().add(paricipanteTarefa);
                 tarefaNew = em.merge(tarefaNew);
             }
             if (usuarioInclusaoOld != null && !usuarioInclusaoOld.equals(usuarioInclusaoNew)) {
@@ -141,16 +147,16 @@ public class ParicipanteTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            ParicipanteTarefa paricipanteTarefa;
+            ParticipanteTarefa paricipanteTarefa;
             try {
-                paricipanteTarefa = em.getReference(ParicipanteTarefa.class, id);
+                paricipanteTarefa = em.getReference(ParticipanteTarefa.class, id);
                 paricipanteTarefa.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The paricipanteTarefa with id " + id + " no longer exists.", enfe);
             }
             Tarefa tarefa = paricipanteTarefa.getTarefa();
             if (tarefa != null) {
-                tarefa.getParicipantes().remove(paricipanteTarefa);
+                tarefa.getParticipantes().remove(paricipanteTarefa);
                 tarefa = em.merge(tarefa);
             }
             Usuario usuarioInclusao = paricipanteTarefa.getUsuarioInclusao();
@@ -172,19 +178,19 @@ public class ParicipanteTarefaDAO implements Serializable {
         }
     }
 
-    public List<ParicipanteTarefa> findParicipanteTarefaEntities() {
+    public List<ParticipanteTarefa> findParicipanteTarefaEntities() {
         return findParicipanteTarefaEntities(true, -1, -1);
     }
 
-    public List<ParicipanteTarefa> findParicipanteTarefaEntities(int maxResults, int firstResult) {
+    public List<ParticipanteTarefa> findParicipanteTarefaEntities(int maxResults, int firstResult) {
         return findParicipanteTarefaEntities(false, maxResults, firstResult);
     }
 
-    private List<ParicipanteTarefa> findParicipanteTarefaEntities(boolean all, int maxResults, int firstResult) {
+    private List<ParticipanteTarefa> findParicipanteTarefaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(ParicipanteTarefa.class));
+            cq.select(cq.from(ParticipanteTarefa.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -196,10 +202,10 @@ public class ParicipanteTarefaDAO implements Serializable {
         }
     }
 
-    public ParicipanteTarefa findParicipanteTarefa(Integer id) {
+    public ParticipanteTarefa findParicipanteTarefa(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(ParicipanteTarefa.class, id);
+            return em.find(ParticipanteTarefa.class, id);
         } finally {
             em.close();
         }
@@ -209,7 +215,7 @@ public class ParicipanteTarefaDAO implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<ParicipanteTarefa> rt = cq.from(ParicipanteTarefa.class);
+            Root<ParticipanteTarefa> rt = cq.from(ParticipanteTarefa.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

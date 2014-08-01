@@ -329,7 +329,13 @@ public class SignupPresenterTest {
         
         // 1o passo: cadastrar um empresa com o cnpj
         EmpresaDAO empresaDAO = new EmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        empresaDAO.create(new Empresa(1, cnpjRepetido, 'J'));
+
+        Empresa e = new Empresa();
+        e.setId(1);
+        e.setCnpj(cnpjRepetido);
+        e.setTipoPessoa('J');
+        
+        empresaDAO.create(e);
 
         
         // 2o. passo: preencher um cadastro com o mesmo cnpj

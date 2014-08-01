@@ -63,7 +63,14 @@ public class LoginPresenterTest {
         // Cria um usuario para teste
         UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         try {
-            dao.create(new Usuario(1, "Joao", "da Silva", "joao@uol.com.br", new Cipher().md5Sum("123")));
+            Usuario u = new Usuario(1);
+            u.setLogin("joao@uol.com.br");
+            u.setNome("Joao");
+            u.setSobrenome("da Silva");
+            u.setSenha(new Cipher().md5Sum("123"));
+            dao.create(u);
+            
+            
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(LoginModelTest.class.getName()).log(Level.SEVERE, null, ex);
         }

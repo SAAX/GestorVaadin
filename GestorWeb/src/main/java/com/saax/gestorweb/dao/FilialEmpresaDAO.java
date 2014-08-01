@@ -9,6 +9,7 @@ import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -29,7 +30,12 @@ public class FilialEmpresaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param filialEmpresa 
+     */
     public void create(FilialEmpresa filialEmpresa) {
+        filialEmpresa.setDataHoraInclusao(LocalDateTime.now());
         EntityManager em = null;
         try {
             em = getEntityManager();

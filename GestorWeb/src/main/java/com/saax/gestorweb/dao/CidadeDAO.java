@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.Estado;
 import com.saax.gestorweb.model.datamodel.Endereco;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -31,7 +32,9 @@ public class CidadeDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    
     public void create(Cidade cidade) {
+        
         if (cidade.getEnderecos() == null) {
             cidade.setEnderecos(new ArrayList<Endereco>());
         }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.Endereco;
+import java.time.LocalDateTime;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -32,7 +33,12 @@ public class EnderecoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param endereco 
+     */
     public void create(Endereco endereco) {
+        endereco.setDataHoraInclusao(LocalDateTime.now());
         if (endereco.getEmpresas() == null) {
             endereco.setEmpresas(new ArrayList<Empresa>());
         }

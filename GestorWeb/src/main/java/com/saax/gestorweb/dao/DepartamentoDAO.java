@@ -13,6 +13,7 @@ import com.saax.gestorweb.model.datamodel.Meta;
 import java.util.ArrayList;
 import java.util.Collection;
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -34,7 +35,12 @@ public class DepartamentoDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param departamento 
+     */
     public void create(Departamento departamento) {
+        departamento.setDataHoraInclusao(LocalDateTime.now());
         if (departamento.getMetas() == null) {
             departamento.setMetas(new ArrayList<Meta>());
         }

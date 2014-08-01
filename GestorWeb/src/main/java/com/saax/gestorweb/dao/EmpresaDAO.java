@@ -19,6 +19,7 @@ import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import java.time.LocalDateTime;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -38,7 +39,12 @@ public class EmpresaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
+    /**
+     * metodo padrao modificado para gravar data/hora de inclusao
+     * @param empresa 
+     */
     public void create(Empresa empresa) {
+        empresa.setDataHoraInclusao(LocalDateTime.now());
         if (empresa.getFiliais() == null) {
             empresa.setFiliais(new ArrayList<FilialEmpresa>());
         }

@@ -252,6 +252,7 @@ public class SignupView extends Window {
         getRazaoSocialTextField().setInputPrompt(getMensagens().getString("SignupView.razaoSocialTextField.label"));
         razaoSocialTextField.setWidth("300px");
         getRazaoSocialTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.razaoSocialTextField.erro.RazaoSocialNaoInformada"),1, 100, false));
+        razaoSocialTextField.setValidationVisible(false);
 
         // text field: Nome Fantasia
         setNomeFantasiaTextField(new TextField());
@@ -259,6 +260,7 @@ public class SignupView extends Window {
         getNomeFantasiaTextField().setInputPrompt(getMensagens().getString("SignupView.nomeFantasiaTextField.label"));
         nomeFantasiaTextField.setWidth("300px");
         getNomeFantasiaTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.nomeFantasiaTextField.erro.NomeFantasiaNaoInformado"),1, 100, false));
+        nomeFantasiaTextField.setValidationVisible(false);
         
         HorizontalLayout containerHorizontal1 = new HorizontalLayout();
         containerHorizontal1.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
@@ -275,6 +277,9 @@ public class SignupView extends Window {
         containerHorizontal1.addComponent(getCnpjCpfTextField());
         getCnpjCpfTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjCpfTextField.label"));
         cnpjCpfTextField.setWidth("180px");
+        
+        cnpjCpfTextField.setValidationVisible(false);
+         
         getCnpjCpfTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.cnpjCpfTextField.erro.cnpjCpfNaoInformado"),1, 100, false));
         
         
@@ -287,6 +292,7 @@ public class SignupView extends Window {
         containerHorizontal.addComponent(getLogradouroTextField());
         getLogradouroTextField().setInputPrompt(getMensagens().getString("SignupView.logradouroTextField.label"));
         logradouroTextField.setWidth("300px");
+        logradouroTextField.setValidationVisible(false);
         getLogradouroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.logradouroTextField.erro.logradouroNaoInformado"),1, 100, false));
         
         // text field: Numero
@@ -294,6 +300,7 @@ public class SignupView extends Window {
         containerHorizontal.addComponent(getNumeroTextField());
         getNumeroTextField().setInputPrompt(getMensagens().getString("SignupView.numeroTextField.label"));
         numeroTextField.setWidth("100px");
+        numeroTextField.setValidationVisible(false);
         getNumeroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal2 = new HorizontalLayout();
@@ -305,6 +312,7 @@ public class SignupView extends Window {
         containerHorizontal2.addComponent(getComplementoTextField());
         getComplementoTextField().setInputPrompt(getMensagens().getString("SignupView.complementoTextField.label"));
         complementoTextField.setWidth("300px");
+        complementoTextField.setValidationVisible(false);
         getNumeroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
         
          // text field: bairro
@@ -312,6 +320,7 @@ public class SignupView extends Window {
         containerHorizontal2.addComponent(getBairroTextField());
         getBairroTextField().setInputPrompt(getMensagens().getString("SignupView.bairroTextField.label"));
         bairroTextField.setWidth("100px");
+        bairroTextField.setValidationVisible(false);
         getBairroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.bairroTextField.erro.bairroNaoInformado"),1, 100, false));
         
          // text field: cidade
@@ -389,9 +398,9 @@ public class SignupView extends Window {
       
         coligadasTable.addContainerProperty("Nome", String.class, null);
         coligadasTable.addContainerProperty("Cnpj", String.class, null);
-        coligadasTable.addContainerProperty("Editar", String.class, null);
-        coligadasTable.addContainerProperty("Remover", String.class, null);
-        coligadasTable.setHeight("150px");
+        coligadasTable.addContainerProperty("Remover", Button.class, null);
+        coligadasTable.setImmediate(true);
+        coligadasTable.setSelectable(true);
         
         return containerAba5;
     }
@@ -443,8 +452,10 @@ public class SignupView extends Window {
        
         filiaisTable.addContainerProperty("Nome", String.class, null);
         filiaisTable.addContainerProperty("CNPJ", String.class, null);
-        filiaisTable.addContainerProperty("Editar", String.class, null);
-        filiaisTable.addContainerProperty("Remover", String.class, null);
+        
+        filiaisTable.addContainerProperty("Remover", Button.class, null);
+        filiaisTable.setImmediate(true);
+        filiaisTable.setSelectable(true);
         
         return containerAba6;
     }

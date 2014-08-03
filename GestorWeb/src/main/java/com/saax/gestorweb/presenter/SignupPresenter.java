@@ -493,9 +493,42 @@ public class SignupPresenter implements SignupViewListener {
         String nomeColigada = view.getNomeColigadaTextField().getValue();
         String cnpjColigada = view.getCnpjColigadaTextField().getValue();
         
+        Button removerColigadasButton = new Button(getMensagens().getString("SignupPresenter.removerButton.label"));
+        removerColigadasButton.addClickListener((Button.ClickEvent event) -> {
+            view.getColigadasTable().addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+              if(event.getProperty().getValue() != null){
+             
+              } 
+            }
+        });
             
+           if(view.getColigadasTable().getValue() != null){
+               view.getColigadasTable().removeItem(view.getColigadasTable().getValue());
+               view.getColigadasTable().refreshRowCache();
+               Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+               
+           }
+                        
+        });
+        
+        
+        
+        
+        if(view.getColigadasTable().getItemIds().size()==0){
+        
+        view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada, removerColigadasButton}, 1);
+         }else{
+            
+            view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada, removerColigadasButton}, null);
+        }
+        
+        view.getNomeColigadaTextField().setValue("");
+        view.getCnpjColigadaTextField().setValue("");
+        
                                        
-        view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada,"Editar", "Remover"}, new Integer(1));
+        
        
          
     }
@@ -511,7 +544,39 @@ public class SignupPresenter implements SignupViewListener {
         String cnpjFilial = view.getCnpjFilialTextField().getValue();
        
                                        
-        view.getFiliaisTable().addItem(new Object[] {nomeFilial,cnpjFilial,"Editar", "Remover"}, new Integer(1));
+        Button removerFiliaisButton = new Button(getMensagens().getString("SignupPresenter.removerButton.label"));
+        removerFiliaisButton.addClickListener((Button.ClickEvent event) -> {
+            view.getFiliaisTable().addListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+              if(event.getProperty().getValue() != null){
+             
+              } 
+            }
+        });
+            
+           if(view.getFiliaisTable().getValue() != null){
+               view.getFiliaisTable().removeItem(view.getFiliaisTable().getValue());
+               view.getFiliaisTable().refreshRowCache();
+               Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+               
+           }
+                        
+        });
+        
+        
+        
+        
+        if(view.getFiliaisTable().getItemIds().size()==0){
+        
+        view.getFiliaisTable().addItem(new Object[] {nomeFilial,cnpjFilial, removerFiliaisButton}, 1);
+         }else{
+            
+            view.getFiliaisTable().addItem(new Object[] {nomeFilial,cnpjFilial, removerFiliaisButton}, null);
+        }
+        
+        view.getNomeFilialTextField().setValue("");
+        view.getCnpjFilialTextField().setValue("");
         
        
          

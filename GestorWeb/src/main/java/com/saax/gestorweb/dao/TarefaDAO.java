@@ -1,36 +1,36 @@
 package com.saax.gestorweb.dao;
 
+import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
-import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
-import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
+import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
-import com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta;
-import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
-import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
-import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
-import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta;
 import java.util.ArrayList;
 import java.util.List;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
+import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
+import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
  * DAO para o entity bean: Tarefa <br><br>
- * 
+ *
  * @author rodrigo
  */
 public class TarefaDAO implements Serializable {
@@ -46,7 +46,8 @@ public class TarefaDAO implements Serializable {
 
     /**
      * metodo padrao modificado para gravar data/hora de inclusao
-     * @param tarefa 
+     *
+     * @param tarefa
      */
     public void create(Tarefa tarefa) {
         tarefa.setDataHoraInclusao(LocalDateTime.now());
@@ -75,11 +76,6 @@ public class TarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            PrioridadeTarefa prioridade = tarefa.getPrioridade();
-            if (prioridade != null) {
-                prioridade = em.getReference(prioridade.getClass(), prioridade.getPrioridadetarefa());
-                tarefa.setPrioridade(prioridade);
-            }
             CentroCusto centroCusto = tarefa.getCentroCusto();
             if (centroCusto != null) {
                 centroCusto = em.getReference(centroCusto.getClass(), centroCusto.getId());
@@ -120,20 +116,10 @@ public class TarefaDAO implements Serializable {
                 usuarioResponsavel = em.getReference(usuarioResponsavel.getClass(), usuarioResponsavel.getId());
                 tarefa.setUsuarioResponsavel(usuarioResponsavel);
             }
-            StatusTarefa status = tarefa.getStatus();
-            if (status != null) {
-                status = em.getReference(status.getClass(), status.getStatustarefa());
-                tarefa.setStatus(status);
-            }
             Tarefa proximaTarefa = tarefa.getProximaTarefa();
             if (proximaTarefa != null) {
                 proximaTarefa = em.getReference(proximaTarefa.getClass(), proximaTarefa.getId());
                 tarefa.setProximaTarefa(proximaTarefa);
-            }
-            TipoTarefa tipo = tarefa.getTipo();
-            if (tipo != null) {
-                tipo = em.getReference(tipo.getClass(), tipo.getTipotarefa());
-                tarefa.setTipo(tipo);
             }
             List<FavoritosTarefaMeta> attachedFavoritados = new ArrayList<FavoritosTarefaMeta>();
             for (FavoritosTarefaMeta favoritadosFavoritosTarefaMetaToAttach : tarefa.getFavoritados()) {
@@ -147,12 +133,12 @@ public class TarefaDAO implements Serializable {
                 attachedSubTarefas.add(subTarefasTarefaToAttach);
             }
             tarefa.setSubTarefas(attachedSubTarefas);
-            List<ParticipanteTarefa> attachedParicipantes = new ArrayList<ParticipanteTarefa>();
-            for (ParticipanteTarefa paricipantesParicipanteTarefaToAttach : tarefa.getParticipantes()) {
-                paricipantesParicipanteTarefaToAttach = em.getReference(paricipantesParicipanteTarefaToAttach.getClass(), paricipantesParicipanteTarefaToAttach.getId());
-                attachedParicipantes.add(paricipantesParicipanteTarefaToAttach);
+            List<ParticipanteTarefa> attachedParticipantes = new ArrayList<ParticipanteTarefa>();
+            for (ParticipanteTarefa participantesParticipanteTarefaToAttach : tarefa.getParticipantes()) {
+                participantesParticipanteTarefaToAttach = em.getReference(participantesParticipanteTarefaToAttach.getClass(), participantesParticipanteTarefaToAttach.getId());
+                attachedParticipantes.add(participantesParticipanteTarefaToAttach);
             }
-            tarefa.setParticipantes(attachedParicipantes);
+            tarefa.setParticipantes(attachedParticipantes);
             List<AvaliacaoMetaTarefa> attachedAvaliacoes = new ArrayList<AvaliacaoMetaTarefa>();
             for (AvaliacaoMetaTarefa avaliacoesAvaliacaoMetaTarefaToAttach : tarefa.getAvaliacoes()) {
                 avaliacoesAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesAvaliacaoMetaTarefaToAttach.getId());
@@ -178,10 +164,6 @@ public class TarefaDAO implements Serializable {
             }
             tarefa.setAnexos(attachedAnexos);
             em.persist(tarefa);
-            if (prioridade != null) {
-                prioridade.getTarefas().add(tarefa);
-                prioridade = em.merge(prioridade);
-            }
             if (centroCusto != null) {
                 centroCusto.getTarefas().add(tarefa);
                 centroCusto = em.merge(centroCusto);
@@ -214,17 +196,9 @@ public class TarefaDAO implements Serializable {
                 usuarioResponsavel.getTarefasIncluidas().add(tarefa);
                 usuarioResponsavel = em.merge(usuarioResponsavel);
             }
-            if (status != null) {
-                status.getTarefas().add(tarefa);
-                status = em.merge(status);
-            }
             if (proximaTarefa != null) {
                 proximaTarefa.getSubTarefas().add(tarefa);
                 proximaTarefa = em.merge(proximaTarefa);
-            }
-            if (tipo != null) {
-                tipo.getTarefas().add(tarefa);
-                tipo = em.merge(tipo);
             }
             for (FavoritosTarefaMeta favoritadosFavoritosTarefaMeta : tarefa.getFavoritados()) {
                 Tarefa oldTarefaOfFavoritadosFavoritosTarefaMeta = favoritadosFavoritosTarefaMeta.getTarefa();
@@ -244,13 +218,13 @@ public class TarefaDAO implements Serializable {
                     oldTarefaPaiOfSubTarefasTarefa = em.merge(oldTarefaPaiOfSubTarefasTarefa);
                 }
             }
-            for (ParticipanteTarefa paricipantesParicipanteTarefa : tarefa.getParticipantes()) {
-                Tarefa oldTarefaOfParicipantesParicipanteTarefa = paricipantesParicipanteTarefa.getTarefa();
-                paricipantesParicipanteTarefa.setTarefa(tarefa);
-                paricipantesParicipanteTarefa = em.merge(paricipantesParicipanteTarefa);
-                if (oldTarefaOfParicipantesParicipanteTarefa != null) {
-                    oldTarefaOfParicipantesParicipanteTarefa.getParticipantes().remove(paricipantesParicipanteTarefa);
-                    oldTarefaOfParicipantesParicipanteTarefa = em.merge(oldTarefaOfParicipantesParicipanteTarefa);
+            for (ParticipanteTarefa participantesParticipanteTarefa : tarefa.getParticipantes()) {
+                Tarefa oldTarefaOfParticipantesParticipanteTarefa = participantesParticipanteTarefa.getTarefa();
+                participantesParticipanteTarefa.setTarefa(tarefa);
+                participantesParticipanteTarefa = em.merge(participantesParticipanteTarefa);
+                if (oldTarefaOfParticipantesParticipanteTarefa != null) {
+                    oldTarefaOfParticipantesParticipanteTarefa.getParticipantes().remove(participantesParticipanteTarefa);
+                    oldTarefaOfParticipantesParticipanteTarefa = em.merge(oldTarefaOfParticipantesParticipanteTarefa);
                 }
             }
             for (AvaliacaoMetaTarefa avaliacoesAvaliacaoMetaTarefa : tarefa.getAvaliacoes()) {
@@ -303,8 +277,6 @@ public class TarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Tarefa persistentTarefa = em.find(Tarefa.class, tarefa.getId());
-            PrioridadeTarefa prioridadeOld = persistentTarefa.getPrioridade();
-            PrioridadeTarefa prioridadeNew = tarefa.getPrioridade();
             CentroCusto centroCustoOld = persistentTarefa.getCentroCusto();
             CentroCusto centroCustoNew = tarefa.getCentroCusto();
             Departamento departamentoOld = persistentTarefa.getDepartamento();
@@ -321,18 +293,14 @@ public class TarefaDAO implements Serializable {
             Usuario usuarioSolicitanteNew = tarefa.getUsuarioSolicitante();
             Usuario usuarioResponsavelOld = persistentTarefa.getUsuarioResponsavel();
             Usuario usuarioResponsavelNew = tarefa.getUsuarioResponsavel();
-            StatusTarefa statusOld = persistentTarefa.getStatus();
-            StatusTarefa statusNew = tarefa.getStatus();
             Tarefa proximaTarefaOld = persistentTarefa.getProximaTarefa();
             Tarefa proximaTarefaNew = tarefa.getProximaTarefa();
-            TipoTarefa tipoOld = persistentTarefa.getTipo();
-            TipoTarefa tipoNew = tarefa.getTipo();
             List<FavoritosTarefaMeta> favoritadosOld = persistentTarefa.getFavoritados();
             List<FavoritosTarefaMeta> favoritadosNew = tarefa.getFavoritados();
             List<Tarefa> subTarefasOld = persistentTarefa.getSubTarefas();
             List<Tarefa> subTarefasNew = tarefa.getSubTarefas();
-            List<ParticipanteTarefa> paricipantesOld = persistentTarefa.getParticipantes();
-            List<ParticipanteTarefa> paricipantesNew = tarefa.getParticipantes();
+            List<ParticipanteTarefa> participantesOld = persistentTarefa.getParticipantes();
+            List<ParticipanteTarefa> participantesNew = tarefa.getParticipantes();
             List<AvaliacaoMetaTarefa> avaliacoesOld = persistentTarefa.getAvaliacoes();
             List<AvaliacaoMetaTarefa> avaliacoesNew = tarefa.getAvaliacoes();
             List<OrcamentoTarefa> orcamentosOld = persistentTarefa.getOrcamentos();
@@ -350,12 +318,12 @@ public class TarefaDAO implements Serializable {
                     illegalOrphanMessages.add("You must retain FavoritosTarefaMeta " + favoritadosOldFavoritosTarefaMeta + " since its tarefa field is not nullable.");
                 }
             }
-            for (ParticipanteTarefa paricipantesOldParicipanteTarefa : paricipantesOld) {
-                if (!paricipantesNew.contains(paricipantesOldParicipanteTarefa)) {
+            for (ParticipanteTarefa participantesOldParticipanteTarefa : participantesOld) {
+                if (!participantesNew.contains(participantesOldParticipanteTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + paricipantesOldParicipanteTarefa + " since its tarefa field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ParticipanteTarefa " + participantesOldParticipanteTarefa + " since its tarefa field is not nullable.");
                 }
             }
             for (AvaliacaoMetaTarefa avaliacoesOldAvaliacaoMetaTarefa : avaliacoesOld) {
@@ -393,10 +361,6 @@ public class TarefaDAO implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (prioridadeNew != null) {
-                prioridadeNew = em.getReference(prioridadeNew.getClass(), prioridadeNew.getPrioridadetarefa());
-                tarefa.setPrioridade(prioridadeNew);
-            }
             if (centroCustoNew != null) {
                 centroCustoNew = em.getReference(centroCustoNew.getClass(), centroCustoNew.getId());
                 tarefa.setCentroCusto(centroCustoNew);
@@ -429,17 +393,9 @@ public class TarefaDAO implements Serializable {
                 usuarioResponsavelNew = em.getReference(usuarioResponsavelNew.getClass(), usuarioResponsavelNew.getId());
                 tarefa.setUsuarioResponsavel(usuarioResponsavelNew);
             }
-            if (statusNew != null) {
-                statusNew = em.getReference(statusNew.getClass(), statusNew.getStatustarefa());
-                tarefa.setStatus(statusNew);
-            }
             if (proximaTarefaNew != null) {
                 proximaTarefaNew = em.getReference(proximaTarefaNew.getClass(), proximaTarefaNew.getId());
                 tarefa.setProximaTarefa(proximaTarefaNew);
-            }
-            if (tipoNew != null) {
-                tipoNew = em.getReference(tipoNew.getClass(), tipoNew.getTipotarefa());
-                tarefa.setTipo(tipoNew);
             }
             List<FavoritosTarefaMeta> attachedFavoritadosNew = new ArrayList<FavoritosTarefaMeta>();
             for (FavoritosTarefaMeta favoritadosNewFavoritosTarefaMetaToAttach : favoritadosNew) {
@@ -455,13 +411,13 @@ public class TarefaDAO implements Serializable {
             }
             subTarefasNew = attachedSubTarefasNew;
             tarefa.setSubTarefas(subTarefasNew);
-            List<ParticipanteTarefa> attachedParicipantesNew = new ArrayList<ParticipanteTarefa>();
-            for (ParticipanteTarefa paricipantesNewParicipanteTarefaToAttach : paricipantesNew) {
-                paricipantesNewParicipanteTarefaToAttach = em.getReference(paricipantesNewParicipanteTarefaToAttach.getClass(), paricipantesNewParicipanteTarefaToAttach.getId());
-                attachedParicipantesNew.add(paricipantesNewParicipanteTarefaToAttach);
+            List<ParticipanteTarefa> attachedParticipantesNew = new ArrayList<ParticipanteTarefa>();
+            for (ParticipanteTarefa participantesNewParticipanteTarefaToAttach : participantesNew) {
+                participantesNewParticipanteTarefaToAttach = em.getReference(participantesNewParticipanteTarefaToAttach.getClass(), participantesNewParticipanteTarefaToAttach.getId());
+                attachedParticipantesNew.add(participantesNewParticipanteTarefaToAttach);
             }
-            paricipantesNew = attachedParicipantesNew;
-            tarefa.setParticipantes(paricipantesNew);
+            participantesNew = attachedParticipantesNew;
+            tarefa.setParticipantes(participantesNew);
             List<AvaliacaoMetaTarefa> attachedAvaliacoesNew = new ArrayList<AvaliacaoMetaTarefa>();
             for (AvaliacaoMetaTarefa avaliacoesNewAvaliacaoMetaTarefaToAttach : avaliacoesNew) {
                 avaliacoesNewAvaliacaoMetaTarefaToAttach = em.getReference(avaliacoesNewAvaliacaoMetaTarefaToAttach.getClass(), avaliacoesNewAvaliacaoMetaTarefaToAttach.getId());
@@ -491,14 +447,6 @@ public class TarefaDAO implements Serializable {
             anexosNew = attachedAnexosNew;
             tarefa.setAnexos(anexosNew);
             tarefa = em.merge(tarefa);
-            if (prioridadeOld != null && !prioridadeOld.equals(prioridadeNew)) {
-                prioridadeOld.getTarefas().remove(tarefa);
-                prioridadeOld = em.merge(prioridadeOld);
-            }
-            if (prioridadeNew != null && !prioridadeNew.equals(prioridadeOld)) {
-                prioridadeNew.getTarefas().add(tarefa);
-                prioridadeNew = em.merge(prioridadeNew);
-            }
             if (centroCustoOld != null && !centroCustoOld.equals(centroCustoNew)) {
                 centroCustoOld.getTarefas().remove(tarefa);
                 centroCustoOld = em.merge(centroCustoOld);
@@ -563,14 +511,6 @@ public class TarefaDAO implements Serializable {
                 usuarioResponsavelNew.getTarefasIncluidas().add(tarefa);
                 usuarioResponsavelNew = em.merge(usuarioResponsavelNew);
             }
-            if (statusOld != null && !statusOld.equals(statusNew)) {
-                statusOld.getTarefas().remove(tarefa);
-                statusOld = em.merge(statusOld);
-            }
-            if (statusNew != null && !statusNew.equals(statusOld)) {
-                statusNew.getTarefas().add(tarefa);
-                statusNew = em.merge(statusNew);
-            }
             if (proximaTarefaOld != null && !proximaTarefaOld.equals(proximaTarefaNew)) {
                 proximaTarefaOld.getSubTarefas().remove(tarefa);
                 proximaTarefaOld = em.merge(proximaTarefaOld);
@@ -578,14 +518,6 @@ public class TarefaDAO implements Serializable {
             if (proximaTarefaNew != null && !proximaTarefaNew.equals(proximaTarefaOld)) {
                 proximaTarefaNew.getSubTarefas().add(tarefa);
                 proximaTarefaNew = em.merge(proximaTarefaNew);
-            }
-            if (tipoOld != null && !tipoOld.equals(tipoNew)) {
-                tipoOld.getTarefas().remove(tarefa);
-                tipoOld = em.merge(tipoOld);
-            }
-            if (tipoNew != null && !tipoNew.equals(tipoOld)) {
-                tipoNew.getTarefas().add(tarefa);
-                tipoNew = em.merge(tipoNew);
             }
             for (FavoritosTarefaMeta favoritadosNewFavoritosTarefaMeta : favoritadosNew) {
                 if (!favoritadosOld.contains(favoritadosNewFavoritosTarefaMeta)) {
@@ -615,14 +547,14 @@ public class TarefaDAO implements Serializable {
                     }
                 }
             }
-            for (ParticipanteTarefa paricipantesNewParicipanteTarefa : paricipantesNew) {
-                if (!paricipantesOld.contains(paricipantesNewParicipanteTarefa)) {
-                    Tarefa oldTarefaOfParicipantesNewParicipanteTarefa = paricipantesNewParicipanteTarefa.getTarefa();
-                    paricipantesNewParicipanteTarefa.setTarefa(tarefa);
-                    paricipantesNewParicipanteTarefa = em.merge(paricipantesNewParicipanteTarefa);
-                    if (oldTarefaOfParicipantesNewParicipanteTarefa != null && !oldTarefaOfParicipantesNewParicipanteTarefa.equals(tarefa)) {
-                        oldTarefaOfParicipantesNewParicipanteTarefa.getParticipantes().remove(paricipantesNewParicipanteTarefa);
-                        oldTarefaOfParicipantesNewParicipanteTarefa = em.merge(oldTarefaOfParicipantesNewParicipanteTarefa);
+            for (ParticipanteTarefa participantesNewParticipanteTarefa : participantesNew) {
+                if (!participantesOld.contains(participantesNewParticipanteTarefa)) {
+                    Tarefa oldTarefaOfParticipantesNewParticipanteTarefa = participantesNewParticipanteTarefa.getTarefa();
+                    participantesNewParticipanteTarefa.setTarefa(tarefa);
+                    participantesNewParticipanteTarefa = em.merge(participantesNewParticipanteTarefa);
+                    if (oldTarefaOfParticipantesNewParticipanteTarefa != null && !oldTarefaOfParticipantesNewParticipanteTarefa.equals(tarefa)) {
+                        oldTarefaOfParticipantesNewParticipanteTarefa.getParticipantes().remove(participantesNewParticipanteTarefa);
+                        oldTarefaOfParticipantesNewParticipanteTarefa = em.merge(oldTarefaOfParticipantesNewParticipanteTarefa);
                     }
                 }
             }
@@ -707,12 +639,12 @@ public class TarefaDAO implements Serializable {
                 }
                 illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the FavoritosTarefaMeta " + favoritadosOrphanCheckFavoritosTarefaMeta + " in its favoritados field has a non-nullable tarefa field.");
             }
-            List<ParticipanteTarefa> paricipantesOrphanCheck = tarefa.getParticipantes();
-            for (ParticipanteTarefa paricipantesOrphanCheckParicipanteTarefa : paricipantesOrphanCheck) {
+            List<ParticipanteTarefa> participantesOrphanCheck = tarefa.getParticipantes();
+            for (ParticipanteTarefa participantesOrphanCheckParticipanteTarefa : participantesOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the ParicipanteTarefa " + paricipantesOrphanCheckParicipanteTarefa + " in its paricipantes field has a non-nullable tarefa field.");
+                illegalOrphanMessages.add("This Tarefa (" + tarefa + ") cannot be destroyed since the ParticipanteTarefa " + participantesOrphanCheckParticipanteTarefa + " in its participantes field has a non-nullable tarefa field.");
             }
             List<AvaliacaoMetaTarefa> avaliacoesOrphanCheck = tarefa.getAvaliacoes();
             for (AvaliacaoMetaTarefa avaliacoesOrphanCheckAvaliacaoMetaTarefa : avaliacoesOrphanCheck) {
@@ -744,11 +676,6 @@ public class TarefaDAO implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            PrioridadeTarefa prioridade = tarefa.getPrioridade();
-            if (prioridade != null) {
-                prioridade.getTarefas().remove(tarefa);
-                prioridade = em.merge(prioridade);
             }
             CentroCusto centroCusto = tarefa.getCentroCusto();
             if (centroCusto != null) {
@@ -790,20 +717,10 @@ public class TarefaDAO implements Serializable {
                 usuarioResponsavel.getTarefasIncluidas().remove(tarefa);
                 usuarioResponsavel = em.merge(usuarioResponsavel);
             }
-            StatusTarefa status = tarefa.getStatus();
-            if (status != null) {
-                status.getTarefas().remove(tarefa);
-                status = em.merge(status);
-            }
             Tarefa proximaTarefa = tarefa.getProximaTarefa();
             if (proximaTarefa != null) {
                 proximaTarefa.getSubTarefas().remove(tarefa);
                 proximaTarefa = em.merge(proximaTarefa);
-            }
-            TipoTarefa tipo = tarefa.getTipo();
-            if (tipo != null) {
-                tipo.getTarefas().remove(tarefa);
-                tipo = em.merge(tipo);
             }
             List<Tarefa> subTarefas = tarefa.getSubTarefas();
             for (Tarefa subTarefasTarefa : subTarefas) {
@@ -864,6 +781,27 @@ public class TarefaDAO implements Serializable {
             em.close();
         }
     }
+
+    /**
+     * Obtem a lista de tarefas por usuario responsavel
+     * @param usuarioResponsavel
+     * @return 
+     */
+    public List<Tarefa> listByUsuarioResponsavel(Usuario usuarioResponsavel) {
+        EntityManager em = getEntityManager();
+
+        try {
+            return (List<Tarefa>) em.createNamedQuery("Tarefa.findByUsuarioResponsavel")
+                    .setParameter("usuarioResponsavel", usuarioResponsavel)
+                    .getResultList();
+        } catch (Exception e) {
+                Logger.getLogger(GestorMDI.class.getName()).log(Level.SEVERE,"Iniciando atendimento de requisição.");
     
-    
+            return null;
+        }
+        
+        
+
+    }
+
 }

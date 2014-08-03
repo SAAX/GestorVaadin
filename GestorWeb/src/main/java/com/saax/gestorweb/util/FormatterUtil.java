@@ -1,9 +1,11 @@
 package com.saax.gestorweb.util;
 
+import com.saax.gestorweb.model.datamodel.Tarefa;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import javax.swing.text.MaskFormatter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -71,6 +73,42 @@ public class FormatterUtil {
 
         return cnpj.matches(cnpjRegExp);
 
+    }
+    
+    /**
+     * Formata um código ID para exibição ao usuário
+     * @param id
+     * @param type
+     * @return código formatado
+     */
+    public static String formatID(Integer id, Class type){
+
+        DecimalFormat decimalFormatterID = new DecimalFormat("0000");
+    
+        String identificador;
+        
+        if (type == Tarefa.class ){
+            identificador = "T";
+        } else {
+            identificador = "?";
+        }
+        StringBuilder idFormatado = new StringBuilder();
+        idFormatado.append(identificador);
+        idFormatado.append(decimalFormatterID.format(id));
+        
+        return idFormatado.toString();
+    }
+
+    /**
+     * Formata uma data para o padrão da localidade do usuario logado
+     * @param date
+     * @return 
+     */
+    public static String formatDate(LocalDate date){
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return date.format(formatter); 
+        
     }
 
 }

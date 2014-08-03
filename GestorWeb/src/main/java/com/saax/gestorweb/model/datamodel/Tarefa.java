@@ -1,5 +1,6 @@
 package com.saax.gestorweb.model.datamodel;
 
+import com.saax.gestorweb.util.FormatterUtil;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,6 +10,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +21,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -43,10 +47,20 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tarefa.findByAndamento", query = "SELECT t FROM Tarefa t WHERE t.andamento = :andamento"),
     @NamedQuery(name = "Tarefa.findByDescricao", query = "SELECT t FROM Tarefa t WHERE t.descricao = :descricao"),
     @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.apontamentoHoras = :apontamentohoras"),
+    @NamedQuery(name = "Tarefa.findByUsuarioResponsavel", query = "SELECT t FROM Tarefa t WHERE t.usuarioResponsavel = :usuarioResponsavel"),
     @NamedQuery(name = "Tarefa.findByOrcamentocontrolado", query = "SELECT t FROM Tarefa t WHERE t.orcamentoControlado = :orcamentocontrolado"),
     @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.dataHoraInclusao = :dataHoraInclusao")})
 public class Tarefa implements Serializable {
 
+    @Transient
+    private String globalID;
+
+    public String getGlobalID() {
+        globalID = FormatterUtil.formatID(getId(), this.getClass());
+        return globalID;
+    }
+    
+    
     
     private static final long serialVersionUID = 1L;
     
@@ -73,12 +87,10 @@ public class Tarefa implements Serializable {
     @Column(name = "nome")
     private String nome;
     
-    @JoinColumn(name = "prioridade", referencedColumnName = "prioridadetarefa")
-    @ManyToOne(optional = false)
+    @Enumerated(EnumType.STRING)
     private PrioridadeTarefa prioridade;
-    
-    @JoinColumn(name = "status", referencedColumnName = "statustarefa")
-    @ManyToOne(optional = false)
+
+    @Enumerated(EnumType.STRING)
     private StatusTarefa status;
         
     @Basic(optional = false)
@@ -130,8 +142,7 @@ public class Tarefa implements Serializable {
     @ManyToOne(optional = false)
     private Tarefa proximaTarefa;
     
-    @JoinColumn(name = "tipo", referencedColumnName = "tipotarefa")
-    @ManyToOne(optional = false)
+    @Enumerated(EnumType.STRING)
     private TipoTarefa tipo;
     
     @JoinColumn(name = "idtarefapai", referencedColumnName = "idtarefa")

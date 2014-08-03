@@ -18,10 +18,6 @@ CREATE TABLE usuario (
 	UNIQUE (login)
 );
 
--- Insert mock data
-INSERT INTO usuario ( nome, sobrenome, login, senha , idUsuarioInclusao,  dataHoraInclusao) VALUES ('rodrigo', 'moreira','rodrigo.ccn2005@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==', null, current_timestamp);
-INSERT INTO usuario ( nome, sobrenome, login, senha , idUsuarioInclusao,  dataHoraInclusao) VALUES ('fernando', 'stavale','fernando.saax@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==', null, current_timestamp);
-INSERT INTO usuario ( nome, sobrenome, login, senha , idUsuarioInclusao,  dataHoraInclusao) VALUES ('daniel', 'stavale', 'danielstavale@gmail.com', 'ICy5YqxZB1uWSwcVLSNLcA==', null, current_timestamp);
 
 -- Estado
 DROP TABLE IF EXISTS Estado CASCADE;
@@ -84,8 +80,6 @@ CREATE TABLE Empresa (
 	UNIQUE (cpf)
 );
 
-INSERT INTO Empresa (tipopessoa, nome, razaoSocial, cnpj, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES ('J', 'DataCompany', 'DataCompany LTDA', '12.345.678/0001-00', TRUE, 1, current_timestamp);
-INSERT INTO Empresa (tipopessoa, idEmpresaPrincipal, nome, razaoSocial, cnpj, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES ('J', 1, 'Empresa da corporação DataCompany', 'Empresa LTDA', '12.345.678/0001-01', TRUE, 1, current_timestamp);
 
 -- FilialEmpresa
 DROP TABLE IF EXISTS FilialEmpresa CASCADE;
@@ -101,10 +95,6 @@ CREATE TABLE FilialEmpresa (
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
 	UNIQUE (idEmpresa,nome)
 );
-
--- Insert mock data
-INSERT INTO FilialEmpresa (idEmpresa, nome, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES (1, 'DataCompany-SP', TRUE, 1, current_timestamp);
-INSERT INTO FilialEmpresa (idEmpresa, nome, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES (1, 'DataCompany-RJ', TRUE, 1, current_timestamp);
 
 
 -- EmpresaCliente
@@ -131,10 +121,6 @@ CREATE TABLE EmpresaCliente (
 	UNIQUE (cpf, idEmpresa)
 );
 
--- Insert mock data
-INSERT INTO EmpresaCliente (idEmpresa, tipopessoa, nome, razaoSocial, cnpj, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES (1, 'J', 'Cliente 1 - DataCompany', 'Cliente 1 LTDA','12.345.678/0001-00', TRUE, 1, current_timestamp);
-INSERT INTO EmpresaCliente (idEmpresa, tipopessoa, nome, razaoSocial, cnpj, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES (1, 'J', 'Cliente 2 - DataCompany', 'Cliente 2 LTDA','12.345.678/0001-01', TRUE, 1, current_timestamp);
-
 -- FilialEmpresa
 DROP TABLE IF EXISTS FilialCliente CASCADE;
 CREATE TABLE FilialCliente (
@@ -150,11 +136,6 @@ CREATE TABLE FilialCliente (
 	UNIQUE (idEmpresaCliente,nome),
 	UNIQUE (idEmpresaCliente,cnpj)
 );
-
--- Insert mock data
-INSERT INTO FilialCliente (idEmpresaCliente, nome, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES (1, 'Filial (A) do Cliente 1', TRUE, 1, current_timestamp);
-INSERT INTO FilialCliente (idEmpresaCliente, nome, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES (1, 'Filial (B) do Cliente 1', TRUE, 1, current_timestamp);
-INSERT INTO FilialCliente (idEmpresaCliente, nome, ativa, idUsuarioInclusao,  dataHoraInclusao) VALUES (2, 'Filial do Cliente 2', TRUE, 1, current_timestamp);
 
 
 -- Relacionamento: Usuario <-> Empresa 
@@ -175,11 +156,6 @@ CREATE TABLE UsuarioEmpresa (
 	FOREIGN KEY (idEmpresa) REFERENCES empresa(idEmpresa)
 );
 
--- Insert mock data 
-INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao, ativo , idUsuarioInclusao,  dataHoraInclusao) VALUES (1, 1, TRUE, CURRENT_DATE, TRUE, 1, current_timestamp);
-INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao, ativo , idUsuarioInclusao,  dataHoraInclusao) VALUES (2, 1, TRUE, CURRENT_DATE, TRUE, 1, current_timestamp);
-INSERT INTO UsuarioEmpresa (idUsuario, idEmpresa, administrador, contratacao, ativo , idUsuarioInclusao,  dataHoraInclusao) VALUES (3, 1, TRUE, CURRENT_DATE, TRUE, 1, current_timestamp);
-
 -- Departamento
 DROP TABLE IF EXISTS Departamento CASCADE;
 CREATE TABLE Departamento (
@@ -194,27 +170,6 @@ CREATE TABLE Departamento (
 	unique (idEmpresa,Departamento)
 ) ;
 
--- Insert mock data 
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Financeiro',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Administrativo',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Contábil',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Fiscal',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Controlatoria',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Recursos Humanos',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Jurídico',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Marketing',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Comercial',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Compras',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Vendas',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Operacional',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Almoxarifado',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Estoque',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Qualidade',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'P&D',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Produção',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'Manutenção',true, 1, current_timestamp);
-INSERT INTO Departamento (idEmpresa,Departamento,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'PCP',true, 1, current_timestamp);
-
 -- Centro de Custo
 DROP TABLE IF EXISTS CentroCusto CASCADE;
 CREATE TABLE CentroCusto (
@@ -228,10 +183,6 @@ CREATE TABLE CentroCusto (
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
 	unique (idEmpresa,CentroCusto)
 ) ;
-
--- Insert mock data 
-INSERT INTO CentroCusto (idEmpresa,CentroCusto,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'CC1',true, 1, current_timestamp);
-INSERT INTO CentroCusto (idEmpresa,CentroCusto,Ativo, idUsuarioInclusao,  dataHoraInclusao) VALUES (1,'CC2',true, 1, current_timestamp);
 
 -- Meta 
 DROP TABLE IF EXISTS meta CASCADE;
@@ -265,13 +216,13 @@ CREATE TABLE StatusTarefa (
     StatusTarefa CHARACTER VARYING (50) NOT NULL PRIMARY KEY
 );
 
-INSERT INTO StatusTarefa VALUES ('Não Aceita');
-INSERT INTO StatusTarefa VALUES ('Não Iniciada');
-INSERT INTO StatusTarefa VALUES ('Em Andamento');
-INSERT INTO StatusTarefa VALUES ('Adiada');
-INSERT INTO StatusTarefa VALUES ('Bloqueada');
-INSERT INTO StatusTarefa VALUES ('Concluída');
-INSERT INTO StatusTarefa VALUES ('Cancelada');
+INSERT INTO statustarefa VALUES ('NAO_ACEITA');
+INSERT INTO statustarefa VALUES ('NAO_INICIADA');
+INSERT INTO statustarefa VALUES ('EM_ANDAMENTO');
+INSERT INTO statustarefa VALUES ('ADIADA');
+INSERT INTO statustarefa VALUES ('BLOQUEADA');
+INSERT INTO statustarefa VALUES ('CONCLUIDA');
+INSERT INTO statustarefa VALUES ('CANCELADA');
 
 -- Tipo Tarefa
 DROP TABLE IF EXISTS TipoTarefa CASCADE;
@@ -279,8 +230,8 @@ CREATE TABLE TipoTarefa (
     TipoTarefa CHARACTER VARYING (20) NOT NULL PRIMARY KEY
 );
 
-INSERT INTO TipoTarefa VALUES ('Única');
-INSERT INTO TipoTarefa VALUES ('Recorrente');
+INSERT INTO TipoTarefa VALUES ('UNICA');
+INSERT INTO TipoTarefa VALUES ('RECORRENTE');
 
 -- Prioridade Tarefa
 DROP TABLE IF EXISTS PrioridadeTarefa CASCADE;
@@ -288,9 +239,9 @@ CREATE TABLE PrioridadeTarefa (
     PrioridadeTarefa CHARACTER VARYING (10) NOT NULL PRIMARY KEY
 );
 
-INSERT INTO PrioridadeTarefa VALUES ('Baixa');
-INSERT INTO PrioridadeTarefa VALUES ('Normal');
-INSERT INTO PrioridadeTarefa VALUES ('Alta');
+INSERT INTO PrioridadeTarefa VALUES ('BAIXA');
+INSERT INTO PrioridadeTarefa VALUES ('NORMAL');
+INSERT INTO PrioridadeTarefa VALUES ('ALTA');
 
 -- Tarefa 
 DROP TABLE IF EXISTS Tarefa CASCADE;
@@ -303,7 +254,7 @@ CREATE TABLE Tarefa (
     nome CHARACTER VARYING (150) NOT NULL,
     prioridade CHARACTER VARYING (10) NOT NULL,
     tipo  CHARACTER VARYING (20) NOT NULL,
-    idProximaTarefa BIGINT NOT NULL, 
+    idProximaTarefa BIGINT, 
     status CHARACTER VARYING (50) NOT NULL,
     andamento INTEGER NOT NULL,
     dataInicio DATE NOT NULL,
@@ -317,7 +268,7 @@ CREATE TABLE Tarefa (
     orcamentoControlado BOOLEAN NOT NULL,
     idDepartamento BIGINT,
     idCentroCusto BIGINT,
-    idUsuarioInclusao INTEGER,
+    idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL,
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	

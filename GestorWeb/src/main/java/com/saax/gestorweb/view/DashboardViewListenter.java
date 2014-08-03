@@ -7,6 +7,7 @@ package com.saax.gestorweb.view;
  */
 public interface DashboardViewListenter {
    
-    void addMeta();
     void logout();
+    void carregaVisualizacaoInicial();
+    void aplicarFiltroPesquisa();
 }

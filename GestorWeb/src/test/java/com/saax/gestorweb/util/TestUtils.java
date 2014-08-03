@@ -1,6 +1,8 @@
 package com.saax.gestorweb.util;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import com.vaadin.ui.UI;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -19,6 +21,12 @@ public class TestUtils {
 
             UserData userData = new UserData();
 
+            // loga com usuario default de testes
+            UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+            Usuario usuarioTeste = dao.findByLogin("teste-user@gmail.com");
+            userData.setUsuarioLogado(usuarioTeste);
+            
+            
             // obtém o arquivo de mensagens de acordo com o locale do usuário
             ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt_BR"));
             userData.setMensagens(mensagens);

@@ -14,9 +14,8 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,12 +77,14 @@ public class GestorMDI extends UI {
         DashBoardView dashboardView = new DashBoardView();
 
         // O presenter liga model e view
-        new DashboardPresenter(dashboradModel, dashboardView);
+        DashboardPresenter dashboardPresenter = new DashboardPresenter(dashboradModel, dashboardView);
 
         // adiciona a visualização à UI
         setContent(dashboardView);
 
         setSizeFull();
+        
+        dashboardPresenter.carregaVisualizacaoInicial();
     }
 
     
@@ -104,7 +105,7 @@ public class GestorMDI extends UI {
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens para o locale: {0}", request.getLocale());
 
         // obtém o arquivo de mensagens de acordo com o locale do usuário
-        ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", request.getLocale());
+        ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt", "br"));
         userData.setMensagens(mensagens);
 
         //obtém os cookies da sessão

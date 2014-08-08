@@ -13,7 +13,7 @@ public class UserData {
     // Usuário logado
     private Usuario usuarioLogado;
     // arquivo de mensagens
-    private ResourceBundle mensagens;
+    transient private ResourceBundle mensagens;
     // cookies da sessão
     private CookiesManager cookies;
     // recursos de imagens

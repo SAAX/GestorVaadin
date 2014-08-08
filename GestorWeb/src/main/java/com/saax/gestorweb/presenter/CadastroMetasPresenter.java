@@ -30,7 +30,7 @@ public class CadastroMetasPresenter implements CadastroMetasViewListener {
     private final CadastroMetasModel model;
 
     // Referencia ao recurso das mensagens:
-    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    transient private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     /**
      * Cria o presenter ligando o Model ao View

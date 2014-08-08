@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 public class SignupView extends Window {
 //teste commit
     // Referencia ao recurso das mensagens:
-    private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    transient private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dÃ¡ por uma interface para manter a abstraÃ§Ã£o das camadas

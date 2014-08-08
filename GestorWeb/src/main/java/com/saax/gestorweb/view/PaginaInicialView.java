@@ -23,7 +23,7 @@ import java.util.ResourceBundle;
 public class PaginaInicialView extends HorizontalLayout {
 
     // Referencia ao recurso das mensagens:
-    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getUserData().getImagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos

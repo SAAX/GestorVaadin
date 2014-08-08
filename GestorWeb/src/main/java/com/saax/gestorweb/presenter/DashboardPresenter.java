@@ -33,7 +33,7 @@ public final class DashboardPresenter implements DashboardViewListenter {
     private final DashboardModel model;
 
     // Referencia ao recurso das mensagens:
-    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     /**
      * Cria o presenter ligando o Model ao View

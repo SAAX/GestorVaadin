@@ -49,7 +49,7 @@ import java.util.ResourceBundle;
 public class CadastroMetasView extends Window {
 
     // Referencia ao recurso das mensagens:
-    ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    transient private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas

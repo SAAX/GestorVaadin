@@ -35,7 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 public class SignupPresenter implements SignupViewListener {
 
     // Referencia ao recurso das mensagens:
-    ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    transient private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
 
     // Todo presenter mantem acesso à view e ao model
     private final SignupView view;

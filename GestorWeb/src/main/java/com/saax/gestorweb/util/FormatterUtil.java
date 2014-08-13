@@ -75,30 +75,7 @@ public class FormatterUtil {
 
     }
     
-    /**
-     * Formata um código ID para exibição ao usuário
-     * @param id
-     * @param type
-     * @return código formatado
-     */
-    public static String formatID(Integer id, Class type){
-
-        DecimalFormat decimalFormatterID = new DecimalFormat("0000");
     
-        String identificador;
-        
-        if (type == Tarefa.class ){
-            identificador = "T";
-        } else {
-            identificador = "?";
-        }
-        StringBuilder idFormatado = new StringBuilder();
-        idFormatado.append(identificador);
-        idFormatado.append(decimalFormatterID.format(id));
-        
-        return idFormatado.toString();
-    }
-
     /**
      * Formata uma data para o padrão da localidade do usuario logado
      * @param date
@@ -110,5 +87,7 @@ public class FormatterUtil {
         return date.format(formatter); 
         
     }
+    
+
 
 }

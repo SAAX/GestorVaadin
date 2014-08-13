@@ -22,11 +22,18 @@ import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
+import com.saax.gestorweb.model.datamodel.Tarefa_;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Expression;
+import org.eclipse.persistence.jpa.JpaQuery;
 
 /**
  * DAO para o entity bean: Tarefa <br><br>
@@ -799,9 +806,79 @@ public class TarefaDAO implements Serializable {
     
             return null;
         }
-        
-        
+    }
+    
+
+    /**
+     * Obtem a lista de tarefas por empresa
+     * @param empresa
+     * @return 
+     */
+    public List<Tarefa> listByEmpresa(Empresa empresa) {
+        EntityManager em = getEntityManager();
+
+        try {
+            return (List<Tarefa>) em.createNamedQuery("Tarefa.findByEmpresa")
+                    .setParameter("empresa", empresa)
+                    .getResultList();
+        } catch (Exception e) {
+                Logger.getLogger(GestorMDI.class.getName()).log(Level.SEVERE,e.getMessage());
+    
+            return null;
+        }
+    }
+    
+
+    
+    public List<Tarefa> findTarefas(List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes) {
+        EntityManager em = getEntityManager();
+        try {
+            
+            StringBuilder sql = new StringBuilder();
+            
+            sql.append("SELECT t FROM Tarefa f ");
+            
+            
+            if (usuariosResponsaveis!=null){
+                sql.append("t.usuarioResponsavel IN :usuariosResponsaveisList");
+            }
+            Query q = em.createQuery(sql.toString());
+            q.setParameter("usuariosResponsaveisList", usuariosResponsaveis);
+            
+            
+            /*CriteriaBuilder cb = em.getCriteriaBuilder();
+            
+            CriteriaQuery cq = cb.createQuery(Tarefa.class);
+            Root<Tarefa> tarefa = cq.from(Tarefa.class);
+
+            cq = cq.select(tarefa);
+            
+            Expression exp = tarefa.get(Tarefa_.usuarioResponsavel);
+            exp.in(usuariosResponsaveis);
+            
+            cq.where(exp);
+            
+/*
+            Expression<EntityPK> exp = r.get("id"); //EntityPK is your primary composite key class and id is the property name of primary key in GroupTable entity
+        Predicate predicate = exp.in(list);
+        cq.select(r).where(predicate);
+            
+            cq.where(tarefa.get(Tarefa_.usuarioResponsavel).in(ids));
+            
+            Query q = em.createQuery(cq);
+            
+            System.out.println("\n\nq.unwrap(JpaQuery.class).getDatabaseQuery().getSQLString()");
+            q.getResultList();
+            System.out.println(q.unwrap(JpaQuery.class).getDatabaseQuery().getSQLString());
+            */
+            
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
 
     }
+
+    
 
 }

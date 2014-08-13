@@ -1,6 +1,5 @@
 package com.saax.gestorweb.model.datamodel;
 
-import com.saax.gestorweb.util.FormatterUtil;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,11 +38,13 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tarefa.findByNivel", query = "SELECT t FROM Tarefa t WHERE t.nivel = :nivel"),
     @NamedQuery(name = "Tarefa.findByTitulo", query = "SELECT t FROM Tarefa t WHERE t.titulo = :titulo"),
     @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.nome = :nome"),
+    @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa"),
     @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.prioridade = :prioridade"),
     @NamedQuery(name = "Tarefa.findByDataInicio", query = "SELECT t FROM Tarefa t WHERE t.dataInicio = :dataInicio"),
     @NamedQuery(name = "Tarefa.findByDataFim", query = "SELECT t FROM Tarefa t WHERE t.dataFim = :dataFim"),
     @NamedQuery(name = "Tarefa.findByDataTermino", query = "SELECT t FROM Tarefa t WHERE t.dataTermino = :dataTermino"),
     @NamedQuery(name = "Tarefa.findByStatus", query = "SELECT t FROM Tarefa t WHERE t.status = :status"),
+    @NamedQuery(name = "Tarefa.findByProjecao", query = "SELECT t FROM Tarefa t WHERE t.projecao = :projecao"),
     @NamedQuery(name = "Tarefa.findByAndamento", query = "SELECT t FROM Tarefa t WHERE t.andamento = :andamento"),
     @NamedQuery(name = "Tarefa.findByDescricao", query = "SELECT t FROM Tarefa t WHERE t.descricao = :descricao"),
     @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.apontamentoHoras = :apontamentohoras"),
@@ -56,7 +57,7 @@ public class Tarefa implements Serializable {
     private String globalID;
 
     public String getGlobalID() {
-        globalID = FormatterUtil.formatID(getId(), this.getClass());
+        globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
         return globalID;
     }
     
@@ -92,6 +93,9 @@ public class Tarefa implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private StatusTarefa status;
+        
+    @Enumerated(EnumType.STRING)
+    private ProjecaoTarefa projecao;
         
     @Basic(optional = false)
     @NotNull
@@ -430,6 +434,14 @@ public class Tarefa implements Serializable {
 
     public void setStatus(StatusTarefa status) {
         this.status = status;
+    }
+
+    public ProjecaoTarefa getProjecao() {
+        return projecao;
+    }
+
+    public void setProjecao(ProjecaoTarefa projecao) {
+        this.projecao = projecao;
     }
 
     public Tarefa getProximaTarefa() {

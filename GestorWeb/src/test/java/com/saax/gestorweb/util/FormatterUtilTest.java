@@ -110,18 +110,4 @@ public class FormatterUtilTest {
         fail("The test case is a prototype.");
     }
 
-    /**
-     * Test of formatID method, of class FormatterUtil.
-     */
-    @Test
-    public void testFormatID() {
-        System.out.println("formatID");
-        Integer id = 123456789;
-        Class type = Tarefa.class;
-        String expResult = "T123456789";
-        String result = FormatterUtil.formatID(id, type);
-        System.out.println(result);
-        assertEquals(expResult, result);
-    }
-    
 }

@@ -10,4 +10,6 @@ public interface DashboardViewListenter {
     void logout();
     void carregaVisualizacaoInicial();
     void aplicarFiltroPesquisa();
+
+    public void removerFiltrosPesquisa();
 }

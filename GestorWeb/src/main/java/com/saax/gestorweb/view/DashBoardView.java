@@ -3,12 +3,12 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.InlineDateField;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
@@ -35,7 +35,9 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *          + filtroDataFimButton
  *              - filtroDataFimDateField
  *          + filtroProjecaoButton
- *              - "não sei o que por aqui"
+ *              - filtroProjecaoOptionGroup
+ *          - aplicarFiltroPesquisa
+ *          - removerFiltroPesquisa
  *      + filtrosPesquisaDireitaContainer
  *          - filtroPesquisaRapidaTextField
  *          - filtroPesquisaAvancadaButton
@@ -60,6 +62,7 @@ public class DashBoardView extends VerticalLayout {
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
     private DashboardViewListenter listener;
+
     public void setListener(DashboardViewListenter listener) {
         this.listener = listener;
     }
@@ -76,13 +79,17 @@ public class DashBoardView extends VerticalLayout {
     // filtrosPesquisaContainer -> filtrosPesquisaEsquerdaContainer:
     private HorizontalLayout filtrosPesquisaEsquerdaContainer;
     private PopupButton filtroUsuarioButton;
-    private OptionGroup filtroUsuarioOptionGroup;
+    private OptionGroup filtroUsuarioResponsavelOptionGroup;
+    private OptionGroup filtroUsuarioSolicitanteOptionGroup;
+    private OptionGroup filtroUsuarioParticipanteOptionGroup;
     private PopupButton filtroEmpresaButton;
     private OptionGroup filtroEmpresaOptionGroup;
     private PopupButton filtroDataFimButton;
+    private OptionGroup filtroProjecaoOptionGroup;    
     private InlineDateField filtroDataFimDateField;
     private PopupButton filtroProjecaoButton;
     private Button aplicarFiltroPesquisa;
+    private Button removerFiltroPesquisa;
     
     // filtrosPesquisaContainer -> filtrosPesquisaEsquerdaContainer:
     private VerticalLayout filtrosPesquisaDireitaContainer;
@@ -142,7 +149,7 @@ public class DashBoardView extends VerticalLayout {
         getTarefasTable().addContainerProperty("Data Fim", String.class, "");
         getTarefasTable().addContainerProperty("Status", String.class, "");
         getTarefasTable().addContainerProperty("Apontamento", ComboBox.class, "");
-        getTarefasTable().addContainerProperty("Projeção", Image.class, "");
+        getTarefasTable().addContainerProperty("Projeção", String.class, "");
         getTarefasTable().addContainerProperty("Email", Button.class, "");
         getTarefasTable().addContainerProperty("Chat", Button.class, "");
 
@@ -156,9 +163,9 @@ public class DashBoardView extends VerticalLayout {
     private Component buildMenuSuperiorContainer() {
 
         menuSuperiorContainer = new HorizontalLayout();
-        menuSuperiorContainer.setSpacing(true);
-        menuSuperiorContainer.setWidth("100%");
-        menuSuperiorContainer.setHeight("50px");
+        getMenuSuperiorContainer().setSpacing(true);
+        getMenuSuperiorContainer().setWidth("100%");
+        getMenuSuperiorContainer().setHeight("50px");
 
         menuSuperior = new MenuBar();
         getMenuSuperior().setHeight("100%");
@@ -178,99 +185,124 @@ public class DashBoardView extends VerticalLayout {
         config.addItem("Config 3", null, null);
 
         getMenuSuperior().addItem("<h3>Sair</h3>", null, (MenuBar.MenuItem selectedItem) -> {
-            listener.logout();
+            getListener().logout();
         });
         
-        menuSuperiorContainer.addComponent(getMenuSuperior());
-        menuSuperiorContainer.setComponentAlignment(getMenuSuperior(), Alignment.MIDDLE_RIGHT);
+        getMenuSuperiorContainer().addComponent(getMenuSuperior());
+        getMenuSuperiorContainer().setComponentAlignment(getMenuSuperior(), Alignment.MIDDLE_RIGHT);
         
-        return menuSuperiorContainer;
+        return getMenuSuperiorContainer();
     }
 
+    private Accordion filtroUsuarioAccordion;
+    private Accordion filtroEmpresaAccordion;
+    
     private Component buildFiltrosPesquisaContainer() {
 
-        
+        // Container principal da barra de filtros
         filtrosPesquisaContainer = new HorizontalLayout();
-        filtrosPesquisaContainer.setWidth("100%");
-        filtrosPesquisaContainer.setHeight(null);
+        getFiltrosPesquisaContainer().setWidth("100%");
+        getFiltrosPesquisaContainer().setHeight(null);
 
+        // lado esquerdo com filtros
         filtrosPesquisaEsquerdaContainer = new HorizontalLayout();
-        filtrosPesquisaEsquerdaContainer.setSizeUndefined();
+        getFiltrosPesquisaEsquerdaContainer().setSizeUndefined();
         
-        filtroUsuarioOptionGroup = new OptionGroup();
-        getFiltroUsuarioOptionGroup().setMultiSelect(true);
-    
+        // filtro por usuarios
+        filtroUsuarioAccordion = new Accordion();
+        
+        filtroUsuarioSolicitanteOptionGroup = new OptionGroup();
+        getFiltroUsuarioSolicitanteOptionGroup().setMultiSelect(true);
+        
+        filtroUsuarioParticipanteOptionGroup = new OptionGroup();
+        getFiltroUsuarioParticipanteOptionGroup().setMultiSelect(true);
+        
+        filtroUsuarioResponsavelOptionGroup = new OptionGroup();
+        getFiltroUsuarioResponsavelOptionGroup().setMultiSelect(true);
+        
+        getFiltroUsuarioAccordion().addTab(getFiltroUsuarioResponsavelOptionGroup(), "Responsável");
+        getFiltroUsuarioAccordion().addTab(getFiltroUsuarioSolicitanteOptionGroup(), "Solicitante");
+        getFiltroUsuarioAccordion().addTab(getFiltroUsuarioParticipanteOptionGroup(), "Participante");
+        
         filtroUsuarioButton = new PopupButton("Usuario");
-        getFiltroUsuarioButton().setContent(getFiltroUsuarioOptionGroup());
-        filtrosPesquisaEsquerdaContainer.addComponent(getFiltroUsuarioButton());
+        getFiltroUsuarioButton().setContent(getFiltroUsuarioAccordion());
         
+        getFiltrosPesquisaEsquerdaContainer().addComponent(getFiltroUsuarioButton());
         
+        // filtro por empresa
         filtroEmpresaOptionGroup = new OptionGroup();
         getFiltroEmpresaOptionGroup().setMultiSelect(true);
-        getFiltroEmpresaOptionGroup().addItem("SAAX");
-        getFiltroEmpresaOptionGroup().addItem("Vale Rio Doce");
-        getFiltroEmpresaOptionGroup().addItem("Coca-Cola");
         
         filtroEmpresaButton = new PopupButton("Empresa");
         getFiltroEmpresaButton().setContent(getFiltroEmpresaOptionGroup());
-        filtrosPesquisaEsquerdaContainer.addComponent(getFiltroEmpresaButton());
+        getFiltrosPesquisaEsquerdaContainer().addComponent(getFiltroEmpresaButton());
         
+        // filtro por data fim 
         filtroDataFimButton = new PopupButton("Data Fim");
         filtroDataFimDateField = new InlineDateField();
         getFiltroDataFimButton().setContent(getFiltroDataFimDateField());
-        filtrosPesquisaEsquerdaContainer.addComponent(getFiltroDataFimButton());
+        getFiltrosPesquisaEsquerdaContainer().addComponent(getFiltroDataFimButton());
+        
+        filtroProjecaoOptionGroup = new OptionGroup();
+        getFiltroProjecaoOptionGroup().setMultiSelect(true);
         
         filtroProjecaoButton = new PopupButton("Projeçao");
-        getFiltroProjecaoButton().setContent(new Label("nao sei o que por aqui"));
-        filtrosPesquisaEsquerdaContainer.addComponent(getFiltroProjecaoButton());
+        getFiltroProjecaoButton().setContent(getFiltroProjecaoOptionGroup());
+        getFiltrosPesquisaEsquerdaContainer().addComponent(getFiltroProjecaoButton());
 
         aplicarFiltroPesquisa = new Button("Aplicar", (Button.ClickEvent event) -> {
-            listener.aplicarFiltroPesquisa();
+            getListener().aplicarFiltroPesquisa();
         });
-        filtrosPesquisaEsquerdaContainer.addComponent(aplicarFiltroPesquisa);
+        getFiltrosPesquisaEsquerdaContainer().addComponent(getAplicarFiltroPesquisa());
         
+        removerFiltroPesquisa = new Button("Remover Filtros", (Button.ClickEvent event) -> {
+            getListener().removerFiltrosPesquisa();
+        });
+        getRemoverFiltroPesquisa().setStyleName("link");
+        getFiltrosPesquisaEsquerdaContainer().addComponent(getRemoverFiltroPesquisa());
+        getRemoverFiltroPesquisa().setVisible(false);
         
         filtrosPesquisaDireitaContainer = new VerticalLayout();
-        filtrosPesquisaDireitaContainer.setSizeUndefined();
+        getFiltrosPesquisaDireitaContainer().setSizeUndefined();
         
         filtroPesquisaRapidaTextField = new TextField();
         getFiltroPesquisaRapidaTextField().setInputPrompt("pesquisar...");
-        filtrosPesquisaDireitaContainer.addComponent(getFiltroPesquisaRapidaTextField());
+        getFiltrosPesquisaDireitaContainer().addComponent(getFiltroPesquisaRapidaTextField());
         
         filtroPesquisaAvancadaButton = new Button("Pesquisa Avançada");
         getFiltroPesquisaAvancadaButton().setStyleName("link");
-        filtrosPesquisaDireitaContainer.addComponent(getFiltroPesquisaAvancadaButton());
+        getFiltrosPesquisaDireitaContainer().addComponent(getFiltroPesquisaAvancadaButton());
 
-        filtrosPesquisaContainer.addComponent(filtrosPesquisaEsquerdaContainer);
-        filtrosPesquisaContainer.setComponentAlignment(filtrosPesquisaEsquerdaContainer, Alignment.MIDDLE_LEFT);
-        filtrosPesquisaContainer.addComponent(filtrosPesquisaDireitaContainer);
-        filtrosPesquisaContainer.setComponentAlignment(filtrosPesquisaDireitaContainer, Alignment.MIDDLE_RIGHT);
+        getFiltrosPesquisaContainer().addComponent(getFiltrosPesquisaEsquerdaContainer());
+        getFiltrosPesquisaContainer().setComponentAlignment(getFiltrosPesquisaEsquerdaContainer(), Alignment.MIDDLE_LEFT);
+        getFiltrosPesquisaContainer().addComponent(getFiltrosPesquisaDireitaContainer());
+        getFiltrosPesquisaContainer().setComponentAlignment(getFiltrosPesquisaDireitaContainer(), Alignment.MIDDLE_RIGHT);
         
         
-        return filtrosPesquisaContainer;
+        return getFiltrosPesquisaContainer();
 
     }
-
+    
     private Component buildDataAtualContainer() {
         dataAtualContainer = new HorizontalLayout();
-        dataAtualContainer.setSpacing(true);
-        dataAtualContainer.setWidth("100%");
-        dataAtualContainer.setHeight(null);
+        getDataAtualContainer().setSpacing(true);
+        getDataAtualContainer().setWidth("100%");
+        getDataAtualContainer().setHeight(null);
         
         labelDataAtual = new Label("<h1>Hoje, 27 de maio de 2014.</h1>");
         getLabelDataAtual().setContentMode(ContentMode.HTML);
         
-        dataAtualContainer.addComponent(getLabelDataAtual());
+        getDataAtualContainer().addComponent(getLabelDataAtual());
 
-        return dataAtualContainer;
+        return getDataAtualContainer();
     }
 
     private Component buildAbasContainer() {
         
         abasContainer = new HorizontalLayout();
-        abasContainer.setSpacing(true);
-        abasContainer.setWidth("100%");
-        abasContainer.setHeight(null);
+        getAbasContainer().setSpacing(true);
+        getAbasContainer().setWidth("100%");
+        getAbasContainer().setHeight(null);
         
         painelAbas = new TabSheet();
         getPainelAbas().setWidth("100%");
@@ -279,54 +311,54 @@ public class DashBoardView extends VerticalLayout {
         getPainelAbas().addTab(new HorizontalLayout(), "Meta");
         getPainelAbas().addTab(new HorizontalLayout(), "Publicações");
 
-        abasContainer.addComponent(getPainelAbas());
+        getAbasContainer().addComponent(getPainelAbas());
         
-        return abasContainer;
+        return getAbasContainer();
     }
 
     private Component buildPaineisRodape() {
 
         rodapeContainer = new HorizontalLayout();
-        rodapeContainer.setSpacing(true);
-        rodapeContainer.setWidth("100%");
-        rodapeContainer.setHeight(null);
+        getRodapeContainer().setSpacing(true);
+        getRodapeContainer().setWidth("100%");
+        getRodapeContainer().setHeight(null);
         
         principaisTarefasContainer = new VerticalLayout();
-        principaisTarefasContainer.setStyleName("blue");
-        principaisTarefasContainer.setWidth("20%");
-        rodapeContainer.addComponent(principaisTarefasContainer);
+        getPrincipaisTarefasContainer().setStyleName("blue");
+        getPrincipaisTarefasContainer().setWidth("20%");
+        getRodapeContainer().addComponent(getPrincipaisTarefasContainer());
         
         Button tarefaButton;
         for (int i = 0; i < 5; i++) {
             tarefaButton = new Button("Tarefa "+(i+1));
             tarefaButton.setStyleName("v-button-link");
-            principaisTarefasContainer.addComponent(tarefaButton);
+            getPrincipaisTarefasContainer().addComponent(tarefaButton);
         }
         
         principaisProjecoesContainer = new VerticalLayout();
-        principaisProjecoesContainer.setWidth("20%");
-        rodapeContainer.addComponent(principaisProjecoesContainer);
+        getPrincipaisProjecoesContainer().setWidth("20%");
+        getRodapeContainer().addComponent(getPrincipaisProjecoesContainer());
         
         Button projecaoButton;
         for (int i = 0; i < 5; i++) {
             projecaoButton = new Button("Projecao "+(i+1));
             projecaoButton.setStyleName("v-button-link");
-            principaisProjecoesContainer.addComponent(projecaoButton);
+            getPrincipaisProjecoesContainer().addComponent(projecaoButton);
         }
         
         principaisConvitesContainer = new VerticalLayout();
-        principaisConvitesContainer.setStyleName("blue");
-        principaisConvitesContainer.setWidth("20%");
-        rodapeContainer.addComponent(principaisConvitesContainer);
+        getPrincipaisConvitesContainer().setStyleName("blue");
+        getPrincipaisConvitesContainer().setWidth("20%");
+        getRodapeContainer().addComponent(getPrincipaisConvitesContainer());
 
         Button conviteButton;
         for (int i = 0; i < 5; i++) {
             conviteButton = new Button("Convite  "+(i+1));
             conviteButton.setStyleName("v-button-link");
-            principaisConvitesContainer.addComponent(conviteButton);
+            getPrincipaisConvitesContainer().addComponent(conviteButton);
         }
         
-        return rodapeContainer;
+        return getRodapeContainer();
     }
 
     /**
@@ -343,12 +375,6 @@ public class DashBoardView extends VerticalLayout {
         return filtroUsuarioButton;
     }
 
-    /**
-     * @return the filtroUsuarioOptionGroup
-     */
-    public OptionGroup getFiltroUsuarioOptionGroup() {
-        return filtroUsuarioOptionGroup;
-    }
 
     /**
      * @return the filtroEmpresaButton
@@ -428,12 +454,132 @@ public class DashBoardView extends VerticalLayout {
         return aplicarFiltroPesquisa;
     }
 
-   
-    
-    
-    
-    
+    public OptionGroup getFiltroProjecaoOptionGroup() {
+        return filtroProjecaoOptionGroup;
+    }
 
-    
+    public Button getRemoverFiltroPesquisa() {
+        return removerFiltroPesquisa;
+    }
+
+    /**
+     * @return the mensagens
+     */
+    public ResourceBundle getMensagens() {
+        return mensagens;
+    }
+
+    /**
+     * @return the imagens
+     */
+    public GestorWebImagens getImagens() {
+        return imagens;
+    }
+
+    /**
+     * @return the listener
+     */
+    public DashboardViewListenter getListener() {
+        return listener;
+    }
+
+    /**
+     * @return the menuSuperiorContainer
+     */
+    public HorizontalLayout getMenuSuperiorContainer() {
+        return menuSuperiorContainer;
+    }
+
+    /**
+     * @return the filtrosPesquisaContainer
+     */
+    public HorizontalLayout getFiltrosPesquisaContainer() {
+        return filtrosPesquisaContainer;
+    }
+
+    /**
+     * @return the filtrosPesquisaEsquerdaContainer
+     */
+    public HorizontalLayout getFiltrosPesquisaEsquerdaContainer() {
+        return filtrosPesquisaEsquerdaContainer;
+    }
+
+    /**
+     * @return the filtroUsuarioResponsavelOptionGroup
+     */
+    public OptionGroup getFiltroUsuarioResponsavelOptionGroup() {
+        return filtroUsuarioResponsavelOptionGroup;
+    }
+
+    /**
+     * @return the filtroUsuarioSolicitanteOptionGroup
+     */
+    public OptionGroup getFiltroUsuarioSolicitanteOptionGroup() {
+        return filtroUsuarioSolicitanteOptionGroup;
+    }
+
+    /**
+     * @return the filtroUsuarioParticipanteOptionGroup
+     */
+    public OptionGroup getFiltroUsuarioParticipanteOptionGroup() {
+        return filtroUsuarioParticipanteOptionGroup;
+    }
+
+    /**
+     * @return the filtrosPesquisaDireitaContainer
+     */
+    public VerticalLayout getFiltrosPesquisaDireitaContainer() {
+        return filtrosPesquisaDireitaContainer;
+    }
+
+    /**
+     * @return the dataAtualContainer
+     */
+    public HorizontalLayout getDataAtualContainer() {
+        return dataAtualContainer;
+    }
+
+    /**
+     * @return the abasContainer
+     */
+    public HorizontalLayout getAbasContainer() {
+        return abasContainer;
+    }
+
+    /**
+     * @return the rodapeContainer
+     */
+    public HorizontalLayout getRodapeContainer() {
+        return rodapeContainer;
+    }
+
+    /**
+     * @return the principaisTarefasContainer
+     */
+    public VerticalLayout getPrincipaisTarefasContainer() {
+        return principaisTarefasContainer;
+    }
+
+    /**
+     * @return the principaisProjecoesContainer
+     */
+    public VerticalLayout getPrincipaisProjecoesContainer() {
+        return principaisProjecoesContainer;
+    }
+
+    /**
+     * @return the principaisConvitesContainer
+     */
+    public VerticalLayout getPrincipaisConvitesContainer() {
+        return principaisConvitesContainer;
+    }
+
+    /**
+     * @return the filtroUsuarioAccordion
+     */
+    public Accordion getFiltroUsuarioAccordion() {
+        return filtroUsuarioAccordion;
+    }
+
   
 }

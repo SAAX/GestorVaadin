@@ -2,10 +2,12 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.DashboardModel;
+import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.view.DashBoardView;
@@ -13,7 +15,17 @@ import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.UI;
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +41,7 @@ import java.util.logging.Logger;
 public final class DashboardPresenter implements DashboardViewListenter {
 
     // Todo presenter mantem acesso à view e ao model
-    private final DashBoardView view;
+    private final transient DashBoardView view;
     private final DashboardModel model;
 
     // Referencia ao recurso das mensagens:
@@ -72,20 +84,49 @@ public final class DashboardPresenter implements DashboardViewListenter {
     @Override
     public void carregaVisualizacaoInicial() {
         
-        carregarListaTarefas();
+        carregarListaTarefasUsuarioLogado();
         carregarFiltrosPesquisa();
     }
 
+    
+    
     /**
      * Carregar os filtros de pesquisa
      */
     public void carregarFiltrosPesquisa(){
         
         try {
-            List<Usuario> usuarioEmpresa = model.listarUsuariosEmpresa();
-            for (Usuario usuario : usuarioEmpresa) {
-                view.getFiltroUsuarioOptionGroup().addItem(usuario.getNome());
+            
+            List<Usuario> usuarios = model.listarUsuariosEmpresa();
+            for (Usuario usuario : usuarios) {
+                view.getFiltroUsuarioResponsavelOptionGroup().addItem(usuario);
+                view.getFiltroUsuarioResponsavelOptionGroup().setItemCaption(usuario, usuario.getNome());
+
+                view.getFiltroUsuarioSolicitanteOptionGroup().addItem(usuario);
+                view.getFiltroUsuarioSolicitanteOptionGroup().setItemCaption(usuario, usuario.getNome());
+                
+                view.getFiltroUsuarioParticipanteOptionGroup().addItem(usuario);
+                view.getFiltroUsuarioParticipanteOptionGroup().setItemCaption(usuario, usuario.getNome());
+                
             }
+            
+            List<Empresa> empresas = model.listarEmpresasRelacionadas();
+            for (Empresa empresa : empresas) {
+                
+                view.getFiltroEmpresaOptionGroup().addItem(empresa);
+                view.getFiltroEmpresaOptionGroup().setItemCaption(empresa, empresa.getNome());
+                                
+                for (FilialEmpresa filial : empresa.getFiliais()) {
+                    view.getFiltroEmpresaOptionGroup().addItem(filial);
+                    view.getFiltroEmpresaOptionGroup().setItemCaption(filial, "    "+filial.getNome());
+
+                }
+            }
+            
+            for (ProjecaoTarefa projecao : ProjecaoTarefa.values()) {
+                view.getFiltroProjecaoOptionGroup().addItem(projecao.toString());
+            }
+            
         } catch (GestorException ex) {
             Logger.getLogger(DashboardPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -95,7 +136,7 @@ public final class DashboardPresenter implements DashboardViewListenter {
      * Carrega a lista de tarefas sob responsabilidade
      * do usuario logado
      */
-    public void carregarListaTarefas(){
+    public void carregarListaTarefasUsuarioLogado(){
         
         // Usuario logado
         Usuario usuarioLogado = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
@@ -144,6 +185,7 @@ public final class DashboardPresenter implements DashboardViewListenter {
             apontamento.setEnabled(false);
         }
         
+        apontamento.setWidth("60px");
         return apontamento;
     }
     
@@ -170,7 +212,7 @@ public final class DashboardPresenter implements DashboardViewListenter {
                 FormatterUtil.formatDate(tarefa.getDataFim()),
                 tarefa.getStatus().toString(),
                 buildComboApontamento(tarefa),
-                null,
+                tarefa.getProjecao().toString(),
                 new Button("E"), 
                 new Button("C")
             };
@@ -197,6 +239,69 @@ public final class DashboardPresenter implements DashboardViewListenter {
     @Override
     public void aplicarFiltroPesquisa() {
        
+        // Obtem os filtros selecionados pelo usuario
+        
+        // usuarios selecionados
+        List<Usuario> usuariosResponsaveis = new ArrayList<>((Collection<Usuario>) view.getFiltroUsuarioResponsavelOptionGroup().getValue());
+
+        List<Usuario> usuariosSolicitantes = new ArrayList<>((Collection<Usuario>) view.getFiltroUsuarioSolicitanteOptionGroup().getValue());
+
+        List<Usuario> usuariosParticipantes = new ArrayList<>((Collection<Usuario>) view.getFiltroUsuarioParticipanteOptionGroup().getValue());
+        
+        // Empresas selecionadas
+        List<Empresa> empresas = new ArrayList<>();
+        List<FilialEmpresa> filiais = new ArrayList<>();
+        
+        for (Object empresaFilial : (Collection<Object>) view.getFiltroEmpresaOptionGroup().getValue()) {
+            if (empresaFilial instanceof Empresa){
+                Empresa e = (Empresa) empresaFilial;
+                empresas.add(e);
+                
+            } else if (empresaFilial instanceof FilialEmpresa){
+                FilialEmpresa f = (FilialEmpresa) empresaFilial;
+                filiais.add(f);
+                
+            }
+        }
+
+        LocalDate dataFim = null;
+        // Data Fim
+        Date dataFimDate = view.getFiltroDataFimDateField().getValue();
+        if (dataFimDate!=null){
+            Instant instant = Instant.ofEpochMilli(dataFimDate.getTime());
+            dataFim = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();
+        }
+
+
+        // Projecoes
+        List<ProjecaoTarefa> projecoes = new ArrayList<>();
+
+        // recarrega a visualizacao
+        List<Tarefa> listaTarefas = model.listarTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
+        
+        exibirListaTarefas(listaTarefas);
+        
+        view.getRemoverFiltroPesquisa().setVisible(true);
+        
+    }
+  
+
+    /**
+     * Remove todos os filtros de pesquisa e recarrega a visualização
+     */
+    @Override
+    public void removerFiltrosPesquisa() {
+
+        view.getRemoverFiltroPesquisa().setVisible(false);
+        
+        view.getFiltroUsuarioParticipanteOptionGroup().setValue(null);
+        view.getFiltroUsuarioSolicitanteOptionGroup().setValue(null);
+        view.getFiltroUsuarioResponsavelOptionGroup().setValue(null);
+        view.getFiltroEmpresaOptionGroup().setValue(null);
+        view.getFiltroDataFimDateField().setValue(null);
+        view.getFiltroProjecaoOptionGroup().setValue(null);
+        
+        // @TODO: recarregar visualização
     }
 
 

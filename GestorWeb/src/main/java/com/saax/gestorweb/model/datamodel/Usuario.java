@@ -18,6 +18,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -37,6 +38,15 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login"),
     @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")})
 public class Usuario implements Serializable {
+    
+    @Transient
+    private String globalID;
+
+    public String getGlobalID() {
+        globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
+        return globalID;
+    }
+    
 
     private static final long serialVersionUID = 1L;
 

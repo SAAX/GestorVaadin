@@ -224,6 +224,16 @@ INSERT INTO statustarefa VALUES ('BLOQUEADA');
 INSERT INTO statustarefa VALUES ('CONCLUIDA');
 INSERT INTO statustarefa VALUES ('CANCELADA');
 
+-- Projecao Tarefa
+DROP TABLE IF EXISTS ProjecaoTarefa CASCADE;
+CREATE TABLE ProjecaoTarefa (
+    ProjecaoTarefa CHARACTER VARYING (50) NOT NULL PRIMARY KEY
+);
+
+INSERT INTO Projecaotarefa VALUES ('ASCENDENTE');
+INSERT INTO Projecaotarefa VALUES ('NORMAL');
+INSERT INTO Projecaotarefa VALUES ('DESCENDENTE');
+
 -- Tipo Tarefa
 DROP TABLE IF EXISTS TipoTarefa CASCADE;
 CREATE TABLE TipoTarefa (
@@ -256,6 +266,7 @@ CREATE TABLE Tarefa (
     tipo  CHARACTER VARYING (20) NOT NULL,
     idProximaTarefa BIGINT, 
     status CHARACTER VARYING (50) NOT NULL,
+    projecao CHARACTER VARYING (50) NOT NULL,
     andamento INTEGER NOT NULL,
     dataInicio DATE NOT NULL,
     dataFim DATE NOT NULL, 	-- data esperada para o fim da tarefa, pode ser diferente da data real do termino da mesma
@@ -275,6 +286,7 @@ CREATE TABLE Tarefa (
     FOREIGN KEY (idTarefaPai) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idProximaTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (status) REFERENCES statusTarefa (statusTarefa),	
+    FOREIGN KEY (projecao) REFERENCES projecaoTarefa (projecaoTarefa),	
     FOREIGN KEY (tipo) REFERENCES tipoTarefa (tipoTarefa),	
     FOREIGN KEY (Prioridade) REFERENCES PrioridadeTarefa (PrioridadeTarefa),	
     FOREIGN KEY (idEmpresaCliente) REFERENCES EmpresaCliente (idEmpresaCliente),	

@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,6 +35,15 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "FilialEmpresa.findByAtiva", query = "SELECT f FROM FilialEmpresa f WHERE f.ativa = :ativa")})
 public class FilialEmpresa implements Serializable {
 
+    @Transient
+    private String globalID;
+
+    public String getGlobalID() {
+        globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
+        return globalID;
+    }
+    
+    
     private static final long serialVersionUID = 1L;
     
     @Id

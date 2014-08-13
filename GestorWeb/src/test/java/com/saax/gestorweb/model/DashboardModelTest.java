@@ -6,11 +6,19 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.dao.TarefaDAO;
+import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DBConnect;
+import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.TestUtils;
 import com.vaadin.ui.UI;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -26,6 +34,9 @@ import org.junit.Test;
  * @author rodrigo
  */
 public class DashboardModelTest {
+
+    private UsuarioDAO usuarioDAO;
+    private TarefaDAO tarefaDAO;
 
     public DashboardModelTest() {
     }
@@ -43,11 +54,31 @@ public class DashboardModelTest {
 
     Usuario usuarioLogado = null;
     DashboardModel instance = new DashboardModel();
+    List<Usuario> usuariosList = null;
 
     @Before
     public void setUp() {
         ui = new TestUtils().configureUI();
         usuarioLogado = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        usuariosList = usuarioDAO.findUsuarioEntities();
+        tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        
+        Tarefa t0 = new Tarefa();
+        t0.setNome("Tarefa 0");
+        t0.setUsuarioResponsavel(usuarioDAO.findByLogin("teste-user@gmail.com"));
+        tarefaDAO.create(t0);
+        
+        Tarefa t1 = new Tarefa();
+        t1.setNome("Tarefa 1");
+        t1.setUsuarioResponsavel(usuarioDAO.findByLogin("teste-user@gmail.com"));
+        tarefaDAO.create(t1);
+        
+        Tarefa t2 = new Tarefa();
+        t2.setNome("Tarefa 2");
+        t2.setUsuarioResponsavel(usuarioDAO.findByLogin("rodrigo.ccn2005@gmail.com"));
+        tarefaDAO.create(t2);
+        
     }
 
     @After
@@ -58,31 +89,29 @@ public class DashboardModelTest {
      * Test of listarTarefas method, of class DashboardModel.
      */
     @Test
-    public void testListarTarefas() {
+    public void testListarTarefasPorUsuarioResponsavel() {
         System.out.println("listarTarefas");
 
-        List<Tarefa> tarefas = instance.listarTarefas(usuarioLogado);
-        for (Tarefa tarefa : tarefas) {
+        List<Usuario> usuariosResponsaveis = new ArrayList<>();
+        usuariosResponsaveis.add(usuarioDAO.findByLogin("teste-user@gmail.com"));
 
+        List<Usuario> usuariosSolicitantes = null;
+        List<Usuario> usuariosParticipantes = null;
+        List<Empresa> empresas = null;
+        List<FilialEmpresa> filiais = null;
+        LocalDate dataFim = null;
+        List<ProjecaoTarefa> projecoes = null;
+        
+        List<Tarefa> expResult = null;
+        List<Tarefa> result = instance.listarTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
+        
+        if (result!=null)
+        for (Tarefa tarefa : result) {
+            
             System.out.println(tarefa.getNome());
-
         }
-
-    }
-
-    /**
-     * Test of listarUsuariosEmpresa method, of class DashboardModel.
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testListarUsuariosEmpresa() throws Exception {
-        System.out.println("listarUsuariosEmpresa");
-        DashboardModel instance = new DashboardModel();
-        List<Usuario> expResult = null;
-        List<Usuario> result = instance.listarUsuariosEmpresa();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        
     }
 
 }

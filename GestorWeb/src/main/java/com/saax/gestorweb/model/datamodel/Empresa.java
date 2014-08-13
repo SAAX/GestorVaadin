@@ -17,6 +17,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
@@ -43,6 +44,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Empresa.findByCpf", query = "SELECT e FROM Empresa e WHERE e.cpf = :cpf"),
     @NamedQuery(name = "Empresa.findByAtiva", query = "SELECT e FROM Empresa e WHERE e.ativa = :ativa")})
 public class Empresa implements Serializable {
+
+    
+    @Transient
+    private String globalID;
+
+    public String getGlobalID() {
+        globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
+        return globalID;
+    }
+    
 
     private static final long serialVersionUID = 1L;
 

@@ -115,10 +115,10 @@ public final class DashboardPresenter implements DashboardViewListenter {
                 
                 view.getFiltroEmpresaOptionGroup().addItem(empresa);
                 view.getFiltroEmpresaOptionGroup().setItemCaption(empresa, empresa.getNome());
-                                
+
                 for (FilialEmpresa filial : empresa.getFiliais()) {
                     view.getFiltroEmpresaOptionGroup().addItem(filial);
-                    view.getFiltroEmpresaOptionGroup().setItemCaption(filial, "    "+filial.getNome());
+                    view.getFiltroEmpresaOptionGroup().setItemCaption(filial, "Filial: "+filial.getNome());
 
                 }
             }
@@ -265,6 +265,7 @@ public final class DashboardPresenter implements DashboardViewListenter {
         }
 
         LocalDate dataFim = null;
+        
         // Data Fim
         Date dataFimDate = view.getFiltroDataFimDateField().getValue();
         if (dataFimDate!=null){
@@ -301,7 +302,8 @@ public final class DashboardPresenter implements DashboardViewListenter {
         view.getFiltroDataFimDateField().setValue(null);
         view.getFiltroProjecaoOptionGroup().setValue(null);
         
-        // @TODO: recarregar visualização
+        carregarListaTarefasUsuarioLogado();
+    
     }
 
 

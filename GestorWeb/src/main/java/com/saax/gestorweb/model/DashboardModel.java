@@ -4,6 +4,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.TarefaDAO;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -67,7 +68,7 @@ public class DashboardModel {
     
     /**
      * Listar as coligadas (se existirem)
-     * @return 
+     * @return                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
      * @throws com.saax.gestorweb.util.GestorException 
      */
     public List<Empresa> listarEmpresasRelacionadas() throws GestorException {
@@ -77,6 +78,15 @@ public class DashboardModel {
         
         List<Empresa> empresas = new ArrayList<>();
         
+        empresas.add(empresa);
+       
+        for (Empresa empresa1 : empresa.getSubEmpresas()) {
+            if (empresa1.getAtiva()){
+                empresas.add(empresa1);
+                
+            }
+            
+        }
         // adiciona as coligadas
         empresa.getSubEmpresas().stream().filter((subempresa) -> (subempresa.getAtiva())).forEach((subempresa) -> {
             empresas.add(subempresa);
@@ -96,23 +106,67 @@ public class DashboardModel {
      * @param projecoes
      * @return 
      */
-    public List<Tarefa> listarTarefas(List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes) {
+    public List<Tarefa> listarTarefas(List<Usuario> usuariosResponsaveis, 
+            List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes) {
         
-        List<Tarefa> tarefas;
+        List<Tarefa> tarefas = new ArrayList<>();
 
-        TarefaDAO tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-
-        tarefas = tarefaDAO.findTarefaEntities();
+        if (usuariosResponsaveis!=null){
+            usuariosResponsaveis.stream().forEach((usuario) -> {
+                tarefas.addAll(usuario.getTarefasSobResponsabilidade());
+            });
+        }
         
+        if (usuariosSolicitantes!=null){
+            usuariosSolicitantes.stream().forEach((usuario) -> {
+                tarefas.addAll(usuario.getTarefasSolicitadas());
+            });
+        }
+        
+        if (usuariosParticipantes!=null){
+            
+            for (Usuario usuario : usuariosParticipantes) {
+                tarefas.addAll(usuario.getTarefasSolicitadas());
+                tarefas.addAll(usuario.getTarefasSobResponsabilidade());
+                for (ParticipanteTarefa participanteTarefa : usuario.getTarefasParticipantes()) {
+                    tarefas.add(participanteTarefa.getTarefa());
+                }
+            }
+        }
+       
+        if (empresas!=null){
+            for (Empresa empresa : empresas) {
+                tarefas.addAll(empresa.getTarefas());
+                
+            }
+        }
+        
+        if (filiais!=null){
+            for (FilialEmpresa filial : filiais) {
+                tarefas.addAll(filial.getTarefas());
+                
+            }
+        }
+        
+        
+  /*      
         if (usuariosResponsaveis!=null){
             tarefas = filtrarUsuarioResponsavel(tarefas, usuariosResponsaveis);
         }
         
-        //tarefas = tarefaDAO.findTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
+        if (empresas!=null){
+            tarefas = filtrarEmpresas(tarefas, empresas);
+        }
         
+        if (filiais!=null){
+            tarefas = filtrarUsuarioResponsavel(tarefas, usuariosResponsaveis);
+        }
+        
+        //tarefas = tarefaDAO.findTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
+    */    
         return tarefas;
     }
-    
+    /*
     public List<Tarefa> filtrarUsuarioResponsavel(List<Tarefa> tarefas, List<Usuario> usuariosResponsaveis){
         List<Tarefa> tarefasFiltradas = new ArrayList<>();
         tarefas.stream().filter((tarefa) -> (usuariosResponsaveis.contains(tarefa.getUsuarioResponsavel()))).forEach((tarefa) -> {
@@ -122,6 +176,24 @@ public class DashboardModel {
         return tarefasFiltradas;
     }
 
+    public List<Tarefa> filtrarEmpresas(List<Tarefa> tarefas, List<Empresa> empresas){
+        List<Tarefa> tarefasFiltradas = new ArrayList<>();
+        tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
+            tarefasFiltradas.add(tarefa);
+        });
+        
+        return tarefasFiltradas;
+    }
 
+    public List<Tarefa> filtrarFiliais(List<Tarefa> tarefas, List<Filialem> empresas){
+        List<Tarefa> tarefasFiltradas = new ArrayList<>();
+        tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
+            tarefasFiltradas.add(tarefa);
+        });
+        
+        return tarefasFiltradas;
+    }
+
+*/
     
 }

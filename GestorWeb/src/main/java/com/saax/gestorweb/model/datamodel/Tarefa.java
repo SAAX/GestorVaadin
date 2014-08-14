@@ -135,6 +135,10 @@ public class Tarefa implements Serializable {
     @ManyToOne(optional = false)
     private Empresa empresa;
     
+    @JoinColumn(name = "idfilialempresa", referencedColumnName = "idfilialempresa")
+    @ManyToOne
+    private FilialEmpresa filialEmpresa;
+    
     @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
     @ManyToOne
     private EmpresaCliente empresaCliente;
@@ -315,6 +319,14 @@ public class Tarefa implements Serializable {
         this.empresa = empresa;
     }
 
+    public FilialEmpresa getFilialEmpresa() {
+        return filialEmpresa;
+    }
+
+    public void setFilialEmpresa(FilialEmpresa filialEmpresa) {
+        this.filialEmpresa = filialEmpresa;
+    }
+    
     public EmpresaCliente getEmpresaCliente() {
         return empresaCliente;
     }

@@ -135,7 +135,7 @@ INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
     idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 9', 'Tarefa de prioridade baixa, bloqueada',
-    'BAIXA', 'UNICA', NULL, 'BLOQUEADA', 0, '2014-05-01', '2014-05-31', NULL, 
+    'BAIXA', 'UNICA', NULL, 'BLOQUEADA', 0, '2014-06-01', '2014-06-30', NULL, 
     1, 3, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
@@ -143,7 +143,7 @@ INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
     idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
 VALUES (9, 2, 1, 'Tarefa', 'Tarefa Exemplo 10 (sub da 9)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 4',
-    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
+    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
     1, 3, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
 
 
@@ -153,7 +153,7 @@ INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
     idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 11', 'Tarefa de prioridade alta, em andamento, com 10% concluido',
-    'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 10, '2014-05-01', '2014-05-31', NULL, 
+    'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 10, '2014-06-01', '2014-06-30', NULL, 
     1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
@@ -161,7 +161,7 @@ INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
     idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
 VALUES (11, 2, 1, 'Tarefa', 'Tarefa Exemplo 12 (sub da 11)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
-    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
+    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
     1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
@@ -169,7 +169,7 @@ INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
     idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
 VALUES (11, 2, 1, 'Tarefa', 'Tarefa Exemplo 13 (sub da 11)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
-    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
+    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
     1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
 
 
@@ -179,7 +179,7 @@ INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
     idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 14', 'Tarefa de prioridade baixa, bloqueada',
-    'BAIXA', 'UNICA', NULL, 'BLOQUEADA', 0, '2014-05-01', '2014-05-31', NULL, 
+    'BAIXA', 'UNICA', NULL, 'BLOQUEADA', 0, '2014-06-01', '2014-06-30', NULL, 
     1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
@@ -187,7 +187,7 @@ INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
     idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
 VALUES (14, 2, 1, 'Tarefa', 'Tarefa Exemplo 15 (sub da 14)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 4',
-    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
+    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
     1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
@@ -195,7 +195,7 @@ INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
     idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
 VALUES (15, 3, 1, 'Tarefa', 'Tarefa Exemplo 16 (sub da 15)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 5',
-    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
+    'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
     1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
 
 

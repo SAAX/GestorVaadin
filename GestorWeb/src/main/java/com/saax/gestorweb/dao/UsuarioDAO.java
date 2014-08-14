@@ -1369,5 +1369,10 @@ public class UsuarioDAO implements Serializable {
 
     }
 
+    public void refresh(Usuario usuario) {
+        EntityManager em = getEntityManager();
+        em.refresh(usuario);
+    }
+
 
 }

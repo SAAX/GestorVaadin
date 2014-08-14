@@ -1,7 +1,9 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.dao.GenericDAO;
 import com.saax.gestorweb.dao.TarefaDAO;
+import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
@@ -15,6 +17,8 @@ import com.vaadin.ui.UI;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,81 +26,73 @@ import javax.persistence.criteria.Root;
 
 /**
  * Classe de negócios do Dasboard
+ *
  * @author Rodrigo
  */
 public class DashboardModel {
 
     /**
-     * 
-     * @param usuarioLogado 
-     * @return  
+     *
+     * @param usuarioLogado
+     * @return
      */
     public List<Tarefa> listarTarefas(Usuario usuarioLogado) {
-        
-        TarefaDAO tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
 
-        List<Tarefa> tarefas = tarefaDAO.listByUsuarioResponsavel(usuarioLogado);
+        List<Tarefa> tarefas = new GenericDAO().listByNamedQuery("Tarefa.findByUsuarioResponsavel", "usuarioResponsavel", usuarioLogado);
 
         return tarefas;
-        
-        
+
     }
 
     /**
      * Listar todos os usuários ativos da mesma empresa do usuário logado
-     * @return 
-     * @throws com.saax.gestorweb.util.GestorException 
+     *
+     * @return
+     * @throws com.saax.gestorweb.util.GestorException
      */
     public List<Usuario> listarUsuariosEmpresa() throws GestorException {
-        
+
         Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
 
         List<Usuario> usuarios = new ArrayList<>();
-        
+
         for (UsuarioEmpresa usuarioEmpresa : empresa.getUsuarios()) {
-            if (usuarioEmpresa.getAtivo()){
+            if (usuarioEmpresa.getAtivo()) {
                 usuarios.add(usuarioEmpresa.getUsuario());
             }
         }
-        
-        
-        
+
         return usuarios;
     }
 
-    
-    
     /**
      * Listar as coligadas (se existirem)
-     * @return                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-     * @throws com.saax.gestorweb.util.GestorException 
+     *
+     * @return
+     * @throws com.saax.gestorweb.util.GestorException
      */
     public List<Empresa> listarEmpresasRelacionadas() throws GestorException {
-        
-       
+
         Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
-        
+
         List<Empresa> empresas = new ArrayList<>();
-        
+
         empresas.add(empresa);
-       
-        for (Empresa empresa1 : empresa.getSubEmpresas()) {
-            if (empresa1.getAtiva()){
-                empresas.add(empresa1);
-                
+
+        for (Empresa subempresa : empresa.getSubEmpresas()) {
+            if (subempresa.getAtiva()) {
+                empresas.add(subempresa);
+
             }
-            
+
         }
-        // adiciona as coligadas
-        empresa.getSubEmpresas().stream().filter((subempresa) -> (subempresa.getAtiva())).forEach((subempresa) -> {
-            empresas.add(subempresa);
-        });
-        
+
         return empresas;
     }
 
     /**
      * Lista as tarefas que correspondam aos filtros informados
+     *
      * @param usuariosResponsaveis
      * @param usuariosSolicitantes
      * @param usuariosParticipantes
@@ -104,96 +100,104 @@ public class DashboardModel {
      * @param filiais
      * @param dataFim
      * @param projecoes
-     * @return 
+     * @return
      */
-    public List<Tarefa> listarTarefas(List<Usuario> usuariosResponsaveis, 
+    public List<Tarefa> listarTarefas(List<Usuario> usuariosResponsaveis,
             List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes) {
-        
+
         List<Tarefa> tarefas = new ArrayList<>();
 
-        if (usuariosResponsaveis!=null){
-            usuariosResponsaveis.stream().forEach((usuario) -> {
-                tarefas.addAll(usuario.getTarefasSobResponsabilidade());
-            });
-        }
-        
-        if (usuariosSolicitantes!=null){
-            usuariosSolicitantes.stream().forEach((usuario) -> {
-                tarefas.addAll(usuario.getTarefasSolicitadas());
-            });
-        }
-        
-        if (usuariosParticipantes!=null){
+        usuariosResponsaveis.stream().forEach((usuario) -> {
+            // refresh
+            usuario = new GenericDAO().merge(usuario);
+            tarefas.addAll(usuario.getTarefasSobResponsabilidade());
             
-            for (Usuario usuario : usuariosParticipantes) {
-                tarefas.addAll(usuario.getTarefasSolicitadas());
-                tarefas.addAll(usuario.getTarefasSobResponsabilidade());
-                for (ParticipanteTarefa participanteTarefa : usuario.getTarefasParticipantes()) {
-                    tarefas.add(participanteTarefa.getTarefa());
-                }
-            }
+        });
+
+        usuariosSolicitantes.stream().forEach((usuario) -> {
+            usuario = new GenericDAO().merge(usuario);
+            tarefas.addAll(usuario.getTarefasSolicitadas());
+        });
+
+        for (Usuario usuario : usuariosParticipantes) {
+            usuario = new GenericDAO().merge(usuario);
+            usuario.getTarefasParticipantes().stream().forEach((participanteTarefa) -> {
+                tarefas.add(participanteTarefa.getTarefa());
+            });
         }
-       
-        if (empresas!=null){
-            for (Empresa empresa : empresas) {
-                tarefas.addAll(empresa.getTarefas());
-                
-            }
+
+        empresas.stream().forEach((empresa) -> {
+            empresa = new GenericDAO().merge(empresa);
+            tarefas.addAll(empresa.getTarefas());
+        });
+
+        filiais.stream().forEach((filial) -> {
+            filial = new GenericDAO().merge(filial);
+            tarefas.addAll(filial.getTarefas());
+        });
+
+        if (dataFim != null) {
+            tarefas.addAll(new GenericDAO().listByNamedQuery("Tarefa.findByDataFim", "dataFim", dataFim));
         }
+
+        projecoes.stream().forEach((projecao) -> {
+            tarefas.addAll(new GenericDAO().listByNamedQuery("Tarefa.findByProjecao", "projecao", projecao));
+        });
+
+        /*      
+         if (usuariosResponsaveis!=null){
+         tarefas = filtrarUsuarioResponsavel(tarefas, usuariosResponsaveis);
+         }
         
-        if (filiais!=null){
-            for (FilialEmpresa filial : filiais) {
-                tarefas.addAll(filial.getTarefas());
-                
-            }
-        }
+         if (empresas!=null){
+         tarefas = filtrarEmpresas(tarefas, empresas);
+         }
         
+         if (filiais!=null){
+         tarefas = filtrarUsuarioResponsavel(tarefas, usuariosResponsaveis);
+         }
         
-  /*      
-        if (usuariosResponsaveis!=null){
-            tarefas = filtrarUsuarioResponsavel(tarefas, usuariosResponsaveis);
-        }
-        
-        if (empresas!=null){
-            tarefas = filtrarEmpresas(tarefas, empresas);
-        }
-        
-        if (filiais!=null){
-            tarefas = filtrarUsuarioResponsavel(tarefas, usuariosResponsaveis);
-        }
-        
-        //tarefas = tarefaDAO.findTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
-    */    
+         //tarefas = tarefaDAO.findTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
+         */
         return tarefas;
     }
+
+    public List<Tarefa> filtrarEmpresas(List<Tarefa> tarefas, List<Empresa> empresas) {
+        List<Tarefa> tarefasFiltradas = new ArrayList<>();
+        tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
+            tarefasFiltradas.add(tarefa);
+        });
+
+        return tarefasFiltradas;
+    }
+
     /*
-    public List<Tarefa> filtrarUsuarioResponsavel(List<Tarefa> tarefas, List<Usuario> usuariosResponsaveis){
-        List<Tarefa> tarefasFiltradas = new ArrayList<>();
-        tarefas.stream().filter((tarefa) -> (usuariosResponsaveis.contains(tarefa.getUsuarioResponsavel()))).forEach((tarefa) -> {
-            tarefasFiltradas.add(tarefa);
-        });
+     public List<Tarefa> filtrarUsuarioResponsavel(List<Tarefa> tarefas, List<Usuario> usuariosResponsaveis){
+     List<Tarefa> tarefasFiltradas = new ArrayList<>();
+     tarefas.stream().filter((tarefa) -> (usuariosResponsaveis.contains(tarefa.getUsuarioResponsavel()))).forEach((tarefa) -> {
+     tarefasFiltradas.add(tarefa);
+     });
         
-        return tarefasFiltradas;
-    }
+     return tarefasFiltradas;
+     }
 
-    public List<Tarefa> filtrarEmpresas(List<Tarefa> tarefas, List<Empresa> empresas){
-        List<Tarefa> tarefasFiltradas = new ArrayList<>();
-        tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
-            tarefasFiltradas.add(tarefa);
-        });
+     public List<Tarefa> filtrarEmpresas(List<Tarefa> tarefas, List<Empresa> empresas){
+     List<Tarefa> tarefasFiltradas = new ArrayList<>();
+     tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
+     tarefasFiltradas.add(tarefa);
+     });
         
-        return tarefasFiltradas;
-    }
+     return tarefasFiltradas;
+     }
 
-    public List<Tarefa> filtrarFiliais(List<Tarefa> tarefas, List<Filialem> empresas){
-        List<Tarefa> tarefasFiltradas = new ArrayList<>();
-        tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
-            tarefasFiltradas.add(tarefa);
-        });
+     public List<Tarefa> filtrarFiliais(List<Tarefa> tarefas, List<Filialem> empresas){
+     List<Tarefa> tarefasFiltradas = new ArrayList<>();
+     tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
+     tarefasFiltradas.add(tarefa);
+     });
         
-        return tarefasFiltradas;
-    }
+     return tarefasFiltradas;
+     }
 
-*/
-    
+     */
 }

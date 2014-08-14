@@ -74,7 +74,7 @@ public class FilialEmpresa implements Serializable {
     @ManyToOne(optional = false)
     private Empresa matriz;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "filialEmpresa")
     private List<Tarefa> tarefas;
 
     @Basic(optional = false)

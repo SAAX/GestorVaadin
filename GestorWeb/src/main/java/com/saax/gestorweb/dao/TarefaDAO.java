@@ -789,37 +789,20 @@ public class TarefaDAO implements Serializable {
         }
     }
 
+    
     /**
-     * Obtem a lista de tarefas por usuario responsavel
-     * @param usuarioResponsavel
+     * Obtem uma ou mais tarefas por uma nameq query pre definida
+     * @param namedQuery
+     * @param parameterName
+     * @param parameterValue
      * @return 
      */
-    public List<Tarefa> listByUsuarioResponsavel(Usuario usuarioResponsavel) {
+    public List<Tarefa> listByNamedQuery(String namedQuery, String parameterName, Object parameterValue) {
         EntityManager em = getEntityManager();
 
         try {
-            return (List<Tarefa>) em.createNamedQuery("Tarefa.findByUsuarioResponsavel")
-                    .setParameter("usuarioResponsavel", usuarioResponsavel)
-                    .getResultList();
-        } catch (Exception e) {
-                Logger.getLogger(GestorMDI.class.getName()).log(Level.SEVERE,"Iniciando atendimento de requisição.");
-    
-            return null;
-        }
-    }
-    
-
-    /**
-     * Obtem a lista de tarefas por empresa
-     * @param empresa
-     * @return 
-     */
-    public List<Tarefa> listByEmpresa(Empresa empresa) {
-        EntityManager em = getEntityManager();
-
-        try {
-            return (List<Tarefa>) em.createNamedQuery("Tarefa.findByEmpresa")
-                    .setParameter("empresa", empresa)
+            return (List<Tarefa>) em.createNamedQuery(namedQuery)
+                    .setParameter(parameterName, parameterValue)
                     .getResultList();
         } catch (Exception e) {
                 Logger.getLogger(GestorMDI.class.getName()).log(Level.SEVERE,e.getMessage());

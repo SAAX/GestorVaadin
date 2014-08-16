@@ -140,21 +140,35 @@ public class DashBoardView extends VerticalLayout {
         tarefasTable = new TreeTable();
         getTarefasTable().setWidth("100%");
         getTarefasTable().addContainerProperty("Cod", String.class, "");
+        getTarefasTable().setColumnWidth("Cod", 70);
         getTarefasTable().addContainerProperty("Título", String.class, "");
+        getTarefasTable().setColumnWidth("Título", 50);
         getTarefasTable().addContainerProperty("Nome", String.class, "");
-        getTarefasTable().addContainerProperty("Empresa", String.class, "");
+        getTarefasTable().setColumnWidth("Nome", 250);
+        getTarefasTable().addContainerProperty("Empresa/Filial", String.class, "");
+        getTarefasTable().setColumnWidth("Empresa/Filial", 200);
         getTarefasTable().addContainerProperty("Solicitante", String.class, "");
+        getTarefasTable().setColumnWidth("Solicitante", 80);
         getTarefasTable().addContainerProperty("Responsável", String.class, "");
+        getTarefasTable().setColumnWidth("Responsável", 80);
         getTarefasTable().addContainerProperty("Data Início", String.class, "");
+        getTarefasTable().setColumnWidth("Data Início", 80);
         getTarefasTable().addContainerProperty("Data Fim", String.class, "");
-        getTarefasTable().addContainerProperty("Status", String.class, "");
-        getTarefasTable().addContainerProperty("Apontamento", ComboBox.class, "");
-        getTarefasTable().addContainerProperty("Projeção", String.class, "");
+        getTarefasTable().setColumnWidth("Data Fim", 80);
+        getTarefasTable().addContainerProperty("Status", PopupButton.class, "");
+        getTarefasTable().setColumnWidth("Status", 200);
+        getTarefasTable().addContainerProperty("Projeção", Character.class, "");
+        getTarefasTable().setColumnWidth("Proj.", 30);
         getTarefasTable().addContainerProperty("Email", Button.class, "");
+        getTarefasTable().setColumnWidth("Email", 30);
         getTarefasTable().addContainerProperty("Chat", Button.class, "");
+        getTarefasTable().setColumnWidth("Chat", 30);
 
 
         getTarefasTable().setPageLength(7);
+        getTarefasTable().setSelectable(true);
+        getTarefasTable().setImmediate(true);
+        
 
         return getTarefasTable();
 

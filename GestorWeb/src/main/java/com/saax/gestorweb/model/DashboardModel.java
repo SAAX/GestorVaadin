@@ -1,28 +1,22 @@
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.GenericDAO;
 import com.saax.gestorweb.dao.TarefaDAO;
-import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
+import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.PostgresConnection;
-import com.vaadin.ui.UI;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
  * Classe de negócios do Dasboard
@@ -111,7 +105,7 @@ public class DashboardModel {
             // refresh
             usuario = new GenericDAO().merge(usuario);
             tarefas.addAll(usuario.getTarefasSobResponsabilidade());
-            
+
         });
 
         usuariosSolicitantes.stream().forEach((usuario) -> {
@@ -200,4 +194,21 @@ public class DashboardModel {
      }
 
      */
+    public Tarefa atualizarAndamentoTarefa(Integer idTarefa, Integer andamento) {
+
+        TarefaDAO tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
+
+        tarefa.setAndamento(andamento);
+
+        try {
+            tarefaDAO.edit(tarefa);
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        return tarefa;
+    }
 }

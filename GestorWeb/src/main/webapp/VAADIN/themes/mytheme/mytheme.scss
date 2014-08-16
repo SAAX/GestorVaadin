@@ -5,10 +5,13 @@
 /* This contains all of your theme. */
 /* If somebody wants to extend the theme she will include this mixin. */
 @mixin mytheme {
-  /* Include all the styles from the reindeer theme */
-  @include reindeer;
+    /* Include all the styles from the reindeer theme */
+    @include reindeer;
 
 
-  /* Insert your theme rules here */
-  
+    /* Insert your theme rules here */
+    .v-table-body{
+        overflow: hidden !important;
+    }
+
 }

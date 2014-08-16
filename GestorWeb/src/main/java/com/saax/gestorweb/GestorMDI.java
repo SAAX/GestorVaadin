@@ -29,14 +29,13 @@ import javax.servlet.annotation.WebServlet;
  * @author Rodrigo
  */
 @Theme("mytheme")
-@SuppressWarnings("serial")
 @PreserveOnRefresh
 public class GestorMDI extends UI {
 
 
-    private static PaginaInicialModel paginaInicialModel;
-    private static PaginaInicialView paginaInicialView;
-    private static PaginaInicialPresenter paginaInicialPresenter;
+    private transient PaginaInicialModel paginaInicialModel;
+    private transient PaginaInicialView paginaInicialView;
+    private transient PaginaInicialPresenter paginaInicialPresenter;
     
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
@@ -105,7 +104,7 @@ public class GestorMDI extends UI {
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens para o locale: {0}", request.getLocale());
 
         // obtém o arquivo de mensagens de acordo com o locale do usuário
-        ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt", "br"));
+         ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt", "br"));
         userData.setMensagens(mensagens);
 
         //obtém os cookies da sessão

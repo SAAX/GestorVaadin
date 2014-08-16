@@ -9,8 +9,6 @@ package com.saax.gestorweb.model.datamodel;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Singleton class para os IDs global
@@ -19,16 +17,23 @@ import java.util.logging.Logger;
 public class GlobalIdMgr {
     
     private final Map<String, String> mapaClasseID;
+    //private final Map<String, Class> mapaIDClasse;
     
 // singleton instance
     private static GlobalIdMgr instance;
 
     private GlobalIdMgr() {
         mapaClasseID = new HashMap<>();
+      //  mapaIDClasse = new HashMap<>();
 
         mapaClasseID.put(Tarefa.class.getCanonicalName(), "T");
+        //mapaIDClasse.put("T",Tarefa.class);
+                
         mapaClasseID.put(Usuario.class.getCanonicalName(), "U");
+        //mapaIDClasse.put("U",Usuario.class);
+        
         mapaClasseID.put(FilialEmpresa.class.getCanonicalName(), "F");
+       // mapaIDClasse.put("F",FilialEmpresa.class);
         
     }
 
@@ -66,7 +71,7 @@ public class GlobalIdMgr {
      * @param globalID
      * @return Objeto
      */
-   /** public Object getEntityBean(String globalID){
+    /**public Object getEntityBean(String globalID){
 
         DecimalFormat decimalFormatterID = new DecimalFormat("0000");
         
@@ -106,5 +111,5 @@ public class GlobalIdMgr {
     private Integer parseID(String globalID){
         return Integer.parseInt(globalID.split(SEPARADOR)[1]);
     }
-**/
+*/
 }

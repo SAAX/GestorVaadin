@@ -127,10 +127,14 @@ public class SignupView extends Window {
         HorizontalLayout barraBotoes = new HorizontalLayout();
         
         // botÃ£o para Confirmar
-        final Button okButton = new Button(getMensagens().getString("SignupView.okButton.label"), (Button.ClickEvent event) -> {
-            getListener().okButtonClicked();
+        final Button okButton = new Button(getMensagens().getString("SignupView.okButton.label"), new Button.ClickListener() {
+             @Override
+            public void buttonClick(Button.ClickEvent event) {
+            listener.okButtonClicked();
+            }
         });
         
+                      
         // botÃ£o para cancelar
         final Button cancelButton = new Button(getMensagens().getString("SignupView.cancelButton.label"), (Button.ClickEvent event) -> {
             getListener().cancelButtonClicked();

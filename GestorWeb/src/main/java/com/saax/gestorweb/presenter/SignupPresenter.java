@@ -68,7 +68,10 @@ public class SignupPresenter implements SignupViewListener {
      */
     private boolean validaDadosUsuarioPrincipal() {
 
-        String login = ""; // @TODO: obter email do usuário principal
+        //String login = ""; // @TODO: obter email do usuário principal
+        
+        String login = (String) view.getEmailUsuarioTextField().getValue(); // @TODO: Obter da view
+        
 
         // verifica se o usuário informado existe (login)
         if (model.verificaLoginExistente(login)) {
@@ -93,13 +96,15 @@ public class SignupPresenter implements SignupViewListener {
         // verifica se a empresa (conta) informada já não existe no cadastro
         char tipoPessoa = '\0';
         
-//        if (view.getPessoaFisicaCheckBox().getValue()) {
-//            tipoPessoa = 'F';
-//        } else if (view.getPessoaJuridicaCheckBox().getValue()) {
-//            tipoPessoa = 'J';
-//        } else {
-//            return false;
-//        }
+        
+        
+        if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Física") {
+            tipoPessoa = 'F';
+        } else if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Jurídica") {
+            tipoPessoa = 'J';
+        } else {
+            return false;
+        }
 
         String cpf_cnpj = view.getCnpjCpfTextField().getValue();
 
@@ -126,7 +131,7 @@ public class SignupPresenter implements SignupViewListener {
     private boolean validaDadosEmpresasColigadas(){
                 
         
-        final Table empresasColigadasTable = null; // @TODO: Obter a tabela de sub empresas
+        final Table empresasColigadasTable = view.getColigadasTable(); // @TODO: Obter a tabela de sub empresas
         Set<String> identificadoresEmpresasColigadas = new HashSet<>();
 
         for (Object itemID : empresasColigadasTable.getItemIds()) {
@@ -170,7 +175,7 @@ public class SignupPresenter implements SignupViewListener {
     private boolean validaDadosFiliais(){
        
 
-        final Table filiaisTable = null; // @TODO: Obter a tabela de sub empresas
+        final Table filiaisTable = view.getFiliaisTable(); // @TODO: Obter a tabela de sub empresas
         Set<String> identificadoresFiliais = new HashSet<>();
         Set<String> nomesFiliais = new HashSet<>();
 
@@ -228,7 +233,7 @@ public class SignupPresenter implements SignupViewListener {
      */
     private boolean validaDadosDemaisUsuarios(){
         
-        Table usuariosTable = null; // @TODO: Obter a tabela de sub empresas
+        Table usuariosTable = view.getUsuariosTable(); // @TODO: Obter a tabela de sub empresas
         Set<String> identificadoresUsuarios = new HashSet<>();
 
         for (Object itemID : usuariosTable.getItemIds()) {
@@ -285,13 +290,13 @@ public class SignupPresenter implements SignupViewListener {
         String razaosocial = view.getRazaoSocialTextField().getValue();
         String cpfCnpj = view.getCnpjCpfTextField().getValue();
         char tipoPessoa = '\0';
-//        if (view.getPessoaFisicaCheckBox().getValue()) {
-//            tipoPessoa = 'F';
-//        } else if (view.getPessoaJuridicaCheckBox().getValue()) {
-//            tipoPessoa = 'J';
-//        } else { 
-//            return null;
-//        }
+        if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Física"){
+            tipoPessoa = 'F';
+        } else if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Jurídica"){
+            tipoPessoa = 'J';
+        } else { 
+            return null;
+        }
 
         Empresa empresa = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa);
 
@@ -311,7 +316,7 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de sub empresas 
         // ---------------------------------------------------------------------
-        Table empresasColigadasTable = null; // @TODO: pegar da view
+        Table empresasColigadasTable = view.getColigadasTable(); // @TODO: pegar da view
         empresasColigadasTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linhaEmpresaColigada = empresasColigadasTable.getItem(itemID);
@@ -330,7 +335,7 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de filiais
         // ---------------------------------------------------------------------
-        Table filiaisTable = null; // @TODO: pegar da view
+        Table filiaisTable = view.getFiliaisTable(); // @TODO: pegar da view
         filiaisTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = filiaisTable.getItem(itemID);
@@ -346,7 +351,7 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de usuarios
         // ---------------------------------------------------------------------
-        Table usuariosTable = null; // @TODO: pegar da view
+        Table usuariosTable = view.getUsuariosTable(); // @TODO: pegar da view
         usuariosTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = usuariosTable.getItem(itemID);
@@ -367,8 +372,11 @@ public class SignupPresenter implements SignupViewListener {
     @Override
     public void okButtonClicked() {
 
+        System.out.println("teste1");
         // valida o preenchimento dos campos obrigatórios
         view.validate();
+        
+        System.out.println("teste");
 
         if (!validaDadosUsuarioPrincipal()) {
             return;
@@ -397,6 +405,8 @@ public class SignupPresenter implements SignupViewListener {
 
         // obtem todos os dados da view e monta os objetos
         Empresa conta = buildConta();
+        
+       
 
         // grava todos os dados (fazer em uma unica chamada para mater a transação)
         model.criarNovaConta(conta);

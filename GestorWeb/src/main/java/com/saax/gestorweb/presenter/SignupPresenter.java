@@ -316,18 +316,26 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de sub empresas 
         // ---------------------------------------------------------------------
-        Table empresasColigadasTable = view.getColigadasTable(); // @TODO: pegar da view
+        Table empresasColigadasTable = view.getColigadasTable(); 
+        if (empresasColigadasTable.getItemIds() ==null){
+            System.out.println("é nula!");
+        }else{
+        System.out.println("não é nulo!");
+        }
         empresasColigadasTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linhaEmpresaColigada = empresasColigadasTable.getItem(itemID);
 
-            String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
-            String razaosocialEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
+            String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(view.getNomeColigadaTextField()).getValue(); // @TODO: Obter da view
+            //String razaosocialEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
             String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(view.getCnpjColigadaTextField()).getValue(); // @TODO: Obter da view
-            char tipoPessoaEmpresaColigada = (char) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
+            //char tipoPessoaEmpresaColigada = (char) linhaEmpresaColigada.getItemProperty("?????????").getValue(); // @TODO: Obter da view
 
-            Empresa subempresa = model.criarNovaEmpresa(nomeFantasiaEmpresaColigada,
-                    razaosocialEmpresaColigada, cpfCnpjEmpresaColigada, tipoPessoaEmpresaColigada);
+            // Comentei este método pois para coligada só teremos dois campos
+            // Empresa subempresa = model.criarNovaEmpresa(nomeFantasiaEmpresaColigada,
+            //        razaosocialEmpresaColigada, cpfCnpjEmpresaColigada, tipoPessoaEmpresaColigada);
+             
+            Empresa subempresa = model.criarNovaEmpresaColigada(nomeFantasiaEmpresaColigada, cpfCnpjEmpresaColigada);
             model.relacionarEmpresaColigada(empresa, subempresa);
 
         });
@@ -372,12 +380,9 @@ public class SignupPresenter implements SignupViewListener {
     @Override
     public void okButtonClicked() {
 
-        System.out.println("teste1");
         // valida o preenchimento dos campos obrigatórios
         view.validate();
         
-        System.out.println("teste");
-
         if (!validaDadosUsuarioPrincipal()) {
             return;
         }

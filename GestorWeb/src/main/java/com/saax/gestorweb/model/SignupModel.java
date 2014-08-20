@@ -211,6 +211,26 @@ public class SignupModel {
         return empresa;
 
     }
+    
+    /**
+     * Cria e retorna uma empresa coligada com os parametros informados
+     *
+     * @param nomeFantasia
+     * @param cnpjCpf
+     *
+     * @return nova empresa criada
+     */
+     public Empresa criarNovaEmpresaColigada(String nomeFantasia, String cnpjCpf) {
+        Empresa empresa = new Empresa();
+
+        empresa.setNome(nomeFantasia);
+        empresa.setCpf(cnpjCpf);
+       
+        empresa.setAtiva(true);
+
+        return empresa;
+
+    }
 
     /**
      * Cria e retorna uma filial de empresa com os parametros informados

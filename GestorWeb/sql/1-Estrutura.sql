@@ -312,6 +312,33 @@ CREATE TABLE ParticipanteTarefa (
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
 );
 
+
+-- Andamento tarefa
+DROP TABLE IF EXISTS AndamentoTarefa CASCADE;
+CREATE TABLE AndamentoTarefa (
+    idAndamentoTarefa SERIAL NOT NULL PRIMARY KEY, 
+    idTarefa BIGINT NOT NULL, 
+    comentario CHARACTER VARYING (50),
+    andamentoAtual INTEGER NOT NULL,
+    idUsuarioInclusao INTEGER NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL,
+    FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
+    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
+);
+
+-- Bloqueio tarefa
+DROP TABLE IF EXISTS BloqueioTarefa CASCADE;
+CREATE TABLE BloqueioTarefa (
+    idBloqueioTarefa SERIAL NOT NULL PRIMARY KEY, 
+    idTarefa BIGINT NOT NULL, 
+    motivo CHARACTER VARYING (50),
+    idUsuarioInclusao INTEGER NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraRemocao TIMESTAMP,
+    FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
+    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
+);
+
 -- Anexos Tarefa
 DROP TABLE IF EXISTS AnexoTarefa CASCADE;
 CREATE TABLE AnexoTarefa (
@@ -390,3 +417,5 @@ CREATE TABLE FavoritosTarefaMeta  (
 -- 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 --          1         1         1         1         1         1         1         1         1         1
 
+
+tarefa.setDataHoraInclusao(LocalDateTime.now());

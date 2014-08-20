@@ -3,6 +3,7 @@ package com.saax.gestorweb.model.datamodel;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -53,6 +54,20 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao")})
 public class Tarefa implements Serializable {
 
+    /**
+     * @return the serialVersionUID
+     */
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    /**
+     * @param aSerialVersionUID the serialVersionUID to set
+     */
+    public static void setSerialVersionUID(long aSerialVersionUID) {
+        serialVersionUID = aSerialVersionUID;
+    }
+
     @Transient
     private String globalID;
 
@@ -63,7 +78,7 @@ public class Tarefa implements Serializable {
     
     
     
-    private static final long serialVersionUID = 1L;
+    private static long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -184,21 +199,23 @@ public class Tarefa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
     private List<AnexoTarefa> anexos;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datainicio")
-    @Convert(converter = LocalDatePersistenceConverter.class)
-    private LocalDate dataInicio;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+    private List<AndamentoTarefa> andamentos;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datafim")
-    @Convert(converter = LocalDatePersistenceConverter.class)
-    private LocalDate dataFim;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+    private List<BloqueioTarefa> bloqueios;
 
     @Column(name = "datatermino")
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataTermino;
+    
+    @Column(name = "datainicio")
+    @Convert(converter = LocalDatePersistenceConverter.class)
+    private LocalDate dataInicio;
+    
+    @Column(name = "datafim")
+    @Convert(converter = LocalDatePersistenceConverter.class)
+    private LocalDate dataFim;
     
     @Basic(optional = false)
     @NotNull
@@ -271,7 +288,7 @@ public class Tarefa implements Serializable {
     }
 
     public boolean getApontamentoHoras() {
-        return apontamentoHoras;
+        return isApontamentoHoras();
     }
 
     public void setApontamentoHoras(boolean apontamentoHoras) {
@@ -279,7 +296,7 @@ public class Tarefa implements Serializable {
     }
 
     public boolean getOrcamentoControlado() {
-        return orcamentoControlado;
+        return isOrcamentoControlado();
     }
 
     public void setOrcamentoControlado(boolean orcamentoControlado) {
@@ -418,7 +435,7 @@ public class Tarefa implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (getId() != null ? getId().hashCode() : 0);
         return hash;
     }
 
@@ -429,7 +446,7 @@ public class Tarefa implements Serializable {
             return false;
         }
         Tarefa other = (Tarefa) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -437,7 +454,7 @@ public class Tarefa implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.Tarefa[ idtarefa=" + id + " ]";
+        return "com.saax.gestorweb.Tarefa[ idtarefa=" + getId() + " ]";
     }
 
     public StatusTarefa getStatus() {
@@ -472,12 +489,32 @@ public class Tarefa implements Serializable {
         this.tipo = tipo;
     }
 
-    public LocalDate getDataInicio() {
-        return dataInicio;
+
+    public void setAndamentos(List<AndamentoTarefa> andamentos) {
+        this.andamentos = andamentos;
     }
 
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
+    public List<AndamentoTarefa> getAndamentos() {
+        return andamentos;
+    }
+
+    public void addAndamento(AndamentoTarefa andamentoTarefa) {
+        if (getAndamentos()==null){
+            setAndamentos(new ArrayList<>());
+        }
+        getAndamentos().add(andamentoTarefa);
+    }
+
+    public void setDataTermino(LocalDate dataTermino) {
+        this.dataTermino = dataTermino;
+    }
+
+    public List<BloqueioTarefa> getBloqueios() {
+        return bloqueios;
+    }
+
+    public void setBloqueios(List<BloqueioTarefa> bloqueios) {
+        this.bloqueios = bloqueios;
     }
 
     public LocalDate getDataFim() {
@@ -488,20 +525,54 @@ public class Tarefa implements Serializable {
         this.dataFim = dataFim;
     }
 
+    /**
+     * @return the apontamentoHoras
+     */
+    public boolean isApontamentoHoras() {
+        return apontamentoHoras;
+    }
+
+    /**
+     * @return the orcamentoControlado
+     */
+    public boolean isOrcamentoControlado() {
+        return orcamentoControlado;
+    }
+
+    /**
+     * @return the dataTermino
+     */
     public LocalDate getDataTermino() {
         return dataTermino;
     }
 
-    public void setDataTermino(LocalDate dataTermino) {
-        this.dataTermino = dataTermino;
+    /**
+     * @return the dataInicio
+     */
+    public LocalDate getDataInicio() {
+        return dataInicio;
     }
 
+    /**
+     * @param dataInicio the dataInicio to set
+     */
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    /**
+     * @return the dataHoraInclusao
+     */
     public LocalDateTime getDataHoraInclusao() {
         return dataHoraInclusao;
     }
 
+    /**
+     * @param dataHoraInclusao the dataHoraInclusao to set
+     */
     public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
         this.dataHoraInclusao = dataHoraInclusao;
     }
+    
     
 }

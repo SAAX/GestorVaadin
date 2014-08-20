@@ -1,24 +1,27 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+
 import com.saax.gestorweb.model.DashboardModel;
+import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
-import com.vaadin.data.Property;
+import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.PopupView;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -144,6 +147,28 @@ public class DashboardPresenter implements DashboardViewListenter {
         exibirListaTarefas(listaTarefas);
 
     }
+    
+
+    private PopupView buildPopUp2(Tarefa tarefa){
+        
+        return new PopupView(new PopupTextFieldContent());
+    }
+    
+    
+    // Create a dynamically updating content for the popup
+    class PopupTextFieldContent implements PopupView.Content {
+        private final TextField textField = new TextField("Minimized HTML content", "Click to edit");
+
+        @Override
+        public final Component getPopupComponent() {
+            return textField;
+        }
+
+        @Override
+        public final String getMinimizedValueAsHTML() {
+            return textField.getValue();
+        }
+    };    
 
     /**
      * Constrói o pop up de alteração de status e/ou andamento de tarefas neste
@@ -153,58 +178,44 @@ public class DashboardPresenter implements DashboardViewListenter {
      * @param tarefa
      * @return
      */
-    private PopupButton buildBotaoStatus(Tarefa tarefa) {
+    private PopupButton buildPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
 
-        // criar o botão com o status atual tarefa em seu caption
-        PopupButton statusButton = new PopupButton(getStatusTarefaDescription(tarefa));
-
-        // vincula o botão a tarefa
-        statusButton.setId(tarefa.getId().toString());
+        // comportmento e regras:
+        PopUpEvolucaoStatusView view = new PopUpEvolucaoStatusView();
+        PopUpEvolucaoStatusModel model = new PopUpEvolucaoStatusModel();
+                
+        PopUpEvolucaoStatusPresenter presenter = new PopUpEvolucaoStatusPresenter(view,model);
+        
+        presenter.load(tarefa);
 
         // evento disparado quando o pop-up se torna visivel:
         // seleciona a linha correta na tabela
-        statusButton.addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
+        presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
             if (event.isPopupVisible()) {
                 // selecionar a linha clicada:
                 Integer idTarefa = Integer.parseInt(event.getPopupButton().getId());
-                view.getTarefasTable().setValue(idTarefa);
+                this.view.getTarefasTable().setValue(idTarefa);
             }
         });
+        
+        
 
+        return presenter.getStatusButton();
+        
+        
+       //---------------------------------------------------------------------------
+        
+/*
+
+
+        
+        
         // Se a tarefa estiver em andamento o pop-up será com um 
         // combo para seleção do andamento
         if (tarefa.getStatus().equals(StatusTarefa.EM_ANDAMENTO)) {
 
-            statusButton.setCaption(getStatusTarefaDescription(tarefa));
+            
 
-            HorizontalLayout popupContainer = new HorizontalLayout();
-            popupContainer.setSpacing(true);
-
-            ComboBox andamentoTarefaCombo = new ComboBox("Indique o andamento da Tarefa:");
-
-            andamentoTarefaCombo.addItem(0);
-            andamentoTarefaCombo.setItemCaption(0, "0%");
-
-            andamentoTarefaCombo.addItem(25);
-            andamentoTarefaCombo.setItemCaption(25, "25%");
-
-            andamentoTarefaCombo.addItem(50);
-            andamentoTarefaCombo.setItemCaption(50, "50%");
-
-            andamentoTarefaCombo.addItem(75);
-            andamentoTarefaCombo.setItemCaption(75, "75%");
-
-            andamentoTarefaCombo.addItem(100);
-            andamentoTarefaCombo.setItemCaption(100, "100%");
-
-            andamentoTarefaCombo.setWidth("100px");
-
-            popupContainer.addComponent(andamentoTarefaCombo);
-
-            /**
-             * Metodo executado quando o botao de confirmaçao (OK) do pop up de
-             * andamento da tarefa eh acionado
-             */
             Button okButton = new Button("OK", (Button.ClickEvent event) -> {
 
                 Integer idTarefa = (Integer) view.getTarefasTable().getValue();
@@ -243,7 +254,9 @@ public class DashboardPresenter implements DashboardViewListenter {
             // Colocar tratamentos futuros no caso de outras alteraçoes de status
             // como bloquear, cancelar, etc.
         }
-        return statusButton;
+        return statusButton;*/
+        
+        
     }
 
     /*
@@ -314,7 +327,7 @@ public class DashboardPresenter implements DashboardViewListenter {
                 tarefa.getUsuarioResponsavel().getNome(),
                 FormatterUtil.formatDate(tarefa.getDataInicio()),
                 FormatterUtil.formatDate(tarefa.getDataFim()),
-                buildBotaoStatus(tarefa),
+                buildPopUpEvolucaoStatusEAndamento(tarefa),
                 tarefa.getProjecao().toString().charAt(0),
                 new Button("E"),
                 new Button("C")
@@ -404,28 +417,5 @@ public class DashboardPresenter implements DashboardViewListenter {
 
     }
 
-    private String getStatusTarefaDescription(Tarefa tarefa) {
 
-        StatusTarefa statusTarefa = tarefa.getStatus();
-
-        switch (statusTarefa) {
-            case NAO_ACEITA:
-                return mensagens.getString("StatusTarefa.NAO_ACEITA");
-            case NAO_INICIADA:
-                return mensagens.getString("StatusTarefa.NAO_INICIADA");
-            case EM_ANDAMENTO:
-                return mensagens.getString("StatusTarefa.EM_ANDAMENTO") + tarefa.getAndamento() + "%";
-            case ADIADA:
-                return mensagens.getString("StatusTarefa.ADIADA");
-            case BLOQUEADA:
-                return mensagens.getString("StatusTarefa.BLOQUEADA");
-            case CONCLUIDA:
-                return mensagens.getString("StatusTarefa.CONCLUIDA");
-            case CANCELADA:
-                return mensagens.getString("StatusTarefa.CANCELADA");
-            default:
-                throw new AssertionError();
-        }
-
-    }
 }

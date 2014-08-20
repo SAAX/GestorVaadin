@@ -1,22 +1,16 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.dao.GenericDAO;
-import com.saax.gestorweb.dao.TarefaDAO;
-import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
-import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorException;
-import com.saax.gestorweb.util.PostgresConnection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Classe de negócios do Dasboard
@@ -194,21 +188,5 @@ public class DashboardModel {
      }
 
      */
-    public Tarefa atualizarAndamentoTarefa(Integer idTarefa, Integer andamento) {
-
-        TarefaDAO tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
-
-        tarefa.setAndamento(andamento);
-
-        try {
-            tarefaDAO.edit(tarefa);
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       
-        return tarefa;
-    }
+   
 }

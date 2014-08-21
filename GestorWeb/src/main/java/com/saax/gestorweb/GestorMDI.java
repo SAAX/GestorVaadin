@@ -122,6 +122,8 @@ public class GestorMDI extends UI {
         setSizeFull();
 
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Atendimento de requisição concluído.");
+        
+        getSession().setAttribute("userData", getUserData());
     }
 
 

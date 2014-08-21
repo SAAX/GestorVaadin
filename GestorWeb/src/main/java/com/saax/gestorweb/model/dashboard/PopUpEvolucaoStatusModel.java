@@ -5,12 +5,14 @@ import com.saax.gestorweb.dao.AndamentoTarefaDAO;
 import com.saax.gestorweb.dao.TarefaDAO;
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
 import com.saax.gestorweb.model.DashboardModel;
+import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.PostgresConnection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,4 +87,5 @@ public class PopUpEvolucaoStatusModel {
             Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

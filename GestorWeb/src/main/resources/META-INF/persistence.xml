@@ -15,12 +15,12 @@
     <class>com.saax.gestorweb.model.datamodel.Cidade</class>
     <class>com.saax.gestorweb.model.datamodel.Endereco</class>
     <class>com.saax.gestorweb.model.datamodel.Estado</class>
+    <class>com.saax.gestorweb.model.datamodel.Tarefa</class>
     <class>com.saax.gestorweb.model.datamodel.AnexoTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.ApontamentoTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta</class>
     <class>com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.OrcamentoTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.Tarefa</class>
     <class>com.saax.gestorweb.model.datamodel.StatusTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.PrioridadeTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.TipoTarefa</class>

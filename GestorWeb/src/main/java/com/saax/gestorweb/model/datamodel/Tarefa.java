@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -572,6 +573,26 @@ public class Tarefa implements Serializable {
      */
     public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
         this.dataHoraInclusao = dataHoraInclusao;
+    }
+
+    public List<HistoricoTarefa> buildHistorico() {
+        List<HistoricoTarefa> historico = new ArrayList<>();
+
+        historico.add(new HistoricoTarefa(dataHoraInclusao, "Tarefa criada", usuarioInclusao));
+        
+        andamentos.stream().forEach((andamentoEl) -> {
+            historico.add(andamentoEl.buildHistorico());
+        });
+        
+        apontamentos.stream().forEach((apontamento) -> {
+            historico.add(apontamento.buildHistorico());
+        });
+        
+        // @TODO: complementar
+        
+        Collections.sort(historico);
+        
+        return historico;
     }
     
     

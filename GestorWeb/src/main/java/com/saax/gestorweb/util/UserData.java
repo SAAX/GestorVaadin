@@ -1,6 +1,7 @@
 package com.saax.gestorweb.util;
 
 import com.saax.gestorweb.model.datamodel.Usuario;
+import java.io.Serializable;
 import java.util.ResourceBundle;
 
 /**
@@ -8,7 +9,7 @@ import java.util.ResourceBundle;
  * É um JavaBean (POJO) que reune em um só lugar todos os dados de sessão
  * @author Rodrigo
  */
-public class UserData {
+public class UserData implements Serializable {
     
     // Usuário logado
     private Usuario usuarioLogado;

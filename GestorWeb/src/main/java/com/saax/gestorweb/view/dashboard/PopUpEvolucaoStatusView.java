@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view.dashboard;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
@@ -10,11 +11,14 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -34,6 +38,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     private Button tarefaConcluidaButton;
     private Button bloquearTarefaButton;
     private PopupView popUpMotivoBloqueio;
+    private Button historicoTarefaButton;
     
     public void setListener(PopUpEvolucaoStatusViewListener listener) {
         this.listener = listener;
@@ -99,25 +104,30 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         main.addComponent(comboAndamentoContainer);
 
         // ---------------------------------------------------------------------
-        // Campos para alterar status 
+        // Campos para alterar status / Historico
         // ---------------------------------------------------------------------
         
         HorizontalLayout alterarStatusContainer = new HorizontalLayout();
         
-        alterarStatusContainer.addComponent(new Label("Ou marque:"));
         alterarStatusContainer.setSpacing(true);
         
-        tarefaConcluidaButton = new Button("Conluída");
+        tarefaConcluidaButton = new Button("Tarefa Conluída");
         tarefaConcluidaButton.addClickListener((Button.ClickEvent event) -> {
             listener.concluirTarefaClicked();
         });
         alterarStatusContainer.addComponent(tarefaConcluidaButton);
         
-        bloquearTarefaButton = new Button("Bloqueada");
+        bloquearTarefaButton = new Button("Bloquear Tarefa");
         bloquearTarefaButton.addClickListener((Button.ClickEvent event) -> {
             listener.bloquearTarefaClicked();
         });
         alterarStatusContainer.addComponent(bloquearTarefaButton);
+        
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(historicoTarefaButton);
         
         main.addComponent(alterarStatusContainer);
         
@@ -173,6 +183,38 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
     public void selecionaComboAndamento(int andamento) {
         andamentoTarefaCombo.select(andamento);
+    }
+
+    public void apresentaHistorico(List<HistoricoTarefa> historico) {
+         
+        Window subWindow = new Window("histórico");
+
+        VerticalLayout subContent = new VerticalLayout();
+        subContent.setMargin(true);
+        subWindow.setContent(subContent);
+        
+        // Put some components in it
+        subContent.addComponent(new Label("Meatball sub"));
+        subContent.addComponent(new Button("Awlright"));
+        
+        ListSelect sample = new ListSelect();
+        
+        for (HistoricoTarefa historicoEl : historico) {
+            
+            sample.addItem(historicoEl);
+            sample.setItemCaption(historicoEl, historicoEl.getMomento().toString() + "\t" + historicoEl.getUsuario().getNome() 
+                    + "\t" + historicoEl.getDescricao());
+        }
+
+        sample.setRows(6); // perfect length in out case
+        sample.setNullSelectionAllowed(true); // user can not 'unselect'
+
+        // Center it in the browser window
+        subWindow.center();
+        
+        // Open it in the UI
+        UI.getCurrent().addWindow(subWindow);
+ 
     }
 
     

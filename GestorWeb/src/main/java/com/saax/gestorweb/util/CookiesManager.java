@@ -1,6 +1,7 @@
 package com.saax.gestorweb.util;
 
 import com.vaadin.server.VaadinService;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +12,7 @@ import javax.servlet.http.Cookie;
  *
  * @author Rodrigo
  */
-public class CookiesManager {
+public class CookiesManager implements Serializable {
 
     private final Set<Cookie> cookies;
 

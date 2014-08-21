@@ -418,4 +418,3 @@ CREATE TABLE FavoritosTarefaMeta  (
 --          1         1         1         1         1         1         1         1         1         1
 
 
-tarefa.setDataHoraInclusao(LocalDateTime.now());

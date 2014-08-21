@@ -169,5 +169,24 @@ public class ApontamentoTarefa implements Serializable {
     public String toString() {
         return "com.saax.gestorweb.ApontamentoTarefa[ idapontamentotarefa=" + id + " ]";
     }
+
+    public HistoricoTarefa buildHistorico(){
+        
+        StringBuilder descricao = new StringBuilder();
+        
+        descricao.append("Registrado ");
+        if (getSentido()=='C'){
+            descricao.append("Crédito ");
+        } else {
+            descricao.append("Débito ");
+            
+        }
+        descricao.append("de ");
+        descricao.append(getHoras().toString());
+        descricao.append("com comentário: ");
+        descricao.append(getObservacoes());
+        
+        return new HistoricoTarefa(dataHoraInclusao, descricao.toString(),getUsuarioInclusao());
+    }
     
 }

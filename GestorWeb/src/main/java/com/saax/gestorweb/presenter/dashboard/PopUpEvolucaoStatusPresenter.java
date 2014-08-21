@@ -2,12 +2,18 @@ package com.saax.gestorweb.presenter.dashboard;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusViewListener;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import java.util.List;
 import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -46,7 +52,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
         statusButton = new PopupButton(getStatusTarefaDescription(tarefa));
         
         // vincula o botão a tarefa
-        statusButton.setId(tarefa.getId().toString());
+        statusButton.setId(tarefa.getGlobalID());
 
         configurarView();
         
@@ -82,17 +88,20 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     @Override
     public void processarAlteracaoAndamento() {
 
-        Integer idTarefa = tarefa.getId();
+        
+        if (statusButton.isPopupVisible()){
+            Integer idTarefa = tarefa.getId();
 
-        Integer andamento = (Integer) view.getAndamentoTarefaCombo().getValue();
-        String comentarioAndamento = view.getComentarioAndamento().getValue();
+            Integer andamento = (Integer) view.getAndamentoTarefaCombo().getValue();
+            String comentarioAndamento = view.getComentarioAndamento().getValue();
 
-        tarefa = model.atualizarAndamentoTarefa(usuario, idTarefa, andamento, comentarioAndamento);
+            tarefa = model.atualizarAndamentoTarefa(usuario, idTarefa, andamento, comentarioAndamento);
 
-        statusButton.setPopupVisible(false);
+            statusButton.setPopupVisible(false);
 
-        statusButton.setCaption(getStatusTarefaDescription(tarefa));
-
+            statusButton.setCaption(getStatusTarefaDescription(tarefa));
+            
+        }
     }
 
     private String getStatusTarefaDescription(Tarefa tarefa) {
@@ -144,6 +153,15 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
         model.bloquearTarefa(tarefa);
         */
     }
+
+    @Override
+    public void historicoTarefaClicked() {
+        List<HistoricoTarefa> historico = tarefa.buildHistorico();
+ 
+        view.apresentaHistorico(historico);
+       
+    }
+
 
     
     

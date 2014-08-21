@@ -22,6 +22,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +43,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class DashboardPresenter implements DashboardViewListenter {
+public class DashboardPresenter implements DashboardViewListenter, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient DashBoardView view;
@@ -193,7 +194,7 @@ public class DashboardPresenter implements DashboardViewListenter {
         presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
             if (event.isPopupVisible()) {
                 // selecionar a linha clicada:
-                Integer idTarefa = Integer.parseInt(event.getPopupButton().getId());
+                String idTarefa = event.getPopupButton().getId();
                 this.view.getTarefasTable().setValue(idTarefa);
             }
         });
@@ -333,7 +334,7 @@ public class DashboardPresenter implements DashboardViewListenter {
                 new Button("C")
             };
 
-            view.getTarefasTable().addItem(linha, tarefa.getId());
+            view.getTarefasTable().addItem(linha, tarefa.getGlobalID());
 
         }
 

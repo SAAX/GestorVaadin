@@ -16,5 +16,7 @@ public interface PopUpEvolucaoStatusViewListener {
     public void concluirTarefaClicked();
 
     public void bloquearTarefaClicked();
+
+    public void historicoTarefaClicked();
     
 }

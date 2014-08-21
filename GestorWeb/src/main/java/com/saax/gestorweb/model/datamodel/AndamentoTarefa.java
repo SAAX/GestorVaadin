@@ -6,11 +6,8 @@
 
 package com.saax.gestorweb.model.datamodel;
 
-import com.saax.gestorweb.model.datamodel.LocalDateTimePersistenceConverter;
-import com.saax.gestorweb.model.datamodel.Usuario;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -23,8 +20,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -157,6 +152,22 @@ public class AndamentoTarefa implements Serializable {
     @Override
     public String toString() {
         return "com.saax.gestorweb.AndamentoTarefa[ idandamentotarefa=" + id + " ]";
+    }
+    
+    public HistoricoTarefa buildHistorico(){
+        
+        StringBuilder descricao = new StringBuilder();
+        
+        descricao.append("Registrado andamento de ");
+        descricao.append(getAndamentoatual());
+        descricao.append("% ");
+        if (getComentario()!=null){
+            descricao.append("- ");
+            descricao.append(getComentario());
+        }
+        
+        
+        return new HistoricoTarefa(dataHoraInclusao, descricao.toString(),getUsuarioInclusao());
     }
     
 }

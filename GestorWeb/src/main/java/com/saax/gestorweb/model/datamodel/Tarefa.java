@@ -575,7 +575,7 @@ public class Tarefa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<HistoricoTarefa> buildHistorico() {
+    /*public List<HistoricoTarefa> buildHistorico() {
         List<HistoricoTarefa> historico = new ArrayList<>();
 
         historico.add(new HistoricoTarefa(dataHoraInclusao, "Tarefa criada", usuarioInclusao));
@@ -594,6 +594,6 @@ public class Tarefa implements Serializable {
         
         return historico;
     }
-    
+    */
     
 }

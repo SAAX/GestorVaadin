@@ -156,9 +156,9 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     @Override
     public void historicoTarefaClicked() {
-        List<HistoricoTarefa> historico = tarefa.buildHistorico();
+        //List<HistoricoTarefa> historico = tarefa.buildHistorico();
  
-        view.apresentaHistorico(historico);
+        //view.apresentaHistorico(historico);
        
     }
 

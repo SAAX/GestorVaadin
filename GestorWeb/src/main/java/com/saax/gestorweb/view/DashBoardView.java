@@ -2,6 +2,7 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.vaadin.data.Property;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
@@ -89,7 +90,6 @@ public class DashBoardView extends VerticalLayout {
     private OptionGroup filtroProjecaoOptionGroup;    
     private InlineDateField filtroDataFimDateField;
     private PopupButton filtroProjecaoButton;
-    private Button aplicarFiltroPesquisa;
     private Button removerFiltroPesquisa;
     
     // filtrosPesquisaContainer -> filtrosPesquisaEsquerdaContainer:
@@ -226,14 +226,24 @@ public class DashBoardView extends VerticalLayout {
         // filtro por usuarios
         filtroUsuarioAccordion = new Accordion();
         
+        filtroUsuarioResponsavelOptionGroup = new OptionGroup();
+        getFiltroUsuarioResponsavelOptionGroup().setMultiSelect(true);
+        getFiltroUsuarioResponsavelOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
+            getListener().aplicarFiltroPesquisa();
+        });
+
         filtroUsuarioSolicitanteOptionGroup = new OptionGroup();
         getFiltroUsuarioSolicitanteOptionGroup().setMultiSelect(true);
+        getFiltroUsuarioSolicitanteOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
+            getListener().aplicarFiltroPesquisa();
+        });
+        
         
         filtroUsuarioParticipanteOptionGroup = new OptionGroup();
         getFiltroUsuarioParticipanteOptionGroup().setMultiSelect(true);
-        
-        filtroUsuarioResponsavelOptionGroup = new OptionGroup();
-        getFiltroUsuarioResponsavelOptionGroup().setMultiSelect(true);
+        getFiltroUsuarioParticipanteOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
+            getListener().aplicarFiltroPesquisa();
+        });
         
         getFiltroUsuarioAccordion().addTab(getFiltroUsuarioResponsavelOptionGroup(), "Responsável");
         getFiltroUsuarioAccordion().addTab(getFiltroUsuarioSolicitanteOptionGroup(), "Solicitante");
@@ -247,6 +257,10 @@ public class DashBoardView extends VerticalLayout {
         // filtro por empresa
         filtroEmpresaOptionGroup = new OptionGroup();
         getFiltroEmpresaOptionGroup().setMultiSelect(true);
+        getFiltroEmpresaOptionGroup().setMultiSelect(true);
+        getFiltroEmpresaOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
+            getListener().aplicarFiltroPesquisa();
+        });
         
         filtroEmpresaButton = new PopupButton("Empresa");
         getFiltroEmpresaButton().setContent(getFiltroEmpresaOptionGroup());
@@ -255,20 +269,24 @@ public class DashBoardView extends VerticalLayout {
         // filtro por data fim 
         filtroDataFimButton = new PopupButton("Data Fim");
         filtroDataFimDateField = new InlineDateField();
+        getFiltroDataFimDateField().addValueChangeListener((Property.ValueChangeEvent event) -> {
+            getListener().aplicarFiltroPesquisa();
+        });
+
+        
         getFiltroDataFimButton().setContent(getFiltroDataFimDateField());
         getFiltrosPesquisaEsquerdaContainer().addComponent(getFiltroDataFimButton());
         
         filtroProjecaoOptionGroup = new OptionGroup();
         getFiltroProjecaoOptionGroup().setMultiSelect(true);
+        getFiltroProjecaoOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
+            getListener().aplicarFiltroPesquisa();
+        });
         
         filtroProjecaoButton = new PopupButton("Projeçao");
         getFiltroProjecaoButton().setContent(getFiltroProjecaoOptionGroup());
+        
         getFiltrosPesquisaEsquerdaContainer().addComponent(getFiltroProjecaoButton());
-
-        aplicarFiltroPesquisa = new Button("Aplicar", (Button.ClickEvent event) -> {
-            getListener().aplicarFiltroPesquisa();
-        });
-        getFiltrosPesquisaEsquerdaContainer().addComponent(getAplicarFiltroPesquisa());
         
         removerFiltroPesquisa = new Button("Remover Filtros", (Button.ClickEvent event) -> {
             getListener().removerFiltrosPesquisa();
@@ -459,14 +477,6 @@ public class DashBoardView extends VerticalLayout {
      */
     public TreeTable getTarefasTable() {
         return tarefasTable;
-    }
-
-    /**
-     * 
-     * @return aplicarFiltroPesquisa
-     */
-    public Button getAplicarFiltroPesquisa() {
-        return aplicarFiltroPesquisa;
     }
 
     public OptionGroup getFiltroProjecaoOptionGroup() {

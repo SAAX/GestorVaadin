@@ -18,9 +18,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * Entity bean da tabela Avaliacao Meta - Tarefa com as namequerys configuradas.<br><br>
- * 
- * O objetivo desta entidade e armazenar as avaliações feitas pelos solicitantes de metas e tarefas <br><br>
+ * Entity bean da tabela Avaliacao Meta - Tarefa com as namequerys
+ * configuradas.<br><br>
+ *
+ * O objetivo desta entidade e armazenar as avaliações feitas pelos solicitantes
+ * de metas e tarefas <br><br>
  *
  * @author rodrigo
  */
@@ -34,42 +36,42 @@ import javax.validation.constraints.Size;
 public class AvaliacaoMetaTarefa implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idavaliacaometatarefa")
     private Integer id;
-  
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "avaliacao")
     private int avaliacao;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 150)
     @Column(name = "comentario")
     private String comentario;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
-    
+
     @JoinColumn(name = "idmeta", referencedColumnName = "idmeta")
     @ManyToOne(optional = false)
     private Meta meta;
-    
+
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
     private Tarefa tarefa;
-    
+
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuarioInclusao;
-    
+
     @JoinColumn(name = "idusuarioavaliador", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuarioAvaliador;
@@ -188,5 +190,17 @@ public class AvaliacaoMetaTarefa implements Serializable {
     public String toString() {
         return "com.saax.gestorweb.AvaliacaoMetaTarefa[ idavaliacaometatarefa=" + id + " ]";
     }
-    
+/*
+    public HistoricoTarefaBackup buildHistorico() {
+
+        StringBuilder descricao = new StringBuilder();
+
+        descricao.append("Avaliada com ");
+        descricao.append(getAvaliacao());
+        descricao.append(" estrelas: ");
+        descricao.append(getComentario() == null ? "" : getComentario());
+
+        return new HistoricoTarefaBackup(dataHoraInclusao, descricao.toString(), getUsuarioAvaliado());
+    }
+*/
 }

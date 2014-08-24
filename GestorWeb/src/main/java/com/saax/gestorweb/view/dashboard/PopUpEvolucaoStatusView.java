@@ -5,24 +5,26 @@ import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
+import com.vaadin.shared.ui.label.ContentMode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.PopupView;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
 /**
- * 
+ *
  * @author rodrigo
  */
 public class PopUpEvolucaoStatusView extends CustomComponent {
@@ -35,11 +37,14 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     // Este acesso se dá por uma interface para manter a abstração das camadas
     private PopUpEvolucaoStatusViewListener listener;
     private ComboBox andamentoTarefaCombo;
-    private Button tarefaConcluidaButton;
     private Button bloquearTarefaButton;
-    private PopupView popUpMotivoBloqueio;
     private Button historicoTarefaButton;
-    
+    private TextArea motivoBloqueioTextArea;
+    private Button confirmarBloqueio;
+    private Button cancelarBloqueio;
+    private Button adiarTarefaButton;
+    private Button cancelarTarefaButton;
+
     public void setListener(PopUpEvolucaoStatusViewListener listener) {
         this.listener = listener;
     }
@@ -68,69 +73,59 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         main.addComponent(new Label(status.toString()));
     }
 
-    
     private TextField comentarioAndamento;
-    
+
     /**
-     * Carrega o modo de visualização onde o usuário responsável
-     * pode alterar uma tarefa em andamento
-     * São apresentados:
-     * 
-     * 1. Um campo de texto opcional para informar o andamento
-     * 2. O combo de andamento
-     * 3. Botão para alterar o status para: CONCLUIDA 
-     * 4. Botão para bloquear a tarefa, com campo de texto para o motivo.
-     * 
+     * Carrega o modo de visualização onde o usuário responsável pode alterar
+     * uma tarefa em andamento São apresentados:
+     *
+     * 1. Um campo de texto opcional para informar o andamento 2. O combo de
+     * andamento 3. Botão para alterar o status para: CONCLUIDA 4. Botão para
+     * bloquear a tarefa, com campo de texto para o motivo.
+     *
      */
     public void apresentaPerfilUsuarioResponsavelTarefaEmAndamento() {
-    
+
+        main.removeAllComponents();
+
         main.setSpacing(true);
-        
+
         // ---------------------------------------------------------------------
         // Campos de andamento da tarefa
         // ---------------------------------------------------------------------
-        
-        
         HorizontalLayout comboAndamentoContainer = new HorizontalLayout();
         comboAndamentoContainer.setSpacing(true);
 
         comentarioAndamento = new TextField();
         comentarioAndamento.setInputPrompt("Informe o progresso...");
-        
+
         comboAndamentoContainer.addComponent(comentarioAndamento);
-                
+
         comboAndamentoContainer.addComponent(buildAndamentoTarefaCombo());
-        
+
         main.addComponent(comboAndamentoContainer);
 
         // ---------------------------------------------------------------------
         // Campos para alterar status / Historico
         // ---------------------------------------------------------------------
-        
         HorizontalLayout alterarStatusContainer = new HorizontalLayout();
-        
+
         alterarStatusContainer.setSpacing(true);
-        
-        tarefaConcluidaButton = new Button("Tarefa Conluída");
-        tarefaConcluidaButton.addClickListener((Button.ClickEvent event) -> {
-            listener.concluirTarefaClicked();
-        });
-        alterarStatusContainer.addComponent(tarefaConcluidaButton);
-        
+
         bloquearTarefaButton = new Button("Bloquear Tarefa");
         bloquearTarefaButton.addClickListener((Button.ClickEvent event) -> {
             listener.bloquearTarefaClicked();
         });
         alterarStatusContainer.addComponent(bloquearTarefaButton);
-        
+
         historicoTarefaButton = new Button("Histórico");
         historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
             listener.historicoTarefaClicked();
         });
         alterarStatusContainer.addComponent(historicoTarefaButton);
-        
+
         main.addComponent(alterarStatusContainer);
-        
+
     }
 
     private ComboBox buildAndamentoTarefaCombo() {
@@ -162,7 +157,6 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
     }
 
-    
     public ComboBox getAndamentoTarefaCombo() {
         return andamentoTarefaCombo;
     }
@@ -171,14 +165,44 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         return comentarioAndamento;
     }
 
-
     public void apresentaPopUpMotivoBloqueio() {
-        popUpMotivoBloqueio = new PopupView("click", new TextField("Informe o motivo do bloqueio"));
-        popUpMotivoBloqueio.setPopupVisible(true);
-    }
 
-    public PopupView getPopUpMotivoBloqueio() {
-        return popUpMotivoBloqueio;
+        Window subWindow = new Window("Informe o motivo do bloqueio");
+        subWindow.setWidth("400px");
+        subWindow.setHeight("200px");
+
+        VerticalLayout subContent = new VerticalLayout();
+        subContent.setMargin(true);
+        subWindow.setContent(subContent);
+
+        motivoBloqueioTextArea = new TextArea();
+
+        subContent.addComponent(motivoBloqueioTextArea);
+        motivoBloqueioTextArea.setSizeFull();
+
+        HorizontalLayout barraDeBotoesContainer = new HorizontalLayout();
+        barraDeBotoesContainer.setWidth("100%");
+        barraDeBotoesContainer.setSpacing(true);
+
+        cancelarBloqueio = new Button("Cancelar Bloqueio", (Button.ClickEvent event) -> {
+            subWindow.close();
+        });
+        barraDeBotoesContainer.addComponent(cancelarBloqueio);
+        barraDeBotoesContainer.setComponentAlignment(cancelarBloqueio, Alignment.BOTTOM_LEFT);
+
+        confirmarBloqueio = new Button("Confirmar Bloqueio", (Button.ClickEvent event) -> {
+            listener.confirmarBloqueioClicked();
+            subWindow.close();
+        });
+        barraDeBotoesContainer.addComponent(confirmarBloqueio);
+        barraDeBotoesContainer.setComponentAlignment(confirmarBloqueio, Alignment.BOTTOM_RIGHT);
+
+        // Center it in the browser window
+        subWindow.center();
+
+        // Open it in the UI
+        UI.getCurrent().addWindow(subWindow);
+
     }
 
     public void selecionaComboAndamento(int andamento) {
@@ -186,53 +210,108 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     }
 
     public void apresentaHistorico(List<HistoricoTarefa> historico) {
-         
-        Window subWindow = new Window("histórico");
+
+        Window subWindow = new Window("Histórico");
+        subWindow.setWidth("400px");
+        subWindow.setHeight("200px");
 
         VerticalLayout subContent = new VerticalLayout();
         subContent.setMargin(true);
         subWindow.setContent(subContent);
-        
+
         // Put some components in it
-        subContent.addComponent(new Label("Meatball sub"));
-        subContent.addComponent(new Button("Awlright"));
-        
-        ListSelect sample = new ListSelect();
-        
+        ListSelect historicoList = new ListSelect();
+
         for (HistoricoTarefa historicoEl : historico) {
-            
-            sample.addItem(historicoEl);
-            sample.setItemCaption(historicoEl, historicoEl.getMomento().toString() + "\t" + historicoEl.getUsuario().getNome() 
-                    + "\t" + historicoEl.getDescricao());
+
+            historicoList.addItem(historicoEl);
+            historicoList.setItemCaption(historicoEl,
+                    historicoEl.getDatahora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                    + " [" + historicoEl.getUsuario().getNome() + "]"
+                    + " :: " + historicoEl.getEvento());
         }
 
-        sample.setRows(6); // perfect length in out case
-        sample.setNullSelectionAllowed(true); // user can not 'unselect'
+        historicoList.setNullSelectionAllowed(true);
+        historicoList.setSizeFull();
+
+        subContent.addComponent(historicoList);
 
         // Center it in the browser window
         subWindow.center();
-        
+
         // Open it in the UI
         UI.getCurrent().addWindow(subWindow);
- 
+
+    }
+
+    public TextArea getMotivoBloqueioTextArea() {
+        return motivoBloqueioTextArea;
+    }
+
+    /**
+     * Apresenta um pop-up ao usuario solicitante permitindo:   <br>
+     * 1. Adiar a tarefa <br>
+     * 2. Cancelar a tarefa  <br>
+     * 3. Ver histórico 
+     */
+    public void apresentaPerfilUsuarioSolicitante(int andamento, String motivoBloqueio) {
+
+        main.removeAllComponents();
+
+        main.setSpacing(true);
+
+        // ---------------------------------------------------------------------
+        // Campos de andamento da tarefa
+        // ---------------------------------------------------------------------
+        HorizontalLayout comboAndamentoContainer = new HorizontalLayout();
+        comboAndamentoContainer.setSpacing(true);
+
+        comboAndamentoContainer.addComponent(new Label("Tarefa: "));
+
+        comboAndamentoContainer.addComponent(buildAndamentoTarefaCombo());
+        comboAndamentoContainer.setEnabled(false);
+
+        comboAndamentoContainer.addComponent(new Label("concluída."));
+
+        main.addComponent(comboAndamentoContainer);
+
+        // ---------------------------------------------------------------------
+        // exibe motivo do bloqueio (se estiver bloqueada)
+        // ---------------------------------------------------------------------
+        if (motivoBloqueio != null) {
+            main.addComponent(new Label("<h2>Tarefa BLOQUEADA.</h2>", ContentMode.HTML));
+            main.addComponent(new Label("<p>Motivo: " + motivoBloqueio + "</p>", ContentMode.HTML));
+
+        }
+
+        // ---------------------------------------------------------------------
+        // Campos para alterar status / Historico
+        // ---------------------------------------------------------------------
+        HorizontalLayout alterarStatusContainer = new HorizontalLayout();
+
+        alterarStatusContainer.setSpacing(true);
+
+        adiarTarefaButton = new Button("Adiar Tarefa");
+        adiarTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.adiarTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(adiarTarefaButton);
+
+        cancelarTarefaButton = new Button("Cancelar Tarefa");
+        cancelarTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.cancelarTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(cancelarTarefaButton);
+
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(historicoTarefaButton);
+
+        main.addComponent(alterarStatusContainer);
+
     }
 
     
-    
-    
-    // Create a dynamically updating content for the popup
-    class PopupTextFieldContent implements PopupView.Content {
-        private final TextField textField = new TextField("Minimized HTML content", "Click to edit");
-
-        @Override
-        public final Component getPopupComponent() {
-            return textField;
-        }
-
-        @Override
-        public final String getMinimizedValueAsHTML() {
-            return textField.getValue();
-        }
-    };    
-
 }

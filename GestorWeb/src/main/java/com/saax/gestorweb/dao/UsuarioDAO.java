@@ -1,39 +1,43 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
-import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
-import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
+import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
+import java.util.ArrayList;
+import java.util.Collection;
+import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta;
+import java.util.List;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
+import com.saax.gestorweb.model.datamodel.Endereco;
+import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.FilialCliente;
+import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
+import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
+import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
-import com.saax.gestorweb.model.datamodel.Endereco;
-import com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta;
-import com.saax.gestorweb.model.datamodel.FilialCliente;
-import com.saax.gestorweb.model.datamodel.FilialEmpresa;
-import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
-import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
- * DAO para o entity bean: Usuario <br><br>
- * 
+ *
  * @author rodrigo
  */
 public class UsuarioDAO implements Serializable {
@@ -47,12 +51,7 @@ public class UsuarioDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    /**
-     * metodo padrao modificado para gravar data/hora de inclusao
-     * @param usuario 
-     */
     public void create(Usuario usuario) {
-        usuario.setDataHoraInclusao(LocalDateTime.now());
         if (usuario.getEmpresas() == null) {
             usuario.setEmpresas(new ArrayList<UsuarioEmpresa>());
         }
@@ -177,15 +176,15 @@ public class UsuarioDAO implements Serializable {
             }
             usuario.setTarefasSobResponsabilidade(attachedTarefasSobResponsabilidade);
             List<ParticipanteTarefa> attachedParicipacoesIncluidas = new ArrayList<ParticipanteTarefa>();
-            for (ParticipanteTarefa paricipacoesIncluidasParicipanteTarefaToAttach : usuario.getParicipacoesIncluidas()) {
-                paricipacoesIncluidasParicipanteTarefaToAttach = em.getReference(paricipacoesIncluidasParicipanteTarefaToAttach.getClass(), paricipacoesIncluidasParicipanteTarefaToAttach.getId());
-                attachedParicipacoesIncluidas.add(paricipacoesIncluidasParicipanteTarefaToAttach);
+            for (ParticipanteTarefa paricipacoesIncluidasParticipanteTarefaToAttach : usuario.getParicipacoesIncluidas()) {
+                paricipacoesIncluidasParticipanteTarefaToAttach = em.getReference(paricipacoesIncluidasParticipanteTarefaToAttach.getClass(), paricipacoesIncluidasParticipanteTarefaToAttach.getId());
+                attachedParicipacoesIncluidas.add(paricipacoesIncluidasParticipanteTarefaToAttach);
             }
             usuario.setParicipacoesIncluidas(attachedParicipacoesIncluidas);
             List<ParticipanteTarefa> attachedTarefasParticipantes = new ArrayList<ParticipanteTarefa>();
-            for (ParticipanteTarefa tarefasParticipantesParicipanteTarefaToAttach : usuario.getTarefasParticipantes()) {
-                tarefasParticipantesParicipanteTarefaToAttach = em.getReference(tarefasParticipantesParicipanteTarefaToAttach.getClass(), tarefasParticipantesParicipanteTarefaToAttach.getId());
-                attachedTarefasParticipantes.add(tarefasParticipantesParicipanteTarefaToAttach);
+            for (ParticipanteTarefa tarefasParticipantesParticipanteTarefaToAttach : usuario.getTarefasParticipantes()) {
+                tarefasParticipantesParticipanteTarefaToAttach = em.getReference(tarefasParticipantesParticipanteTarefaToAttach.getClass(), tarefasParticipantesParticipanteTarefaToAttach.getId());
+                attachedTarefasParticipantes.add(tarefasParticipantesParticipanteTarefaToAttach);
             }
             usuario.setTarefasParticipantes(attachedTarefasParticipantes);
             List<FilialCliente> attachedFiliaisClientesIncluidas = new ArrayList<FilialCliente>();
@@ -337,22 +336,22 @@ public class UsuarioDAO implements Serializable {
                     oldUsuarioResponsavelOfTarefasSobResponsabilidadeTarefa = em.merge(oldUsuarioResponsavelOfTarefasSobResponsabilidadeTarefa);
                 }
             }
-            for (ParticipanteTarefa paricipacoesIncluidasParicipanteTarefa : usuario.getParicipacoesIncluidas()) {
-                Usuario oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa = paricipacoesIncluidasParicipanteTarefa.getUsuarioInclusao();
-                paricipacoesIncluidasParicipanteTarefa.setUsuarioInclusao(usuario);
-                paricipacoesIncluidasParicipanteTarefa = em.merge(paricipacoesIncluidasParicipanteTarefa);
-                if (oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa != null) {
-                    oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa.getParicipacoesIncluidas().remove(paricipacoesIncluidasParicipanteTarefa);
-                    oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa = em.merge(oldUsuarioInclusaoOfParicipacoesIncluidasParicipanteTarefa);
+            for (ParticipanteTarefa paricipacoesIncluidasParticipanteTarefa : usuario.getParicipacoesIncluidas()) {
+                Usuario oldUsuarioInclusaoOfParicipacoesIncluidasParticipanteTarefa = paricipacoesIncluidasParticipanteTarefa.getUsuarioInclusao();
+                paricipacoesIncluidasParticipanteTarefa.setUsuarioInclusao(usuario);
+                paricipacoesIncluidasParticipanteTarefa = em.merge(paricipacoesIncluidasParticipanteTarefa);
+                if (oldUsuarioInclusaoOfParicipacoesIncluidasParticipanteTarefa != null) {
+                    oldUsuarioInclusaoOfParicipacoesIncluidasParticipanteTarefa.getParicipacoesIncluidas().remove(paricipacoesIncluidasParticipanteTarefa);
+                    oldUsuarioInclusaoOfParicipacoesIncluidasParticipanteTarefa = em.merge(oldUsuarioInclusaoOfParicipacoesIncluidasParticipanteTarefa);
                 }
             }
-            for (ParticipanteTarefa tarefasParticipantesParicipanteTarefa : usuario.getTarefasParticipantes()) {
-                Usuario oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa = tarefasParticipantesParicipanteTarefa.getUsuarioParticipante();
-                tarefasParticipantesParicipanteTarefa.setUsuarioParticipante(usuario);
-                tarefasParticipantesParicipanteTarefa = em.merge(tarefasParticipantesParicipanteTarefa);
-                if (oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa != null) {
-                    oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa.getTarefasParticipantes().remove(tarefasParticipantesParicipanteTarefa);
-                    oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa = em.merge(oldUsuarioParticipanteOfTarefasParticipantesParicipanteTarefa);
+            for (ParticipanteTarefa tarefasParticipantesParticipanteTarefa : usuario.getTarefasParticipantes()) {
+                Usuario oldUsuarioParticipanteOfTarefasParticipantesParticipanteTarefa = tarefasParticipantesParticipanteTarefa.getUsuarioParticipante();
+                tarefasParticipantesParticipanteTarefa.setUsuarioParticipante(usuario);
+                tarefasParticipantesParticipanteTarefa = em.merge(tarefasParticipantesParticipanteTarefa);
+                if (oldUsuarioParticipanteOfTarefasParticipantesParticipanteTarefa != null) {
+                    oldUsuarioParticipanteOfTarefasParticipantesParticipanteTarefa.getTarefasParticipantes().remove(tarefasParticipantesParticipanteTarefa);
+                    oldUsuarioParticipanteOfTarefasParticipantesParticipanteTarefa = em.merge(oldUsuarioParticipanteOfTarefasParticipantesParticipanteTarefa);
                 }
             }
             for (FilialCliente filiaisClientesIncluidasFilialCliente : usuario.getFiliaisClientesIncluidas()) {
@@ -580,20 +579,20 @@ public class UsuarioDAO implements Serializable {
                     illegalOrphanMessages.add("You must retain Tarefa " + tarefasSobResponsabilidadeOldTarefa + " since its usuarioResponsavel field is not nullable.");
                 }
             }
-            for (ParticipanteTarefa paricipacoesIncluidasOldParicipanteTarefa : paricipacoesIncluidasOld) {
-                if (!paricipacoesIncluidasNew.contains(paricipacoesIncluidasOldParicipanteTarefa)) {
+            for (ParticipanteTarefa paricipacoesIncluidasOldParticipanteTarefa : paricipacoesIncluidasOld) {
+                if (!paricipacoesIncluidasNew.contains(paricipacoesIncluidasOldParticipanteTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + paricipacoesIncluidasOldParicipanteTarefa + " since its usuarioInclusao field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ParticipanteTarefa " + paricipacoesIncluidasOldParticipanteTarefa + " since its usuarioInclusao field is not nullable.");
                 }
             }
-            for (ParticipanteTarefa tarefasParticipantesOldParicipanteTarefa : tarefasParticipantesOld) {
-                if (!tarefasParticipantesNew.contains(tarefasParticipantesOldParicipanteTarefa)) {
+            for (ParticipanteTarefa tarefasParticipantesOldParticipanteTarefa : tarefasParticipantesOld) {
+                if (!tarefasParticipantesNew.contains(tarefasParticipantesOldParticipanteTarefa)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain ParicipanteTarefa " + tarefasParticipantesOldParicipanteTarefa + " since its usuarioParticipante field is not nullable.");
+                    illegalOrphanMessages.add("You must retain ParticipanteTarefa " + tarefasParticipantesOldParticipanteTarefa + " since its usuarioParticipante field is not nullable.");
                 }
             }
             for (FilialCliente filiaisClientesIncluidasOldFilialCliente : filiaisClientesIncluidasOld) {
@@ -748,16 +747,16 @@ public class UsuarioDAO implements Serializable {
             tarefasSobResponsabilidadeNew = attachedTarefasSobResponsabilidadeNew;
             usuario.setTarefasSobResponsabilidade(tarefasSobResponsabilidadeNew);
             List<ParticipanteTarefa> attachedParicipacoesIncluidasNew = new ArrayList<ParticipanteTarefa>();
-            for (ParticipanteTarefa paricipacoesIncluidasNewParicipanteTarefaToAttach : paricipacoesIncluidasNew) {
-                paricipacoesIncluidasNewParicipanteTarefaToAttach = em.getReference(paricipacoesIncluidasNewParicipanteTarefaToAttach.getClass(), paricipacoesIncluidasNewParicipanteTarefaToAttach.getId());
-                attachedParicipacoesIncluidasNew.add(paricipacoesIncluidasNewParicipanteTarefaToAttach);
+            for (ParticipanteTarefa paricipacoesIncluidasNewParticipanteTarefaToAttach : paricipacoesIncluidasNew) {
+                paricipacoesIncluidasNewParticipanteTarefaToAttach = em.getReference(paricipacoesIncluidasNewParticipanteTarefaToAttach.getClass(), paricipacoesIncluidasNewParticipanteTarefaToAttach.getId());
+                attachedParicipacoesIncluidasNew.add(paricipacoesIncluidasNewParticipanteTarefaToAttach);
             }
             paricipacoesIncluidasNew = attachedParicipacoesIncluidasNew;
             usuario.setParicipacoesIncluidas(paricipacoesIncluidasNew);
             List<ParticipanteTarefa> attachedTarefasParticipantesNew = new ArrayList<ParticipanteTarefa>();
-            for (ParticipanteTarefa tarefasParticipantesNewParicipanteTarefaToAttach : tarefasParticipantesNew) {
-                tarefasParticipantesNewParicipanteTarefaToAttach = em.getReference(tarefasParticipantesNewParicipanteTarefaToAttach.getClass(), tarefasParticipantesNewParicipanteTarefaToAttach.getId());
-                attachedTarefasParticipantesNew.add(tarefasParticipantesNewParicipanteTarefaToAttach);
+            for (ParticipanteTarefa tarefasParticipantesNewParticipanteTarefaToAttach : tarefasParticipantesNew) {
+                tarefasParticipantesNewParticipanteTarefaToAttach = em.getReference(tarefasParticipantesNewParticipanteTarefaToAttach.getClass(), tarefasParticipantesNewParticipanteTarefaToAttach.getId());
+                attachedTarefasParticipantesNew.add(tarefasParticipantesNewParticipanteTarefaToAttach);
             }
             tarefasParticipantesNew = attachedTarefasParticipantesNew;
             usuario.setTarefasParticipantes(tarefasParticipantesNew);
@@ -948,25 +947,25 @@ public class UsuarioDAO implements Serializable {
                     }
                 }
             }
-            for (ParticipanteTarefa paricipacoesIncluidasNewParicipanteTarefa : paricipacoesIncluidasNew) {
-                if (!paricipacoesIncluidasOld.contains(paricipacoesIncluidasNewParicipanteTarefa)) {
-                    Usuario oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa = paricipacoesIncluidasNewParicipanteTarefa.getUsuarioInclusao();
-                    paricipacoesIncluidasNewParicipanteTarefa.setUsuarioInclusao(usuario);
-                    paricipacoesIncluidasNewParicipanteTarefa = em.merge(paricipacoesIncluidasNewParicipanteTarefa);
-                    if (oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa != null && !oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa.equals(usuario)) {
-                        oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa.getParicipacoesIncluidas().remove(paricipacoesIncluidasNewParicipanteTarefa);
-                        oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa = em.merge(oldUsuarioInclusaoOfParicipacoesIncluidasNewParicipanteTarefa);
+            for (ParticipanteTarefa paricipacoesIncluidasNewParticipanteTarefa : paricipacoesIncluidasNew) {
+                if (!paricipacoesIncluidasOld.contains(paricipacoesIncluidasNewParticipanteTarefa)) {
+                    Usuario oldUsuarioInclusaoOfParicipacoesIncluidasNewParticipanteTarefa = paricipacoesIncluidasNewParticipanteTarefa.getUsuarioInclusao();
+                    paricipacoesIncluidasNewParticipanteTarefa.setUsuarioInclusao(usuario);
+                    paricipacoesIncluidasNewParticipanteTarefa = em.merge(paricipacoesIncluidasNewParticipanteTarefa);
+                    if (oldUsuarioInclusaoOfParicipacoesIncluidasNewParticipanteTarefa != null && !oldUsuarioInclusaoOfParicipacoesIncluidasNewParticipanteTarefa.equals(usuario)) {
+                        oldUsuarioInclusaoOfParicipacoesIncluidasNewParticipanteTarefa.getParicipacoesIncluidas().remove(paricipacoesIncluidasNewParticipanteTarefa);
+                        oldUsuarioInclusaoOfParicipacoesIncluidasNewParticipanteTarefa = em.merge(oldUsuarioInclusaoOfParicipacoesIncluidasNewParticipanteTarefa);
                     }
                 }
             }
-            for (ParticipanteTarefa tarefasParticipantesNewParicipanteTarefa : tarefasParticipantesNew) {
-                if (!tarefasParticipantesOld.contains(tarefasParticipantesNewParicipanteTarefa)) {
-                    Usuario oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa = tarefasParticipantesNewParicipanteTarefa.getUsuarioParticipante();
-                    tarefasParticipantesNewParicipanteTarefa.setUsuarioParticipante(usuario);
-                    tarefasParticipantesNewParicipanteTarefa = em.merge(tarefasParticipantesNewParicipanteTarefa);
-                    if (oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa != null && !oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa.equals(usuario)) {
-                        oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa.getTarefasParticipantes().remove(tarefasParticipantesNewParicipanteTarefa);
-                        oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa = em.merge(oldUsuarioParticipanteOfTarefasParticipantesNewParicipanteTarefa);
+            for (ParticipanteTarefa tarefasParticipantesNewParticipanteTarefa : tarefasParticipantesNew) {
+                if (!tarefasParticipantesOld.contains(tarefasParticipantesNewParticipanteTarefa)) {
+                    Usuario oldUsuarioParticipanteOfTarefasParticipantesNewParticipanteTarefa = tarefasParticipantesNewParticipanteTarefa.getUsuarioParticipante();
+                    tarefasParticipantesNewParticipanteTarefa.setUsuarioParticipante(usuario);
+                    tarefasParticipantesNewParticipanteTarefa = em.merge(tarefasParticipantesNewParticipanteTarefa);
+                    if (oldUsuarioParticipanteOfTarefasParticipantesNewParticipanteTarefa != null && !oldUsuarioParticipanteOfTarefasParticipantesNewParticipanteTarefa.equals(usuario)) {
+                        oldUsuarioParticipanteOfTarefasParticipantesNewParticipanteTarefa.getTarefasParticipantes().remove(tarefasParticipantesNewParticipanteTarefa);
+                        oldUsuarioParticipanteOfTarefasParticipantesNewParticipanteTarefa = em.merge(oldUsuarioParticipanteOfTarefasParticipantesNewParticipanteTarefa);
                     }
                 }
             }
@@ -1188,18 +1187,18 @@ public class UsuarioDAO implements Serializable {
                 illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the Tarefa " + tarefasSobResponsabilidadeOrphanCheckTarefa + " in its tarefasSobResponsabilidade field has a non-nullable usuarioResponsavel field.");
             }
             List<ParticipanteTarefa> paricipacoesIncluidasOrphanCheck = usuario.getParicipacoesIncluidas();
-            for (ParticipanteTarefa paricipacoesIncluidasOrphanCheckParicipanteTarefa : paricipacoesIncluidasOrphanCheck) {
+            for (ParticipanteTarefa paricipacoesIncluidasOrphanCheckParticipanteTarefa : paricipacoesIncluidasOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ParicipanteTarefa " + paricipacoesIncluidasOrphanCheckParicipanteTarefa + " in its paricipacoesIncluidas field has a non-nullable usuarioInclusao field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ParticipanteTarefa " + paricipacoesIncluidasOrphanCheckParticipanteTarefa + " in its paricipacoesIncluidas field has a non-nullable usuarioInclusao field.");
             }
             List<ParticipanteTarefa> tarefasParticipantesOrphanCheck = usuario.getTarefasParticipantes();
-            for (ParticipanteTarefa tarefasParticipantesOrphanCheckParicipanteTarefa : tarefasParticipantesOrphanCheck) {
+            for (ParticipanteTarefa tarefasParticipantesOrphanCheckParticipanteTarefa : tarefasParticipantesOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ParicipanteTarefa " + tarefasParticipantesOrphanCheckParicipanteTarefa + " in its tarefasParticipantes field has a non-nullable usuarioParticipante field.");
+                illegalOrphanMessages.add("This Usuario (" + usuario + ") cannot be destroyed since the ParticipanteTarefa " + tarefasParticipantesOrphanCheckParticipanteTarefa + " in its tarefasParticipantes field has a non-nullable usuarioParticipante field.");
             }
             List<FilialCliente> filiaisClientesIncluidasOrphanCheck = usuario.getFiliaisClientesIncluidas();
             for (FilialCliente filiaisClientesIncluidasOrphanCheckFilialCliente : filiaisClientesIncluidasOrphanCheck) {
@@ -1350,29 +1349,5 @@ public class UsuarioDAO implements Serializable {
             em.close();
         }
     }
-
-    /**
-     * Busca um Usuairo pelo seu Login
-     * @param login
-     * @return 
-     */
-    public Usuario findByLogin(String login) {
-        EntityManager em = getEntityManager();
-
-        try {
-            return (Usuario) em.createNamedQuery("Usuario.findByLogin")
-                    .setParameter("login", login)
-                    .getSingleResult();
-        } catch (Exception e) {
-            return null;
-        }
-
-    }
-
-    public void refresh(Usuario usuario) {
-        EntityManager em = getEntityManager();
-        em.refresh(usuario);
-    }
-
-
+    
 }

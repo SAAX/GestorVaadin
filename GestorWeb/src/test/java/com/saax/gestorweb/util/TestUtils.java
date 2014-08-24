@@ -23,7 +23,8 @@ public class TestUtils {
 
             // loga com usuario default de testes
             UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-            Usuario usuarioTeste = dao.findByLogin("teste-user@gmail.com");
+            Usuario usuarioTeste = null;
+            //Usuario usuarioTeste = dao.findByLogin("teste-user@gmail.com");
             userData.setUsuarioLogado(usuarioTeste);
             
             

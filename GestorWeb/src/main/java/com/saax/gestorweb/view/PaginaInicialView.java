@@ -2,6 +2,8 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.PostgresConnection;
@@ -74,8 +76,7 @@ public class PaginaInicialView extends HorizontalLayout {
 
         // botão para preview do dashboard
         final Button previewDashboardButton = new Button("dashboard preview", (Button.ClickEvent event) -> {
-            UsuarioDAO dao = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-            Usuario usuarioTeste = dao.findByLogin("teste-user@gmail.com");
+            Usuario usuarioTeste = new LoginModel().getUsuario("teste-user@gmail.com");
             ((GestorMDI) UI.getCurrent()).getUserData().setUsuarioLogado(usuarioTeste);
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         });

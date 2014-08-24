@@ -2,17 +2,14 @@ package com.saax.gestorweb.presenter.dashboard;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusViewListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
@@ -40,34 +37,31 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
         this.view = view;
         this.model = model;
         view.setListener(this);
-        
+
     }
 
     @Override
     public void load(Tarefa tarefa) {
 
-        
         this.tarefa = tarefa;
 
         statusButton = new PopupButton(getStatusTarefaDescription(tarefa));
-        
+
         // vincula o botão a tarefa
         statusButton.setId(tarefa.getGlobalID());
 
         configurarView();
-        
+
         // configura o conteudo
         statusButton.setContent(view);
-        
 
     }
-    
-    
+
     /**
      * Configura a view de acordo com o perfil do usário e o status da tarefa
      */
     private void configurarView() {
-                
+
         // Avalia se o usuario eh responsavel ou o solicitante e abre o perfil de acordo
         if (usuario.equals(tarefa.getUsuarioResponsavel())) {
 
@@ -78,18 +72,28 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
         } else if (usuario.equals(tarefa.getUsuarioSolicitante())) {
 
+            if (tarefa.getStatus() == StatusTarefa.EM_ANDAMENTO) {
+                view.apresentaPerfilUsuarioSolicitante(tarefa.getAndamento(), null);
+                
+            } else if (tarefa.getStatus() == StatusTarefa.BLOQUEADA) {
+                
+                BloqueioTarefa ultimoBloqueioTarefa = tarefa.getBloqueios().get(tarefa.getBloqueios().size() - 1);
+                String motivo = ultimoBloqueioTarefa.getMotivo();
+                
+                view.apresentaPerfilUsuarioSolicitante(tarefa.getAndamento(), motivo);
+            }
+
         } else {
             view.apresentaMensagemComStatus(tarefa.getStatus());
         }
-        
 
     }
 
     @Override
     public void processarAlteracaoAndamento() {
 
-        
-        if (statusButton.isPopupVisible()){
+        if (statusButton.isPopupVisible()) {
+
             Integer idTarefa = tarefa.getId();
 
             Integer andamento = (Integer) view.getAndamentoTarefaCombo().getValue();
@@ -100,7 +104,13 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
             statusButton.setPopupVisible(false);
 
             statusButton.setCaption(getStatusTarefaDescription(tarefa));
-            
+
+            if (andamento == 100) {
+
+                model.concluirTarefa(tarefa);
+                statusButton.setCaption(getStatusTarefaDescription(tarefa));
+
+            }
         }
     }
 
@@ -134,35 +144,36 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     }
 
     @Override
-    public void concluirTarefaClicked() {
-        
-        model.concluirTarefa(tarefa);
-
-        statusButton.setPopupVisible(false);
-
-        statusButton.setCaption(getStatusTarefaDescription(tarefa));
-        
-    }
-
-    @Override
     public void bloquearTarefaClicked() {
-        
+
         view.apresentaPopUpMotivoBloqueio();
-        /*
-        String motivo = view.getMotivoBloqueioTarefaTextField().getValue();
-        model.bloquearTarefa(tarefa);
-        */
+
     }
 
     @Override
     public void historicoTarefaClicked() {
-        //List<HistoricoTarefa> historico = tarefa.buildHistorico();
- 
-        //view.apresentaHistorico(historico);
-       
+        List<HistoricoTarefa> historico = tarefa.getHistorico();
+
+        view.apresentaHistorico(historico);
+
     }
 
+    @Override
+    public void confirmarBloqueioClicked() {
 
-    
-    
+        String motivoBloqueio = view.getMotivoBloqueioTextArea().getValue();
+
+        model.bloquearTarefa(tarefa.getId(), motivoBloqueio, usuario);
+    }
+
+    @Override
+    public void adiarTarefaClicked() {
+        model.adiarTarefa(tarefa.getId(), usuario);
+    }
+
+    @Override
+    public void cancelarTarefaClicked() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

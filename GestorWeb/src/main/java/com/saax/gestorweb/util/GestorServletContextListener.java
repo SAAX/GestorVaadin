@@ -10,7 +10,7 @@ import javax.servlet.annotation.WebListener;
  * Web application lifecycle listener.
  *
  */
-@WebListener()
+@WebListener
 public class GestorServletContextListener implements ServletContextListener {
 
     /**

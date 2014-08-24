@@ -51,6 +51,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private boolean desativarPesquisaAutomatica = false;
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -354,6 +355,8 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     @Override
     public void aplicarFiltroPesquisa() {
 
+        if (desativarPesquisaAutomatica) return ;
+        
         // Obtem os filtros selecionados pelo usuario
         // usuarios selecionados
         List<Usuario> usuariosResponsaveis = new ArrayList<>((Collection<Usuario>) view.getFiltroUsuarioResponsavelOptionGroup().getValue());
@@ -388,7 +391,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         }
 
         // Projecoes
-        List<ProjecaoTarefa> projecoes = new ArrayList<>();
+        List<ProjecaoTarefa> projecoes = new ArrayList<>((Collection<ProjecaoTarefa>) view.getFiltroProjecaoOptionGroup().getValue());
 
         // recarrega a visualizacao
         List<Tarefa> listaTarefas = model.listarTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
@@ -405,7 +408,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     @Override
     public void removerFiltrosPesquisa() {
 
-        view.getRemoverFiltroPesquisa().setVisible(false);
+        desativarPesquisaAutomatica = true;
 
         view.getFiltroUsuarioParticipanteOptionGroup().setValue(null);
         view.getFiltroUsuarioSolicitanteOptionGroup().setValue(null);
@@ -415,6 +418,10 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         view.getFiltroProjecaoOptionGroup().setValue(null);
 
         carregarListaTarefasUsuarioLogado();
+        
+        view.getRemoverFiltroPesquisa().setVisible(false);
+        
+        desativarPesquisaAutomatica = false;
 
     }
 

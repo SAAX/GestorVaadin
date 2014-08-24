@@ -13,10 +13,14 @@ public interface PopUpEvolucaoStatusViewListener {
 
     public void processarAlteracaoAndamento();
 
-    public void concluirTarefaClicked();
-
     public void bloquearTarefaClicked();
 
     public void historicoTarefaClicked();
+
+    public void confirmarBloqueioClicked();
+
+    public void adiarTarefaClicked();
+
+    public void cancelarTarefaClicked();
     
 }

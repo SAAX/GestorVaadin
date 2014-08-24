@@ -1,5 +1,6 @@
 package com.saax.gestorweb.model;
 
+import com.saax.gestorweb.dao.GenericDAO;
 import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.PostgresConnection;
@@ -13,12 +14,14 @@ import com.saax.gestorweb.util.PostgresConnection;
 public class LoginModel {
 
     private final UsuarioDAO usuarioDAO;
+    private final GenericDAO genericDAO;
 
     /**
      * Cria o model e conecta ao DAO
      */
     public LoginModel() {
         usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        genericDAO = new GenericDAO();
     }
 
     /**
@@ -27,7 +30,7 @@ public class LoginModel {
      * @return 
      */
     public boolean verificaLoginExistente(String login) {
-        Usuario u = usuarioDAO.findByLogin(login);
+        Usuario u = (Usuario) genericDAO.listByNamedQuery("Usuario.findByLogin", "login", login);
         return (u!=null);
     }
 
@@ -37,7 +40,7 @@ public class LoginModel {
      * @return 
      */
     public Usuario getUsuario(String login) {
-        return usuarioDAO.findByLogin(login);
+        return (Usuario) genericDAO.listByNamedQuery("Usuario.findByLogin", "login", login);
     }
     
 }

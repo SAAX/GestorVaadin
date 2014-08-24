@@ -8,6 +8,8 @@ package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -179,5 +181,8 @@ public class BloqueioTarefa implements Serializable {
     public void setUsuarioInclusao(Usuario usuarioInclusao) {
         this.usuarioInclusao = usuarioInclusao;
     }
+
+  
+    
     
 }

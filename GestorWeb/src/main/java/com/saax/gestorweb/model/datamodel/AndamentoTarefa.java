@@ -154,20 +154,6 @@ public class AndamentoTarefa implements Serializable {
         return "com.saax.gestorweb.AndamentoTarefa[ idandamentotarefa=" + id + " ]";
     }
     
-    public HistoricoTarefa buildHistorico(){
-        
-        StringBuilder descricao = new StringBuilder();
-        
-        descricao.append("Registrado andamento de ");
-        descricao.append(getAndamentoatual());
-        descricao.append("% ");
-        if (getComentario()!=null){
-            descricao.append("- ");
-            descricao.append(getComentario());
-        }
-        
-        
-        return new HistoricoTarefa(dataHoraInclusao, descricao.toString(),getUsuarioInclusao());
-    }
+  
     
 }

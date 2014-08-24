@@ -63,7 +63,7 @@ public class DashboardModelTest {
         usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         usuariosList = usuarioDAO.findUsuarioEntities();
         tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        
+        /*
         Tarefa t0 = new Tarefa();
         t0.setNome("Tarefa 0");
         t0.setUsuarioResponsavel(usuarioDAO.findByLogin("teste-user@gmail.com"));
@@ -78,7 +78,7 @@ public class DashboardModelTest {
         t2.setNome("Tarefa 2");
         t2.setUsuarioResponsavel(usuarioDAO.findByLogin("rodrigo.ccn2005@gmail.com"));
         tarefaDAO.create(t2);
-        
+        */
     }
 
     @After
@@ -93,7 +93,7 @@ public class DashboardModelTest {
         System.out.println("listarTarefas");
 
         List<Usuario> usuariosResponsaveis = new ArrayList<>();
-        usuariosResponsaveis.add(usuarioDAO.findByLogin("teste-user@gmail.com"));
+       // usuariosResponsaveis.add(usuarioDAO.findByLogin("teste-user@gmail.com"));
 
         List<Usuario> usuariosSolicitantes = null;
         List<Usuario> usuariosParticipantes = null;

@@ -206,6 +206,9 @@ public class Tarefa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
     private List<BloqueioTarefa> bloqueios;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+    private List<HistoricoTarefa> historico;
+
     @Column(name = "datatermino")
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataTermino;
@@ -575,25 +578,31 @@ public class Tarefa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    /*public List<HistoricoTarefa> buildHistorico() {
-        List<HistoricoTarefa> historico = new ArrayList<>();
-
-        historico.add(new HistoricoTarefa(dataHoraInclusao, "Tarefa criada", usuarioInclusao));
-        
-        andamentos.stream().forEach((andamentoEl) -> {
-            historico.add(andamentoEl.buildHistorico());
-        });
-        
-        apontamentos.stream().forEach((apontamento) -> {
-            historico.add(apontamento.buildHistorico());
-        });
-        
-        // @TODO: complementar
-        
-        Collections.sort(historico);
-        
+    public List<HistoricoTarefa> getHistorico() {
         return historico;
     }
-    */
+
+    public void setHistorico(List<HistoricoTarefa> historico) {
+        this.historico = historico;
+    }
+    
+    
+
+    public void addBloqueio(BloqueioTarefa bloqueioTarefa) {
+         if (getBloqueios()==null){
+            setBloqueios(new ArrayList<>());
+        }
+        getBloqueios().add(bloqueioTarefa);
+    }
+    
+
+    public void addHistorico(HistoricoTarefa historicoTarefa) {
+         if (getHistorico()==null){
+            setHistorico(new ArrayList<>());
+        }
+        getHistorico().add(historicoTarefa);
+    }
+
+    
     
 }

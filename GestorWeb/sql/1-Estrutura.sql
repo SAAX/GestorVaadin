@@ -413,6 +413,20 @@ CREATE TABLE FavoritosTarefaMeta  (
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
 );
 
+
+-- Historico tarefa
+DROP TABLE IF EXISTS HistoricoTarefa CASCADE;
+CREATE TABLE HistoricoTarefa (
+    idHistoricoTarefa SERIAL NOT NULL PRIMARY KEY, 
+    idTarefa BIGINT NOT NULL, 
+    evento CHARACTER VARYING (100),
+    idUsuario INTEGER NOT NULL,
+    dataHora TIMESTAMP NOT NULL,
+    FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
+    FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)
+);
+
+
 -- 100 chars
 -- 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 --          1         1         1         1         1         1         1         1         1         1

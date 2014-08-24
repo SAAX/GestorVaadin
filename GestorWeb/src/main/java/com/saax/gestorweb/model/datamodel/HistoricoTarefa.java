@@ -6,41 +6,158 @@
 
 package com.saax.gestorweb.model.datamodel;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
  * @author rodrigo
  */
-public class HistoricoTarefa implements Comparable<HistoricoTarefa>{
+@Entity
+@Table(name = "historicotarefa")
+@NamedQueries({
+    @NamedQuery(name = "HistoricoTarefa.findAll", query = "SELECT h FROM HistoricoTarefa h"),
+    @NamedQuery(name = "HistoricoTarefa.findByIdhistoricotarefa", query = "SELECT h FROM HistoricoTarefa h WHERE h.id = :idhistoricotarefa"),
+    @NamedQuery(name = "HistoricoTarefa.findByEvento", query = "SELECT h FROM HistoricoTarefa h WHERE h.evento = :evento"),
+    @NamedQuery(name = "HistoricoTarefa.findByDatahora", query = "SELECT h FROM HistoricoTarefa h WHERE h.datahora = :datahora")})
+public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa> {
+    
+    private static final long serialVersionUID = 1L;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "idhistoricotarefa")
+    private Integer id;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "evento")
+    private String evento;
+    
+    @Basic(optional = false)
+    @NotNull
+    @JoinColumn(name = "idusuario", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario usuario;
 
-    private final LocalDateTime momento;
-    private final String descricao;
-    private final Usuario usuario;
+    @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
+    @ManyToOne(optional = false)
+    private Tarefa tarefa;
+    
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahora")
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime datahora;
 
-    public HistoricoTarefa(LocalDateTime momento, String descricao, Usuario usuario) {
-        this.momento = momento;
-        this.descricao = descricao;
+    
+    public HistoricoTarefa() {
+    }
+
+    public HistoricoTarefa(Integer idhistoricotarefa) {
+        this.id = idhistoricotarefa;
+    }
+
+    public HistoricoTarefa(String evento, Usuario usuario, Tarefa tarefa, LocalDateTime datahora) {
+        this.evento = evento;
         this.usuario = usuario;
+        this.tarefa = tarefa;
+        this.datahora = datahora;
     }
 
-    public LocalDateTime getMomento() {
-        return momento;
+    
+    public Integer getId() {
+        return id;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getEvento() {
+        return evento;
+    }
+
+    public void setEvento(String evento) {
+        this.evento = evento;
+    }
+
+    public LocalDateTime getDatahora() {
+        return datahora;
+    }
+
+    public void setDatahora(LocalDateTime datahora) {
+        this.datahora = datahora;
     }
 
     public Usuario getUsuario() {
         return usuario;
     }
 
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
-    @Override
-    public int compareTo(HistoricoTarefa o) {
-        return momento.compareTo(o.momento);
+    public void setTarefa(Tarefa tarefa) {
+        this.tarefa = tarefa;
+    }
+
+    public Tarefa getTarefa() {
+        return tarefa;
     }
     
+    
+ 
+    
+    
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof HistoricoTarefa)) {
+            return false;
+        }
+        HistoricoTarefa other = (HistoricoTarefa) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+
+    @Override
+    public String toString() {
+        return "com.saax.gestorweb.model.datamodel.HistoricoTarefa[ idhistoricotarefa=" + id + " ]";
+    }
+
+      @Override
+    public int compareTo(HistoricoTarefa o) {
+        return getDatahora().compareTo(o.getDatahora());
+    }
     
 }

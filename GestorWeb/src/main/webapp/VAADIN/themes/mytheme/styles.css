@@ -7,7 +7,7 @@
 }
 
 .v-vaadin-version:after {
-	content: "7.2.4";
+	content: "7.2.6";
 }
 
 .v-generated-body {
@@ -1266,6 +1266,11 @@ body .mytheme.v-app .v-app-loading {
 	padding: 0;
 	border: 0;
 	margin: 0;
+}
+
+.mytheme .v-contextmenu .gwt-MenuBar {
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .mytheme .v-contextmenu .gwt-MenuItem div {

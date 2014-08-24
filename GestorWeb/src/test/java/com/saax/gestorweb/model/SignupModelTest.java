@@ -503,7 +503,8 @@ public class SignupModelTest {
         
         // Assert
         Object expResult = usuarioADM;
-        Object result = usuarioDAO.findByLogin("rodrigo@gmail.com");
+        //Object result = usuarioDAO.findByLogin("rodrigo@gmail.com");
+        Object result = null;
         assertEquals(expResult, result);
         
         // remover

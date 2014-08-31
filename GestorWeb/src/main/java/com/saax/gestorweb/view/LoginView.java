@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.server.UserError;
@@ -21,7 +22,8 @@ import java.util.ResourceBundle;
 public class LoginView extends Window {
 
     // Referencia ao recurso das mensagens:
-    transient private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas

@@ -11,6 +11,7 @@ import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.TestUtils;
 import com.saax.gestorweb.view.LoginView;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -87,7 +88,7 @@ public class LoginPresenterTest {
         //      exp: usuario não é setado
         // ---------------------------------------------------------------------
         instance.loginButtonClicked();
-        Usuario result = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        Usuario result = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
 
         Assert.assertNull(result);
 
@@ -99,7 +100,7 @@ public class LoginPresenterTest {
         loginView.setSenha(null);
 
         instance.loginButtonClicked();
-        result = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        result = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
 
         Assert.assertNull(result);
 
@@ -111,7 +112,7 @@ public class LoginPresenterTest {
         loginView.setSenha("123456");
 
         instance.loginButtonClicked();
-        result = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        result = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
 
         Assert.assertNull(result);
 
@@ -121,7 +122,7 @@ public class LoginPresenterTest {
         // ---------------------------------------------------------------------
         loginView.setLogin("abc@uol.com.br");
         instance.loginButtonClicked();
-        result = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        result = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
 
         Assert.assertNull(result);
 
@@ -132,7 +133,7 @@ public class LoginPresenterTest {
         loginView.setLogin("joao@uol.com.br");
         loginView.setSenha("124");
         instance.loginButtonClicked();
-        result = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        result = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
 
         Assert.assertNull(result);
 
@@ -143,7 +144,7 @@ public class LoginPresenterTest {
         loginView.setLogin("joao@uol.com.br");
         loginView.setSenha("123");
         instance.loginButtonClicked();
-        result = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        result = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
 
         Assert.assertNotNull(result);
 
@@ -167,7 +168,7 @@ public class LoginPresenterTest {
         String expResult = "abc@uol.com";
         
         // coloca um login no cookie
-        CookiesManager cookieManager = ((GestorMDI) UI.getCurrent()).getUserData().getCookies();
+        CookiesManager cookieManager = (CookiesManager) VaadinSession.getCurrent().getAttribute("cookieManager");
         cookieManager.setCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO, expResult);
         
         instance.loginPopUpAberto();

@@ -4,6 +4,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.PaginaInicialModel;
 import com.saax.gestorweb.model.SignupModel;
+import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.saax.gestorweb.view.PaginaInicialViewListener;
@@ -26,7 +27,8 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener, Serial
     private final PaginaInicialModel model;
 
     // Referencia ao recurso das mensagens:
-    private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     /**
      * Cria o presenter ligando o Model ao View

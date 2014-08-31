@@ -36,21 +36,12 @@ public class GestorMDI extends UI {
     private transient PaginaInicialModel paginaInicialModel;
     private transient PaginaInicialView paginaInicialView;
     private transient PaginaInicialPresenter paginaInicialPresenter;
+    private ResourceBundle mensagens;
+    private GestorWebImagens gestorWebImagens;
     
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
     public static class Servlet extends VaadinServlet {
-    }
-
-    // Dados do usuário da sessão
-    private UserData userData;
-
-    public void setUserData(UserData userData) {
-        this.userData = userData;
-    }
-
-    public UserData getUserData() {
-        return userData;
     }
 
     public void loadPaginaInicial() {
@@ -86,7 +77,6 @@ public class GestorMDI extends UI {
         dashboardPresenter.carregaVisualizacaoInicial();
     }
 
-    
     /**
      * Método disparado ao ser acessada a aplicação
      *
@@ -99,21 +89,17 @@ public class GestorMDI extends UI {
         
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Iniciando atendimento de requisição.");
         
-        userData = new UserData();
-        
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens para o locale: {0}", request.getLocale());
 
         // obtém o arquivo de mensagens de acordo com o locale do usuário
-         ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt", "br"));
-        userData.setMensagens(mensagens);
+        mensagens = (ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt", "br")));
 
         //obtém os cookies da sessão
         CookiesManager cookieManager = new CookiesManager();
-        userData.setCookies(cookieManager);
+        getSession().setAttribute("cookieManager", cookieManager);
         
         // obtém e armazena as imagens
-        GestorWebImagens gestorWebImagens = new GestorWebImagens();
-        userData.setImagens(gestorWebImagens);
+        gestorWebImagens = new GestorWebImagens();
         
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens carregado");
 
@@ -123,8 +109,15 @@ public class GestorMDI extends UI {
 
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Atendimento de requisição concluído.");
         
-        getSession().setAttribute("userData", getUserData());
     }
 
+    public GestorWebImagens getGestorWebImagens() {
+        return gestorWebImagens;
+    }
 
+    public ResourceBundle getMensagens() {
+        return mensagens;
+    }
+    
+    
 }

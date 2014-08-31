@@ -26,10 +26,10 @@ public class TestUtils {
             Usuario usuarioTeste = null;
             //Usuario usuarioTeste = dao.findByLogin("teste-user@gmail.com");
             userData.setUsuarioLogado(usuarioTeste);
-            
+/*            
             
             // obtém o arquivo de mensagens de acordo com o locale do usuário
-              ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt_BR"));
+            ResourceBundle mensagens = ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt_BR"));
             userData.setMensagens(mensagens);
 
             //obtém os cookies da sessão
@@ -40,7 +40,7 @@ public class TestUtils {
             GestorWebImagens gestorWebImagens = new GestorWebImagens();
             userData.setImagens(gestorWebImagens);
 
-            mdi.setUserData(userData);
+            mdi.setUserData(userData);*/
         }
         
         return UI.getCurrent();

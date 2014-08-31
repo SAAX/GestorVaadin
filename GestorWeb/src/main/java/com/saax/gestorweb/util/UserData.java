@@ -13,12 +13,8 @@ public class UserData implements Serializable {
     
     // Usuário logado
     private Usuario usuarioLogado;
-    // arquivo de mensagens
-    transient private ResourceBundle mensagens;
     // cookies da sessão
     private CookiesManager cookies;
-    // recursos de imagens
-    private GestorWebImagens imagens;
     
     
 
@@ -37,20 +33,6 @@ public class UserData implements Serializable {
     }
 
     /**
-     * @return the mensagens
-     */
-    public ResourceBundle getMensagens() {
-        return mensagens;
-    }
-
-    /**
-     * @param mensagens the mensagens to set
-     */
-    public void setMensagens(ResourceBundle mensagens) {
-        this.mensagens = mensagens;
-    }
-
-    /**
      * @return the cookies
      */
     public CookiesManager getCookies() {
@@ -64,21 +46,4 @@ public class UserData implements Serializable {
         this.cookies = cookies;
     }
 
-    /**
-     * @return the imagens
-     */
-    public GestorWebImagens getImagens() {
-        return imagens;
-    }
-
-    /**
-     * @param imagens the imagens to set
-     */
-    public void setImagens(GestorWebImagens imagens) {
-        this.imagens = imagens;
-    }
-    
-    
-    
-    
 }

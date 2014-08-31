@@ -14,6 +14,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,6 +36,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "BloqueioTarefa.findAll", query = "SELECT b FROM BloqueioTarefa b"),
     @NamedQuery(name = "BloqueioTarefa.findById", query = "SELECT b FROM BloqueioTarefa b WHERE b.id= :id"),
+    @NamedQuery(name = "BloqueioTarefa.findByTarefa", query = "SELECT b FROM BloqueioTarefa b WHERE b.tarefa = :tarefa"),
     @NamedQuery(name = "BloqueioTarefa.findByMotivo", query = "SELECT b FROM BloqueioTarefa b WHERE b.motivo = :motivo")})
 public class BloqueioTarefa implements Serializable {
     
@@ -73,14 +76,20 @@ public class BloqueioTarefa implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraRemocao;
     
+    @Enumerated(EnumType.STRING)
+    private StatusTarefa status;
+
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
     private Tarefa tarefa;
-
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne
     private Usuario usuarioInclusao;
+    
+    @JoinColumn(name = "idusuarioremocao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario usuarioRemocao;
     
     public BloqueioTarefa() {
     }
@@ -114,6 +123,16 @@ public class BloqueioTarefa implements Serializable {
     public void setTarefa(Tarefa tarefa) {
         this.tarefa = tarefa;
     }
+
+    public StatusTarefa getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusTarefa status) {
+        this.status = status;
+    }
+    
+    
 
     @Override
     public int hashCode() {
@@ -182,6 +201,16 @@ public class BloqueioTarefa implements Serializable {
         this.usuarioInclusao = usuarioInclusao;
     }
 
+    public Usuario getUsuarioRemocao() {
+        return usuarioRemocao;
+    }
+
+    public void setUsuarioRemocao(Usuario usuarioRemocao) {
+        this.usuarioRemocao = usuarioRemocao;
+    }
+
+    
+    
   
     
     

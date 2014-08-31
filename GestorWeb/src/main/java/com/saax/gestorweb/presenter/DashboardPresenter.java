@@ -7,16 +7,16 @@ import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
-import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorException;
+import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
-import com.vaadin.ui.Alignment;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.PopupView;
@@ -50,7 +50,8 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     private final transient DashboardModel model;
 
     // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private boolean desativarPesquisaAutomatica = false;
 
     /**
@@ -74,8 +75,6 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
      */
     @Override
     public void logout() {
-
-        ((GestorMDI) UI.getCurrent()).setUserData(null);
 
         ((GestorMDI) UI.getCurrent()).getPage().setLocation("/GestorWeb");
 
@@ -142,7 +141,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     public void carregarListaTarefasUsuarioLogado() {
 
         // Usuario logado
-        Usuario usuarioLogado = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
 
         List<Tarefa> listaTarefas = model.listarTarefas(usuarioLogado);
 

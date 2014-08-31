@@ -10,10 +10,10 @@ import com.saax.gestorweb.model.CadastroMetasModel;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.util.GestorException;
+import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroMetasView;
 import com.saax.gestorweb.view.CadastroMetasViewListener;
 import com.vaadin.ui.UI;
-import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -29,8 +29,8 @@ public class CadastroMetasPresenter implements CadastroMetasViewListener {
     private final CadastroMetasView view;
     private final CadastroMetasModel model;
 
-    // Referencia ao recurso das mensagens:
-    transient private final ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     /**
      * Cria o presenter ligando o Model ao View

@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 //teste de commit -> volta
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Alignment;
@@ -25,9 +26,10 @@ import java.util.ResourceBundle;
  * @author Rodrigo / Fernando
  */
 public class SignupView extends Window {
-//teste commit
+
     // Referencia ao recurso das mensagens:
-    transient private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dÃ¡ por uma interface para manter a abstraÃ§Ã£o das camadas
@@ -566,13 +568,6 @@ public class SignupView extends Window {
      */
     public ResourceBundle getMensagens() {
         return mensagens;
-    }
-
-    /**
-     * @param mensagens the mensagens to set
-     */
-    public void setMensagens(ResourceBundle mensagens) {
-        this.mensagens = mensagens;
     }
 
     /**

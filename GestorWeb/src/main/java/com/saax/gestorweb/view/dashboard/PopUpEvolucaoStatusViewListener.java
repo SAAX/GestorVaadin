@@ -22,5 +22,15 @@ public interface PopUpEvolucaoStatusViewListener {
     public void adiarTarefaClicked();
 
     public void cancelarTarefaClicked();
+
+    public void removerBloqueioTarefaClicked();
+
+    public void aceitarTarefaClicked();
+
+    public void reabrirTarefaClicked();
+
+    public void reativarTarefaClicked();
+
+    public void processarAvaliacao();
     
 }

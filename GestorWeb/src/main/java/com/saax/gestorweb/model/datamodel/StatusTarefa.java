@@ -14,6 +14,7 @@ public enum StatusTarefa {
     ADIADA,
     BLOQUEADA,
     CONCLUIDA,
+    AVALIADA,
     CANCELADA;
 
     

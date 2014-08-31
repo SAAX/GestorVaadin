@@ -26,7 +26,7 @@ public class DashboardModel {
      */
     public List<Tarefa> listarTarefas(Usuario usuarioLogado) {
 
-        List<Tarefa> tarefas = new GenericDAO().listByNamedQuery("Tarefa.findByUsuarioResponsavel", "usuarioResponsavel", usuarioLogado);
+        List<Tarefa> tarefas = new GenericDAO().listByNamedQueryEmpresa("Tarefa.findByUsuarioResponsavel", "usuarioResponsavel", usuarioLogado);
 
         return tarefas;
 
@@ -125,11 +125,11 @@ public class DashboardModel {
         });
 
         if (dataFim != null) {
-            tarefas.addAll(new GenericDAO().listByNamedQuery("Tarefa.findByDataFim", "dataFim", dataFim));
+            tarefas.addAll(new GenericDAO().listByNamedQueryEmpresa("Tarefa.findByDataFim", "dataFim", dataFim));
         }
 
         projecoes.stream().forEach((projecao) -> {
-            tarefas.addAll(new GenericDAO().listByNamedQuery("Tarefa.findByProjecao", "projecao", projecao));
+            tarefas.addAll(new GenericDAO().listByNamedQueryEmpresa("Tarefa.findByProjecao", "projecao", projecao));
         });
 
         /*      

@@ -30,7 +30,7 @@ public class LoginModel {
      * @return 
      */
     public boolean verificaLoginExistente(String login) {
-        Usuario u = (Usuario) genericDAO.listByNamedQuery("Usuario.findByLogin", "login", login);
+        Usuario u = (Usuario) genericDAO.listByNamedQuery("Usuario.findByLogin", "login", login).iterator().next();
         return (u!=null);
     }
 
@@ -40,7 +40,7 @@ public class LoginModel {
      * @return 
      */
     public Usuario getUsuario(String login) {
-        return (Usuario) genericDAO.listByNamedQuery("Usuario.findByLogin", "login", login);
+        return (Usuario) genericDAO.listByNamedQuery("Usuario.findByLogin", "login", login).iterator().next();
     }
     
 }

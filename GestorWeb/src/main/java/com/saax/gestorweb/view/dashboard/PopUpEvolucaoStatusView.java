@@ -1,8 +1,11 @@
 package com.saax.gestorweb.view.dashboard;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
+import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -29,9 +32,9 @@ import java.util.ResourceBundle;
  */
 public class PopUpEvolucaoStatusView extends CustomComponent {
 
-    // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getUserData().getImagens();
+    // Referencia ao recurso das mensagens e imagens:
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
@@ -44,6 +47,12 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     private Button cancelarBloqueio;
     private Button adiarTarefaButton;
     private Button cancelarTarefaButton;
+    private Button removerBloqueioTarefaButton;
+    private Button aceitarTarefaButton;
+    private Button reabrirTarefaButton;
+    private Button reativarTarefaButton;
+    private ComboBox avaliarTarefaCombo;
+    private TextField comentarioAvaliacaoTextField;
 
     public void setListener(PopUpEvolucaoStatusViewListener listener) {
         this.listener = listener;
@@ -69,19 +78,48 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
     }
 
-    public void apresentaMensagemComStatus(StatusTarefa status) {
-        main.addComponent(new Label(status.toString()));
+    public void apresentaMensagemComStatus(Tarefa tarefa) {
+
+        HorizontalLayout linhaUmContainer = new HorizontalLayout();
+
+        linhaUmContainer.setSpacing(true);
+
+        linhaUmContainer.addComponent(new Label(
+                "<h3> Tarefa: " + tarefa.getStatus().toString() + "</h3>",
+                ContentMode.HTML
+        ));
+
+        if (tarefa.getStatus() == StatusTarefa.AVALIADA){
+            linhaUmContainer.addComponent(new Label(
+                    "<h4> Com " + tarefa.getAvaliacoes().get(0).getAvaliacao() + " estrelas. </h4>",
+                    ContentMode.HTML
+            ));
+            
+        }
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        linhaUmContainer.addComponent(historicoTarefaButton);
+
+        main.addComponent(linhaUmContainer);
+
     }
 
     private TextField comentarioAndamento;
 
     /**
      * Carrega o modo de visualização onde o usuário responsável pode alterar
-     * uma tarefa em andamento São apresentados:
-     *
-     * 1. Um campo de texto opcional para informar o andamento 2. O combo de
-     * andamento 3. Botão para alterar o status para: CONCLUIDA 4. Botão para
-     * bloquear a tarefa, com campo de texto para o motivo.
+     * uma tarefa em andamento <br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>Um campo de texto opcional para informar o andamento</li>
+     * <li>O combo de andamento </li>
+     * <li>Botão para alterar o status para: CONCLUIDA </li>
+     * <li>Botão para bloquear a tarefa, com campo de texto para o motivo.</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
      *
      */
     public void apresentaPerfilUsuarioResponsavelTarefaEmAndamento() {
@@ -117,6 +155,51 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
             listener.bloquearTarefaClicked();
         });
         alterarStatusContainer.addComponent(bloquearTarefaButton);
+
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(historicoTarefaButton);
+
+        main.addComponent(alterarStatusContainer);
+
+    }
+
+    /**
+     * Carrega o modo de visualização onde o usuário responsável pode alterar
+     * uma tarefa bloqueada <br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>O combo de andamento preenchido e desabilitado</li>
+     * <li>Botão para desbloquear a tarefa</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
+     *
+     */
+    public void apresentaPerfilUsuarioResponsavelTarefaBloqueada(String motivoBloqueio) {
+
+        main.removeAllComponents();
+
+        main.setSpacing(true);
+
+        
+        main.addComponent(new Label("<h2>Tarefa BLOQUEADA.</h2>", ContentMode.HTML));
+        main.addComponent(new Label("<p>Motivo: " + motivoBloqueio + "</p>", ContentMode.HTML));
+        
+        // ---------------------------------------------------------------------
+        // Campos para alterar status / Historico
+        // ---------------------------------------------------------------------
+        HorizontalLayout alterarStatusContainer = new HorizontalLayout();
+
+        alterarStatusContainer.setSpacing(true);
+
+        removerBloqueioTarefaButton = new Button("Remover Bloqueio");
+        removerBloqueioTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.removerBloqueioTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(removerBloqueioTarefaButton);
 
         historicoTarefaButton = new Button("Histórico");
         historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
@@ -197,6 +280,8 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         barraDeBotoesContainer.addComponent(confirmarBloqueio);
         barraDeBotoesContainer.setComponentAlignment(confirmarBloqueio, Alignment.BOTTOM_RIGHT);
 
+        subContent.addComponent(barraDeBotoesContainer);
+        
         // Center it in the browser window
         subWindow.center();
 
@@ -249,12 +334,21 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     }
 
     /**
-     * Apresenta um pop-up ao usuario solicitante permitindo:   <br>
-     * 1. Adiar a tarefa <br>
-     * 2. Cancelar a tarefa  <br>
-     * 3. Ver histórico 
+     * Carrega o modo de visualização onde o usuário solicitante pode visualizar
+     * e alterar o status de uma tarefa<br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>O combo de andamento preenchido e desabilitado</li>
+     * <li>Botão para adiar a tarefa</li>
+     * <li>Botão para cancelar a tarefa</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
+     *
+     * @param andamento
+     * @param motivoBloqueio
      */
-    public void apresentaPerfilUsuarioSolicitante(int andamento, String motivoBloqueio) {
+    public void apresentaPerfilUsuarioSolicitanteTarefaEmAndamento(int andamento, String motivoBloqueio) {
 
         main.removeAllComponents();
 
@@ -313,5 +407,207 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
     }
 
+    /**
+     * Carrega o modo de visualização onde o usuário responsável pode alterar
+     * uma tarefa bloqueada <br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>O combo de andamento preenchido e desabilitado</li>
+     * <li>Botão para desbloquear a tarefa</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
+     *
+     */
+    public void apresentaPerfilUsuarioResponsavelTarefaNaoAceita() {
+
+        main.removeAllComponents();
+
+        main.setSpacing(true);
+
+        HorizontalLayout alterarStatusContainer = new HorizontalLayout();
+
+        alterarStatusContainer.setSpacing(true);
+
+        aceitarTarefaButton = new Button("Aceitar Tarefa");
+        aceitarTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.aceitarTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(aceitarTarefaButton);
+
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(historicoTarefaButton);
+
+        main.addComponent(alterarStatusContainer);
+
+    }
+
+    /**
+     * Carrega o modo de visualização onde o usuário responsável pode reabrir
+     * uma tarefa concluida mas que ainda não fora avaliada<br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>Botão para reabrir a tarefa</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
+     *
+     */
+    public void apresentaPerfilUsuarioResponsavelTarefaConcluida() {
+        main.removeAllComponents();
+
+        main.setSpacing(true);
+
+        HorizontalLayout alterarStatusContainer = new HorizontalLayout();
+
+        alterarStatusContainer.setSpacing(true);
+
+        reabrirTarefaButton = new Button("Reabrir Tarefa");
+        reabrirTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.reabrirTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(reabrirTarefaButton);
+
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(historicoTarefaButton);
+
+        main.addComponent(alterarStatusContainer);
+    }
+
+    /**
+     * Carrega o modo de visualização onde o usuário solicitante pode reativar
+     * uma tarefa parada (CANCELADA ou ADIADA)<br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>Botão para reativar a tarefa</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
+     *
+     */
+    public void apresentaPerfilUsuarioSolicitanteTarefaParada() {
+        
+        main.removeAllComponents();
+
+        main.setSpacing(true);
+
+        HorizontalLayout alterarStatusContainer = new HorizontalLayout();
+
+        alterarStatusContainer.setSpacing(true);
+
+        reativarTarefaButton = new Button("Reativar Tarefa");
+        reativarTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.reativarTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(reativarTarefaButton);
+
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(historicoTarefaButton);
+
+        main.addComponent(alterarStatusContainer);
+        
+
+    }
+
+    /**
+     * Carrega o modo de visualização onde o usuário solicitante pode avaliar ou alterar a avaliação de
+     * uma tarefa <br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>Avaliação atual (se existir)</li>
+     * <li>Combo com a seleção da avaliação</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
+     *
+     * @param avaliacaoTarefa avaliacao atual (se existir)
+     */
+    public void apresentaPerfilUsuarioSolicitanteTarefaConcluida(AvaliacaoMetaTarefa avaliacaoTarefa) {
+        
+        main.removeAllComponents();
+
+        main.setSpacing(true);
+
+        HorizontalLayout comboAvaliacaoContainer = new HorizontalLayout();
+        comboAvaliacaoContainer.setSpacing(true);
+
+        comentarioAvaliacaoTextField = new TextField();
+        
+        // 1a. avaliacao
+        if (avaliacaoTarefa == null){
+            comentarioAvaliacaoTextField.setInputPrompt("Informe a avaliação...");
+            
+        // Reavaliacao
+        } else {
+            comentarioAvaliacaoTextField.setValue(avaliacaoTarefa.getComentario());
+            
+        }
+
+        comboAvaliacaoContainer.addComponent(comentarioAvaliacaoTextField);
+
+        avaliarTarefaCombo = new ComboBox("Avalição");
+            
+        avaliarTarefaCombo.addItem(1);
+        avaliarTarefaCombo.setItemCaption(1, "Ícone 1 Estrela");
+
+        avaliarTarefaCombo.addItem(2);
+        avaliarTarefaCombo.setItemCaption(2, "Ícone 2 Estrelas");
+
+        avaliarTarefaCombo.addItem(3);
+        avaliarTarefaCombo.setItemCaption(3, "Ícone 3 Estrelas");
+
+        avaliarTarefaCombo.addItem(4);
+        avaliarTarefaCombo.setItemCaption(4, "Ícone 4 Estrelas");
+
+        avaliarTarefaCombo.addItem(5);
+        avaliarTarefaCombo.setItemCaption(5, "Ícone 5 Estrelas");
+
+        avaliarTarefaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.processarAvaliacao();
+        });
+        
+        comboAvaliacaoContainer.addComponent(avaliarTarefaCombo);
+
+        // Reavaliacao
+        if (avaliacaoTarefa != null){
+            avaliarTarefaCombo.select(avaliacaoTarefa.getAvaliacao());
+        }
+
+        main.addComponent(comboAvaliacaoContainer);
+        
+        
+        HorizontalLayout alterarStatusContainer = new HorizontalLayout();
+
+        alterarStatusContainer.setSpacing(true);
+
+
+
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(historicoTarefaButton);
+
+        main.addComponent(alterarStatusContainer);
+    }
+
+    public TextField getComentarioAvaliacaoTextField() {
+        return comentarioAvaliacaoTextField;
+    }
+
+    public ComboBox getAvaliarTarefaCombo() {
+        return avaliarTarefaCombo;
+    }
+
+        
     
 }

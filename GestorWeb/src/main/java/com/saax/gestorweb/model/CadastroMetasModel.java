@@ -13,6 +13,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.PostgresConnection;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,9 @@ public class CadastroMetasModel {
      * @return lista de empresas
      */
     public List<Empresa> obterListaEmpresasUsuarioLogado() {
+
         // Usuário logado na sessão
-        Usuario usuario = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        Usuario usuario = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
 
         List<Empresa> empresas = new ArrayList<Empresa>();
         for (UsuarioEmpresa empresaUsuario : usuario.getEmpresas()) {

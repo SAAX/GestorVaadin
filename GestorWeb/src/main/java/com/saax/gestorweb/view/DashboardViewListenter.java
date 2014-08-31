@@ -12,4 +12,6 @@ public interface DashboardViewListenter {
     void aplicarFiltroPesquisa();
 
     public void removerFiltrosPesquisa();
+
+    public void carregarListaTarefasUsuarioLogado();
 }

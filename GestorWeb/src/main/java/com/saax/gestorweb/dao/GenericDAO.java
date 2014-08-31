@@ -38,6 +38,19 @@ public class GenericDAO implements Serializable {
     public <T> List<T> listByNamedQuery(String namedQuery, String parameterName, Object parameterValue) {
         EntityManager em = getEntityManager();
         List<T> list;
+
+        // obtem os registros para a empresa principal (pre filtro obrigatorio) + filtro informado
+        list = (List<T>) em.createNamedQuery(namedQuery)
+                .setParameter(parameterName, parameterValue)
+                .getResultList();
+
+        return list;
+
+    }
+
+    public <T> List<T> listByNamedQueryEmpresa(String namedQuery, String parameterName, Object parameterValue) {
+        EntityManager em = getEntityManager();
+        List<T> list;
         List<T> returnList;
         try {
 
@@ -62,7 +75,7 @@ public class GenericDAO implements Serializable {
                         .setParameter("empresa", subEmpresa)
                         .setParameter(parameterName, parameterValue)
                         .getResultList();
-                
+
                 if (list != null) {
                     returnList.addAll(list);
                 }
@@ -77,16 +90,14 @@ public class GenericDAO implements Serializable {
             return null;
         }
     }
-    
+
     public <T> T merge(T entityBean) {
         EntityManager em = getEntityManager();
         try {
-            return (T)em.merge(entityBean);
+            return (T) em.merge(entityBean);
         } finally {
             em.close();
         }
     }
-    
-    
 
 }

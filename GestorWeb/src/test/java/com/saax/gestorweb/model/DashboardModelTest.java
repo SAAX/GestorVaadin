@@ -5,7 +5,6 @@
  */
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.TarefaDAO;
 import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -16,15 +15,13 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.TestUtils;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,7 +56,7 @@ public class DashboardModelTest {
     @Before
     public void setUp() {
         ui = new TestUtils().configureUI();
-        usuarioLogado = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
         usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         usuariosList = usuarioDAO.findUsuarioEntities();
         tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());

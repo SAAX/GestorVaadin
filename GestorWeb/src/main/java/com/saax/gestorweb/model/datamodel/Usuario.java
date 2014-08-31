@@ -140,6 +140,9 @@ public class Usuario implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
     private List<Departamento> departamentosIncluidos;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<HistoricoTarefa> historicosTarefa;
     
     @OneToMany(mappedBy = "usuarioInclusao")
     private List<Usuario> usuariosIncluidos;
@@ -421,6 +424,14 @@ public class Usuario implements Serializable {
 
     public void setAnexosTarefaIncluidos(List<AnexoTarefa> anexosTarefaIncluidos) {
         this.anexosTarefaIncluidos = anexosTarefaIncluidos;
+    }
+
+    public List<HistoricoTarefa> getHistoricosTarefa() {
+        return historicosTarefa;
+    }
+
+    public void setHistoricosTarefa(List<HistoricoTarefa> historicosTarefa) {
+        this.historicosTarefa = historicosTarefa;
     }
 
     

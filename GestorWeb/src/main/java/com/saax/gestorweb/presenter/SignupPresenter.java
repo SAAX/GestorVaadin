@@ -8,6 +8,7 @@ import com.saax.gestorweb.model.datamodel.Endereco;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorException;
+import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
@@ -35,7 +36,8 @@ import org.apache.commons.lang3.StringUtils;
 public class SignupPresenter implements SignupViewListener {
 
     // Referencia ao recurso das mensagens:
-    transient private ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // Todo presenter mantem acesso à view e ao model
     private final SignupView view;
@@ -459,7 +461,7 @@ public class SignupPresenter implements SignupViewListener {
         }
         
                                        
-        Button removerUsuarioButton = new Button(getMensagens().getString("SignupPresenter.removerButton.label"));
+        Button removerUsuarioButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
         removerUsuarioButton.addClickListener((Button.ClickEvent event) -> {
             view.getUsuariosTable().addListener(new Property.ValueChangeListener() {
             @Override
@@ -508,7 +510,7 @@ public class SignupPresenter implements SignupViewListener {
         String nomeColigada = view.getNomeColigadaTextField().getValue();
         String cnpjColigada = view.getCnpjColigadaTextField().getValue();
         
-        Button removerColigadasButton = new Button(getMensagens().getString("SignupPresenter.removerButton.label"));
+        Button removerColigadasButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
         removerColigadasButton.addClickListener((Button.ClickEvent event) -> {
             view.getColigadasTable().addListener(new Property.ValueChangeListener() {
             @Override
@@ -559,7 +561,7 @@ public class SignupPresenter implements SignupViewListener {
         String cnpjFilial = view.getCnpjFilialTextField().getValue();
        
                                        
-        Button removerFiliaisButton = new Button(getMensagens().getString("SignupPresenter.removerButton.label"));
+        Button removerFiliaisButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
         removerFiliaisButton.addClickListener((Button.ClickEvent event) -> {
             view.getFiliaisTable().addListener(new Property.ValueChangeListener() {
             @Override
@@ -597,18 +599,5 @@ public class SignupPresenter implements SignupViewListener {
          
     }
 
-/**
-     * @return the mensagens
-     */
-    public ResourceBundle getMensagens() {
-        return mensagens;
-    }
-
-    /**
-     * @param mensagens the mensagens to set
-     */
-    public void setMensagens(ResourceBundle mensagens) {
-        this.mensagens = mensagens;
-    }     
    
 }

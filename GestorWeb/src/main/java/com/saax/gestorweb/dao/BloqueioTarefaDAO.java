@@ -38,15 +38,15 @@ public class BloqueioTarefaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Tarefa idtarefa = bloqueioTarefa.getTarefa();
-            if (idtarefa != null) {
-                idtarefa = em.getReference(idtarefa.getClass(), idtarefa.getId());
-                bloqueioTarefa.setTarefa(idtarefa);
+            Tarefa tarefa = bloqueioTarefa.getTarefa();
+            if (tarefa != null) {
+                tarefa = em.getReference(tarefa.getClass(), tarefa.getId());
+                bloqueioTarefa.setTarefa(tarefa);
             }
             em.persist(bloqueioTarefa);
-            if (idtarefa != null) {
-                idtarefa.getBloqueios().add(bloqueioTarefa);
-                idtarefa = em.merge(idtarefa);
+            if (tarefa != null) {
+                tarefa.getBloqueios().add(bloqueioTarefa);
+                tarefa = em.merge(tarefa);
             }
             em.getTransaction().commit();
         } finally {
@@ -62,20 +62,20 @@ public class BloqueioTarefaDAO implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             BloqueioTarefa persistentBloqueioTarefa = em.find(BloqueioTarefa.class, bloqueioTarefa.getId());
-            Tarefa idtarefaOld = persistentBloqueioTarefa.getTarefa();
-            Tarefa idtarefaNew = bloqueioTarefa.getTarefa();
-            if (idtarefaNew != null) {
-                idtarefaNew = em.getReference(idtarefaNew.getClass(), idtarefaNew.getId());
-                bloqueioTarefa.setTarefa(idtarefaNew);
+            Tarefa tarefaOld = persistentBloqueioTarefa.getTarefa();
+            Tarefa tarefaNew = bloqueioTarefa.getTarefa();
+            if (tarefaNew != null) {
+                tarefaNew = em.getReference(tarefaNew.getClass(), tarefaNew.getId());
+                bloqueioTarefa.setTarefa(tarefaNew);
             }
             bloqueioTarefa = em.merge(bloqueioTarefa);
-            if (idtarefaOld != null && !idtarefaOld.equals(idtarefaNew)) {
-                idtarefaOld.getBloqueios().remove(bloqueioTarefa);
-                idtarefaOld = em.merge(idtarefaOld);
+            if (tarefaOld != null && !tarefaOld.equals(tarefaNew)) {
+                tarefaOld.getBloqueios().remove(bloqueioTarefa);
+                tarefaOld = em.merge(tarefaOld);
             }
-            if (idtarefaNew != null && !idtarefaNew.equals(idtarefaOld)) {
-                idtarefaNew.getBloqueios().add(bloqueioTarefa);
-                idtarefaNew = em.merge(idtarefaNew);
+            if (tarefaNew != null && !tarefaNew.equals(tarefaOld)) {
+                tarefaNew.getBloqueios().add(bloqueioTarefa);
+                tarefaNew = em.merge(tarefaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -106,10 +106,10 @@ public class BloqueioTarefaDAO implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The bloqueioTarefa with id " + id + " no longer exists.", enfe);
             }
-            Tarefa idtarefa = bloqueioTarefa.getTarefa();
-            if (idtarefa != null) {
-                idtarefa.getBloqueios().remove(bloqueioTarefa);
-                idtarefa = em.merge(idtarefa);
+            Tarefa tarefa = bloqueioTarefa.getTarefa();
+            if (tarefa != null) {
+                tarefa.getBloqueios().remove(bloqueioTarefa);
+                tarefa = em.merge(tarefa);
             }
             em.remove(bloqueioTarefa);
             em.getTransaction().commit();

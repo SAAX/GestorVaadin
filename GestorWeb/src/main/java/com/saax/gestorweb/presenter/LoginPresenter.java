@@ -8,6 +8,7 @@ import com.saax.gestorweb.util.CookiesManager;
 import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.LoginViewListener;
 import com.vaadin.data.Validator.InvalidValueException;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -90,16 +91,16 @@ public final class LoginPresenter implements LoginViewListener {
         // LOGIN BEM SUCEDIDO!
         
         // Configura o usuáio logado na seção
-        ((GestorMDI) UI.getCurrent()).getUserData().setUsuarioLogado(u);
+        VaadinSession.getCurrent().setAttribute("usuarioLogado",u);
 
         // verifica se o usuário quer gravar o login na sessão e grava o cookie
         if (view.getLembrarLoginCheckBox().getValue()){
-            
-            CookiesManager cookieManager = ((GestorMDI) UI.getCurrent()).getUserData().getCookies();
+        
+            CookiesManager cookieManager = (CookiesManager) VaadinSession.getCurrent().getAttribute("cookieManager");
             cookieManager.setCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO, view.getLoginTextField().getValue());
 
         } else {
-            CookiesManager cookieManager = ((GestorMDI) UI.getCurrent()).getUserData().getCookies();
+            CookiesManager cookieManager = (CookiesManager) VaadinSession.getCurrent().getAttribute("cookieManager");
             cookieManager.destroyCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO);
         }
 
@@ -116,7 +117,7 @@ public final class LoginPresenter implements LoginViewListener {
     public void loginPopUpAberto() {
         
         // verifica se o usuário já tem o login gravado em cookie
-        CookiesManager cookieManager = ((GestorMDI) UI.getCurrent()).getUserData().getCookies();
+        CookiesManager cookieManager = (CookiesManager) VaadinSession.getCurrent().getAttribute("cookieManager");
         String login = cookieManager.getCookieValue(CookiesManager.GestorWebCookieEnum.NOME_USUARIO);
         
         if (login!=null){

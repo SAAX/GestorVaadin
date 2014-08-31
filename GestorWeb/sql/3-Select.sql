@@ -10,4 +10,6 @@ SELECT * FROM apontamentotarefa WHERE idtarefa = 23;
 SELECT * FROM apontamentotarefa WHERE idtarefa = 23;
 
 SELECT * FROM andamentotarefa WHERE idtarefa = 23;
+SELECT * FROM historicotarefa
 
+SELECT * FROM bloqueiotarefa

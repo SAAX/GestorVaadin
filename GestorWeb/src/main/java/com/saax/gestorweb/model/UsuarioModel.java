@@ -1,11 +1,10 @@
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorException;
-import com.vaadin.ui.UI;
+import com.vaadin.server.VaadinSession;
 
 /**
  * Classe de negócios do objeto Usuario
@@ -22,7 +21,7 @@ public class UsuarioModel {
     public  Empresa getEmpresaUsuarioLogado() throws GestorException{
         
         // obtem o usuario logado
-        Usuario usuario = ((GestorMDI) UI.getCurrent()).getUserData().getUsuarioLogado();
+        Usuario usuario = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
         
         // obtem a empresa ativa do usuario logado 
         // so pode haver uma

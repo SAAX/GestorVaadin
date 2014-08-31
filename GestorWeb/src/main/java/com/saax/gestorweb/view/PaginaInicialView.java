@@ -25,8 +25,8 @@ import java.util.ResourceBundle;
 public class PaginaInicialView extends HorizontalLayout {
 
     // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getUserData().getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getUserData().getImagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
@@ -77,7 +77,7 @@ public class PaginaInicialView extends HorizontalLayout {
         // botão para preview do dashboard
         final Button previewDashboardButton = new Button("dashboard preview", (Button.ClickEvent event) -> {
             Usuario usuarioTeste = new LoginModel().getUsuario("teste-user@gmail.com");
-            ((GestorMDI) UI.getCurrent()).getUserData().setUsuarioLogado(usuarioTeste);
+            getSession().setAttribute("usuarioLogado", usuarioTeste);
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         });
 

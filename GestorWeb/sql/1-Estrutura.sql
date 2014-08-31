@@ -222,6 +222,7 @@ INSERT INTO statustarefa VALUES ('EM_ANDAMENTO');
 INSERT INTO statustarefa VALUES ('ADIADA');
 INSERT INTO statustarefa VALUES ('BLOQUEADA');
 INSERT INTO statustarefa VALUES ('CONCLUIDA');
+INSERT INTO statustarefa VALUES ('AVALIADA');
 INSERT INTO statustarefa VALUES ('CANCELADA');
 
 -- Projecao Tarefa
@@ -332,11 +333,15 @@ CREATE TABLE BloqueioTarefa (
     idBloqueioTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
     motivo CHARACTER VARYING (50),
+    status CHARACTER VARYING (50) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
+    idUsuarioRemocao INTEGER,
     dataHoraInclusao TIMESTAMP NOT NULL,
     dataHoraRemocao TIMESTAMP,
+    FOREIGN KEY (status) REFERENCES statusTarefa (statusTarefa),	
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
-    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
+    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
+    FOREIGN KEY (idUsuarioRemocao) REFERENCES Usuario(idUsuario)
 );
 
 -- Anexos Tarefa
@@ -420,7 +425,7 @@ CREATE TABLE HistoricoTarefa (
     idHistoricoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
     evento CHARACTER VARYING (100),
-    idUsuario INTEGER NOT NULL,
+    idUsuario BIGINT NOT NULL,
     dataHora TIMESTAMP NOT NULL,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)

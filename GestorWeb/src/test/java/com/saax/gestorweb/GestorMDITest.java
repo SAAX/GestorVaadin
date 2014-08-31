@@ -41,30 +41,6 @@ public class GestorMDITest {
     public void tearDown() {
     }
 
-    /**
-     * Test of setUserData method, of class GestorMDI.
-     */
-    @Test
-    public void testSetUserData() {
-        System.out.println("setUserData");
-        UserData userData = new UserData();
-        GestorMDI instance = new GestorMDI();
-        instance.setUserData(userData);
-        assertEquals(userData, instance.getUserData());
-    }
-
-    /**
-     * Test of getUserData method, of class GestorMDI.
-     */
-    @Test
-    public void testGetUserData() {
-        System.out.println("getUserData");
-        GestorMDI instance = new GestorMDI();
-        UserData expResult = new UserData();
-        instance.setUserData(expResult);
-        UserData result = instance.getUserData();
-        assertEquals(expResult, result);
-    }
 
     /**
      * Test of carregarDashBoard method, of class GestorMDI.

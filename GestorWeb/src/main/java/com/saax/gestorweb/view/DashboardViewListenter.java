@@ -14,4 +14,6 @@ public interface DashboardViewListenter {
     public void removerFiltrosPesquisa();
 
     public void carregarListaTarefasUsuarioLogado();
+
+    public void permutarTipoPesquisa();
 }

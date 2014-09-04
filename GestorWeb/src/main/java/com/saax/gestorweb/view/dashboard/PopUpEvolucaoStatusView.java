@@ -607,6 +607,60 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     public ComboBox getAvaliarTarefaCombo() {
         return avaliarTarefaCombo;
     }
+    /**
+     * Carrega o modo de visualização onde o usuário solicitante pode visualizar
+     * e alterar o status de uma tarefa<br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>Botão para adiar a tarefa</li>
+     * <li>Botão para cancelar a tarefa</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
+     * @param status
+     */
+    public void apresentaPerfilUsuarioSolicitanteTarefaNaoAceitaOuNaoIniciada(StatusTarefa status) {
+        
+        main.removeAllComponents();
+
+        main.setSpacing(true);
+
+        // ---------------------------------------------------------------------
+        // exibe o status
+        // ---------------------------------------------------------------------
+        main.addComponent(new Label(
+                "<h3> Tarefa: " + status.toString() + "</h3>",
+                ContentMode.HTML
+        ));
+
+        // ---------------------------------------------------------------------
+        // Campos para alterar status / Historico
+        // ---------------------------------------------------------------------
+        HorizontalLayout alterarStatusContainer = new HorizontalLayout();
+
+        alterarStatusContainer.setSpacing(true);
+
+        adiarTarefaButton = new Button("Adiar Tarefa");
+        adiarTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.adiarTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(adiarTarefaButton);
+
+        cancelarTarefaButton = new Button("Cancelar Tarefa");
+        cancelarTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.cancelarTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(cancelarTarefaButton);
+
+        historicoTarefaButton = new Button("Histórico");
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(historicoTarefaButton);
+
+        main.addComponent(alterarStatusContainer);
+
+    }
 
         
     

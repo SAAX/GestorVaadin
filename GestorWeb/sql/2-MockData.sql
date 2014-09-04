@@ -274,3 +274,28 @@ VALUES (23, 2, 1, 1, 'Tarefa', 'Tarefa Exemplo 24 (sub da 23)', 'Tarefa de prior
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
     1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
 
+-- Tarefas onde o solicitante é o test-user 
+INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
+    prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
+    idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+VALUES (NULL, 1, 1, 1, 'Tarefa', 'Tarefa Exemplo 25', 'Tarefa 1 onde o solicitante eh o test',
+    'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
+    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+
+INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
+    prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
+    idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+VALUES (NULL, 1, 1, 1, 'Tarefa', 'Tarefa Exemplo 26', 'Tarefa 2 onde o solicitante eh o test',
+    'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
+    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+
+INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
+    prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
+    idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+VALUES (NULL, 1, 1, 1, 'Tarefa', 'Tarefa Exemplo 27', 'Tarefa 3 onde o solicitante eh o test',
+    'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
+    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+

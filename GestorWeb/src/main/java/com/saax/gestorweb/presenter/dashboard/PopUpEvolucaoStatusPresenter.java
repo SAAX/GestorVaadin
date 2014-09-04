@@ -233,12 +233,12 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
                     break;
                 case NAO_ACEITA:
 
-                    view.apresentaMensagemComStatus(tarefa);
+                    view.apresentaPerfilUsuarioSolicitanteTarefaNaoAceitaOuNaoIniciada(StatusTarefa.NAO_ACEITA);
 
                     break;
                 case NAO_INICIADA:
 
-                    view.apresentaMensagemComStatus(tarefa);
+                    view.apresentaPerfilUsuarioSolicitanteTarefaNaoAceitaOuNaoIniciada(StatusTarefa.NAO_INICIADA);
                     break;
                 default:
                     throw new AssertionError();

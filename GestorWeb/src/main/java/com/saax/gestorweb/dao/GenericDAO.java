@@ -8,7 +8,6 @@ package com.saax.gestorweb.dao;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
-import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.PostgresConnection;
 import java.io.Serializable;
@@ -18,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 
 /**
  *
@@ -35,6 +35,20 @@ public class GenericDAO implements Serializable {
         this.emf = PostgresConnection.getInstance().getEntityManagerFactory();
     }
 
+    public <T> List<T> listByQuery(String sql, Object parameterValue) {
+        EntityManager em = getEntityManager();
+        List<T> list;
+
+        Query q = em.createQuery(sql);
+        
+        // obtem os registros para a empresa principal (pre filtro obrigatorio) + filtro informado
+        list = (List<T>) q.getResultList();
+
+        return list;
+
+    }
+
+    
     public <T> List<T> listByNamedQuery(String namedQuery, String parameterName, Object parameterValue) {
         EntityManager em = getEntityManager();
         List<T> list;
@@ -48,6 +62,8 @@ public class GenericDAO implements Serializable {
 
     }
 
+    
+    
     public <T> List<T> listByNamedQueryEmpresa(String namedQuery, String parameterName, Object parameterValue) {
         EntityManager em = getEntityManager();
         List<T> list;
@@ -98,6 +114,10 @@ public class GenericDAO implements Serializable {
         } finally {
             em.close();
         }
+    }
+
+    public Query createQuery(String sql) {
+        return getEntityManager().createQuery(sql);
     }
 
 }

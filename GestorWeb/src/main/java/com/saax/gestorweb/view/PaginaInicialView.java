@@ -2,9 +2,11 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.vaadin.server.Sizeable.Unit;
@@ -81,6 +83,18 @@ public class PaginaInicialView extends HorizontalLayout {
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         });
 
+        // botão para preview do dashboard
+        final Button previewTarefasButton = new Button("Tarefas preview", (Button.ClickEvent event) -> {
+            Usuario usuarioTeste = new LoginModel().getUsuario("teste-user@gmail.com");
+            getSession().setAttribute("usuarioLogado", usuarioTeste);
+            
+            CadastroTarefaView view = new CadastroTarefaView();
+            CadastroTarefaModel model = new CadastroTarefaModel();
+            new CadastroTarefaPresenter(model, view);
+            UI.getCurrent().addWindow(view);
+            
+        });
+
         // barra dos botoes
         HorizontalLayout barraBotoes = new HorizontalLayout();
         containerDireito.addComponent(barraBotoes);
@@ -89,6 +103,7 @@ public class PaginaInicialView extends HorizontalLayout {
         barraBotoes.addComponent(signUpButton);
         barraBotoes.addComponent(loginButton);
         barraBotoes.addComponent(previewDashboardButton);
+        barraBotoes.addComponent(previewTarefasButton);
 
         // Adicona os dois containers, lado-a-lado
         addComponent(containerEsquerdo);

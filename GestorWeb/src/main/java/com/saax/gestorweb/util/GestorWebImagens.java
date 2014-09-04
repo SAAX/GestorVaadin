@@ -25,6 +25,7 @@ public class GestorWebImagens implements Serializable {
     // carrega os recursos de imagem
     public GestorWebImagens() {
         PAGINAINICIAL_LOGO = new Image(null, new ClassResource("/imagens/profit_growth-512.png"));
+        
     }
     
     

@@ -7072,3 +7072,16 @@ body .mytheme.v-app .v-app-loading {
 .mytheme .v-table-body {
 	overflow: hidden !important;
 }
+
+.mytheme .v-tree-node-no-children {
+	background: none;
+}
+
+.mytheme v-tree-node-expanded {
+	background-position: -5px -10px;
+}
+
+.mytheme .v-tree-node {
+	background: none;
+	padding: 1px 0;
+}

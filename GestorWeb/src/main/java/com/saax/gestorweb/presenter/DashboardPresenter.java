@@ -16,9 +16,12 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
+import com.vaadin.server.ClassResource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
@@ -91,6 +94,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
 
         carregarListaTarefasUsuarioLogado();
         carregarFiltrosPesquisa();
+        carregarListaTarefasPrincipais();
     }
 
     /**
@@ -130,6 +134,9 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
                 view.getFiltroProjecaoOptionGroup().addItem(projecao.toString());
             }
 
+            view.getPermutacaoPesquisaOptionGroup().addItem("E");
+            view.getPermutacaoPesquisaOptionGroup().addItem("OU");
+            
         } catch (GestorException ex) {
             Logger.getLogger(DashboardPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -138,6 +145,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     /**
      * Carrega a lista de tarefas sob responsabilidade do usuario logado
      */
+    @Override
     public void carregarListaTarefasUsuarioLogado() {
 
         // Usuario logado
@@ -153,6 +161,15 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     private PopupView buildPopUp2(Tarefa tarefa){
         
         return new PopupView(new PopupTextFieldContent());
+    }
+
+    private void carregarListaTarefasPrincipais() {
+        
+        Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        
+        List<Tarefa> tarefasPrincipais = model.listarTarefasPrincipais(usuarioLogado);
+        
+        view.setListaTarefasPrincipais(tarefasPrincipais);
     }
     
     
@@ -200,113 +217,10 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         });
         
         
-
         return presenter.getStatusButton();
-        
-        
-       //---------------------------------------------------------------------------
-        
-/*
-
-
-        
-        
-        // Se a tarefa estiver em andamento o pop-up será com um 
-        // combo para seleção do andamento
-        if (tarefa.getStatus().equals(StatusTarefa.EM_ANDAMENTO)) {
-
-            
-
-            Button okButton = new Button("OK", (Button.ClickEvent event) -> {
-
-                Integer idTarefa = (Integer) view.getTarefasTable().getValue();
-
-                // obtem o pop up button
-                PopupButton statusButtonSelecioado = (PopupButton) view.getTarefasTable().getItem(idTarefa).getItemProperty("Status").getValue();
-
-                Integer andamento = (Integer) andamentoTarefaCombo.getValue();
-
-                Tarefa tarefaSelecionada = model.atualizarAndamentoTarefa(idTarefa, andamento);
-
-                statusButtonSelecioado.setPopupVisible(false);
-
-                statusButtonSelecioado.setCaption(getStatusTarefaDescription(tarefaSelecionada));
-
-            });
-
-            popupContainer.addComponent(okButton);
-            popupContainer.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
-
-            Button cancelButton = new Button("Cancel", (Button.ClickEvent event) -> {
-
-                andamentoTarefaCombo.select(tarefa.getAndamento());
-
-                statusButton.setPopupVisible(false);
-            });
-
-            popupContainer.addComponent(cancelButton);
-            popupContainer.setComponentAlignment(cancelButton, Alignment.BOTTOM_RIGHT);
-
-            statusButton.setContent(popupContainer);
-
-            andamentoTarefaCombo.select(tarefa.getAndamento());
-
-        } else {
-            // Colocar tratamentos futuros no caso de outras alteraçoes de status
-            // como bloquear, cancelar, etc.
-        }
-        return statusButton;*/
-        
-        
     }
-
-    /*
-     private ComboBox buildComboStatus(Tarefa tarefa) {
-
-     ComboBox statusCombo = new ComboBox();
-
-     statusCombo.addItem(StatusTarefa.NAO_ACEITA);
-     statusCombo.setItemCaption(StatusTarefa.NAO_ACEITA, "Não Aceita");
-        
-     statusCombo.addItem(StatusTarefa.NAO_INICIADA);
-     statusCombo.setItemCaption(StatusTarefa.NAO_INICIADA, "Não Iniciada");
-        
-     statusCombo.addItem(StatusTarefa.EM_ANDAMENTO+"_0");
-     statusCombo.setItemCaption(StatusTarefa.EM_ANDAMENTO+"_0", "0% Concluída");
-
-     statusCombo.addItem(StatusTarefa.EM_ANDAMENTO+"_25");
-     statusCombo.setItemCaption(StatusTarefa.EM_ANDAMENTO+"_25", "0% Concluída");
         
         
-     statusCombo.addItems("0%", "25%", "50%", "75%", "100%");
-     statusButton.setContent(statusCombo);
-
-     switch (tarefa.getAndamento()) {
-     case 0:
-     statusCombo.select("0%");
-     break;
-     case 25:
-     statusCombo.select("25%");
-     break;
-     case 50:
-     statusCombo.select("50%");
-     break;
-     case 75:
-     statusCombo.select("75%");
-     break;
-     case 100:
-     statusCombo.select("100%");
-     break;
-
-     default:
-     statusCombo.select("0%");
-     }
-
-
-     statusCombo.setWidth("60px");
-     return statusCombo;
-     }
-     */
     /**
      * Carrega a lista de tarefas na tabela
      *
@@ -315,7 +229,6 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     public void exibirListaTarefas(List<Tarefa> listaTarefas) {
 
         view.getTarefasTable().removeAllItems();
-
         Object[] linha;
         for (Tarefa tarefa : listaTarefas) {
             linha = new Object[]{
@@ -338,10 +251,11 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
 
         }
 
+        
         for (Tarefa tarefa : listaTarefas) {
             if (tarefa.getTarefaPai() != null) {
                 view.getTarefasTable().setParent(tarefa.getGlobalID(), tarefa.getTarefaPai().getGlobalID());
-
+                
             }
 
         }
@@ -398,6 +312,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         exibirListaTarefas(listaTarefas);
 
         view.getRemoverFiltroPesquisa().setVisible(true);
+        view.getPermutacaoPesquisaOptionGroup().setVisible(true);
 
     }
 
@@ -419,10 +334,18 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         carregarListaTarefasUsuarioLogado();
         
         view.getRemoverFiltroPesquisa().setVisible(false);
+        view.getPermutacaoPesquisaOptionGroup().setVisible(false);
         
         desativarPesquisaAutomatica = false;
 
     }
 
+    @Override
+    public void permutarTipoPesquisa() {
+
+        
+    }
+
+    
 
 }

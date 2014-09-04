@@ -14,4 +14,20 @@
         overflow: hidden !important;
     }
 
+
+    .v-tree-node-no-children{
+        background: none;
+    }
+    
+    v-tree-node-expanded {
+        background-position: -5px -10px;
+    }
+    
+    .v-tree-node {
+        /*background: url("img/icone-treeview.jpeg") no-repeat scroll 5px -37px transparent;*/
+        background: none;
+        
+        padding: 1px 0;
+    }
+
 }

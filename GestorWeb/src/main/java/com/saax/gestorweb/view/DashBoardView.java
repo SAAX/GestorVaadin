@@ -2,6 +2,7 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.PostgresConnection;
@@ -51,6 +52,7 @@ public class DashBoardView extends VerticalLayout {
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
     private DashboardViewListenter listener;
+    private OptionGroup permutacaoPesquisaOptionGroup;
 
     public void setListener(DashboardViewListenter listener) {
         this.listener = listener;
@@ -268,6 +270,15 @@ public class DashBoardView extends VerticalLayout {
 
         getFiltrosPesquisaEsquerdaContainer().addComponent(getFiltroProjecaoButton());
 
+        permutacaoPesquisaOptionGroup = new OptionGroup();
+        getPermutacaoPesquisaOptionGroup().setMultiSelect(false);
+        getPermutacaoPesquisaOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
+            getListener().permutarTipoPesquisa();
+        });
+        
+        getFiltrosPesquisaEsquerdaContainer().addComponent(getPermutacaoPesquisaOptionGroup());
+        getPermutacaoPesquisaOptionGroup().setVisible(false);
+
         removerFiltroPesquisa = new Button("Remover Filtros", (Button.ClickEvent event) -> {
             getListener().removerFiltrosPesquisa();
         });
@@ -328,6 +339,16 @@ public class DashBoardView extends VerticalLayout {
         return getAbasContainer();
     }
 
+    
+    public void setListaTarefasPrincipais(List<Tarefa> tarefasPrincipais){
+        getPrincipaisTarefasContainer().removeAllComponents();
+        for (Tarefa tarefa : tarefasPrincipais) {
+            Button tarefaButton = new Button(tarefa.getDescricao());
+            tarefaButton.setStyleName("v-button-link");
+            getPrincipaisTarefasContainer().addComponent(tarefaButton);
+        }
+    }
+    
     private Component buildPaineisRodape() {
 
         rodapeContainer = new HorizontalLayout();
@@ -339,13 +360,6 @@ public class DashBoardView extends VerticalLayout {
         getPrincipaisTarefasContainer().setStyleName("blue");
         getPrincipaisTarefasContainer().setWidth("20%");
         getRodapeContainer().addComponent(getPrincipaisTarefasContainer());
-
-        Button tarefaButton;
-        for (int i = 0; i < 5; i++) {
-            tarefaButton = new Button("Tarefa " + (i + 1));
-            tarefaButton.setStyleName("v-button-link");
-            getPrincipaisTarefasContainer().addComponent(tarefaButton);
-        }
 
         principaisProjecoesContainer = new VerticalLayout();
         getPrincipaisProjecoesContainer().setWidth("20%");
@@ -583,6 +597,12 @@ public class DashBoardView extends VerticalLayout {
     public Accordion getFiltroUsuarioAccordion() {
         return filtroUsuarioAccordion;
     }
+
+    public OptionGroup getPermutacaoPesquisaOptionGroup() {
+        return permutacaoPesquisaOptionGroup;
+    }
+    
+    
 
     private Component buildComboAlteraUsuario() {
 

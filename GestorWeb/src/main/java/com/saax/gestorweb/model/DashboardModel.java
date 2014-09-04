@@ -11,6 +11,9 @@ import com.saax.gestorweb.util.GestorException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.Query;
 
 /**
  * Classe de negócios do Dasboard
@@ -188,5 +191,25 @@ public class DashboardModel {
      }
 
      */
+
+    public List<Tarefa> listarTarefasPrincipais(Usuario usuarioLogado) {
+      
+        try {
+            String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante ORDER BY t.dataFim DESC";
+            Query q = new GenericDAO().createQuery(sql);
+            
+            Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
+            q.setParameter("empresa", empresa);
+            q.setParameter("usuarioSolicitante", usuarioLogado);
+            
+            List<Tarefa> tarefas = q.getResultList();
+            
+            return tarefas;
+        } catch (GestorException ex) {
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+        
+    }
    
 }

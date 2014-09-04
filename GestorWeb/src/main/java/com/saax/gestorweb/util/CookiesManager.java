@@ -56,7 +56,6 @@ public class CookiesManager implements Serializable {
 
         }
 
-        
         if (VaadinService.getCurrentRequest() != null) {
             cookie.setPath(VaadinService.getCurrentRequest().getContextPath());
             VaadinService.getCurrentResponse().addCookie(cookie);
@@ -67,11 +66,10 @@ public class CookiesManager implements Serializable {
     }
 
     public CookiesManager() {
-        if (VaadinService.getCurrentRequest() != null) {
-            cookies = new HashSet<>();
+        cookies = new HashSet<>();
+        if (VaadinService.getCurrentRequest() != null && VaadinService.getCurrentRequest().getCookies() != null
+                && VaadinService.getCurrentRequest().getCookies().length > 0) {
             cookies.addAll(Arrays.asList(VaadinService.getCurrentRequest().getCookies()));
-        } else {
-            cookies = new HashSet<>();
         }
     }
 

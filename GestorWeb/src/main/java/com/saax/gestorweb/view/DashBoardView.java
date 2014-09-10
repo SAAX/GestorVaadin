@@ -4,6 +4,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.UserData;
@@ -154,6 +155,7 @@ public class DashBoardView extends VerticalLayout {
         getTarefasTable().setPageLength(7);
         getTarefasTable().setSelectable(true);
         getTarefasTable().setImmediate(true);
+        
 
         return getTarefasTable();
 
@@ -213,19 +215,25 @@ public class DashBoardView extends VerticalLayout {
         filtroUsuarioResponsavelOptionGroup = new OptionGroup();
         getFiltroUsuarioResponsavelOptionGroup().setMultiSelect(true);
         getFiltroUsuarioResponsavelOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            getListener().aplicarFiltroPesquisa();
+            if (getFiltroUsuarioResponsavelOptionGroup().getValue()!=null){
+                getListener().aplicarFiltroPesquisa();
+            }
         });
 
         filtroUsuarioSolicitanteOptionGroup = new OptionGroup();
         getFiltroUsuarioSolicitanteOptionGroup().setMultiSelect(true);
         getFiltroUsuarioSolicitanteOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            getListener().aplicarFiltroPesquisa();
+            if (getFiltroUsuarioSolicitanteOptionGroup().getValue()!=null){
+                getListener().aplicarFiltroPesquisa();
+            }
         });
 
         filtroUsuarioParticipanteOptionGroup = new OptionGroup();
         getFiltroUsuarioParticipanteOptionGroup().setMultiSelect(true);
         getFiltroUsuarioParticipanteOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            getListener().aplicarFiltroPesquisa();
+            if (getFiltroUsuarioParticipanteOptionGroup().getValue()!=null){
+                getListener().aplicarFiltroPesquisa();
+            }
         });
 
         getFiltroUsuarioAccordion().addTab(getFiltroUsuarioResponsavelOptionGroup(), "Responsável");
@@ -242,7 +250,9 @@ public class DashBoardView extends VerticalLayout {
         getFiltroEmpresaOptionGroup().setMultiSelect(true);
         getFiltroEmpresaOptionGroup().setMultiSelect(true);
         getFiltroEmpresaOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            getListener().aplicarFiltroPesquisa();
+            if (getFiltroEmpresaOptionGroup().getValue()!=null){
+                getListener().aplicarFiltroPesquisa();
+            }
         });
 
         filtroEmpresaButton = new PopupButton("Empresa");
@@ -253,7 +263,9 @@ public class DashBoardView extends VerticalLayout {
         filtroDataFimButton = new PopupButton("Data Fim");
         filtroDataFimDateField = new InlineDateField();
         getFiltroDataFimDateField().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            getListener().aplicarFiltroPesquisa();
+            if (getFiltroDataFimDateField().getValue()!=null){
+                getListener().aplicarFiltroPesquisa();
+            }
         });
 
         getFiltroDataFimButton().setContent(getFiltroDataFimDateField());
@@ -262,7 +274,9 @@ public class DashBoardView extends VerticalLayout {
         filtroProjecaoOptionGroup = new OptionGroup();
         getFiltroProjecaoOptionGroup().setMultiSelect(true);
         getFiltroProjecaoOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            getListener().aplicarFiltroPesquisa();
+            if (getFiltroProjecaoOptionGroup().getValue()!=null){
+                getListener().aplicarFiltroPesquisa();
+            }
         });
 
         filtroProjecaoButton = new PopupButton("Projeçao");
@@ -270,10 +284,13 @@ public class DashBoardView extends VerticalLayout {
 
         getFiltrosPesquisaEsquerdaContainer().addComponent(getFiltroProjecaoButton());
 
-        permutacaoPesquisaOptionGroup = new OptionGroup();
+        permutacaoPesquisaOptionGroup = new OptionGroup("Apresentar tarefas que correspondam a...");
         getPermutacaoPesquisaOptionGroup().setMultiSelect(false);
+        getPermutacaoPesquisaOptionGroup().addStyleName("horizontal");;
         getPermutacaoPesquisaOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            getListener().permutarTipoPesquisa();
+            if (getPermutacaoPesquisaOptionGroup().getValue()!=null){
+                getListener().aplicarFiltroPesquisa();
+            }
         });
         
         getFiltrosPesquisaEsquerdaContainer().addComponent(getPermutacaoPesquisaOptionGroup());

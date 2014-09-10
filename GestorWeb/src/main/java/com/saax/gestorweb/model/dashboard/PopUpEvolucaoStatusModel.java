@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Classe de negócios do pop up de evolução de status
  * @author rodrigo
  */
 public class PopUpEvolucaoStatusModel {
@@ -36,6 +36,9 @@ public class PopUpEvolucaoStatusModel {
     private final GenericDAO genericDAO;
     private final AvaliacaoMetaTarefaDAO avaliacaoTarefaDAO;
 
+    /**
+     * Cria o modelo e os DAOs que serão utilizados.
+     */
     public PopUpEvolucaoStatusModel() {
 
         tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
@@ -47,6 +50,14 @@ public class PopUpEvolucaoStatusModel {
 
     }
 
+    /**
+     * Registra o andamento de uma tarefa
+     * @param usuarioLogado
+     * @param idTarefa
+     * @param andamento
+     * @param comentarioAndamento
+     * @return 
+     */
     public Tarefa atualizarAndamentoTarefa(Usuario usuarioLogado, Integer idTarefa, Integer andamento, String comentarioAndamento) {
 
         Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
@@ -85,6 +96,11 @@ public class PopUpEvolucaoStatusModel {
         return tarefaDAO.findTarefa(idTarefa);
     }
 
+    /**
+     * Marca uma tarefa como concluída
+     * @param tarefa
+     * @return 
+     */
     public Tarefa concluirTarefa(Tarefa tarefa) {
 
         try {
@@ -104,6 +120,13 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * Registra o bloqueio de uma tarefa
+     * @param idTarefa
+     * @param motivoBloqueio
+     * @param usuarioLogado
+     * @return 
+     */
     public Tarefa bloquearTarefa(Integer idTarefa, String motivoBloqueio, Usuario usuarioLogado) {
         try {
 
@@ -140,6 +163,12 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * Registra o adiamento de uma tarefa
+     * @param id
+     * @param usuario
+     * @return 
+     */
     public Tarefa adiarTarefa(Integer id, Usuario usuario) {
 
         try {
@@ -151,6 +180,8 @@ public class PopUpEvolucaoStatusModel {
 
             tarefaDAO.edit(tarefa);
             
+            historicoTarefaDAO.create(new HistoricoTarefa("Tarefa ADIADA!", usuario, tarefa, LocalDateTime.now()));
+
             return tarefaDAO.findTarefa(tarefa.getId());
             
         } catch (NonexistentEntityException ex) {
@@ -161,6 +192,11 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * Obtém o bloqueio ativo de uma tarefa
+     * @param tarefa
+     * @return 
+     */
     public BloqueioTarefa obterBloqueioAtivo(Tarefa tarefa) {
         List<BloqueioTarefa> bloqueios = genericDAO.listByNamedQuery("BloqueioTarefa.findByTarefa", "tarefa", tarefa);
         for (BloqueioTarefa bloqueio : bloqueios) {
@@ -171,6 +207,12 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * Libera uma tarefa bloqueada
+     * @param idTarefa
+     * @param usuario
+     * @return 
+     */
     public Tarefa removerBloqueioTarefa(Integer idTarefa, Usuario usuario) {
         try {
 
@@ -204,6 +246,12 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * 
+     * @param idTarefa
+     * @param usuario
+     * @return 
+     */
     public Tarefa aceitarTarefa(Integer idTarefa, Usuario usuario) {
         try {
 
@@ -228,6 +276,12 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * Reabre uma tarefa concluida mas que nao foi avaliada
+     * @param idTarefa
+     * @param usuario
+     * @return 
+     */
     public Tarefa reabrirTarefa(Integer idTarefa, Usuario usuario) {
         try {
 
@@ -254,6 +308,12 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * Reativa uma tarefa parada: Cancelada ou Adiada
+     * @param idTarefa
+     * @param usuario
+     * @return 
+     */
     public Tarefa reativarTarefa(Integer idTarefa, Usuario usuario) {
         try {
 
@@ -281,6 +341,14 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * Registra a avaliação de uma tarefa concluida
+     * @param idTarefa
+     * @param avaliacao
+     * @param observacaoAvaliacao
+     * @param usuario
+     * @return 
+     */
     public Tarefa avaliarTarefa(Integer idTarefa, Integer avaliacao, String observacaoAvaliacao, Usuario usuario) {
 
         boolean reavaliacao;
@@ -336,6 +404,14 @@ public class PopUpEvolucaoStatusModel {
         return null;
     }
 
+    /**
+     * Inicia uma tarefa 
+     * @param usuario
+     * @param idTarefa
+     * @param andamento
+     * @param comentarioAndamento
+     * @return 
+     */
     public Tarefa iniciarTarefa(Usuario usuario, Integer idTarefa, Integer andamento, String comentarioAndamento) {
         Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
 
@@ -372,6 +448,35 @@ public class PopUpEvolucaoStatusModel {
         }
 
         return tarefaDAO.findTarefa(idTarefa);
+    }
+
+    /**
+     * Cancela uma tarefa
+     * @param id
+     * @param usuario
+     * @return 
+     */
+    public Tarefa cancelarTarefa(Integer id, Usuario usuario) {
+        try {
+
+            Tarefa tarefa = tarefaDAO.findTarefa(id);
+
+            tarefa.setStatus(StatusTarefa.CANCELADA);
+            tarefa.setDataTermino(LocalDate.now());
+
+            historicoTarefaDAO.create(new HistoricoTarefa("Tarefa CANCELADA!", usuario, tarefa, LocalDateTime.now()));
+
+            tarefaDAO.edit(tarefa);
+            
+            return tarefaDAO.findTarefa(tarefa.getId());
+            
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+        
     }
 
 }

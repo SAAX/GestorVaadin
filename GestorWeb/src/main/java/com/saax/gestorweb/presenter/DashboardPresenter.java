@@ -16,14 +16,8 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
-import com.vaadin.server.ClassResource;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Image;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.time.Instant;
@@ -40,8 +34,9 @@ import java.util.logging.Logger;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
- * Presenter do Dashboard Esta classe é responsável captar todos os eventos que
- * ocorrem na View e dar o devido tratamento, utilizando para isto o modelo
+ * Presenter do Dashboard <br>
+ * Esta classe é responsável captar todos os eventos que ocorrem na View e dar o
+ * devido tratamento, utilizando para isto o modelo.
  *
  *
  * @author Rodrigo
@@ -55,7 +50,12 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    private boolean desativarPesquisaAutomatica = false;
+
+    // enumeracao do tipo de pesquisa
+    public enum TipoPesquisa {
+
+        INCLUSIVA_OU, EXCLUSIVA_E
+    };
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -74,20 +74,16 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     }
 
     /**
-     * Logout geral
+     * Chama o Logout geral do MDI
      */
     @Override
     public void logout() {
 
-        ((GestorMDI) UI.getCurrent()).getPage().setLocation("/GestorWeb");
-
-        // Close the VaadinServiceSession
-        ((GestorMDI) UI.getCurrent()).getSession().close();
-
+        ((GestorMDI) UI.getCurrent()).logout();
     }
 
     /**
-     * Configura todos os eventos ao abrir a visualização
+     * Carrega os campos necessarios ao abrir a visualização
      */
     @Override
     public void carregaVisualizacaoInicial() {
@@ -131,12 +127,15 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
             }
 
             for (ProjecaoTarefa projecao : ProjecaoTarefa.values()) {
-                view.getFiltroProjecaoOptionGroup().addItem(projecao.toString());
+                view.getFiltroProjecaoOptionGroup().addItem(projecao);
+                view.getFiltroProjecaoOptionGroup().setItemCaption(projecao, projecao.toString());
             }
 
-            view.getPermutacaoPesquisaOptionGroup().addItem("E");
-            view.getPermutacaoPesquisaOptionGroup().addItem("OU");
-            
+            view.getPermutacaoPesquisaOptionGroup().addItem(TipoPesquisa.EXCLUSIVA_E);
+            view.getPermutacaoPesquisaOptionGroup().setItemCaption(TipoPesquisa.EXCLUSIVA_E, "Todos os filtros");
+            view.getPermutacaoPesquisaOptionGroup().addItem(TipoPesquisa.INCLUSIVA_OU);
+            view.getPermutacaoPesquisaOptionGroup().setItemCaption(TipoPesquisa.INCLUSIVA_OU, "Pelo menos um filtro");
+
         } catch (GestorException ex) {
             Logger.getLogger(DashboardPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -156,37 +155,18 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         exibirListaTarefas(listaTarefas);
 
     }
-    
 
-    private PopupView buildPopUp2(Tarefa tarefa){
-        
-        return new PopupView(new PopupTextFieldContent());
-    }
-
+    /**
+     * Carrega o box inferior esquerdo com as tarefas principais
+     */
     private void carregarListaTarefasPrincipais() {
-        
+
         Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
-        
+
         List<Tarefa> tarefasPrincipais = model.listarTarefasPrincipais(usuarioLogado);
-        
+
         view.setListaTarefasPrincipais(tarefasPrincipais);
     }
-    
-    
-    // Create a dynamically updating content for the popup
-    class PopupTextFieldContent implements PopupView.Content {
-        private final TextField textField = new TextField("Minimized HTML content", "Click to edit");
-
-        @Override
-        public final Component getPopupComponent() {
-            return textField;
-        }
-
-        @Override
-        public final String getMinimizedValueAsHTML() {
-            return textField.getValue();
-        }
-    };    
 
     /**
      * Constrói o pop up de alteração de status e/ou andamento de tarefas neste
@@ -199,11 +179,11 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     private PopupButton buildPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
 
         // comportmento e regras:
-        PopUpEvolucaoStatusView view = new PopUpEvolucaoStatusView();
-        PopUpEvolucaoStatusModel model = new PopUpEvolucaoStatusModel();
-                
-        PopUpEvolucaoStatusPresenter presenter = new PopUpEvolucaoStatusPresenter(view,model);
-        
+        PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
+        PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
+
+        PopUpEvolucaoStatusPresenter presenter = new PopUpEvolucaoStatusPresenter(viewPopUP, modelPopUP);
+
         presenter.load(tarefa);
 
         // evento disparado quando o pop-up se torna visivel:
@@ -215,12 +195,10 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
                 this.view.getTarefasTable().setValue(idTarefa);
             }
         });
-        
-        
+
         return presenter.getStatusButton();
     }
-        
-        
+
     /**
      * Carrega a lista de tarefas na tabela
      *
@@ -229,6 +207,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     public void exibirListaTarefas(List<Tarefa> listaTarefas) {
 
         view.getTarefasTable().removeAllItems();
+        
         Object[] linha;
         for (Tarefa tarefa : listaTarefas) {
             linha = new Object[]{
@@ -251,25 +230,40 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
 
         }
 
-        
         for (Tarefa tarefa : listaTarefas) {
             if (tarefa.getTarefaPai() != null) {
                 view.getTarefasTable().setParent(tarefa.getGlobalID(), tarefa.getTarefaPai().getGlobalID());
-                
+
             }
 
         }
 
     }
 
+
     /**
      * Aplicar filtros de pesquisa selecionado
+     *
      */
     @Override
     public void aplicarFiltroPesquisa() {
-
-        if (desativarPesquisaAutomatica) return ;
         
+        TipoPesquisa tipoPesquisa = (TipoPesquisa) view.getPermutacaoPesquisaOptionGroup().getValue();
+
+        if (tipoPesquisa==null){
+            view.getPermutacaoPesquisaOptionGroup().setValue(TipoPesquisa.INCLUSIVA_OU);
+        } else {
+            aplicarFiltroPesquisa(tipoPesquisa);
+        }
+    }
+    
+    /**
+     * Aplicar filtros de pesquisa selecionado
+     *
+     * @param tipoPesquisa
+     */
+    public void aplicarFiltroPesquisa(TipoPesquisa tipoPesquisa) {
+
         // Obtem os filtros selecionados pelo usuario
         // usuarios selecionados
         List<Usuario> usuariosResponsaveis = new ArrayList<>((Collection<Usuario>) view.getFiltroUsuarioResponsavelOptionGroup().getValue());
@@ -307,7 +301,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         List<ProjecaoTarefa> projecoes = new ArrayList<>((Collection<ProjecaoTarefa>) view.getFiltroProjecaoOptionGroup().getValue());
 
         // recarrega a visualizacao
-        List<Tarefa> listaTarefas = model.listarTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
+        List<Tarefa> listaTarefas = model.filtrarTarefas(tipoPesquisa, usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
 
         exibirListaTarefas(listaTarefas);
 
@@ -322,8 +316,6 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     @Override
     public void removerFiltrosPesquisa() {
 
-        desativarPesquisaAutomatica = true;
-
         view.getFiltroUsuarioParticipanteOptionGroup().setValue(null);
         view.getFiltroUsuarioSolicitanteOptionGroup().setValue(null);
         view.getFiltroUsuarioResponsavelOptionGroup().setValue(null);
@@ -332,20 +324,12 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         view.getFiltroProjecaoOptionGroup().setValue(null);
 
         carregarListaTarefasUsuarioLogado();
-        
+
         view.getRemoverFiltroPesquisa().setVisible(false);
         view.getPermutacaoPesquisaOptionGroup().setVisible(false);
-        
-        desativarPesquisaAutomatica = false;
+        view.getPermutacaoPesquisaOptionGroup().setValue(null);
 
     }
 
-    @Override
-    public void permutarTipoPesquisa() {
-
-        
-    }
-
-    
 
 }

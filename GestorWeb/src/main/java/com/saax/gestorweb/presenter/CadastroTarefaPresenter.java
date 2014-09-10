@@ -2,6 +2,8 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.datamodel.StatusTarefa;
+import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
@@ -38,8 +40,37 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     }
     
+    /**
+     * Abre o pop window do cadastro de tarefas
+     */
     public void open(){
+        
+        // Carrega os combos de seleção
+        carregaComboStatusTarefa();
+        
         UI.getCurrent().addWindow(view);
     }
+    
+    /**
+     * Carrega o combo de seleçao do tipo
+     */
+    private void carregaComboStatusTarefa(){
+        
+    }
+    
+    /**
+     * Carrega o combo de seleçao com os status possiveis para a tarefa
+     */
+    private void carregaComboTipoRecorrenciaTarefa(){
+        
+        view.getStatusTarefa().addItem(StatusTarefa.ADIADA);
+        view.getStatusTarefa().setItemCaption(StatusTarefa.ADIADA, "Única");
+    
+        view.getStatusTarefa().addItem(TipoTarefa.RECORRENTE);
+        view.getStatusTarefa().setItemCaption(TipoTarefa.RECORRENTE, "Recorrente");
+    
+        
+    }
+   
     
 }

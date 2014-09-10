@@ -390,8 +390,8 @@ CREATE TABLE OrcamentoTarefa (
 DROP TABLE IF EXISTS AvaliacaoMetaTarefa CASCADE;
 CREATE TABLE AvaliacaoMetaTarefa (
     idAvaliacaoMetaTarefa SERIAL NOT NULL PRIMARY KEY, 
-    idMeta BIGINT NOT NULL, 
-    idTarefa BIGINT NOT NULL, 
+    idMeta BIGINT, 
+    idTarefa BIGINT, 
     idUsuarioAvaliado INTEGER NOT NULL,
     idUsuarioAvaliador INTEGER NOT NULL,
     avaliacao INTEGER NOT NULL,

@@ -7069,19 +7069,23 @@ body .mytheme.v-app .v-app-loading {
 	background-image: url(../reindeer/window/img/black/content-bg.png);/** sprite-ref: black-verticals; sprite-alignment: repeat */
 }
 
-.mytheme .v-table-body {
-	overflow: hidden !important;
-}
-
 .mytheme .v-tree-node-no-children {
 	background: none;
 }
 
-.mytheme v-tree-node-expanded {
-	background-position: -5px -10px;
+.mytheme .v-tree-node {
+	background-image: url("img/icone-treeview.jpeg");
+	padding: 1px 0;
 }
 
-.mytheme .v-tree-node {
-	background: none;
-	padding: 1px 0;
+.mytheme .v-select-optiongroup-horizontal .v-select-option {
+	display: inline-block;
+}
+
+.mytheme .v-select-optiongroup-horizontal {
+	white-space: nowrap;
+}
+
+.mytheme .v-select-optiongroup-horizontal .v-select-option.v-radiobutton {
+	padding-right: 10px;
 }

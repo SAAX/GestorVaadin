@@ -83,31 +83,10 @@ public class DashboardModelTest {
     }
 
     /**
-     * Test of listarTarefas method, of class DashboardModel.
+     * Test of filtrarTarefas method, of class DashboardModel.
      */
     @Test
     public void testListarTarefasPorUsuarioResponsavel() {
-        System.out.println("listarTarefas");
-
-        List<Usuario> usuariosResponsaveis = new ArrayList<>();
-       // usuariosResponsaveis.add(usuarioDAO.findByLogin("teste-user@gmail.com"));
-
-        List<Usuario> usuariosSolicitantes = null;
-        List<Usuario> usuariosParticipantes = null;
-        List<Empresa> empresas = null;
-        List<FilialEmpresa> filiais = null;
-        LocalDate dataFim = null;
-        List<ProjecaoTarefa> projecoes = null;
-        
-        List<Tarefa> expResult = null;
-        List<Tarefa> result = instance.listarTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
-        
-        if (result!=null)
-        for (Tarefa tarefa : result) {
-            
-            System.out.println(tarefa.getNome());
-        }
-        
         
     }
 

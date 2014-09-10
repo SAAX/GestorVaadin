@@ -61,11 +61,11 @@ public class AvaliacaoMetaTarefa implements Serializable {
     private LocalDateTime dataHoraInclusao;
 
     @JoinColumn(name = "idmeta", referencedColumnName = "idmeta")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Meta meta;
 
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Tarefa tarefa;
 
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")

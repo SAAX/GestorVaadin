@@ -7,6 +7,7 @@ import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
+import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import javax.persistence.Query;
 public class DashboardModel {
 
     /**
-     *
+     * Obtém as tarefas sob responsabilidade do usuário logado
      * @param usuarioLogado
      * @return
      */
@@ -84,6 +85,7 @@ public class DashboardModel {
     /**
      * Lista as tarefas que correspondam aos filtros informados
      *
+     * @param tipoPesquisa
      * @param usuariosResponsaveis
      * @param usuariosSolicitantes
      * @param usuariosParticipantes
@@ -93,108 +95,117 @@ public class DashboardModel {
      * @param projecoes
      * @return
      */
-    public List<Tarefa> listarTarefas(List<Usuario> usuariosResponsaveis,
+    public List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis,
             List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes) {
 
-        List<Tarefa> tarefas = new ArrayList<>();
+        
 
+        final List<Tarefa> tarefasUsuarioResponsavel = new ArrayList<>();
         usuariosResponsaveis.stream().forEach((usuario) -> {
             // refresh
             usuario = new GenericDAO().merge(usuario);
-            tarefas.addAll(usuario.getTarefasSobResponsabilidade());
+            tarefasUsuarioResponsavel.addAll(usuario.getTarefasSobResponsabilidade());
 
         });
 
+        List<Tarefa> tarefasUsuarioSolicitante = new ArrayList<>();
         usuariosSolicitantes.stream().forEach((usuario) -> {
             usuario = new GenericDAO().merge(usuario);
-            tarefas.addAll(usuario.getTarefasSolicitadas());
+            tarefasUsuarioSolicitante.addAll(usuario.getTarefasSolicitadas());
         });
 
+        
+        
+        List<Tarefa> tarefasUsuariosParticipantes = new ArrayList<>();
         for (Usuario usuario : usuariosParticipantes) {
             usuario = new GenericDAO().merge(usuario);
             usuario.getTarefasParticipantes().stream().forEach((participanteTarefa) -> {
-                tarefas.add(participanteTarefa.getTarefa());
+                tarefasUsuariosParticipantes.add(participanteTarefa.getTarefa());
             });
         }
 
+
+        List<Tarefa> tarefasEmpresa = new ArrayList<>();
         empresas.stream().forEach((empresa) -> {
             empresa = new GenericDAO().merge(empresa);
-            tarefas.addAll(empresa.getTarefas());
+            tarefasEmpresa.addAll(empresa.getTarefas());
         });
 
+        
+        List<Tarefa> tarefasFiliais = new ArrayList<>();
         filiais.stream().forEach((filial) -> {
             filial = new GenericDAO().merge(filial);
-            tarefas.addAll(filial.getTarefas());
+            tarefasFiliais.addAll(filial.getTarefas());
         });
 
+        List<Tarefa> tarefasDataFim = new ArrayList<>();
         if (dataFim != null) {
-            tarefas.addAll(new GenericDAO().listByNamedQueryEmpresa("Tarefa.findByDataFim", "dataFim", dataFim));
+            tarefasDataFim.addAll(new GenericDAO().listByNamedQueryEmpresa("Tarefa.findByDataFim", "dataFim", dataFim));
+        }
+        
+        List<Tarefa> tarefasProjecao = new ArrayList<>();
+        projecoes.stream().forEach((projecao) -> {
+            tarefasProjecao.addAll(new GenericDAO().listByNamedQueryEmpresa("Tarefa.findByProjecao", "projecao", projecao));
+        });
+        
+        List<Tarefa> tarefas = new ArrayList<>();
+        if (tipoPesquisa == DashboardPresenter.TipoPesquisa.INCLUSIVA_OU){
+        
+            tarefas.addAll(tarefasUsuarioResponsavel);
+          
+            tarefas.addAll(tarefasUsuarioSolicitante);
+
+            tarefas.addAll(tarefasUsuariosParticipantes);
+        
+            tarefas.addAll(tarefasEmpresa);
+            
+            tarefas.addAll(tarefasFiliais);
+            
+            tarefas.addAll(tarefasDataFim);
+            
+            tarefas.addAll(tarefasProjecao);
+            
+        } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E){
+        
+            tarefas.addAll(new GenericDAO().listByNamedQueryEmpresa("Tarefa.findAll", null, null));
+            
+            if (!tarefasUsuarioResponsavel.isEmpty()){
+                tarefas.retainAll(tarefasUsuarioResponsavel);
+            }
+            if (!tarefasUsuarioSolicitante.isEmpty()){
+                tarefas.retainAll(tarefasUsuarioSolicitante);
+            }
+            if (!tarefasUsuariosParticipantes.isEmpty()){
+                tarefas.retainAll(tarefasUsuariosParticipantes);
+            }
+            if (!tarefasEmpresa.isEmpty()){
+                tarefas.retainAll(tarefasEmpresa);
+            }
+            if (!tarefasFiliais.isEmpty()){
+                tarefas.retainAll(tarefasFiliais);
+            }
+            if (!tarefasDataFim.isEmpty()){
+                tarefas.retainAll(tarefasDataFim);
+            }
+            if (!tarefasProjecao.isEmpty()){
+                tarefas.retainAll(tarefasProjecao);
+            }
+            
         }
 
-        projecoes.stream().forEach((projecao) -> {
-            tarefas.addAll(new GenericDAO().listByNamedQueryEmpresa("Tarefa.findByProjecao", "projecao", projecao));
-        });
-
-        /*      
-         if (usuariosResponsaveis!=null){
-         tarefas = filtrarUsuarioResponsavel(tarefas, usuariosResponsaveis);
-         }
-        
-         if (empresas!=null){
-         tarefas = filtrarEmpresas(tarefas, empresas);
-         }
-        
-         if (filiais!=null){
-         tarefas = filtrarUsuarioResponsavel(tarefas, usuariosResponsaveis);
-         }
-        
-         //tarefas = tarefaDAO.findTarefas(usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes);
-         */
         return tarefas;
     }
 
-    public List<Tarefa> filtrarEmpresas(List<Tarefa> tarefas, List<Empresa> empresas) {
-        List<Tarefa> tarefasFiltradas = new ArrayList<>();
-        tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
-            tarefasFiltradas.add(tarefa);
-        });
 
-        return tarefasFiltradas;
-    }
-
-    /*
-     public List<Tarefa> filtrarUsuarioResponsavel(List<Tarefa> tarefas, List<Usuario> usuariosResponsaveis){
-     List<Tarefa> tarefasFiltradas = new ArrayList<>();
-     tarefas.stream().filter((tarefa) -> (usuariosResponsaveis.contains(tarefa.getUsuarioResponsavel()))).forEach((tarefa) -> {
-     tarefasFiltradas.add(tarefa);
-     });
-        
-     return tarefasFiltradas;
-     }
-
-     public List<Tarefa> filtrarEmpresas(List<Tarefa> tarefas, List<Empresa> empresas){
-     List<Tarefa> tarefasFiltradas = new ArrayList<>();
-     tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
-     tarefasFiltradas.add(tarefa);
-     });
-        
-     return tarefasFiltradas;
-     }
-
-     public List<Tarefa> filtrarFiliais(List<Tarefa> tarefas, List<Filialem> empresas){
-     List<Tarefa> tarefasFiltradas = new ArrayList<>();
-     tarefas.stream().filter((tarefa) -> (empresas.contains(tarefa.getEmpresa()))).forEach((tarefa) -> {
-     tarefasFiltradas.add(tarefa);
-     });
-        
-     return tarefasFiltradas;
-     }
-
+    /**
+     * Obtém as tarefas solicitadas pelo usuário logado, ordenadas por data FIM
+     * @param usuarioLogado
+     * @return 
      */
-
     public List<Tarefa> listarTarefasPrincipais(Usuario usuarioLogado) {
       
         try {
+            
             String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante ORDER BY t.dataFim DESC";
             Query q = new GenericDAO().createQuery(sql);
             

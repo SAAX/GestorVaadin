@@ -37,6 +37,11 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     private PopupButton statusButton = null;
     private final Usuario usuario;
 
+    /**
+     * Cria o pop-up ligando view e presenter
+     * @param view
+     * @param model 
+     */
     public PopUpEvolucaoStatusPresenter(PopUpEvolucaoStatusView view, PopUpEvolucaoStatusModel model) {
         this.view = view;
         this.model = model;
@@ -45,6 +50,11 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
+    /**
+     * Carrega o pop-up configurando a visualização de acordo com o 
+     * relacionamento entre o usuario e a tarefa, e o status da mesma
+     * @param tarefa 
+     */
     @Override
     public void load(Tarefa tarefa) {
 
@@ -62,6 +72,9 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
+    /**
+     * Comando para fechar pop-up
+     */
     private void closePopUpButton() {
 
         statusButton.setPopupVisible(false);
@@ -73,7 +86,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     /**
      * Configura a view de acordo com o perfil do usário e o status da tarefa
-     * <br> <br>
+     * <br> 
      * Ao clicar no status da tarefa vai abrir um pop-up para evolução do status
      * / andamento da tarefa. <br>
      * <br>
@@ -251,6 +264,10 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
+    /**
+     * Trata o evento disparado quando o usuario informa o andamento da tarefa <br>
+     * Obtém os dados e passao ao model para atualização
+     */
     @Override
     public void processarAlteracaoAndamento() {
 
@@ -266,7 +283,6 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
             } else {
                 tarefa = model.atualizarAndamentoTarefa(usuario, idTarefa, andamento, comentarioAndamento);
             }
-            
 
             if (andamento == 100) {
 
@@ -278,6 +294,11 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
+    /**
+     * Obtém a descrição internacionalizada do status da tarefa
+     * @param tarefa
+     * @return 
+     */
     private String getStatusTarefaDescription(Tarefa tarefa) {
 
         StatusTarefa statusTarefa = tarefa.getStatus();
@@ -293,6 +314,8 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
                 return mensagens.getString("StatusTarefa.ADIADA");
             case BLOQUEADA:
                 return mensagens.getString("StatusTarefa.BLOQUEADA");
+            case AVALIADA:
+                return mensagens.getString("StatusTarefa.AVALIADA");
             case CONCLUIDA:
                 return mensagens.getString("StatusTarefa.CONCLUIDA");
             case CANCELADA:
@@ -307,6 +330,9 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
         return statusButton;
     }
 
+    /**
+     * Evento disparado ao ser solicitado o bloqueio da tarefa
+     */
     @Override
     public void bloquearTarefaClicked() {
 
@@ -314,6 +340,10 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
+    
+    /**
+     * Evento disparado ao ser solicitado o histórico da tarefa
+     */
     @Override
     public void historicoTarefaClicked() {
         List<HistoricoTarefa> historico = tarefa.getHistorico();
@@ -322,6 +352,9 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
+    /**
+     * Evento disparado ao ser confirmado o bloqueio da tarefa
+     */
     @Override
     public void confirmarBloqueioClicked() {
 
@@ -333,29 +366,46 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
+    /**
+     * Evento disparado ao ser solicitado para adiar a tarefa
+     */
     @Override
     public void adiarTarefaClicked() {
         tarefa = model.adiarTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
+    /**
+     * Evento disparado ao ser solicitado para cancelar a tarefa
+     */
     @Override
     public void cancelarTarefaClicked() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        tarefa = model.cancelarTarefa(tarefa.getId(), usuario);
+        closePopUpButton();
+
     }
 
+    /**
+     * Evento disparado ao ser solicitado para remover o bloqueio da tarefa
+     */
     @Override
     public void removerBloqueioTarefaClicked() {
         tarefa = model.removerBloqueioTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
+    /**
+     * Evento disparado ao ser aceita a tarefa para execução
+     */
     @Override
     public void aceitarTarefaClicked() {
         tarefa = model.aceitarTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
+    /**
+     * Evento disparado ao ser solicitado para reabrir uma tarefa concluida que ainda não foi avaliada
+     */
     @Override
     public void reabrirTarefaClicked() {
         tarefa = model.reabrirTarefa(tarefa.getId(), usuario);
@@ -363,12 +413,18 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
+    /**
+     * Evento disparado ao ser solicitado para reativar uma tarefa cancelada ou adiada
+     */
     @Override
     public void reativarTarefaClicked() {
         tarefa = model.reativarTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
+    /**
+     * Evento disparado ao ser avaliada uma tarefa pelo usuario solicitante
+     */
     @Override
     public void processarAvaliacao() {
         Integer avaliacao = (Integer) view.getAvaliarTarefaCombo().getValue();

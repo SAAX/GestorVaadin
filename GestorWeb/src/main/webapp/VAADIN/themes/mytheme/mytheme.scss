@@ -10,24 +10,34 @@
 
 
     /* Insert your theme rules here */
-    .v-table-body{
+    /*.v-table-body{
         overflow: hidden !important;
-    }
+    }*/
 
 
     .v-tree-node-no-children{
         background: none;
     }
-    
+/*
     v-tree-node-expanded {
         background-position: -5px -10px;
     }
-    
+*/
     .v-tree-node {
-        /*background: url("img/icone-treeview.jpeg") no-repeat scroll 5px -37px transparent;*/
-        background: none;
-        
+        background-image: url("img/icone-treeview.jpeg");
+
         padding: 1px 0;
     }
 
+    .v-select-optiongroup-horizontal .v-select-option {
+        display: inline-block;
+    }
+
+    .v-select-optiongroup-horizontal {
+        white-space: nowrap;
+    }
+
+    .v-select-optiongroup-horizontal .v-select-option.v-radiobutton {
+        padding-right: 10px;
+    }
 }

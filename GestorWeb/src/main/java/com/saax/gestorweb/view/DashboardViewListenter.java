@@ -1,5 +1,7 @@
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.presenter.DashboardPresenter;
+
 /**
  * Interface com todos os eventos disparados pela View do dashboard
  * 
@@ -9,11 +11,7 @@ public interface DashboardViewListenter {
    
     void logout();
     void carregaVisualizacaoInicial();
+    void removerFiltrosPesquisa();
+    void carregarListaTarefasUsuarioLogado();
     void aplicarFiltroPesquisa();
-
-    public void removerFiltrosPesquisa();
-
-    public void carregarListaTarefasUsuarioLogado();
-
-    public void permutarTipoPesquisa();
 }

@@ -22,6 +22,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -85,27 +86,40 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         linhaUmContainer.setSpacing(true);
 
         linhaUmContainer.addComponent(new Label(
-                "<h3> Tarefa: " + tarefa.getStatus().toString() + "</h3>",
+                "<h3> "+mensagens.getString("PopUpEvolucaoStatusView.MensagemComStatus.Tarefa.label") + tarefa.getStatus().toString() + "</h3>",
                 ContentMode.HTML
         ));
 
         if (tarefa.getStatus() == StatusTarefa.AVALIADA){
+            
             linhaUmContainer.addComponent(new Label(
-                    "<h4> Com " + tarefa.getAvaliacoes().get(0).getAvaliacao() + " estrelas. </h4>",
+                    
+                    "<h4> " + MessageFormat.format(mensagens.getString("PopUpEvolucaoStatusView.MensagemComStatus.TarefaAvaliada.label"), 
+                            tarefa.getAvaliacoes().get(0).getAvaliacao()) + "  </h4>",
                     ContentMode.HTML
             ));
             
         }
-        historicoTarefaButton = new Button("Histórico");
-        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
-            listener.historicoTarefaClicked();
-        });
-        linhaUmContainer.addComponent(historicoTarefaButton);
+        
+        linhaUmContainer.addComponent(buildHistoricoTarefaButton());
 
         main.addComponent(linhaUmContainer);
 
     }
 
+
+    /**
+     * constroi o botao comum para visualizaçao do historico da tarefa
+     * @return 
+     */
+    private Button buildHistoricoTarefaButton(){
+        historicoTarefaButton = new Button(mensagens.getString("PopUpEvolucaoStatusView.historicoTarefaButton.label"));
+        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.historicoTarefaClicked();
+        });
+        return historicoTarefaButton;
+    }
+    
     private TextField comentarioAndamento;
 
     /**
@@ -135,7 +149,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         comboAndamentoContainer.setSpacing(true);
 
         comentarioAndamento = new TextField();
-        comentarioAndamento.setInputPrompt("Informe o progresso...");
+        comentarioAndamento.setInputPrompt(mensagens.getString("PopUpEvolucaoStatusView.comentarioAndamento.inputPrompt"));
 
         comboAndamentoContainer.addComponent(comentarioAndamento);
 
@@ -150,17 +164,13 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
         alterarStatusContainer.setSpacing(true);
 
-        bloquearTarefaButton = new Button("Bloquear Tarefa");
+        bloquearTarefaButton = new Button(mensagens.getString("PopUpEvolucaoStatusView.bloquearTarefaButton.label"));
         bloquearTarefaButton.addClickListener((Button.ClickEvent event) -> {
             listener.bloquearTarefaClicked();
         });
         alterarStatusContainer.addComponent(bloquearTarefaButton);
 
-        historicoTarefaButton = new Button("Histórico");
-        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
-            listener.historicoTarefaClicked();
-        });
-        alterarStatusContainer.addComponent(historicoTarefaButton);
+        alterarStatusContainer.addComponent(buildHistoricoTarefaButton());
 
         main.addComponent(alterarStatusContainer);
 
@@ -201,11 +211,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         });
         alterarStatusContainer.addComponent(removerBloqueioTarefaButton);
 
-        historicoTarefaButton = new Button("Histórico");
-        historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
-            listener.historicoTarefaClicked();
-        });
-        alterarStatusContainer.addComponent(historicoTarefaButton);
+        alterarStatusContainer.addComponent(buildHistoricoTarefaButton());
 
         main.addComponent(alterarStatusContainer);
 
@@ -554,7 +560,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
         comboAvaliacaoContainer.addComponent(comentarioAvaliacaoTextField);
 
-        avaliarTarefaCombo = new ComboBox("Avalição");
+        avaliarTarefaCombo = new ComboBox();
             
         avaliarTarefaCombo.addItem(1);
         avaliarTarefaCombo.setItemCaption(1, "Ícone 1 Estrela");
@@ -607,6 +613,8 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     public ComboBox getAvaliarTarefaCombo() {
         return avaliarTarefaCombo;
     }
+    
+    
     /**
      * Carrega o modo de visualização onde o usuário solicitante pode visualizar
      * e alterar o status de uma tarefa<br>

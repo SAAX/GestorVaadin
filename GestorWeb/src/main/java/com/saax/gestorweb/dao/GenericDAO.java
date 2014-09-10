@@ -40,7 +40,7 @@ public class GenericDAO implements Serializable {
         List<T> list;
 
         Query q = em.createQuery(sql);
-        
+
         // obtem os registros para a empresa principal (pre filtro obrigatorio) + filtro informado
         list = (List<T>) q.getResultList();
 
@@ -48,7 +48,6 @@ public class GenericDAO implements Serializable {
 
     }
 
-    
     public <T> List<T> listByNamedQuery(String namedQuery, String parameterName, Object parameterValue) {
         EntityManager em = getEntityManager();
         List<T> list;
@@ -62,8 +61,6 @@ public class GenericDAO implements Serializable {
 
     }
 
-    
-    
     public <T> List<T> listByNamedQueryEmpresa(String namedQuery, String parameterName, Object parameterValue) {
         EntityManager em = getEntityManager();
         List<T> list;
@@ -76,10 +73,17 @@ public class GenericDAO implements Serializable {
             Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
 
             // obtem os registros para a empresa principal (pre filtro obrigatorio) + filtro informado
-            list = (List<T>) em.createNamedQuery(namedQuery)
-                    .setParameter("empresa", empresa)
-                    .setParameter(parameterName, parameterValue)
-                    .getResultList();
+            if (parameterName != null) {
+                list = (List<T>) em.createNamedQuery(namedQuery)
+                        .setParameter("empresa", empresa)
+                        .setParameter(parameterName, parameterValue)
+                        .getResultList();
+
+            } else {
+                list = (List<T>) em.createNamedQuery(namedQuery)
+                        .setParameter("empresa", empresa)
+                        .getResultList();
+            }
 
             if (list != null) {
                 returnList.addAll(list);
@@ -87,10 +91,18 @@ public class GenericDAO implements Serializable {
 
             // obtem os registros das subempresas
             for (Empresa subEmpresa : empresa.getSubEmpresas()) {
-                list = (List<T>) em.createNamedQuery(namedQuery)
-                        .setParameter("empresa", subEmpresa)
-                        .setParameter(parameterName, parameterValue)
-                        .getResultList();
+
+                if (parameterName != null) {
+                    list = (List<T>) em.createNamedQuery(namedQuery)
+                            .setParameter("empresa", subEmpresa)
+                            .setParameter(parameterName, parameterValue)
+                            .getResultList();
+
+                } else {
+                    list = (List<T>) em.createNamedQuery(namedQuery)
+                            .setParameter("empresa", subEmpresa)
+                            .getResultList();
+                }
 
                 if (list != null) {
                     returnList.addAll(list);

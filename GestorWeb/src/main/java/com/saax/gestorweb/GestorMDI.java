@@ -110,6 +110,19 @@ public class GestorMDI extends UI {
         Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO,"Atendimento de requisição concluído.");
         
     }
+    
+    /**
+     * Logout geral
+     */
+    public void logout() {
+
+        (UI.getCurrent()).getPage().setLocation("/GestorWeb");
+
+        // Close the VaadinServiceSession
+        (UI.getCurrent()).getSession().close();
+
+    }
+    
 
     public GestorWebImagens getGestorWebImagens() {
         return gestorWebImagens;

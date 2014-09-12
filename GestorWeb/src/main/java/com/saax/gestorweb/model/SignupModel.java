@@ -299,6 +299,7 @@ public class SignupModel {
         EntityManagerFactory emf = PostgresConnection.getInstance().getEntityManagerFactory();
         
         
+        
         final EntityManager em = emf.createEntityManager();
         try {
 

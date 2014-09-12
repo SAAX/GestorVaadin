@@ -30,7 +30,10 @@ public class LoginModel {
      * @return 
      */
     public boolean verificaLoginExistente(String login) {
-        Usuario u = (Usuario) genericDAO.listByNamedQuery("Usuario.findByLogin", "login", login).iterator().next();
+        System.out.println("entrou no metodo " + login);
+        
+        String u = usuarioDAO.verificaUsuarioExistente(login);
+
         return (u!=null);
     }
 

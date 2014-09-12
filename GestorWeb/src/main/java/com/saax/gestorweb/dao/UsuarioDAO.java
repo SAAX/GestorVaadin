@@ -8,33 +8,34 @@ package com.saax.gestorweb.dao;
 
 import com.saax.gestorweb.dao.exceptions.IllegalOrphanException;
 import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
-import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
-import java.util.ArrayList;
-import java.util.Collection;
-import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta;
-import java.util.List;
-import com.saax.gestorweb.model.datamodel.CentroCusto;
-import com.saax.gestorweb.model.datamodel.Endereco;
-import com.saax.gestorweb.model.datamodel.Tarefa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
-import com.saax.gestorweb.model.datamodel.FilialCliente;
-import com.saax.gestorweb.model.datamodel.FilialEmpresa;
-import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
-import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
+import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.datamodel.Endereco;
+import com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta;
+import com.saax.gestorweb.model.datamodel.FilialCliente;
+import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -1349,5 +1350,20 @@ public class UsuarioDAO implements Serializable {
             em.close();
         }
     }
+    
+    public String verificaUsuarioExistente(String login) {
+                EntityManager em = getEntityManager();
+                StringBuilder hql = new StringBuilder("Select * from Usuario where login ='"+login+ "'");
+		Query query = em.createQuery(hql.toString());
+		try {  
+		if (!query.getSingleResult().equals(null)){
+			return "existe";
+		} else{
+			return null;
+		}
+		} catch (NoResultException nre){
+			return null;
+		}
+	}
     
 }

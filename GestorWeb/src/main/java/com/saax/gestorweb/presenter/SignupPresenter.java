@@ -73,7 +73,7 @@ public class SignupPresenter implements SignupViewListener {
         //String login = ""; // @TODO: obter email do usuário principal
         
         String login = (String) view.getEmailUsuarioTextField().getValue(); // @TODO: Obter da view
-        
+        //System.out.println("usuario " + login);
 
         // verifica se o usuário informado existe (login)
         if (model.verificaLoginExistente(login)) {
@@ -245,7 +245,7 @@ public class SignupPresenter implements SignupViewListener {
 
             // Valida se o usuários já não está cadastrado no sistema
             String emailUsuario = (String) linha.getItemProperty(view.getEmailUsuarioTextField()).getValue(); // @TODO: Obter da view
-
+               System.out.println("usuario " + emailUsuario);
             if (model.verificaLoginExistente(emailUsuario)) {
 
                 // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj) já existe no sistema

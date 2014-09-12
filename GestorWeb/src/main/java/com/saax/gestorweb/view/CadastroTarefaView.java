@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.ui.Accordion;
@@ -10,10 +11,12 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
@@ -52,6 +55,16 @@ public class CadastroTarefaView extends Window {
     private Table participantesTable;
     private ComboBox empresaClienteCombo;
     private RichTextArea descricaoTarefaTextArea;
+    private ComboBox departamentoCombo;
+    private ComboBox centroCustoCombo;
+    private Upload adicionarAnexoButton;
+    private Table anexosAdicionadosTable;
+    private TextField custoHoraTextField;
+    private TextField imputarHorasTextField;
+    private TextField observacaoHorasTextField;
+    private Button imputarHorasButton;
+    private TextField horasEstimadasTextField;
+    private TextField horasRealizadasTextField;
 
     public void setListener(CadastroTarefaViewListener listener) {
         this.listener = listener;
@@ -94,6 +107,7 @@ public class CadastroTarefaView extends Window {
         accordion.addTab(buildAbaDadosIniciais(), mensagens.getString("CadastroTarefaView.AbaDadosIniciais.titulo"), null);
         accordion.addTab(buildAbaDescricaoEResponsaveis(), mensagens.getString("CadastroTarefaView.AbaDescricaoEResponsaveis.titulo"), null);
         accordion.addTab(buildAbaDetalhes(), mensagens.getString("CadastroTarefaView.AbaDetalhes.titulo"), null);
+        accordion.addTab(buildAbaControleHorasEOrcamento(), mensagens.getString("CadastroTarefaView.AbaControleHorasEOrcamento.titulo"), null);
 
         containerPrincipal.addComponent(accordion);
         containerPrincipal.setExpandRatio(accordion,1);
@@ -177,34 +191,113 @@ public class CadastroTarefaView extends Window {
 
     private Component buildAbaDescricaoEResponsaveis() {
         
-        GridLayout layout = new GridLayout(2, 4);
-        layout.setSpacing(true);
-        layout.setSizeFull();
 
         descricaoTarefaTextArea = new RichTextArea();
         descricaoTarefaTextArea.setSizeFull();
-        layout.addComponent(descricaoTarefaTextArea, 1, 0, 1, 3);
         
         responsavelCombo = new ComboBox(mensagens.getString("CadastroTarefaView.responsavelCombo.label"));
-        layout.addComponent(responsavelCombo, 0, 0);
 
         participantesCombo = new ComboBox(mensagens.getString("CadastroTarefaView.participantesCombo.label"));
-        layout.addComponent(participantesCombo, 0, 1);
         
         participantesTable = new Table();
-        layout.addComponent(participantesTable, 0, 2);
+        participantesTable.addContainerProperty(mensagens.getString("CadastroTarefaView.participantesTable.colunaParticipante"), String.class, "");
+        participantesTable.setColumnWidth(mensagens.getString("CadastroTarefaView.participantesTable.colunaParticipante"), 70);
+        participantesTable.addContainerProperty(mensagens.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"), Button.class, "");
+        participantesTable.setColumnWidth(mensagens.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"), 20);
+        participantesTable.setSelectable(true);
+        participantesTable.setImmediate(true);
+
         
         empresaClienteCombo = new ComboBox(mensagens.getString("CadastroTarefaView.empresaClienteCombo.label"));
-        layout.addComponent(empresaClienteCombo, 0, 3);
 
+        // do layout :
+        GridLayout layout = new GridLayout(2, 4);
+        layout.setMargin(true);
+        layout.setSpacing(true);
+        layout.setSizeFull();
+        
+        layout.addComponent(responsavelCombo, 0, 0);
+        layout.addComponent(participantesCombo, 0, 1);
+        layout.addComponent(participantesTable, 0, 2);
+        layout.addComponent(empresaClienteCombo, 0, 3);
         layout.setColumnExpandRatio(1, 1);
         layout.setRowExpandRatio(3, 1);
+        
+        layout.addComponent(descricaoTarefaTextArea, 1, 0, 1, 3);
         
         return layout;
     }
 
     private Component buildAbaDetalhes() {
-        return new VerticalLayout();
+        
+        departamentoCombo = new ComboBox("Departamento");
+
+        centroCustoCombo = new ComboBox("Centro de Custo");
+
+        adicionarAnexoButton = new Upload();
+        
+        anexosAdicionadosTable = new Table();
+        anexosAdicionadosTable.addContainerProperty(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"), String.class, "");
+        anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"), 100);
+        anexosAdicionadosTable.addContainerProperty(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaArquivo"), String.class, "");
+        anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaArquivo"), 70);
+        anexosAdicionadosTable.addContainerProperty(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), Button.class, "");
+        anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), 20);
+        anexosAdicionadosTable.setSelectable(true);
+        anexosAdicionadosTable.setImmediate(true);
+        
+        
+        // Do layout:
+        GridLayout layout = new GridLayout(2, 2);
+        layout.setSpacing(true);
+        layout.setMargin(true);
+        layout.setSizeFull();
+
+        layout.addComponent(departamentoCombo, 0, 0);
+        layout.addComponent(centroCustoCombo, 0, 1);
+        layout.addComponent(adicionarAnexoButton, 1, 0);
+        layout.addComponent(anexosAdicionadosTable, 1, 1);
+
+        return layout;
+    }
+
+    private Component buildAbaControleHorasEOrcamento() {
+
+        // Campos do controle de horas
+        custoHoraTextField = new TextField(mensagens.getString("CadastroTarefaView.custoHoraTextField.caption"));
+        
+        imputarHorasTextField = new TextField(mensagens.getString("CadastroTarefaView.imputarHorasTextField.caption"));
+        imputarHorasTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.imputarHorasTextField.inputPrompt"));
+        
+        observacaoHorasTextField = new TextField();
+        observacaoHorasTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.observacaoHorasTextField.inputPrompt"));
+        
+        imputarHorasButton = new Button(mensagens.getString("CadastroTarefaView.imputarHorasButton.caption"));
+        
+        horasEstimadasTextField = new TextField(mensagens.getString("CadastroTarefaView.horasEstimadasTextField.caption"));
+        horasRealizadasTextField = new TextField(mensagens.getString("CadastroTarefaView.horasRealizadasTextField.caption"));
+        
+        // Do layout:
+        HorizontalLayout controleHorasContainer = new HorizontalLayout();
+        controleHorasContainer.setSpacing(true);
+        controleHorasContainer.addComponent(custoHoraTextField);
+        controleHorasContainer.addComponent(imputarHorasTextField);
+        controleHorasContainer.addComponent(observacaoHorasTextField);
+        controleHorasContainer.addComponent(imputarHorasButton);
+        
+        HorizontalLayout orcamentoContainer = new HorizontalLayout();
+        
+        
+        
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(true);
+        layout.setSpacing(true);
+
+        layout.addComponent(controleHorasContainer);
+        layout.addComponent(orcamentoContainer);
+        
+
+        return layout;
     }
 
     public ComboBox getStatusTarefa() {

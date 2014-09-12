@@ -61,6 +61,17 @@ public class GenericDAO implements Serializable {
 
     }
 
+    public Object findByNamedQuery(String namedQuery, String parameterName, Object parameterValue) {
+        EntityManager em = getEntityManager();
+
+        // obtem os registros para a empresa principal (pre filtro obrigatorio) + filtro informado
+        return  em.createNamedQuery(namedQuery)
+                .setParameter(parameterName, parameterValue)
+                .getSingleResult();
+
+
+    }
+
     public <T> List<T> listByNamedQueryEmpresa(String namedQuery, String parameterName, Object parameterValue) {
         EntityManager em = getEntityManager();
         List<T> list;

@@ -1350,20 +1350,6 @@ public class UsuarioDAO implements Serializable {
             em.close();
         }
     }
-    
-    public String verificaUsuarioExistente(String login) {
-                EntityManager em = getEntityManager();
-                StringBuilder hql = new StringBuilder("Select * from Usuario where login ='"+login+ "'");
-		Query query = em.createQuery(hql.toString());
-		try {  
-		if (!query.getSingleResult().equals(null)){
-			return "existe";
-		} else{
-			return null;
-		}
-		} catch (NoResultException nre){
-			return null;
-		}
-	}
+   
     
 }

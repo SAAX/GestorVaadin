@@ -81,8 +81,8 @@ public class EmpresaDAO implements Serializable {
             Endereco endereco = empresa.getEndereco();
             if (endereco != null) {
                 endereco = em.getReference(endereco.getClass(), endereco.getId());
-                empresa.setEndereco(endereco);
-            }
+               empresa.setEndereco(endereco);
+             }
             Usuario usuarioInclusao = empresa.getUsuarioInclusao();
             if (usuarioInclusao != null) {
                 usuarioInclusao = em.getReference(usuarioInclusao.getClass(), usuarioInclusao.getId());

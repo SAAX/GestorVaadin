@@ -296,46 +296,49 @@ public class SignupModel {
      */
     public Empresa criarNovaConta(Empresa empresaPrincipal) {
 
-        EntityManagerFactory emf = PostgresConnection.getInstance().getEntityManagerFactory();
-        
-        
-        
-        final EntityManager em = emf.createEntityManager();
-        try {
-
-            em.getTransaction().begin();
-            
-            //a empresa principal
-            em.persist(empresaPrincipal);
-            
-            // grava as filiais
-            empresaPrincipal.getFiliais().stream().forEach((filial) -> {
-                    em.persist(filial);
-            });
-
-            // gravar coligadas
-            empresaPrincipal.getSubEmpresas().stream().forEach((empresa) -> {
-                em.persist(empresa);
-            });
-            
-            // grava os usuarios
-            for (UsuarioEmpresa usuarioEmpresa : empresaPrincipal.getUsuarios()) {
-                em.persist(usuarioEmpresa.getUsuario());
-                em.persist(usuarioEmpresa);
-            }
-            
-                                  
-            em.getTransaction().commit();
-            
-            return em.find(Empresa.class, empresaPrincipal.getId());
-        } catch (Exception ex) {
-            em.getTransaction().rollback();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-        
+        empresaDAO.create(empresaPrincipal);
+//        COMENTEI ABAIXO POIS ESTAVA TENTANDO GRAVAR NO MODEL E O CORRETO É UTILIZAR O DAO
+//        
+//        
+//        EntityManagerFactory emf = PostgresConnection.getInstance().getEntityManagerFactory();
+//        
+//        final EntityManager em = emf.createEntityManager();
+//        try {
+//
+//            em.getTransaction().begin();
+//            
+//            //a empresa principal
+//            em.persist(empresaPrincipal);
+//            
+//            // grava as filiais
+//            empresaPrincipal.getFiliais().stream().forEach((filial) -> {
+//                    em.persist(filial);
+//            });
+//
+//            // gravar coligadas
+//            empresaPrincipal.getSubEmpresas().stream().forEach((empresa) -> {
+//                em.persist(empresa);
+//            });
+//            
+//            // grava os usuarios
+//            for (UsuarioEmpresa usuarioEmpresa : empresaPrincipal.getUsuarios()) {
+//                em.persist(usuarioEmpresa.getUsuario());
+//                em.persist(usuarioEmpresa);
+//            }
+//            
+//                                  
+//            em.getTransaction().commit();
+//            
+//            return em.find(Empresa.class, empresaPrincipal.getId());
+//        } catch (Exception ex) {
+//            
+//            em.getTransaction().rollback();
+//        } finally {
+//            if (em != null) {
+//                em.close();
+//            }
+//        }
+//        
         return null;
         
         

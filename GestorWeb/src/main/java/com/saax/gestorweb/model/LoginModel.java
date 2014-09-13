@@ -5,6 +5,7 @@ import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.PostgresConnection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Classe de negócios do Login
@@ -31,11 +32,15 @@ public class LoginModel {
      * @return 
      */
     public boolean verificaLoginExistente(String login) {
-        System.out.println("entrou no metodo " + login);
         
-        Usuario u = (Usuario) genericDAO.findByNamedQuery("Usuario.findByLogin", "login", login);
-
-        return (u!=null);
+        List<Usuario> usuarios = null;
+        try{
+            usuarios = genericDAO.listByNamedQuery("Usuario.findByLogin", "login", login);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+            
+        return (!usuarios.isEmpty());
     }
 
     /**

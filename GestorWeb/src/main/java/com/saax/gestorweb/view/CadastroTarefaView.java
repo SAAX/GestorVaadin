@@ -70,6 +70,7 @@ public class CadastroTarefaView extends Window {
     private Button cancelarButton;
     private TreeTable subTarefasTable;
     private PopupButton statusTarefaPopUpButton;
+    private HorizontalLayout controleHorasContainer;
 
     public void setListener(CadastroTarefaViewListener listener) {
         this.listener = listener;
@@ -125,6 +126,8 @@ public class CadastroTarefaView extends Window {
         accordion.addTab(buildAbaControleHoras(), mensagens.getString("CadastroTarefaView.AbaControleHoras.titulo"), null);
         // adiciona a aba opcional de controle de orçamento
         accordion.addTab(buildAbaOrcamento(), mensagens.getString("CadastroTarefaView.AbaOrcamento.titulo"), null);
+        // adiciona a aba sub tarefas
+        accordion.addTab(buildAbaSubTarefas(), mensagens.getString("CadastroTarefaView.AbaSubTarefas.titulo"), null);
 
         containerPrincipal.addComponent(accordion);
         containerPrincipal.setExpandRatio(accordion,1);
@@ -133,7 +136,7 @@ public class CadastroTarefaView extends Window {
         Component barraInferior = buildBarraBotoesInferior();
         containerPrincipal.addComponent(barraInferior);
         containerPrincipal.setComponentAlignment(barraInferior, Alignment.MIDDLE_CENTER);
-        containerPrincipal.addComponent(buildSubTarefasTable());
+        // containerPrincipal.addComponent(buildSubTarefasTable());
         
         return containerPrincipal;
 
@@ -383,7 +386,7 @@ public class CadastroTarefaView extends Window {
         controleHorasTable.setWidth("100%");
 
         // Do layout:
-        HorizontalLayout controleHorasContainer = new HorizontalLayout();
+        controleHorasContainer = new HorizontalLayout();
         controleHorasContainer.setSpacing(true);
         controleHorasContainer.addComponent(custoHoraTextField);
         controleHorasContainer.addComponent(imputarHorasTextField);
@@ -400,6 +403,16 @@ public class CadastroTarefaView extends Window {
 
         return layout;
     }
+    
+    public void ocultarAbaControleHoras(){
+        controleHorasContainer.setVisible(false);
+    }
+    
+    public void revelarAbaControleHoras(){
+        controleHorasContainer.setVisible(true);
+    }
+    
+    
 
     private Component buildAbaOrcamento() {
 
@@ -456,7 +469,9 @@ public class CadastroTarefaView extends Window {
         return tipoRecorrenciaCombo;
     }
 
-    private Component buildSubTarefasTable() {
+    private Component buildAbaSubTarefas() {
+        
+        
         subTarefasTable = new TreeTable();
         subTarefasTable.setWidth("100%");
         subTarefasTable.addContainerProperty("Cod", String.class, "");

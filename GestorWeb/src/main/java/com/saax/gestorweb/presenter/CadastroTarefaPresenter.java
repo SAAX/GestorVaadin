@@ -68,6 +68,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         
         // 
         carregaTabelaParticipantes();
+
+        view.ocultarAbaControleHoras();
         
         UI.getCurrent().addWindow(view);
     }

@@ -58,31 +58,6 @@ public class DashboardModel {
     }
 
     /**
-     * Listar as coligadas (se existirem)
-     *
-     * @return
-     * @throws com.saax.gestorweb.util.GestorException
-     */
-    public List<Empresa> listarEmpresasRelacionadas() throws GestorException {
-
-        Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
-
-        List<Empresa> empresas = new ArrayList<>();
-
-        empresas.add(empresa);
-
-        for (Empresa subempresa : empresa.getSubEmpresas()) {
-            if (subempresa.getAtiva()) {
-                empresas.add(subempresa);
-
-            }
-
-        }
-
-        return empresas;
-    }
-
-    /**
      * Lista as tarefas que correspondam aos filtros informados
      *
      * @param tipoPesquisa

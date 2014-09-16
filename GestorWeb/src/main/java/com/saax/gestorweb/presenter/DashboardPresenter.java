@@ -3,6 +3,7 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 
 import com.saax.gestorweb.model.DashboardModel;
+import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
@@ -113,7 +114,8 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
 
             }
 
-            List<Empresa> empresas = model.listarEmpresasRelacionadas();
+            EmpresaModel empresaModel = new EmpresaModel();
+            List<Empresa> empresas = empresaModel.listarEmpresasRelacionadas();
             for (Empresa empresa : empresas) {
 
                 view.getFiltroEmpresaOptionGroup().addItem(empresa);

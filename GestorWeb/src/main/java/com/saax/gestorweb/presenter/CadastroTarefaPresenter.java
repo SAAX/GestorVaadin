@@ -1,17 +1,28 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.dao.EmpresaDAO;
 import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.EmpresaModel;
+import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.HistoricoTarefa_;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
+import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.UI;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -93,8 +104,21 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     }
 
     private void carregaComboEmpresa() {
-        ComboBox empresa = view.getEmpresaCombo();
-        // TODO: ...
+        try {
+            ComboBox empresaCombo = view.getEmpresaCombo();
+            
+            EmpresaModel empresaModel = new EmpresaModel();
+            
+            List<Empresa> empresas = empresaModel.listarEmpresasRelacionadas();
+            for (Empresa empresa : empresas) {
+
+                empresaCombo.addItem(empresa);
+                empresaCombo.setItemCaption(empresa, empresa.getNome());
+
+            }
+        } catch (GestorException ex) {
+            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void carregaComboPrioridade() {

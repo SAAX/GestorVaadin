@@ -11,6 +11,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.RichTextArea;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.TreeTable;
@@ -70,7 +71,8 @@ public class CadastroTarefaView extends Window {
     private Button cancelarButton;
     private TreeTable subTarefasTable;
     private PopupButton statusTarefaPopUpButton;
-    private HorizontalLayout controleHorasContainer;
+    private Accordion accordion;
+    private VerticalLayout controleHorasAba;
 
     public void setListener(CadastroTarefaViewListener listener) {
         this.listener = listener;
@@ -114,7 +116,7 @@ public class CadastroTarefaView extends Window {
         containerPrincipal.setComponentAlignment(barraBotoesSuperior, Alignment.MIDDLE_RIGHT);
 
         // cria o acordeon de abas e adiciona as abas
-        Accordion accordion = new Accordion();
+        accordion = new Accordion();
         accordion.setSizeFull();
         // adiciona a aba de dados iniciais
         accordion.addTab(buildAbaDadosIniciais(), mensagens.getString("CadastroTarefaView.AbaDadosIniciais.titulo"), null);
@@ -136,7 +138,9 @@ public class CadastroTarefaView extends Window {
         Component barraInferior = buildBarraBotoesInferior();
         containerPrincipal.addComponent(barraInferior);
         containerPrincipal.setComponentAlignment(barraInferior, Alignment.MIDDLE_CENTER);
-        // containerPrincipal.addComponent(buildSubTarefasTable());
+        
+
+        ocultarAbaControleHoras();
         
         return containerPrincipal;
 
@@ -322,7 +326,7 @@ public class CadastroTarefaView extends Window {
         anexosAdicionadosTable.setSelectable(true);
         anexosAdicionadosTable.setImmediate(true);
         anexosAdicionadosTable.setWidth("100%");
-        anexosAdicionadosTable.setHeight("100%");
+        anexosAdicionadosTable.setPageLength(5);
         
         
         // Do layout:
@@ -386,7 +390,7 @@ public class CadastroTarefaView extends Window {
         controleHorasTable.setWidth("100%");
 
         // Do layout:
-        controleHorasContainer = new HorizontalLayout();
+        HorizontalLayout controleHorasContainer = new HorizontalLayout();
         controleHorasContainer.setSpacing(true);
         controleHorasContainer.addComponent(custoHoraTextField);
         controleHorasContainer.addComponent(imputarHorasTextField);
@@ -394,22 +398,25 @@ public class CadastroTarefaView extends Window {
         controleHorasContainer.addComponent(imputarHorasButton);
         
         
-        VerticalLayout layout = new VerticalLayout();
-        layout.setMargin(true);
-        layout.setSpacing(true);
+        controleHorasAba = new VerticalLayout();
+        controleHorasAba.setMargin(true);
+        controleHorasAba.setSpacing(true);
 
-        layout.addComponent(controleHorasContainer);
-        layout.addComponent(controleHorasTable);
+        controleHorasAba.addComponent(controleHorasContainer);
+        controleHorasAba.addComponent(controleHorasTable);
 
-        return layout;
+        return controleHorasAba;
     }
     
     public void ocultarAbaControleHoras(){
-        controleHorasContainer.setVisible(false);
+        
+        TabSheet.Tab tab = accordion.getTab(controleHorasAba);
+        tab.setVisible(false);
+        
     }
     
     public void revelarAbaControleHoras(){
-        controleHorasContainer.setVisible(true);
+        
     }
     
     

@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.dao.EmpresaDAO;
+import com.saax.gestorweb.dao.EnderecoDAO;
 import com.saax.gestorweb.dao.FilialEmpresaDAO;
 import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -29,6 +30,7 @@ public class SignupModel {
 
     private final EmpresaDAO empresaDAO;
     private final FilialEmpresaDAO filialEmpresaDAO;
+    private final EnderecoDAO enderecoDAO;
 
     /**
      * Cria o model e conecta ao DAO
@@ -36,6 +38,8 @@ public class SignupModel {
     public SignupModel() {
         empresaDAO = new EmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         filialEmpresaDAO = new FilialEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        enderecoDAO = new EnderecoDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+      
     }
 
     /**
@@ -295,8 +299,11 @@ public class SignupModel {
      * @return  
      */
     public Empresa criarNovaConta(Empresa empresaPrincipal) {
-
+        
+    ///    enderecoDAO.create(empresaPrincipal.getEndereco());
+        
         empresaDAO.create(empresaPrincipal);
+        
 //        COMENTEI ABAIXO POIS ESTAVA TENTANDO GRAVAR NO MODEL E O CORRETO É UTILIZAR O DAO
 //        
 //        

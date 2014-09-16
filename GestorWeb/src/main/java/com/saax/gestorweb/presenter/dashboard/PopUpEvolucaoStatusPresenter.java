@@ -73,6 +73,32 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     }
 
     /**
+     * Carrega o pop-up configurando a visualização de acordo com o 
+     * relacionamento entre o usuario e a tarefa, e o status da mesma
+     * Sobrecarga com opçao de ja definir o status button
+     * @param tarefa 
+     * @param statusButton 
+     */
+    @Override
+    public void load(Tarefa tarefa, PopupButton statusButton) {
+
+        this.tarefa = tarefa;
+
+        this.statusButton = statusButton;
+        
+        this.statusButton.setCaption(getStatusTarefaDescription(tarefa));
+
+        // vincula o botão a tarefa
+        this.statusButton.setId(tarefa.getGlobalID());
+
+        configurarView();
+
+        // configura o conteudo
+        this.statusButton.setContent(view);
+
+    }
+
+    /**
      * Comando para fechar pop-up
      */
     private void closePopUpButton() {

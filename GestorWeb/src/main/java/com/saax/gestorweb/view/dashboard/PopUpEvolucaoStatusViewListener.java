@@ -2,12 +2,15 @@
 package com.saax.gestorweb.view.dashboard;
 
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  *
  * @author rodrigo
  */
 public interface PopUpEvolucaoStatusViewListener {
+
+    public void load(Tarefa tarefa, PopupButton statusButton);
     
     public void load(Tarefa tarefa);
 

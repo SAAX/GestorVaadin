@@ -530,35 +530,22 @@ public class SignupPresenter implements SignupViewListener {
         String cnpjColigada = view.getCnpjColigadaTextField().getValue();
         
         Button removerColigadasButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
+        removerColigadasButton.setId(nomeColigada);
         removerColigadasButton.addClickListener((Button.ClickEvent event) -> {
-            view.getColigadasTable().addListener(new Property.ValueChangeListener() {
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-              if(event.getProperty().getValue() != null){
-             
-              } 
-            }
-        });
+            String nomeColigadaBotao = event.getButton().getId();
             
-           if(view.getColigadasTable().getValue() != null){
-               view.getColigadasTable().removeItem(view.getColigadasTable().getValue());
+           
+               view.getColigadasTable().removeItem(nomeColigadaBotao);
                view.getColigadasTable().refreshRowCache();
                Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
                
-           }
+           
                         
         });
         
+       
+        view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada, removerColigadasButton}, nomeColigada);
         
-        
-        
-        if(view.getColigadasTable().getItemIds().size()==0){
-        
-        view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada, removerColigadasButton}, 1);
-         }else{
-            
-            view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada, removerColigadasButton}, null);
-        }
         
         view.getNomeColigadaTextField().setValue("");
         view.getCnpjColigadaTextField().setValue("");

@@ -1,24 +1,32 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.dao.CidadeDAO;
+import com.saax.gestorweb.dao.EnderecoDAO;
+import com.saax.gestorweb.dao.EstadoDAO;
+import com.saax.gestorweb.dao.GenericDAO;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
+import com.saax.gestorweb.model.datamodel.Estado;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
@@ -42,6 +50,10 @@ public class SignupPresenter implements SignupViewListener {
     // Todo presenter mantem acesso à view e ao model
     private final SignupView view;
     private final SignupModel model;
+    
+    private EstadoDAO estadoDAO;
+ 
+    
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -58,6 +70,13 @@ public class SignupPresenter implements SignupViewListener {
 
     }
 
+   public void open(){
+        // Carrega os combos de seleção
+        carregaComboEstado();
+        
+   }
+    
+    
     @Override
     public void cancelButtonClicked() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -598,6 +617,37 @@ public class SignupPresenter implements SignupViewListener {
        
          
     }
+private void carregaComboEstado() {
+    
+    ComboBox estadoCombo = view.getEstadoComboBox();
+    
+        estadoDAO = new EstadoDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        
+        List<Estado> estados = estadoDAO.findEstadoEntities();
+       
+        for (Estado estado : estados) {
+            
+            estadoCombo.addItem(estado);
+            estadoCombo.setItemCaption(estado, estado.getUf());
+            
+        }
+    }
 
+    @Override
+      public void estadoSelecionado() {
+       ComboBox cidadeCombo = view.getCidadeComboBox();
+    
+       cidadeCombo.removeAllItems();
+       
+      List<Cidade> cidades = new GenericDAO().listByNamedQuery("Cidade.findByEstado", "estado", view.getEstadoComboBox().getValue());
+       
+       
+        for (Cidade cidade : cidades) {
+            
+            cidadeCombo.addItem(cidade);
+            cidadeCombo.setItemCaption(cidade, cidade.getNome());
+            
+        }
+    }
    
 }

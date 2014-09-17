@@ -93,6 +93,7 @@ public class PaginaInicialView extends HorizontalLayout {
             new CadastroTarefaPresenter(model, view);
             UI.getCurrent().addWindow(view);
             
+            
         });
 
         // barra dos botoes

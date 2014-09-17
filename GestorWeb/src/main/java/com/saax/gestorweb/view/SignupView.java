@@ -5,6 +5,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.server.UserError;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -408,6 +409,7 @@ public class SignupView extends Window {
         
         coligadasTable = new Table();
         containerAba5.addComponent(coligadasTable);
+        coligadasTable.setPageLength(5);
         coligadasTable.setSizeFull();
         
       
@@ -462,7 +464,7 @@ public class SignupView extends Window {
         
         filiaisTable = new Table();
         containerAba6.addComponent(filiaisTable);
-        filiaisTable.setHeight("150px");
+        filiaisTable.setPageLength(5);
         
        
         filiaisTable.addContainerProperty("Nome", String.class, null);
@@ -540,6 +542,7 @@ public class SignupView extends Window {
         
         usuariosTable = new Table();
         containerAba4.addComponent(usuariosTable);
+        usuariosTable.setPageLength(5);
         usuariosTable.setSizeFull();
             
         
@@ -1098,6 +1101,11 @@ public class SignupView extends Window {
     public void apresentaAviso(String chave, Object ... params) {
         String mensagem = MessageFormat.format(mensagens.getString(chave), params);
         mensagemAviso.setValue(mensagem);
+    }
+    
+    public void apresentaErroUsuarioExistente(String chave, Object ... params) {
+        String mensagem = MessageFormat.format(mensagens.getString(chave), params);
+        nomeFilialTextField.setComponentError(new UserError(mensagem));        
     }
 
 

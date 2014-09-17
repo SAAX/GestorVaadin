@@ -1,8 +1,12 @@
 package com.saax.gestorweb.model;
 
+import com.saax.gestorweb.dao.CidadeDAO;
 import com.saax.gestorweb.dao.EmpresaDAO;
 import com.saax.gestorweb.dao.EnderecoDAO;
 import com.saax.gestorweb.dao.FilialEmpresaDAO;
+import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.dao.UsuarioEmpresaDAO;
+import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
 import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
@@ -15,11 +19,11 @@ import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.PostgresConnection;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -31,6 +35,8 @@ public class SignupModel {
     private final EmpresaDAO empresaDAO;
     private final FilialEmpresaDAO filialEmpresaDAO;
     private final EnderecoDAO enderecoDAO;
+    private final UsuarioDAO usuarioDAO;
+    private final UsuarioEmpresaDAO usuarioEmpresaDAO;
 
     /**
      * Cria o model e conecta ao DAO
@@ -39,7 +45,9 @@ public class SignupModel {
         empresaDAO = new EmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         filialEmpresaDAO = new FilialEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
         enderecoDAO = new EnderecoDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-      
+        usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        usuarioEmpresaDAO = new UsuarioEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+
     }
 
     /**
@@ -150,7 +158,7 @@ public class SignupModel {
      * @param email
      * @return novo usuario criado
      */
-     public Usuario criarNovoUsuario(String nome, String sobreNome, String email) {
+    public Usuario criarNovoUsuario(String nome, String sobreNome, String email) {
 
         String senha = null;
 
@@ -164,7 +172,7 @@ public class SignupModel {
      * @param empresa
      * @param administrador
      */
-    public void relacionarUsuarioEmpresa(Usuario usuario, Empresa empresa, boolean administrador) {
+    public UsuarioEmpresa relacionarUsuarioEmpresa(Usuario usuario, Empresa empresa, boolean administrador) {
 
         UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa();
         usuarioEmpresa.setUsuario(usuario);
@@ -186,6 +194,7 @@ public class SignupModel {
 
         empresa.getUsuarios().add(usuarioEmpresa);
 
+        return usuarioEmpresa;
     }
 
     /**
@@ -215,7 +224,7 @@ public class SignupModel {
         return empresa;
 
     }
-    
+
     /**
      * Cria e retorna uma empresa coligada com os parametros informados
      *
@@ -224,12 +233,12 @@ public class SignupModel {
      *
      * @return nova empresa criada
      */
-     public Empresa criarNovaEmpresaColigada(String nomeFantasia, String cnpjCpf) {
+    public Empresa criarNovaEmpresaColigada(String nomeFantasia, String cnpjCpf) {
         Empresa empresa = new Empresa();
 
         empresa.setNome(nomeFantasia);
         empresa.setCpf(cnpjCpf);
-       
+
         empresa.setAtiva(true);
 
         return empresa;
@@ -293,62 +302,129 @@ public class SignupModel {
 
     /**
      * Cadastra um novo usuario com a empresa (conta) principal, sub empresas
-     *  filiais e demais usuarios.
-     * 
-     * @param empresaPrincipal 
-     * @return  
+     * filiais e demais usuarios.
+     *
+     * @param empresaPrincipal
+     * @param endereco
+     * @param usuarioAdm
+     * @param subEmpresas
+     * @param filiaisEmpresa
+     * @param usuarios
+     * @return
      */
-    public Empresa criarNovaConta(Empresa empresaPrincipal) {
+    public Empresa criarNovaConta(
+            Usuario usuarioAdm,
+            Empresa empresaPrincipal, 
+            Endereco endereco, 
+            List<Empresa> subEmpresas, 
+            List<FilialEmpresa> filiaisEmpresa, 
+            List<UsuarioEmpresa> usuarios) throws GestorException {
+
+        try {
+
+            // Criar o usuario ADM
+            usuarioAdm.setDataHoraInclusao(LocalDateTime.now());
+            usuarioDAO.create(usuarioAdm);
+            usuarioAdm.setUsuarioInclusao(usuarioAdm);
+            usuarioDAO.edit(usuarioAdm);
+
+            // Criar a empresa principal
+            empresaPrincipal.setDataHoraInclusao(LocalDateTime.now());
+            empresaPrincipal.setUsuarioInclusao(usuarioAdm);
+            empresaDAO.create(empresaPrincipal);
+
+            usuarioEmpresaDAO.create(relacionarUsuarioEmpresa(usuarioAdm, empresaPrincipal, true));
+            
+            // Criar endereco da empresa
+            relacionarEmpresaEndereco(empresaPrincipal, endereco);
+            endereco.setUsuarioInclusao(usuarioAdm);
+            endereco.setDataHoraInclusao(LocalDateTime.now());
+            endereco.setCidade(new CidadeDAO(PostgresConnection.getInstance().getEntityManagerFactory()).findCidade(1));
+            enderecoDAO.create(endereco);
+
+            // criar as sub empresas
+            for (Empresa subEmpresa : subEmpresas) {
+                relacionarEmpresaColigada(empresaPrincipal, subEmpresa);
+                subEmpresa.setUsuarioInclusao(usuarioAdm);
+                subEmpresa.setDataHoraInclusao(LocalDateTime.now());
+                empresaDAO.create(subEmpresa);
+            }
+
+            // criar as filiais
+            for (FilialEmpresa filial : filiaisEmpresa) {
+                relacionarEmpresaFilial(empresaPrincipal, filial);
+                filial.setUsuarioInclusao(usuarioAdm);
+                filial.setDataHoraInclusao(LocalDateTime.now());
+                filialEmpresaDAO.create(filial);
+
+            }
+
+            // criar demais usuarios
+            for (UsuarioEmpresa usuarioEmpresa : usuarios) {
+                
+                Usuario usuario = usuarioEmpresa.getUsuario();
+                usuario.setDataHoraInclusao(LocalDateTime.now());
+                usuario.setUsuarioInclusao(usuarioAdm);
+            
+                usuarioDAO.create(usuario);
+                
+                usuarioEmpresaDAO.create(relacionarUsuarioEmpresa(usuario, empresaPrincipal, usuarioEmpresa.getAdministrador()));
+            }
+
+
+            /*
+             // percorre todos os demais usuarios empresa, criando cada um
+             for (UsuarioEmpresa usuarioEmpresa : empresaPrincipal.getUsuarios()) {
+              
+             Usuario usuario = usuarioEmpresa.getUsuario();
+             usuario.setUsuarioInclusao(usuarioAdm);
+             usuario.setDataHoraInclusao(LocalDateTime.now());
+                
+             usuarioDAO.create(usuario);
+                
+             usuarioEmpresa.getUsuario().setUsuarioInclusao(usuarioAdm);
+              
+             }
+             relacionarUsuarioEmpresa(usuarioAdm, empresaPrincipal, true);
+             */
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
+            throw new GestorException(ex.getMessage());
+        } catch (Exception ex) {
+            Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
+            throw new GestorException(ex.getMessage());
+        }
+
+        /*
         
-    ///    enderecoDAO.create(empresaPrincipal.getEndereco());
+         for (UsuarioEmpresa usuarioEmpresa : empresaPrincipal.getUsuarios()) {
+         usuarioEmpresa.getUsuario().setUsuarioInclusao(usuarioAdm);
+         }
+         Usuario usuario = empresaPrincipal.getUsuarios().
         
-        empresaDAO.create(empresaPrincipal);
+         //Usuario usuario = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+         */
+        /*    
+         empresaPrincipal.setUsuarioInclusao(usuarioAdm);
+         empresaPrincipal.setDataHoraInclusao(LocalDateTime.now());
         
-//        COMENTEI ABAIXO POIS ESTAVA TENTANDO GRAVAR NO MODEL E O CORRETO É UTILIZAR O DAO
-//        
-//        
-//        EntityManagerFactory emf = PostgresConnection.getInstance().getEntityManagerFactory();
-//        
-//        final EntityManager em = emf.createEntityManager();
-//        try {
-//
-//            em.getTransaction().begin();
-//            
-//            //a empresa principal
-//            em.persist(empresaPrincipal);
-//            
-//            // grava as filiais
-//            empresaPrincipal.getFiliais().stream().forEach((filial) -> {
-//                    em.persist(filial);
-//            });
-//
-//            // gravar coligadas
-//            empresaPrincipal.getSubEmpresas().stream().forEach((empresa) -> {
-//                em.persist(empresa);
-//            });
-//            
-//            // grava os usuarios
-//            for (UsuarioEmpresa usuarioEmpresa : empresaPrincipal.getUsuarios()) {
-//                em.persist(usuarioEmpresa.getUsuario());
-//                em.persist(usuarioEmpresa);
-//            }
-//            
-//                                  
-//            em.getTransaction().commit();
-//            
-//            return em.find(Empresa.class, empresaPrincipal.getId());
-//        } catch (Exception ex) {
-//            
-//            em.getTransaction().rollback();
-//        } finally {
-//            if (em != null) {
-//                em.close();
-//            }
-//        }
-//        
-        return null;
+         Endereco endereco = empresaPrincipal.getEndereco();
+         endereco.setUsuarioInclusao(usuarioAdm);
+         endereco.setDataHoraInclusao(LocalDateTime.now());
+        
+         // ATENCAO REMOVER
+        
+         endereco.setCidade(new CidadeDAO(PostgresConnection.getInstance().getEntityManagerFactory()).findCidade(1));
         
         
+         // ATENCAO REMOVER -- FIM
+        
+         enderecoDAO.create(empresaPrincipal.getEndereco());
+        
+         empresaDAO.create(empresaPrincipal);
+         */
+        return empresaPrincipal;
+
     }
 
     /**

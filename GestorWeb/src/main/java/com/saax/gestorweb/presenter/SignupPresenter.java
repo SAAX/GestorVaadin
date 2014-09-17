@@ -1,15 +1,22 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.dao.CidadeDAO;
+import com.saax.gestorweb.dao.EnderecoDAO;
+import com.saax.gestorweb.dao.EstadoDAO;
+import com.saax.gestorweb.dao.GenericDAO;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
+import com.saax.gestorweb.model.datamodel.Estado;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
@@ -50,6 +57,10 @@ public class SignupPresenter implements SignupViewListener {
     private Empresa empresaPrincipal;
     private ArrayList<FilialEmpresa> filiais;
     private ArrayList<UsuarioEmpresa> usuarios;
+    
+    private EstadoDAO estadoDAO;
+ 
+    
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -66,6 +77,13 @@ public class SignupPresenter implements SignupViewListener {
 
     }
 
+   public void open(){
+        // Carrega os combos de seleção
+        carregaComboEstado();
+        
+   }
+    
+    
     @Override
     public void cancelButtonClicked() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -581,6 +599,21 @@ public class SignupPresenter implements SignupViewListener {
         view.getNomeFilialTextField().setValue("");
         view.getCnpjFilialTextField().setValue("");
 
+    }
+private void carregaComboEstado() {
+    
+    ComboBox estadoCombo = view.getEstadoComboBox();
+    
+        estadoDAO = new EstadoDAO(PostgresConnection.getInstance().getEntityManagerFactory());
+        
+        List<Estado> estados = estadoDAO.findEstadoEntities();
+       
+        for (Estado estado : estados) {
+            
+            estadoCombo.addItem(estado);
+            estadoCombo.setItemCaption(estado, estado.getUf());
+            
+        }
     }
 
 }

@@ -30,6 +30,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Cidade.findAll", query = "SELECT c FROM Cidade c"),
     @NamedQuery(name = "Cidade.findByNome", query = "SELECT c FROM Cidade c WHERE c.nome = :nome")})
+    @NamedQuery(name = "Cidade.findByEstado", query = "SELECT c FROM Cidade c WHERE c.estado = :estado")
 public class Cidade implements Serializable {
 
     private static final long serialVersionUID = 1L;

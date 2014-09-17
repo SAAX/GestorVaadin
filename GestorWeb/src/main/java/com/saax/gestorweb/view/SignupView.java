@@ -2,6 +2,7 @@ package com.saax.gestorweb.view;
 //teste de commit -> volta
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.vaadin.data.Property;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.server.UserError;
@@ -330,17 +331,25 @@ public class SignupView extends Window {
         bairroTextField.setValidationVisible(false);
         getBairroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.bairroTextField.erro.bairroNaoInformado"),1, 100, false));
         
-         // text field: cidade
-        setCidadeComboBox(new ComboBox());
-        containerAba3.addComponent(getCidadeComboBox());
-        getCidadeComboBox().setInputPrompt(getMensagens().getString("SignupView.cidadeComboBox.label"));
-        cidadeComboBox.setWidth("300px");
-        
-         // text field: estado
+        // text field: estado
         setEstadoComboBox(new ComboBox());
         containerAba3.addComponent(getEstadoComboBox());
         getEstadoComboBox().setInputPrompt(getMensagens().getString("SignupView.estadoComboBox.label"));
         estadoComboBox.setWidth("300px");
+        estadoComboBox.addValueChangeListener(new Property.ValueChangeListener() {
+
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                listener.estadoSelecionado();
+            }
+        });
+        
+          // text field: cidade
+        setCidadeComboBox(new ComboBox());
+        containerAba3.addComponent(getCidadeComboBox());
+        getCidadeComboBox().setInputPrompt(getMensagens().getString("SignupView.cidadeComboBox.label"));
+        
+        cidadeComboBox.setWidth("300px");
         
         
               

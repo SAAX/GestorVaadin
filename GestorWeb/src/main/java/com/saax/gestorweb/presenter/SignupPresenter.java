@@ -22,6 +22,7 @@ import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
@@ -59,7 +60,7 @@ public class SignupPresenter implements SignupViewListener {
     private ArrayList<UsuarioEmpresa> usuarios;
     
     private EstadoDAO estadoDAO;
- 
+    private GenericDAO genericDao;
     
 
     /**
@@ -161,8 +162,8 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = empresasColigadasTable.getItem(itemID);
             // Valida se a sub empresa já não está cadastrada no sistema
-            String cpfCnpjSubEmpresa = (String) linha.getItemProperty("???????").getValue(); // @TODO: Obter da view
-            String nomeSubEmpresa = (String) linha.getItemProperty("???????").getValue(); // @TODO: Obter da view
+            String cpfCnpjSubEmpresa = (String) linha.getItemProperty("SignupView.coligadasTable.email").getValue(); // @TODO: Obter da view
+            String nomeSubEmpresa = (String) linha.getItemProperty("SignupView.coligadasTable.nome").getValue(); // @TODO: Obter da view
             char tipoPessoaSubEmpresa = 'J'; // @TODO: Obter da view
             if (cpfCnpjSubEmpresa != null) {
                 try {
@@ -209,8 +210,8 @@ public class SignupPresenter implements SignupViewListener {
             Item linha = filiaisTable.getItem(itemID);
 
             // Valida se a filial já não está cadastrada no sistema
-            String cnpjFilial = (String) linha.getItemProperty("???????").getValue(); // @TODO: Obter da view
-            String nomeFilial = (String) linha.getItemProperty("???????").getValue(); // @TODO: Obter da view
+            String cnpjFilial = (String) linha.getItemProperty("SignupView.filiaisTable.cnpj").getValue(); // @TODO: Obter da view
+            String nomeFilial = (String) linha.getItemProperty("SignupView.filiaisTable.nome").getValue(); // @TODO: Obter da view
 
             if (StringUtils.isNotBlank(cnpjFilial)) {
                 try {
@@ -266,7 +267,7 @@ public class SignupPresenter implements SignupViewListener {
             Item linha = usuariosTable.getItem(itemID);
 
             // Valida se o usuários já não está cadastrado no sistema
-            String emailUsuario = (String) linha.getItemProperty("???????").getValue(); // @TODO: Obter da view
+            String emailUsuario = (String) linha.getItemProperty("SignupView.usuariosTable.email").getValue(); // @TODO: Obter da view
             System.out.println("usuario " + emailUsuario);
             if (model.verificaLoginExistente(emailUsuario)) {
 
@@ -371,8 +372,8 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = filiaisTable.getItem(itemID);
 
-            String nomeFilial = (String) linha.getItemProperty("???????").getValue(); // @TODO: Obter da view
-            String cnpjFilial = (String) linha.getItemProperty("???????").getValue(); // @TODO: Obter da view
+            String nomeFilial = (String) linha.getItemProperty("SignupView.filiaisTable.nome").getValue(); // @TODO: Obter da view
+            String cnpjFilial = (String) linha.getItemProperty("SignupView.filiaisTable.cnpj").getValue(); // @TODO: Obter da view
 
             FilialEmpresa filialEmpresa = model.criarFilialEmpresa(nomeFilial, cnpjFilial);
             filiais.add(filialEmpresa);
@@ -388,10 +389,10 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = usuariosTable.getItem(itemID);
 
-            String nome = (String) linha.getItemProperty("Nome").getValue();
-            String sobreNome = (String) linha.getItemProperty("Sobrenome").getValue();
-            String email = (String) linha.getItemProperty("E-mail").getValue();
-            boolean administrador = ((String) linha.getItemProperty("Administrador").getValue()).equals("SIM");
+            String nome = (String) linha.getItemProperty("SignupView.usuariosTable.nome").getValue();
+            String sobreNome = (String) linha.getItemProperty("SignupView.usuariosTable.sobrenome").getValue();
+            String email = (String) linha.getItemProperty("SignupView.usuariosTable.email").getValue();
+            boolean administrador = ((String) linha.getItemProperty("SignupView.usuariosTable.administrador").getValue()).equals("SIM");
 
             Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email);
             UsuarioEmpresa usuarioEmpresa = model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador);
@@ -474,38 +475,30 @@ public class SignupPresenter implements SignupViewListener {
 
         //Verifica se Usuário é Administrador ou não
         Boolean usuarioAdm = view.getUsuarioAdmCheckBox().getValue();
-        String Adm = "";
+        String adm = "";
         if (usuarioAdm == true) {
-            Adm = "SIM";
+            adm = "SIM";
         } else {
-            Adm = "NÃO";
+            adm = "NÃO";
         }
-
+        
         Button removerUsuarioButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
+        removerUsuarioButton.setId(nomeUsuario);
         removerUsuarioButton.addClickListener((Button.ClickEvent event) -> {
-            view.getUsuariosTable().addListener(new Property.ValueChangeListener() {
-                @Override
-                public void valueChange(Property.ValueChangeEvent event) {
-                    if (event.getProperty().getValue() != null) {
-
-                    }
-                }
-            });
-
-            if (view.getUsuariosTable().getValue() != null) {
-                view.getUsuariosTable().removeItem(view.getUsuariosTable().getValue());
-                view.getUsuariosTable().refreshRowCache();
-                Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
-
-            }
-
+            String nomeUsuarioBotao = event.getButton().getId();
+            
+           
+               view.getUsuariosTable().removeItem(nomeUsuarioBotao);
+               view.getUsuariosTable().refreshRowCache();
+               Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+               
+           
+                        
         });
-
-        if (view.getUsuariosTable().getItemIds().size() == 0) {
-            view.getUsuariosTable().addItem(new Object[]{nomeUsuario, sobrenomeUsuario, email, Adm, removerUsuarioButton}, 1);
-        } else {
-            view.getUsuariosTable().addItem(new Object[]{nomeUsuario, sobrenomeUsuario, email, Adm, removerUsuarioButton}, null);
-        }
+        
+       
+        view.getUsuariosTable().addItem(new Object[] {nomeUsuario,sobrenomeUsuario, email, adm, removerUsuarioButton}, nomeUsuario);
+       
 
         view.getNomeUsuarioTextField().setValue("");
         view.getSobrenomeUsuarioTextField().setValue("");
@@ -558,34 +551,28 @@ public class SignupPresenter implements SignupViewListener {
         String nomeFilial = view.getNomeFilialTextField().getValue();
         String cnpjFilial = view.getCnpjFilialTextField().getValue();
 
+        
+        
         Button removerFiliaisButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
+        removerFiliaisButton.setId(nomeFilial);
         removerFiliaisButton.addClickListener((Button.ClickEvent event) -> {
-            view.getFiliaisTable().addListener(new Property.ValueChangeListener() {
-                @Override
-                public void valueChange(Property.ValueChangeEvent event) {
-                    if (event.getProperty().getValue() != null) {
-
-                    }
-                }
-            });
-
-            if (view.getFiliaisTable().getValue() != null) {
-                view.getFiliaisTable().removeItem(view.getFiliaisTable().getValue());
-                view.getFiliaisTable().refreshRowCache();
-                Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
-
-            }
-
+            String nomeFilialBotao = event.getButton().getId();
+            
+           
+               view.getFiliaisTable().removeItem(nomeFilialBotao);
+               view.getFiliaisTable().refreshRowCache();
+               Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+               
+           
+                        
         });
+        
+       
+        view.getFiliaisTable().addItem(new Object[] {nomeFilial,cnpjFilial, removerFiliaisButton}, nomeFilial);
+        
+          
 
-        if (view.getFiliaisTable().getItemIds().size() == 0) {
-
-            view.getFiliaisTable().addItem(new Object[]{nomeFilial, cnpjFilial, removerFiliaisButton}, 1);
-        } else {
-
-            view.getFiliaisTable().addItem(new Object[]{nomeFilial, cnpjFilial, removerFiliaisButton}, null);
-        }
-
+        
         view.getNomeFilialTextField().setValue("");
         view.getCnpjFilialTextField().setValue("");
 
@@ -604,6 +591,24 @@ private void carregaComboEstado() {
             estadoCombo.setItemCaption(estado, estado.getUf());
             
         }
+    }
+
+    @Override
+    public void estadoSelecionado() {
+        
+             
+        ComboBox cidadeCombo = view.getCidadeComboBox();
+        
+        cidadeCombo.removeAllItems();
+        
+        List<Cidade> cidades = new GenericDAO().listByNamedQuery("Cidade.findByEstado", "estado", view.getEstadoComboBox().getValue());
+        
+        for (Cidade cidade : cidades){
+            cidadeCombo.addItem(cidade);
+            cidadeCombo.setItemCaption(cidade, cidade.getNome());
+        }
+        
+        
     }
 
 }

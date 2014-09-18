@@ -37,4 +37,6 @@
     
 
     
+
+    <inherits name="org.vaadin.addons.maskedtextfield.MaskedTextFieldWidgetset" />
 </module>

@@ -413,9 +413,9 @@ public class SignupView extends Window {
         coligadasTable.setSizeFull();
         
       
-        coligadasTable.addContainerProperty("Nome", String.class, null);
-        coligadasTable.addContainerProperty("Cnpj", String.class, null);
-        coligadasTable.addContainerProperty("Remover", Button.class, null);
+        coligadasTable.addContainerProperty(getMensagens().getString("SignupView.coligadasTable.nome"), String.class, null);
+        coligadasTable.addContainerProperty(getMensagens().getString("SignupView.coligadasTable.cnpj"), String.class, null);
+        coligadasTable.addContainerProperty(getMensagens().getString("SignupView.coligadasTable.remover"), Button.class, null);
         coligadasTable.setImmediate(true);
         coligadasTable.setSelectable(true);
         
@@ -467,10 +467,9 @@ public class SignupView extends Window {
         filiaisTable.setPageLength(5);
         
        
-        filiaisTable.addContainerProperty("Nome", String.class, null);
-        filiaisTable.addContainerProperty("CNPJ", String.class, null);
-        
-        filiaisTable.addContainerProperty("Remover", Button.class, null);
+        filiaisTable.addContainerProperty(getMensagens().getString("SignupView.filiaisTable.nome"), String.class, null);
+        filiaisTable.addContainerProperty(getMensagens().getString("SignupView.filiaisTable.cnpj"), String.class, null);
+        filiaisTable.addContainerProperty(getMensagens().getString("SignupView.filiaisTable.remover"), Button.class, null);
         filiaisTable.setImmediate(true);
         filiaisTable.setSelectable(true);
         
@@ -546,12 +545,12 @@ public class SignupView extends Window {
         usuariosTable.setSizeFull();
             
         
-        usuariosTable.addContainerProperty("Nome", String.class, null);
-        usuariosTable.addContainerProperty("Sobrenome", String.class, null);
-        usuariosTable.addContainerProperty("E-mail", String.class, null);
-        usuariosTable.addContainerProperty("Administrador", String.class, null);
+        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.nome"), String.class, null);
+        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.sobrenome"), String.class, null);
+        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.email"), String.class, null);
+        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.administrador"), String.class, null);
         //usuariosTable.addContainerProperty("Editar", Button.class, null);
-        usuariosTable.addContainerProperty("Remover", Button.class, null);
+        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.remover"), Button.class, null);
         usuariosTable.setImmediate(true);
         usuariosTable.setSelectable(true);
          

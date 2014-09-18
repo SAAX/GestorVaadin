@@ -72,7 +72,8 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener, Serial
         SignupView signupView = new SignupView();
         
        //o presenter liga model e view
-        SignupPresenter signupPresenter = new SignupPresenter(signupModel, signupView);
+        SignupPresenter signupPresenter;
+        signupPresenter = new SignupPresenter(signupModel, signupView);
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(signupView);
         signupPresenter.open();

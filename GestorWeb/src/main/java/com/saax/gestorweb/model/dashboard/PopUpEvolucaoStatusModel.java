@@ -1,13 +1,6 @@
 package com.saax.gestorweb.model.dashboard;
 
 import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
-import com.saax.gestorweb.dao.AndamentoTarefaDAO;
-import com.saax.gestorweb.dao.AvaliacaoMetaTarefaDAO;
-import com.saax.gestorweb.dao.BloqueioTarefaDAO;
-import com.saax.gestorweb.dao.GenericDAO;
-import com.saax.gestorweb.dao.HistoricoTarefaDAO;
-import com.saax.gestorweb.dao.TarefaDAO;
-import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
 import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
@@ -15,105 +8,102 @@ import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.util.PostgresConnection;
+import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 
 /**
  * Classe de negócios do pop up de evolução de status
+ *
  * @author rodrigo
  */
 public class PopUpEvolucaoStatusModel {
 
-    private final TarefaDAO tarefaDAO;
-    private final AndamentoTarefaDAO andamentoTarefaDAO;
-    private final HistoricoTarefaDAO historicoTarefaDAO;
-    private final BloqueioTarefaDAO bloqueioTarefaDAO;
-    private final GenericDAO genericDAO;
-    private final AvaliacaoMetaTarefaDAO avaliacaoTarefaDAO;
-
-    /**
-     * Cria o modelo e os DAOs que serão utilizados.
-     */
-    public PopUpEvolucaoStatusModel() {
-
-        tarefaDAO = new TarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        andamentoTarefaDAO = new AndamentoTarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        bloqueioTarefaDAO = new BloqueioTarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        historicoTarefaDAO = new HistoricoTarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        avaliacaoTarefaDAO = new AvaliacaoMetaTarefaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        genericDAO = new GenericDAO();
-
-    }
-
     /**
      * Registra o andamento de uma tarefa
+     *
      * @param usuarioLogado
      * @param idTarefa
      * @param andamento
      * @param comentarioAndamento
-     * @return 
+     * @return
      */
     public Tarefa atualizarAndamentoTarefa(Usuario usuarioLogado, Integer idTarefa, Integer andamento, String comentarioAndamento) {
 
-        Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
-
-        tarefa.setAndamento(andamento);
-
-        AndamentoTarefa andamentoTarefa = new AndamentoTarefa();
-        andamentoTarefa.setAndamentoatual(andamento);
-        andamentoTarefa.setComentario(comentarioAndamento);
-        andamentoTarefa.setUsuarioInclusao(usuarioLogado);
-        andamentoTarefa.setDataHoraInclusao(LocalDateTime.now());
-        andamentoTarefa.setTarefa(tarefa);
-
-        tarefa.addAndamento(andamentoTarefa);
-
-        StringBuilder historico = new StringBuilder();
-
-        historico.append("Registrado andamento de ");
-        historico.append(andamento);
-        historico.append("% ");
-        if (comentarioAndamento != null) {
-            historico.append("- ");
-            historico.append(comentarioAndamento);
-        }
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         try {
-            historicoTarefaDAO.create(new HistoricoTarefa(historico.toString(), usuarioLogado, tarefa, LocalDateTime.now()));
-            andamentoTarefaDAO.create(andamentoTarefa);
-            tarefaDAO.edit(tarefa);
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
+
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+
+            tarefa.setAndamento(andamento);
+
+            AndamentoTarefa andamentoTarefa = new AndamentoTarefa();
+            andamentoTarefa.setAndamentoatual(andamento);
+            andamentoTarefa.setComentario(comentarioAndamento);
+            andamentoTarefa.setUsuarioInclusao(usuarioLogado);
+            andamentoTarefa.setDataHoraInclusao(LocalDateTime.now());
+            andamentoTarefa.setTarefa(tarefa);
+
+            tarefa.addAndamento(andamentoTarefa);
+
+            StringBuilder historico = new StringBuilder();
+
+            historico.append("Registrado andamento de ");
+            historico.append(andamento);
+            historico.append("% ");
+            if (comentarioAndamento != null) {
+                historico.append("- ");
+                historico.append(comentarioAndamento);
+            }
+
+            em.persist(new HistoricoTarefa(historico.toString(), usuarioLogado, tarefa, LocalDateTime.now()));
+
+            em.persist(andamentoTarefa);
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return em.find(Tarefa.class, idTarefa);
+
         } catch (Exception ex) {
+            GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
             Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return tarefaDAO.findTarefa(idTarefa);
+        return null;
     }
 
     /**
      * Marca uma tarefa como concluída
-     * @param tarefa
-     * @return 
+     *
+     * @param idTarefa
+     * @return
      */
-    public Tarefa concluirTarefa(Tarefa tarefa) {
+    public Tarefa concluirTarefa(Integer idTarefa) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         try {
+
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.CONCLUIDA);
             tarefa.setDataTermino(LocalDate.now());
 
-            tarefaDAO.edit(tarefa);
+            em.persist(tarefa);
 
-            return tarefaDAO.findTarefa(tarefa.getId());
+            return tarefa;
 
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
             Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -122,15 +112,21 @@ public class PopUpEvolucaoStatusModel {
 
     /**
      * Registra o bloqueio de uma tarefa
+     *
      * @param idTarefa
      * @param motivoBloqueio
      * @param usuarioLogado
-     * @return 
+     * @return
      */
     public Tarefa bloquearTarefa(Integer idTarefa, String motivoBloqueio, Usuario usuarioLogado) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         try {
 
-            Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             BloqueioTarefa bloqueioTarefa = new BloqueioTarefa();
             bloqueioTarefa.setTarefa(tarefa);
@@ -149,56 +145,73 @@ public class PopUpEvolucaoStatusModel {
             historico.append(" com motivo: ");
             historico.append(motivoBloqueio);
 
-            historicoTarefaDAO.create(new HistoricoTarefa(historico.toString(), usuarioLogado, tarefa, LocalDateTime.now()));
-            bloqueioTarefaDAO.create(bloqueioTarefa);
+            em.persist(new HistoricoTarefa(historico.toString(), usuarioLogado, tarefa, LocalDateTime.now()));
+            em.persist(bloqueioTarefa);
 
-            tarefaDAO.edit(tarefa);
-            return tarefaDAO.findTarefa(tarefa.getId());
-            
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
     }
 
     /**
      * Registra o adiamento de uma tarefa
+     *
      * @param id
      * @param usuario
-     * @return 
+     * @return
      */
     public Tarefa adiarTarefa(Integer id, Usuario usuario) {
 
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         try {
 
-            Tarefa tarefa = tarefaDAO.findTarefa(id);
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, id);
 
             tarefa.setStatus(StatusTarefa.ADIADA);
             tarefa.setDataTermino(LocalDate.now());
 
-            tarefaDAO.edit(tarefa);
-            
-            historicoTarefaDAO.create(new HistoricoTarefa("Tarefa ADIADA!", usuario, tarefa, LocalDateTime.now()));
+            em.merge(tarefa);
 
-            return tarefaDAO.findTarefa(tarefa.getId());
-            
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.persist(new HistoricoTarefa("Tarefa ADIADA!", usuario, tarefa, LocalDateTime.now()));
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
     }
 
     /**
      * Obtém o bloqueio ativo de uma tarefa
+     *
      * @param tarefa
-     * @return 
+     * @return
      */
     public BloqueioTarefa obterBloqueioAtivo(Tarefa tarefa) {
-        List<BloqueioTarefa> bloqueios = genericDAO.listByNamedQuery("BloqueioTarefa.findByTarefa", "tarefa", tarefa);
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        List<BloqueioTarefa> bloqueios = em.createNamedQuery("BloqueioTarefa.findByTarefa")
+                    .setParameter("tarefa", tarefa)
+                    .getResultList();
+                
         for (BloqueioTarefa bloqueio : bloqueios) {
             if (bloqueio.getDataHoraRemocao() == null) {
                 return bloqueio;
@@ -209,14 +222,20 @@ public class PopUpEvolucaoStatusModel {
 
     /**
      * Libera uma tarefa bloqueada
+     *
      * @param idTarefa
      * @param usuario
-     * @return 
+     * @return
      */
     public Tarefa removerBloqueioTarefa(Integer idTarefa, Usuario usuario) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         try {
 
-            Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             BloqueioTarefa bloqueioAtivo = obterBloqueioAtivo(tarefa);
 
@@ -231,61 +250,75 @@ public class PopUpEvolucaoStatusModel {
             historico.append(" Tarefa voltou ao status: ");
             historico.append(tarefa.getStatus());
 
-            historicoTarefaDAO.create(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
 
-            bloqueioTarefaDAO.edit(bloqueioAtivo);
+            em.persist(bloqueioAtivo);
 
-            tarefaDAO.edit(tarefa);
-            return tarefaDAO.findTarefa(tarefa.getId());
-            
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
     }
 
     /**
-     * 
+     *
      * @param idTarefa
      * @param usuario
-     * @return 
+     * @return
      */
     public Tarefa aceitarTarefa(Integer idTarefa, Usuario usuario) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         try {
 
-            Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.NAO_INICIADA);
 
-            StringBuilder historico = new StringBuilder();
+            em.persist(new HistoricoTarefa("Tarefa ACEITA!", usuario, tarefa, LocalDateTime.now()));
 
-            historico.append("Tarefa ACEITA!");
+            em.merge(tarefa);
 
-            historicoTarefaDAO.create(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            em.getTransaction().commit();
 
-            tarefaDAO.edit(tarefa);
-            return tarefaDAO.findTarefa(tarefa.getId());
-            
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            return tarefa;
+
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
+
     }
 
     /**
      * Reabre uma tarefa concluida mas que nao foi avaliada
+     *
      * @param idTarefa
      * @param usuario
-     * @return 
+     * @return
      */
     public Tarefa reabrirTarefa(Integer idTarefa, Usuario usuario) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         try {
 
-            Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.NAO_INICIADA);
 
@@ -295,29 +328,39 @@ public class PopUpEvolucaoStatusModel {
             historico.append(" Tarefa voltou ao status: ");
             historico.append(tarefa.getStatus());
 
-            historicoTarefaDAO.create(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
 
-            tarefaDAO.edit(tarefa);
-            return tarefaDAO.findTarefa(tarefa.getId());
-            
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
+
     }
 
     /**
      * Reativa uma tarefa parada: Cancelada ou Adiada
+     *
      * @param idTarefa
      * @param usuario
-     * @return 
+     * @return
      */
     public Tarefa reativarTarefa(Integer idTarefa, Usuario usuario) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         try {
 
-            Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.NAO_ACEITA);
 
@@ -327,37 +370,45 @@ public class PopUpEvolucaoStatusModel {
             historico.append(" Tarefa voltou ao status: ");
             historico.append(tarefa.getStatus());
 
-            historicoTarefaDAO.create(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
 
-            tarefaDAO.edit(tarefa);
+            em.merge(tarefa);
 
-            return tarefaDAO.findTarefa(tarefa.getId());
+            em.getTransaction().commit();
 
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            return tarefa;
+
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
+
     }
 
     /**
      * Registra a avaliação de uma tarefa concluida
+     *
      * @param idTarefa
      * @param avaliacao
      * @param observacaoAvaliacao
      * @param usuario
-     * @return 
+     * @return
      */
     public Tarefa avaliarTarefa(Integer idTarefa, Integer avaliacao, String observacaoAvaliacao, Usuario usuario) {
 
         boolean reavaliacao;
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         try {
 
-            Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             AvaliacaoMetaTarefa avaliacaoTarefa;
-
             reavaliacao = tarefa.getStatus() == StatusTarefa.AVALIADA;
 
             avaliacaoTarefa = (reavaliacao ? tarefa.getAvaliacoes().iterator().next() : new AvaliacaoMetaTarefa());
@@ -385,98 +436,120 @@ public class PopUpEvolucaoStatusModel {
 
             }
 
-            historicoTarefaDAO.create(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
 
             if (reavaliacao) {
-                avaliacaoTarefaDAO.edit(avaliacaoTarefa);
+                em.merge(avaliacaoTarefa);
             } else {
-                avaliacaoTarefaDAO.create(avaliacaoTarefa);
+                em.persist(avaliacaoTarefa);
             }
 
-            tarefaDAO.edit(tarefa);
-            return tarefaDAO.findTarefa(tarefa.getId());
-            
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
     }
 
     /**
-     * Inicia uma tarefa 
+     * Inicia uma tarefa
+     *
      * @param usuario
      * @param idTarefa
      * @param andamento
      * @param comentarioAndamento
-     * @return 
+     * @return
      */
     public Tarefa iniciarTarefa(Usuario usuario, Integer idTarefa, Integer andamento, String comentarioAndamento) {
-        Tarefa tarefa = tarefaDAO.findTarefa(idTarefa);
 
-        tarefa.setStatus(StatusTarefa.EM_ANDAMENTO);
-        tarefa.setAndamento(andamento);
-
-        AndamentoTarefa andamentoTarefa = new AndamentoTarefa();
-        andamentoTarefa.setAndamentoatual(andamento);
-        andamentoTarefa.setComentario(comentarioAndamento);
-        andamentoTarefa.setUsuarioInclusao(usuario);
-        andamentoTarefa.setDataHoraInclusao(LocalDateTime.now());
-        andamentoTarefa.setTarefa(tarefa);
-
-        tarefa.addAndamento(andamentoTarefa);
-
-        StringBuilder historico = new StringBuilder();
-
-        historico.append("Tarefa iniciada com andamento de ");
-        historico.append(andamento);
-        historico.append("% ");
-        if (comentarioAndamento != null) {
-            historico.append("- ");
-            historico.append(comentarioAndamento);
-        }
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         try {
-            historicoTarefaDAO.create(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
-            andamentoTarefaDAO.create(andamentoTarefa);
-            tarefaDAO.edit(tarefa);
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
+
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+
+            tarefa.setStatus(StatusTarefa.EM_ANDAMENTO);
+            tarefa.setAndamento(andamento);
+
+            AndamentoTarefa andamentoTarefa = new AndamentoTarefa();
+            andamentoTarefa.setAndamentoatual(andamento);
+            andamentoTarefa.setComentario(comentarioAndamento);
+            andamentoTarefa.setUsuarioInclusao(usuario);
+            andamentoTarefa.setDataHoraInclusao(LocalDateTime.now());
+            andamentoTarefa.setTarefa(tarefa);
+
+            tarefa.addAndamento(andamentoTarefa);
+
+            StringBuilder historico = new StringBuilder();
+
+            historico.append("Tarefa iniciada com andamento de ");
+            historico.append(andamento);
+            historico.append("% ");
+            if (comentarioAndamento != null) {
+                historico.append("- ");
+                historico.append(comentarioAndamento);
+            }
+
+            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
         } catch (Exception ex) {
+            em.getTransaction().rollback();
             Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return tarefaDAO.findTarefa(idTarefa);
+        return null;
     }
 
     /**
      * Cancela uma tarefa
-     * @param id
+     *
+     * @param idTarefa
      * @param usuario
-     * @return 
+     * @return
      */
-    public Tarefa cancelarTarefa(Integer id, Usuario usuario) {
+    public Tarefa cancelarTarefa(Integer idTarefa, Usuario usuario) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         try {
 
-            Tarefa tarefa = tarefaDAO.findTarefa(id);
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.CANCELADA);
             tarefa.setDataTermino(LocalDate.now());
 
-            historicoTarefaDAO.create(new HistoricoTarefa("Tarefa CANCELADA!", usuario, tarefa, LocalDateTime.now()));
+            em.persist(new HistoricoTarefa("Tarefa CANCELADA!", usuario, tarefa, LocalDateTime.now()));
 
-            tarefaDAO.edit(tarefa);
-            
-            return tarefaDAO.findTarefa(tarefa.getId());
-            
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return null;
-        
+
     }
 
 }

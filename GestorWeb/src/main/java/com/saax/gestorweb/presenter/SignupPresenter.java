@@ -1,22 +1,18 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.dao.CidadeDAO;
-import com.saax.gestorweb.dao.EnderecoDAO;
-import com.saax.gestorweb.dao.EstadoDAO;
-import com.saax.gestorweb.dao.GenericDAO;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.model.datamodel.Cidade;
+import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
 import com.saax.gestorweb.model.datamodel.Estado;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
+import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
@@ -33,6 +29,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -58,10 +55,6 @@ public class SignupPresenter implements SignupViewListener {
     private Empresa empresaPrincipal;
     private ArrayList<FilialEmpresa> filiais;
     private ArrayList<UsuarioEmpresa> usuarios;
-    
-    private EstadoDAO estadoDAO;
-    private GenericDAO genericDao;
-    
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -78,13 +71,12 @@ public class SignupPresenter implements SignupViewListener {
 
     }
 
-   public void open(){
+    public void open() {
         // Carrega os combos de seleção
         carregaComboEstado();
-        
-   }
-    
-    
+
+    }
+
     @Override
     public void cancelButtonClicked() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -272,7 +264,7 @@ public class SignupPresenter implements SignupViewListener {
             if (model.verificaLoginExistente(emailUsuario)) {
 
                 // Exibe uma mensagem de erro indicando que este usuario ja existe no sistema
-                view.apresentaErroUsuarioExistente("SignupPresenter.mensagem.usuarioExistente",emailUsuario);
+                view.apresentaErroUsuarioExistente("SignupPresenter.mensagem.usuarioExistente", emailUsuario);
                 return false;
             }
 
@@ -438,6 +430,8 @@ public class SignupPresenter implements SignupViewListener {
         try {
             // grava todos os dados (fazer em uma unica chamada para mater a transação)
             model.criarNovaConta(usuarioADM, empresaPrincipal, endereco, subEmpresas, filiais, usuarios);
+            // testa EM:
+            model.verificaEmpresaExistente("12.345.678/0001-01", 'J');
             view.close();
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         } catch (GestorException ex) {
@@ -522,20 +516,15 @@ public class SignupPresenter implements SignupViewListener {
         removerColigadasButton.setId(nomeColigada);
         removerColigadasButton.addClickListener((Button.ClickEvent event) -> {
             String nomeColigadaBotao = event.getButton().getId();
-            
-           
-               view.getColigadasTable().removeItem(nomeColigadaBotao);
-               view.getColigadasTable().refreshRowCache();
-               Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
-               
-           
-                        
+
+            view.getColigadasTable().removeItem(nomeColigadaBotao);
+            view.getColigadasTable().refreshRowCache();
+            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+
         });
-        
-       
-        view.getColigadasTable().addItem(new Object[] {nomeColigada,cnpjColigada, removerColigadasButton}, nomeColigada);
-        
-        
+
+        view.getColigadasTable().addItem(new Object[]{nomeColigada, cnpjColigada, removerColigadasButton}, nomeColigada);
+
         view.getNomeColigadaTextField().setValue("");
         view.getCnpjColigadaTextField().setValue("");
 
@@ -577,19 +566,20 @@ public class SignupPresenter implements SignupViewListener {
         view.getCnpjFilialTextField().setValue("");
 
     }
-private void carregaComboEstado() {
-    
-    ComboBox estadoCombo = view.getEstadoComboBox();
-    
-        estadoDAO = new EstadoDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        
-        List<Estado> estados = estadoDAO.findEstadoEntities();
-       
+
+    private void carregaComboEstado() {
+
+        ComboBox estadoCombo = view.getEstadoComboBox();
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        List<Estado> estados = em.createNamedQuery("Estado.findAll").getResultList();
+
         for (Estado estado : estados) {
-            
+
             estadoCombo.addItem(estado);
             estadoCombo.setItemCaption(estado, estado.getUf());
-            
+
         }
     }
 

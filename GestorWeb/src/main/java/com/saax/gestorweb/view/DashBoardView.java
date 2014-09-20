@@ -1,13 +1,11 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.dao.UsuarioDAO;
+import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.DashboardPresenter;
+import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.util.PostgresConnection;
-import com.saax.gestorweb.util.UserData;
 import com.vaadin.data.Property;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Accordion;
@@ -28,6 +26,9 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -155,7 +156,6 @@ public class DashBoardView extends VerticalLayout {
         getTarefasTable().setPageLength(7);
         getTarefasTable().setSelectable(true);
         getTarefasTable().setImmediate(true);
-        
 
         return getTarefasTable();
 
@@ -215,7 +215,7 @@ public class DashBoardView extends VerticalLayout {
         filtroUsuarioResponsavelOptionGroup = new OptionGroup();
         getFiltroUsuarioResponsavelOptionGroup().setMultiSelect(true);
         getFiltroUsuarioResponsavelOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            if (getFiltroUsuarioResponsavelOptionGroup().getValue()!=null){
+            if (getFiltroUsuarioResponsavelOptionGroup().getValue() != null) {
                 getListener().aplicarFiltroPesquisa();
             }
         });
@@ -223,7 +223,7 @@ public class DashBoardView extends VerticalLayout {
         filtroUsuarioSolicitanteOptionGroup = new OptionGroup();
         getFiltroUsuarioSolicitanteOptionGroup().setMultiSelect(true);
         getFiltroUsuarioSolicitanteOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            if (getFiltroUsuarioSolicitanteOptionGroup().getValue()!=null){
+            if (getFiltroUsuarioSolicitanteOptionGroup().getValue() != null) {
                 getListener().aplicarFiltroPesquisa();
             }
         });
@@ -231,7 +231,7 @@ public class DashBoardView extends VerticalLayout {
         filtroUsuarioParticipanteOptionGroup = new OptionGroup();
         getFiltroUsuarioParticipanteOptionGroup().setMultiSelect(true);
         getFiltroUsuarioParticipanteOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            if (getFiltroUsuarioParticipanteOptionGroup().getValue()!=null){
+            if (getFiltroUsuarioParticipanteOptionGroup().getValue() != null) {
                 getListener().aplicarFiltroPesquisa();
             }
         });
@@ -250,7 +250,7 @@ public class DashBoardView extends VerticalLayout {
         getFiltroEmpresaOptionGroup().setMultiSelect(true);
         getFiltroEmpresaOptionGroup().setMultiSelect(true);
         getFiltroEmpresaOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            if (getFiltroEmpresaOptionGroup().getValue()!=null){
+            if (getFiltroEmpresaOptionGroup().getValue() != null) {
                 getListener().aplicarFiltroPesquisa();
             }
         });
@@ -263,7 +263,7 @@ public class DashBoardView extends VerticalLayout {
         filtroDataFimButton = new PopupButton("Data Fim");
         filtroDataFimDateField = new InlineDateField();
         getFiltroDataFimDateField().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            if (getFiltroDataFimDateField().getValue()!=null){
+            if (getFiltroDataFimDateField().getValue() != null) {
                 getListener().aplicarFiltroPesquisa();
             }
         });
@@ -274,7 +274,7 @@ public class DashBoardView extends VerticalLayout {
         filtroProjecaoOptionGroup = new OptionGroup();
         getFiltroProjecaoOptionGroup().setMultiSelect(true);
         getFiltroProjecaoOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            if (getFiltroProjecaoOptionGroup().getValue()!=null){
+            if (getFiltroProjecaoOptionGroup().getValue() != null) {
                 getListener().aplicarFiltroPesquisa();
             }
         });
@@ -288,11 +288,11 @@ public class DashBoardView extends VerticalLayout {
         getPermutacaoPesquisaOptionGroup().setMultiSelect(false);
         getPermutacaoPesquisaOptionGroup().addStyleName("horizontal");;
         getPermutacaoPesquisaOptionGroup().addValueChangeListener((Property.ValueChangeEvent event) -> {
-            if (getPermutacaoPesquisaOptionGroup().getValue()!=null){
+            if (getPermutacaoPesquisaOptionGroup().getValue() != null) {
                 getListener().aplicarFiltroPesquisa();
             }
         });
-        
+
         getFiltrosPesquisaEsquerdaContainer().addComponent(getPermutacaoPesquisaOptionGroup());
         getPermutacaoPesquisaOptionGroup().setVisible(false);
 
@@ -356,8 +356,7 @@ public class DashBoardView extends VerticalLayout {
         return getAbasContainer();
     }
 
-    
-    public void setListaTarefasPrincipais(List<Tarefa> tarefasPrincipais){
+    public void setListaTarefasPrincipais(List<Tarefa> tarefasPrincipais) {
         getPrincipaisTarefasContainer().removeAllComponents();
         for (Tarefa tarefa : tarefasPrincipais) {
             Button tarefaButton = new Button(tarefa.getDescricao());
@@ -365,7 +364,7 @@ public class DashBoardView extends VerticalLayout {
             getPrincipaisTarefasContainer().addComponent(tarefaButton);
         }
     }
-    
+
     private Component buildPaineisRodape() {
 
         rodapeContainer = new HorizontalLayout();
@@ -618,8 +617,6 @@ public class DashBoardView extends VerticalLayout {
     public OptionGroup getPermutacaoPesquisaOptionGroup() {
         return permutacaoPesquisaOptionGroup;
     }
-    
-    
 
     private Component buildComboAlteraUsuario() {
 
@@ -629,7 +626,11 @@ public class DashBoardView extends VerticalLayout {
 
         ComboBox comboAlteraUsuarioLogado = new ComboBox("Altere usuário logado:");
 
-        List<Usuario> lista = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory()).findUsuarioEntities();
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        List<Usuario> lista = em.createNamedQuery("Usuario.findAll")
+                .getResultList();
+
         for (Usuario usuario : lista) {
             comboAlteraUsuarioLogado.addItem(usuario);
             comboAlteraUsuarioLogado.setItemCaption(usuario, usuario.getNome());

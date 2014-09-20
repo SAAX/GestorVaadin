@@ -312,7 +312,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
             if (andamento == 100) {
 
-                model.concluirTarefa(tarefa);
+                model.concluirTarefa(tarefa.getId());
 
             }
             closePopUpButton();

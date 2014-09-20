@@ -1,12 +1,5 @@
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.dao.CidadeDAO;
-import com.saax.gestorweb.dao.EmpresaDAO;
-import com.saax.gestorweb.dao.EnderecoDAO;
-import com.saax.gestorweb.dao.FilialEmpresaDAO;
-import com.saax.gestorweb.dao.UsuarioDAO;
-import com.saax.gestorweb.dao.UsuarioEmpresaDAO;
-import com.saax.gestorweb.dao.exceptions.NonexistentEntityException;
 import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
@@ -15,8 +8,8 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.Cipher;
 import com.saax.gestorweb.util.FormatterUtil;
+import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
-import com.saax.gestorweb.util.PostgresConnection;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -31,24 +25,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author rodrigo
  */
 public class SignupModel {
-
-    private final EmpresaDAO empresaDAO;
-    private final FilialEmpresaDAO filialEmpresaDAO;
-    private final EnderecoDAO enderecoDAO;
-    private final UsuarioDAO usuarioDAO;
-    private final UsuarioEmpresaDAO usuarioEmpresaDAO;
-
-    /**
-     * Cria o model e conecta ao DAO
-     */
-    public SignupModel() {
-        empresaDAO = new EmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        filialEmpresaDAO = new FilialEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        enderecoDAO = new EnderecoDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        usuarioDAO = new UsuarioDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        usuarioEmpresaDAO = new UsuarioEmpresaDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-
-    }
 
     /**
      * Repassa ao model de login a verificação do email do usuario
@@ -70,6 +46,9 @@ public class SignupModel {
      * @throws com.saax.gestorweb.util.GestorException
      */
     public boolean verificaEmpresaExistente(String cpf_cnpj, char tipoPessoa) throws GestorException {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         if (StringUtils.isBlank(cpf_cnpj)) {
             return false;
         }
@@ -78,14 +57,20 @@ public class SignupModel {
             if (!FormatterUtil.validarCNPJ(cpf_cnpj)) {
                 throw new GestorException("CNPJ fora do formato correto (##.###.###/####-##): " + cpf_cnpj);
             }
-            Empresa e = empresaDAO.findByCNPJ(cpf_cnpj);
+            Empresa e = (Empresa) em.createNamedQuery("Empresa.findByCnpj")
+                    .setParameter("cnpj", cpf_cnpj)
+                    .getSingleResult();
+
             return (e != null);
 
         } else if (tipoPessoa == 'F') {
             if (!FormatterUtil.validarCPF(cpf_cnpj)) {
                 throw new GestorException("CPF fora do formato correto (###.###.###-##): " + cpf_cnpj);
             }
-            Empresa e = empresaDAO.findByCPF(cpf_cnpj);
+            Empresa e = (Empresa) em.createNamedQuery("Empresa.findByCpf")
+                    .setParameter("cpf", cpf_cnpj)
+                    .getSingleResult();
+
             return (e != null);
         } else {
 
@@ -112,7 +97,12 @@ public class SignupModel {
             throw new GestorException("CNPJ fora do formato correto (##.###.###/####-##): " + cnpj);
         }
 
-        FilialEmpresa e = filialEmpresaDAO.findByCNPJ(cnpj);
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        FilialEmpresa e = (FilialEmpresa) em.createNamedQuery("FilialEmpresa.findByCNPJ")
+                .setParameter("cnpj", cnpj)
+                .getSingleResult();
+
         return (e != null);
 
     }
@@ -139,8 +129,11 @@ public class SignupModel {
             String senhaCriptografada;
             try {
                 senhaCriptografada = new Cipher().md5Sum(senha);
+
             } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, "Não encontrado algorítimo MD5", ex);
+                Logger.getLogger(SignupModel.class
+                        .getName()).log(Level.SEVERE, "Não encontrado algorítimo MD5", ex);
+
                 return null;
             }
 
@@ -171,6 +164,7 @@ public class SignupModel {
      * @param usuario
      * @param empresa
      * @param administrador
+     * @return
      */
     public UsuarioEmpresa relacionarUsuarioEmpresa(Usuario usuario, Empresa empresa, boolean administrador) {
 
@@ -314,40 +308,43 @@ public class SignupModel {
      */
     public Empresa criarNovaConta(
             Usuario usuarioAdm,
-            Empresa empresaPrincipal, 
-            Endereco endereco, 
-            List<Empresa> subEmpresas, 
-            List<FilialEmpresa> filiaisEmpresa, 
+            Empresa empresaPrincipal,
+            Endereco endereco,
+            List<Empresa> subEmpresas,
+            List<FilialEmpresa> filiaisEmpresa,
             List<UsuarioEmpresa> usuarios) throws GestorException {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         try {
 
+            em.getTransaction().begin();
+
             // Criar o usuario ADM
             usuarioAdm.setDataHoraInclusao(LocalDateTime.now());
-            usuarioDAO.create(usuarioAdm);
+            em.persist(usuarioAdm);
             usuarioAdm.setUsuarioInclusao(usuarioAdm);
-            usuarioDAO.edit(usuarioAdm);
+            em.merge(usuarioAdm);
 
             // Criar a empresa principal
             empresaPrincipal.setDataHoraInclusao(LocalDateTime.now());
             empresaPrincipal.setUsuarioInclusao(usuarioAdm);
-            empresaDAO.create(empresaPrincipal);
+            em.persist(empresaPrincipal);
 
-            usuarioEmpresaDAO.create(relacionarUsuarioEmpresa(usuarioAdm, empresaPrincipal, true));
-            
+            em.persist(relacionarUsuarioEmpresa(usuarioAdm, empresaPrincipal, true));
+
             // Criar endereco da empresa
             relacionarEmpresaEndereco(empresaPrincipal, endereco);
             endereco.setUsuarioInclusao(usuarioAdm);
             endereco.setDataHoraInclusao(LocalDateTime.now());
-            endereco.setCidade(new CidadeDAO(PostgresConnection.getInstance().getEntityManagerFactory()).findCidade(1));
-            enderecoDAO.create(endereco);
+            em.persist(endereco);
 
             // criar as sub empresas
             for (Empresa subEmpresa : subEmpresas) {
                 relacionarEmpresaColigada(empresaPrincipal, subEmpresa);
                 subEmpresa.setUsuarioInclusao(usuarioAdm);
                 subEmpresa.setDataHoraInclusao(LocalDateTime.now());
-                empresaDAO.create(subEmpresa);
+                em.persist(subEmpresa);
             }
 
             // criar as filiais
@@ -355,74 +352,31 @@ public class SignupModel {
                 relacionarEmpresaFilial(empresaPrincipal, filial);
                 filial.setUsuarioInclusao(usuarioAdm);
                 filial.setDataHoraInclusao(LocalDateTime.now());
-                filialEmpresaDAO.create(filial);
+                em.persist(filial);
 
             }
 
             // criar demais usuarios
             for (UsuarioEmpresa usuarioEmpresa : usuarios) {
-                
+
                 Usuario usuario = usuarioEmpresa.getUsuario();
                 usuario.setDataHoraInclusao(LocalDateTime.now());
                 usuario.setUsuarioInclusao(usuarioAdm);
-            
-                usuarioDAO.create(usuario);
-                
-                usuarioEmpresaDAO.create(relacionarUsuarioEmpresa(usuario, empresaPrincipal, usuarioEmpresa.getAdministrador()));
+
+                em.persist(usuario);
+
+                em.persist(relacionarUsuarioEmpresa(usuario, empresaPrincipal, usuarioEmpresa.getAdministrador()));
+
             }
 
+            em.getTransaction().commit();
 
-            /*
-             // percorre todos os demais usuarios empresa, criando cada um
-             for (UsuarioEmpresa usuarioEmpresa : empresaPrincipal.getUsuarios()) {
-              
-             Usuario usuario = usuarioEmpresa.getUsuario();
-             usuario.setUsuarioInclusao(usuarioAdm);
-             usuario.setDataHoraInclusao(LocalDateTime.now());
-                
-             usuarioDAO.create(usuario);
-                
-             usuarioEmpresa.getUsuario().setUsuarioInclusao(usuarioAdm);
-              
-             }
-             relacionarUsuarioEmpresa(usuarioAdm, empresaPrincipal, true);
-             */
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
-            throw new GestorException(ex.getMessage());
         } catch (Exception ex) {
             Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
+            GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
             throw new GestorException(ex.getMessage());
         }
 
-        /*
-        
-         for (UsuarioEmpresa usuarioEmpresa : empresaPrincipal.getUsuarios()) {
-         usuarioEmpresa.getUsuario().setUsuarioInclusao(usuarioAdm);
-         }
-         Usuario usuario = empresaPrincipal.getUsuarios().
-        
-         //Usuario usuario = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
-         */
-        /*    
-         empresaPrincipal.setUsuarioInclusao(usuarioAdm);
-         empresaPrincipal.setDataHoraInclusao(LocalDateTime.now());
-        
-         Endereco endereco = empresaPrincipal.getEndereco();
-         endereco.setUsuarioInclusao(usuarioAdm);
-         endereco.setDataHoraInclusao(LocalDateTime.now());
-        
-         // ATENCAO REMOVER
-        
-         endereco.setCidade(new CidadeDAO(PostgresConnection.getInstance().getEntityManagerFactory()).findCidade(1));
-        
-        
-         // ATENCAO REMOVER -- FIM
-        
-         enderecoDAO.create(empresaPrincipal.getEndereco());
-        
-         empresaDAO.create(empresaPrincipal);
-         */
         return empresaPrincipal;
 
     }

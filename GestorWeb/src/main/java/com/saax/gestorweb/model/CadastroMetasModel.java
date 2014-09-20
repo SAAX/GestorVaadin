@@ -5,20 +5,18 @@
  */
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.dao.DepartamentoDAO;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
+import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
-import com.saax.gestorweb.util.PostgresConnection;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.UI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 
 /**
  * Classe de negócios do cadastro de Metas <br><br>
@@ -43,9 +41,8 @@ public class CadastroMetasModel {
             throw new GestorException("Parâmetro inválido: Empresa is null");
         }
 
-        List<Departamento> departamentos;
-        DepartamentoDAO dao = new DepartamentoDAO(PostgresConnection.getInstance().getEntityManagerFactory());
-        departamentos = dao.obterDepartamentosPorEmpresa(empresa);
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        List<Departamento> departamentos = em.createNamedQuery("Departamento.findAll").getResultList();
 
         if (departamentos.isEmpty()) {
             Logger.getLogger(CadastroMetasModel.class.getName()).log(Level.WARNING, "Não foram encontrados departamentos para empresa: {0}", empresa.getId());

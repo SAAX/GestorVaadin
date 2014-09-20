@@ -1,5 +1,8 @@
 package com.saax.gestorweb.util;
 
+import com.saax.gestorweb.GestorMDI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
@@ -22,11 +25,14 @@ public class GestorServletContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent e) {
 
-        
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Iniciando contexto...");
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Criando e armazenando EMF...");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("GestorWebPU");
 
         PostgresConnection connection = PostgresConnection.getInstance();
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "EMF criada e armazenada!");
         connection.setEntityManagerFactory(emf);
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Contexto inicializado!");
         
 
     }
@@ -40,12 +46,14 @@ public class GestorServletContextListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent e) {
 
+        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Destruindo contexto...");
         PostgresConnection connection = PostgresConnection.getInstance();
 
         EntityManagerFactory emf = connection.getEntityManagerFactory();
         if (emf != null) {
+            Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Fechando conexões...");
             emf.close();
-            System.out.println("contextDestroyed");
+            Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Contexto destruído");
         }
 
     }

@@ -1,19 +1,14 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.dao.EmpresaDAO;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.EmpresaModel;
-import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
-import com.saax.gestorweb.model.datamodel.FilialEmpresa;
-import com.saax.gestorweb.model.datamodel.HistoricoTarefa_;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;

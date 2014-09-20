@@ -1,14 +1,11 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.dao.UsuarioDAO;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.LoginModel;
-import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.util.PostgresConnection;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;

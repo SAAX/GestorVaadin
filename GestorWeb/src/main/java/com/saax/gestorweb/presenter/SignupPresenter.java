@@ -475,24 +475,19 @@ public class SignupPresenter implements SignupViewListener {
         } else {
             adm = "NÃO";
         }
-        
+
         Button removerUsuarioButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
         removerUsuarioButton.setId(nomeUsuario);
         removerUsuarioButton.addClickListener((Button.ClickEvent event) -> {
             String nomeUsuarioBotao = event.getButton().getId();
-            
-           
-               view.getUsuariosTable().removeItem(nomeUsuarioBotao);
-               view.getUsuariosTable().refreshRowCache();
-               Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
-               
-           
-                        
+
+            view.getUsuariosTable().removeItem(nomeUsuarioBotao);
+            view.getUsuariosTable().refreshRowCache();
+            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+
         });
-        
-       
-        view.getUsuariosTable().addItem(new Object[] {nomeUsuario,sobrenomeUsuario, email, adm, removerUsuarioButton}, nomeUsuario);
-       
+
+        view.getUsuariosTable().addItem(new Object[]{nomeUsuario, sobrenomeUsuario, email, adm, removerUsuarioButton}, nomeUsuario);
 
         view.getNomeUsuarioTextField().setValue("");
         view.getSobrenomeUsuarioTextField().setValue("");
@@ -540,28 +535,19 @@ public class SignupPresenter implements SignupViewListener {
         String nomeFilial = view.getNomeFilialTextField().getValue();
         String cnpjFilial = view.getCnpjFilialTextField().getValue();
 
-        
-        
         Button removerFiliaisButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
         removerFiliaisButton.setId(nomeFilial);
         removerFiliaisButton.addClickListener((Button.ClickEvent event) -> {
             String nomeFilialBotao = event.getButton().getId();
-            
-           
-               view.getFiliaisTable().removeItem(nomeFilialBotao);
-               view.getFiliaisTable().refreshRowCache();
-               Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
-               
-           
-                        
-        });
-        
-       
-        view.getFiliaisTable().addItem(new Object[] {nomeFilial,cnpjFilial, removerFiliaisButton}, nomeFilial);
-        
-          
 
-        
+            view.getFiliaisTable().removeItem(nomeFilialBotao);
+            view.getFiliaisTable().refreshRowCache();
+            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+
+        });
+
+        view.getFiliaisTable().addItem(new Object[]{nomeFilial, cnpjFilial, removerFiliaisButton}, nomeFilial);
+
         view.getNomeFilialTextField().setValue("");
         view.getCnpjFilialTextField().setValue("");
 
@@ -585,20 +571,22 @@ public class SignupPresenter implements SignupViewListener {
 
     @Override
     public void estadoSelecionado() {
-        
-             
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
         ComboBox cidadeCombo = view.getCidadeComboBox();
-        
+
         cidadeCombo.removeAllItems();
-        
-        List<Cidade> cidades = new GenericDAO().listByNamedQuery("Cidade.findByEstado", "estado", view.getEstadoComboBox().getValue());
-        
-        for (Cidade cidade : cidades){
+
+        List<Cidade> cidades = em.createNamedQuery("Cidade.findByEstado")
+                .setParameter("estado", view.getEstadoComboBox().getValue())
+                .getResultList();
+
+        for (Cidade cidade : cidades) {
             cidadeCombo.addItem(cidade);
             cidadeCombo.setItemCaption(cidade, cidade.getNome());
         }
-        
-        
+
     }
 
 }

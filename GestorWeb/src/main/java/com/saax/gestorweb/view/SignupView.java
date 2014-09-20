@@ -2,9 +2,13 @@ package com.saax.gestorweb.view;
 //teste de commit -> volta
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.MaskedField;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.event.FieldEvents;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.server.UserError;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -19,8 +23,15 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
+import javax.swing.JFormattedTextField;
+import javax.swing.text.DefaultFormatter;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.MaskFormatter;
+import javax.swing.text.NumberFormatter;
 
 /**
  * Janela de criaÃ§Ã£o de nova conta, com dados do usuÃ¡iro, billing, empresas, etc.
@@ -59,7 +70,7 @@ public class SignupView extends Window {
      private TextField razaoSocialTextField;
      private TextField nomeFantasiaTextField;
      private OptionGroup tipoPessoaOptionGroup;
-     private TextField cnpjCpfTextField;
+     private MaskedField cnpjCpfTextField;
      private TextField logradouroTextField;
      private TextField numeroTextField;
      private TextField complementoTextField;
@@ -81,13 +92,13 @@ public class SignupView extends Window {
      
     //ABA #5: Adicionar Empresas Coligadas
     private TextField nomeColigadaTextField;
-    private TextField cnpjColigadaTextField;
+    private MaskedField cnpjColigadaTextField;
     private CheckBox coligadaAtivaCheckBox;
     private Table coligadasTable;
     
     //ABA #6: Adicionar Empresas Filiais
     private TextField nomeFilialTextField;
-    private TextField cnpjFilialTextField;
+    private MaskedField cnpjFilialTextField;
     private CheckBox filialAtivaCheckBox;
     private Table filiaisTable;
    
@@ -281,10 +292,13 @@ public class SignupView extends Window {
         
         
          // text field: Cnpj
-        setCnpjCpfTextField(new TextField());
+        setCnpjCpfTextField(new MaskedField());
         containerHorizontal1.addComponent(getCnpjCpfTextField());
         getCnpjCpfTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjCpfTextField.label"));
         cnpjCpfTextField.setWidth("180px");
+        
+        
+        
         
         cnpjCpfTextField.setValidationVisible(false);
          
@@ -385,10 +399,13 @@ public class SignupView extends Window {
         nomeColigadaTextField.setWidth("300px");
         
          // text field: cnpjColigada
-        setCnpjColigadaTextField(new TextField());
+        setCnpjColigadaTextField(new MaskedField());
         containerAba5.addComponent(getCnpjColigadaTextField());
         getCnpjColigadaTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjColigadaTextField.label"));
         cnpjColigadaTextField.setWidth("300px");
+   
+
+          
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
         containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
@@ -434,7 +451,7 @@ public class SignupView extends Window {
         nomeFilialTextField.setWidth("300px");
         
          // text field: cnpjColigada
-        setCnpjFilialTextField(new TextField());
+        setCnpjFilialTextField(new MaskedField());
         containerAba6.addComponent(getCnpjFilialTextField());
         getCnpjFilialTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjFilialTextField.label"));
         cnpjFilialTextField.setWidth("300px");
@@ -767,7 +784,7 @@ public class SignupView extends Window {
     /**
      * @param cnpjTextField the cnpjTextField to set
      */
-    public void setCnpjCpfTextField(TextField cnpjTextField) {
+    public void setCnpjCpfTextField(MaskedField cnpjTextField) {
         this.cnpjCpfTextField = cnpjTextField;
     }
 
@@ -908,7 +925,7 @@ public class SignupView extends Window {
     /**
      * @param cnpjColigadaTextField the cnpjColigadaTextField to set
      */
-    public void setCnpjColigadaTextField(TextField cnpjColigadaTextField) {
+    public void setCnpjColigadaTextField(MaskedField cnpjColigadaTextField) {
         this.cnpjColigadaTextField = cnpjColigadaTextField;
     }
     
@@ -922,7 +939,7 @@ public class SignupView extends Window {
     /**
      * @param cnpjFilialTextField the cnpjFilialTextField to set
      */
-    public void setCnpjFilialTextField(TextField cnpjFilialTextField) {
+    public void setCnpjFilialTextField(MaskedField cnpjFilialTextField) {
         this.cnpjFilialTextField = cnpjFilialTextField;
     }
 

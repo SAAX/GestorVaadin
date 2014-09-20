@@ -15,4 +15,5 @@ public interface SignupViewListener {
 
     public void estadoSelecionado();
     
+    
 }

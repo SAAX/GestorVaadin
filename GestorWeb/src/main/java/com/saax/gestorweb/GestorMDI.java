@@ -57,34 +57,21 @@ public class GestorMDI extends UI {
         protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
             // Cria um entity manager por requisição
-            Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Iniciando tratamento de requisição");
             EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
             // Armazena na thread
             GestorEntityManagerProvider.setCurrentEntityManager(em);
-            Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "EM criado");
             
             try {
-                // Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Abrindo transação");
-                // GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
                 
                 Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Tratando requisição...");
                 super.service(req, resp);
-                Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Requisição tratada");
                 
-                // Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Comintando...");
-                // GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
-                // Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Comitado!");
-                
-//            } catch (ServletException | IOException ex) {
-                // GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
             } finally {
-                Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Liberando recursos...");
                 // Fecha o entity manger ao fim da requisição
                 GestorEntityManagerProvider.getEntityManager().close();
                 // Libera a variável da thread
                 GestorEntityManagerProvider.setCurrentEntityManager(null);
                 GestorEntityManagerProvider.remove();
-                Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Recursos liberados!");
             }
         }
 

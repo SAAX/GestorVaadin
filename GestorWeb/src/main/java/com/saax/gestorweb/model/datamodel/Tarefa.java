@@ -225,8 +225,6 @@ public class Tarefa implements Serializable {
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataFim;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

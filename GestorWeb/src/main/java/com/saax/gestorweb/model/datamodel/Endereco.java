@@ -76,8 +76,6 @@ public class Endereco implements Serializable {
     @OneToMany(mappedBy = "endereco")
     private List<Empresa> empresas;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

@@ -58,8 +58,6 @@ public class AndamentoTarefa implements Serializable {
     @ManyToOne
     private Usuario usuarioInclusao;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

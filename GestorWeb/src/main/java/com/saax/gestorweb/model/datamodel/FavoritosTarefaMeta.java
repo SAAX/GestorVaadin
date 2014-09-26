@@ -38,8 +38,6 @@ public class FavoritosTarefaMeta implements Serializable {
     @Column(name = "idfavoritostarefameta")
     private Integer id;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

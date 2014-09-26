@@ -87,8 +87,6 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioResponsavel")
     private Collection<Meta> metasSobResponsabilidade;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

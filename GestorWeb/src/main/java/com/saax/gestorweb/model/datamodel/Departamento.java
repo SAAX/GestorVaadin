@@ -62,8 +62,6 @@ public class Departamento implements Serializable {
     @OneToMany(mappedBy = "departamento")
     private Collection<Meta> metas;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

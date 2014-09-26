@@ -88,8 +88,6 @@ public class EmpresaCliente implements Serializable {
     @ManyToOne
     private Endereco endereco;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

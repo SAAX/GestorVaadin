@@ -119,8 +119,6 @@ public class Empresa implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
     private Endereco endereco;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

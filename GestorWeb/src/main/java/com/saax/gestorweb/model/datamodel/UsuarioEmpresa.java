@@ -31,8 +31,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "usuarioempresa")
 @NamedQueries({
     @NamedQuery(name = "UsuarioEmpresa.findAll", query = "SELECT u FROM UsuarioEmpresa u"),
-    @NamedQuery(name = "UsuarioEmpresa.findById", 
-            query = "SELECT u FROM UsuarioEmpresa u WHERE u.id = :id"),
+    @NamedQuery(name = "UsuarioEmpresa.findById", query = "SELECT u FROM UsuarioEmpresa u WHERE u.id = :id"),
     @NamedQuery(name = "UsuarioEmpresa.findByAdministrador", query = "SELECT u FROM UsuarioEmpresa u WHERE u.administrador = :administrador"),
     @NamedQuery(name = "UsuarioEmpresa.findByContratacao", query = "SELECT u FROM UsuarioEmpresa u WHERE u.contratacao = :contratacao"),
     @NamedQuery(name = "UsuarioEmpresa.findByDesligamento", query = "SELECT u FROM UsuarioEmpresa u WHERE u.desligamento = :desligamento")})
@@ -75,8 +74,6 @@ public class UsuarioEmpresa implements Serializable {
     @Column(name = "ativo")
     private boolean ativo;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

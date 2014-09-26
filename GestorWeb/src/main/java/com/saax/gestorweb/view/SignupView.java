@@ -32,6 +32,7 @@ import javax.swing.text.DefaultFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
+import org.vaadin.addons.maskedtextfield.MaskedTextField;
 
 /**
  * Janela de criaÃ§Ã£o de nova conta, com dados do usuÃ¡iro, billing, empresas, etc.
@@ -77,7 +78,7 @@ public class SignupView extends Window {
      private TextField bairroTextField;
      private ComboBox cidadeComboBox;
      private ComboBox estadoComboBox;
-     private TextField cepTextField;
+     private MaskedTextField cepTextField;
      private Table empresasTable;
      private CheckBox empresaAtivaCheckBox;
      
@@ -368,7 +369,7 @@ public class SignupView extends Window {
         
               
         // text field: cep
-        setCepTextField(new TextField());
+        setCepTextField(new MaskedTextField("", "##.###-###"));
         containerAba3.addComponent(getCepTextField());
         getCepTextField().setInputPrompt(getMensagens().getString("SignupView.cepTextField.label"));
         cepTextField.setWidth("300px");
@@ -875,14 +876,14 @@ public class SignupView extends Window {
           /**
      * @return the cepTextField
      */
-    public TextField getCepTextField() {
+    public MaskedTextField getCepTextField() {
         return cepTextField;
     }
 
     /**
      * @param cepTextField the cepTextField to set
      */
-    public void setCepTextField(TextField cepTextField) {
+    public void setCepTextField(MaskedTextField cepTextField) {
         this.cepTextField = cepTextField;
     }
     

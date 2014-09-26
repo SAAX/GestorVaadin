@@ -39,8 +39,6 @@ public class ParticipanteTarefa implements Serializable {
     @Column(name = "idparticipantetarefa")
     private Integer id;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

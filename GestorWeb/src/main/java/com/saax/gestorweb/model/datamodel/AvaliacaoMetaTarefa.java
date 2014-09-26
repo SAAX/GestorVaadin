@@ -54,8 +54,6 @@ public class AvaliacaoMetaTarefa implements Serializable {
     @Column(name = "comentario")
     private String comentario;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

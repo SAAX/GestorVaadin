@@ -57,8 +57,6 @@ public class AnexoTarefa implements Serializable {
     @ManyToOne(optional = false)
     private Usuario usuarioInclusao;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

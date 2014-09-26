@@ -66,8 +66,6 @@ public class BloqueioTarefa implements Serializable {
     @Column(name = "motivo")
     private String motivo;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

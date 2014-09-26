@@ -8,6 +8,7 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.GestorException;
@@ -81,20 +82,15 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     }
 
     /**
-     * Carrega o combo de seleçao do tipo
-     */
-    private void carregaComboStatusTarefa() {
-
-    }
-
-    /**
      * Carrega o combo de seleçao com os status possiveis para a tarefa
      */
     private void carregaComboTipoRecorrenciaTarefa() {
 
         ComboBox tipo = view.getTipoRecorrenciaCombo();
-
-        // TODO: ...
+        for (TipoTarefa tipoTarefaValue : TipoTarefa.values()) {
+            tipo.addItem(tipoTarefaValue);
+            tipo.setItemCaption(tipoTarefaValue, tipoTarefaValue.getLocalizedString());
+        }
     }
 
     /**

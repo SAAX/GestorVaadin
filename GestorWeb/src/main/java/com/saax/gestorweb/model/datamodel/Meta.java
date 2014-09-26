@@ -108,8 +108,6 @@ public class Meta implements Serializable {
     @ManyToOne(optional = false)
     private Usuario usuarioResponsavel;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

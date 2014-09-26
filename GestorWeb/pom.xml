@@ -77,7 +77,11 @@
             <artifactId>maddon</artifactId>
             <version>1.13</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.vaadin.addons</groupId>
+            <artifactId>maskedtextfield</artifactId>
+            <version>0.1.6</version>
+        </dependency>
         <dependency>
             <groupId>org.vaadin.addons</groupId>
             <artifactId>popupbutton</artifactId>

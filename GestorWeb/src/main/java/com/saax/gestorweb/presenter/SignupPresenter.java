@@ -8,13 +8,13 @@ import com.saax.gestorweb.model.datamodel.Endereco;
 import com.saax.gestorweb.model.datamodel.Estado;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
@@ -47,13 +47,6 @@ public class SignupPresenter implements SignupViewListener {
     // Todo presenter mantem acesso à view e ao model
     private final SignupView view;
     private final SignupModel model;
-    private Usuario usuarioADM;
-    private Endereco endereco;
-    private ArrayList<Empresa> subEmpresas;
-    private Empresa empresaPrincipal;
-    private ArrayList<FilialEmpresa> filiais;
-    private ArrayList<UsuarioEmpresa> usuarios;
-    
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -146,15 +139,15 @@ public class SignupPresenter implements SignupViewListener {
      */
     private boolean validaDadosEmpresasColigadas() {
 
-        final Table empresasColigadasTable = view.getColigadasTable(); // @TODO: Obter a tabela de sub empresas
+        final Table empresasColigadasTable = view.getColigadasTable(); 
         Set<String> identificadoresEmpresasColigadas = new HashSet<>();
 
         for (Object itemID : empresasColigadasTable.getItemIds()) {
 
             Item linha = empresasColigadasTable.getItem(itemID);
-            // Valida se a sub empresa já não está cadastrada no sistema
-            String cpfCnpjSubEmpresa = (String) linha.getItemProperty("SignupView.coligadasTable.email").getValue(); // @TODO: Obter da view
-            String nomeSubEmpresa = (String) linha.getItemProperty("SignupView.coligadasTable.nome").getValue(); // @TODO: Obter da view
+            
+            String cpfCnpjSubEmpresa = (String) linha.getItemProperty("SignupView.coligadasTable.email").getValue(); // @ATENCAO
+            String nomeSubEmpresa = (String) linha.getItemProperty("SignupView.coligadasTable.nome").getValue(); // @ATENCAO
             char tipoPessoaSubEmpresa = 'J'; // @TODO: Obter da view
             if (cpfCnpjSubEmpresa != null) {
                 try {
@@ -201,8 +194,8 @@ public class SignupPresenter implements SignupViewListener {
             Item linha = filiaisTable.getItem(itemID);
 
             // Valida se a filial já não está cadastrada no sistema
-            String cnpjFilial = (String) linha.getItemProperty("SignupView.filiaisTable.cnpj").getValue(); // @TODO: Obter da view
-            String nomeFilial = (String) linha.getItemProperty("SignupView.filiaisTable.nome").getValue(); // @TODO: Obter da view
+            String cnpjFilial = (String) linha.getItemProperty("SignupView.filiaisTable.cnpj").getValue(); // @ATENCAO
+            String nomeFilial = (String) linha.getItemProperty("SignupView.filiaisTable.nome").getValue(); // @ATENCAO
 
             if (StringUtils.isNotBlank(cnpjFilial)) {
                 try {
@@ -250,7 +243,7 @@ public class SignupPresenter implements SignupViewListener {
      */
     private boolean validaDadosDemaisUsuarios() {
 
-        Table usuariosTable = view.getUsuariosTable(); // @TODO: Obter a tabela de sub empresas
+        Table usuariosTable = view.getUsuariosTable(); 
         Set<String> identificadoresUsuarios = new HashSet<>();
 
         for (Object itemID : usuariosTable.getItemIds()) {
@@ -258,7 +251,7 @@ public class SignupPresenter implements SignupViewListener {
             Item linha = usuariosTable.getItem(itemID);
 
             // Valida se o usuários já não está cadastrado no sistema
-            String emailUsuario = (String) linha.getItemProperty("SignupView.usuariosTable.email").getValue(); // @TODO: Obter da view
+            String emailUsuario = (String) linha.getItemProperty("SignupView.usuariosTable.email").getValue(); // @ATENCAO
             System.out.println("usuario " + emailUsuario);
             if (model.verificaLoginExistente(emailUsuario)) {
 
@@ -286,17 +279,22 @@ public class SignupPresenter implements SignupViewListener {
      * com a empresa principal + coligadas e filiais + usuarios
      *
      */
-    private void buildConta() {
+    private Empresa buildConta() {
 
+        
+        Empresa empresaPrincipal;
+        
         // ---------------------------------------------------------------------
         // cria o usuario principal
         // ---------------------------------------------------------------------
-        usuarioADM = model.criarNovoUsuario(
+        Usuario usuarioADM = model.criarNovoUsuario(
                 view.getNomeTextField().getValue(),
                 view.getSobrenomeTextField().getValue(),
                 view.getEmailUsuarioTextField().getValue(),
-                view.getSenhaTextField().getValue()
+                view.getSenhaTextField().getValue(), 
+                null
         );
+        
 
         // ---------------------------------------------------------------------
         // cria a empresa principal
@@ -305,77 +303,71 @@ public class SignupPresenter implements SignupViewListener {
         String razaosocial = view.getRazaoSocialTextField().getValue();
         String cpfCnpj = view.getCnpjCpfTextField().getValue();
         char tipoPessoa = '\0';
-        if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Física") {
-            tipoPessoa = 'F';
-        } else if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Jurídica") {
+        if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Física") { // @ATENCAO
+            tipoPessoa = 'F'; 
+        } else if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Jurídica") { // @ATENCAO
             tipoPessoa = 'J';
         } else {
-            return;
+            return null;
         }
 
-        empresaPrincipal = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa);
+        empresaPrincipal = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
 
         // cria o endereco
         String logradouro = view.getLogradouroTextField().getValue();
         String numero = view.getNumeroTextField().getValue();
         String complemento = view.getComplementoTextField().getValue();
         String cep = view.getCepTextField().getValue();
-        Cidade cidade = (Cidade) view.getCidadeComboBox().getValue(); // @TODO: cidade deve ser um combo
+        Cidade cidade = (Cidade) view.getCidadeComboBox().getValue();
         if (StringUtils.isNotBlank(logradouro)) {
-            endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade);
+            Endereco endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade, usuarioADM);
+            model.relacionarEmpresaEndereco(empresaPrincipal, endereco);
         }
 
-        // model.relacionarUsuarioEmpresa(usuarioADM, empresa, true);
+        model.relacionarUsuarioEmpresa(usuarioADM, empresaPrincipal, true, usuarioADM);
+        
+
         // ---------------------------------------------------------------------
         // cria a lista de sub empresas 
         // ---------------------------------------------------------------------
         Table empresasColigadasTable = view.getColigadasTable();
-        if (empresasColigadasTable.getItemIds() == null) {
-            System.out.println("é nula!");
-        } else {
-            System.out.println("não é nulo!");
-        }
-
-        subEmpresas = new ArrayList<>();
 
         empresasColigadasTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linhaEmpresaColigada = empresasColigadasTable.getItem(itemID);
 
             // Fer: usar o mesmo criterio abaixo para todas as tabelas:
-            String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(mensagens.getString("SignupView.coligadasTable.nome")).getValue(); // @TODO: Obter da view
-            String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(mensagens.getString("SignupView.coligadasTable.cnpj")).getValue();// @TODO: Obter da view
+            String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(mensagens.getString("SignupView.coligadasTable.nome")).getValue(); 
+            String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(mensagens.getString("SignupView.coligadasTable.cnpj")).getValue();
 
-            // Comentei este método pois para coligada só teremos dois campos
-            // Empresa subempresa = model.criarNovaEmpresa(nomeFantasiaEmpresaColigada,
-            //        razaosocialEmpresaColigada, cpfCnpjEmpresaColigada, tipoPessoaEmpresaColigada);
-            Empresa subempresa = model.criarNovaEmpresaColigada(nomeFantasiaEmpresaColigada, cpfCnpjEmpresaColigada);
-            subEmpresas.add(subempresa);
+            Empresa subempresa = model.criarNovaEmpresaColigada(nomeFantasiaEmpresaColigada, cpfCnpjEmpresaColigada, usuarioADM);
+            
+            model.relacionarEmpresaColigada(empresaPrincipal, subempresa);
+
 
         });
 
         // ---------------------------------------------------------------------
         // cria a lista de filiais
         // ---------------------------------------------------------------------
-        filiais = new ArrayList<>();
         Table filiaisTable = view.getFiliaisTable();
         filiaisTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = filiaisTable.getItem(itemID);
 
-            String nomeFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.nome")).getValue(); // @TODO: Obter da view
-            String cnpjFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.cnpj")).getValue(); // @TODO: Obter da view
+            String nomeFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.nome")).getValue(); 
+            String cnpjFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.cnpj")).getValue(); 
 
-            FilialEmpresa filialEmpresa = model.criarFilialEmpresa(nomeFilial, cnpjFilial);
-            filiais.add(filialEmpresa);
+            FilialEmpresa filialEmpresa = model.criarFilialEmpresa(nomeFilial, cnpjFilial, usuarioADM);
+            model.relacionarEmpresaFilial(empresaPrincipal, filialEmpresa);
+
 
         });
 
         // ---------------------------------------------------------------------
         // cria a lista de usuarios
         // ---------------------------------------------------------------------
-        usuarios = new ArrayList<>();
-        Table usuariosTable = view.getUsuariosTable(); // @TODO: pegar da view
+        Table usuariosTable = view.getUsuariosTable(); 
         usuariosTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = usuariosTable.getItem(itemID);
@@ -384,15 +376,13 @@ public class SignupPresenter implements SignupViewListener {
             String sobreNome = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.sobrenome")).getValue();
             String email = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.email")).getValue();
             boolean administrador = ((String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.administrador")).getValue()).equals("SIM");
-            
-            
-            
 
-            Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email);
-            UsuarioEmpresa usuarioEmpresa = model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador);
-            usuarios.add(usuarioEmpresa);
+            Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email, usuarioADM);
+            model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador, usuarioADM);
 
         });
+
+        return empresaPrincipal;
 
     }
 
@@ -427,22 +417,19 @@ public class SignupPresenter implements SignupViewListener {
         // procede com a gravação dos dados
         // ---------------------------------------------------------------------
         // obtem todos os dados da view e monta os objetos
-        buildConta();
+        Empresa empresa = buildConta();
 
         try {
-            // grava todos os dados (fazer em uma unica chamada para mater a transação)
-            model.criarNovaConta(usuarioADM, empresaPrincipal, endereco, subEmpresas, filiais, usuarios);
-            // testa EM:
-            model.verificaEmpresaExistente("12.345.678/0001-01", 'J');
+
+            model.criarNovaConta(empresa);
             view.close();
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         } catch (GestorException ex) {
             Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
-        /*
-         // Configura o usuáio logado na seção
-         ((GestorMDI) UI.getCurrent()).getUserData().setUsuarioLogado(usuarioADM);
-         */
+        
+        VaadinSession.getCurrent().setAttribute("usuarioLogado", empresa.getUsuarioInclusao());
+        
 
     }
 
@@ -485,7 +472,7 @@ public class SignupPresenter implements SignupViewListener {
 
             view.getUsuariosTable().removeItem(nomeUsuarioBotao);
             view.getUsuariosTable().refreshRowCache();
-            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
@@ -516,7 +503,7 @@ public class SignupPresenter implements SignupViewListener {
 
             view.getColigadasTable().removeItem(nomeColigadaBotao);
             view.getColigadasTable().refreshRowCache();
-            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE); // @ATENCAO
 
         });
 
@@ -544,7 +531,7 @@ public class SignupPresenter implements SignupViewListener {
 
             view.getFiliaisTable().removeItem(nomeFilialBotao);
             view.getFiliaisTable().refreshRowCache();
-            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);
+            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
@@ -555,6 +542,7 @@ public class SignupPresenter implements SignupViewListener {
 
     }
 
+ 
     private void carregaComboEstado() {
 
         ComboBox estadoCombo = view.getEstadoComboBox();

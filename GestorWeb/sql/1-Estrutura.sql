@@ -13,7 +13,7 @@ CREATE TABLE usuario (
 	login CHARACTER VARYING (100) NOT NULL,
 	senha CHARACTER (32) NOT NULL,
 	idUsuarioInclusao INTEGER,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
 	UNIQUE (login)
 );
@@ -51,7 +51,7 @@ CREATE TABLE Endereco (
         cep CHARACTER (10) NOT NULL ,
         idCidade BIGINT NOT NULL,
 	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
         FOREIGN KEY (idCidade) REFERENCES Cidade(idCidade)
         
@@ -71,7 +71,7 @@ CREATE TABLE Empresa (
 	ativa BOOLEAN NOT NULL,
 	idEndereco BIGINT,
 	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
         FOREIGN KEY (idEmpresaPrincipal) REFERENCES Empresa(idEmpresa),	
         FOREIGN KEY (idEndereco) REFERENCES Endereco(idEndereco),	
@@ -90,7 +90,7 @@ CREATE TABLE FilialEmpresa (
         cnpj CHARACTER (18),
 	ativa BOOLEAN NOT NULL,
 	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
 	UNIQUE (idEmpresa,nome)
@@ -111,7 +111,7 @@ CREATE TABLE EmpresaCliente (
 	ativa BOOLEAN NOT NULL,
 	idEndereco BIGINT,
 	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
 	FOREIGN KEY (idEndereco) REFERENCES Endereco(idEndereco),	
@@ -130,7 +130,7 @@ CREATE TABLE FilialCliente (
 	cnpj CHARACTER (18),
 	ativa BOOLEAN NOT NULL,
 	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
 	FOREIGN KEY (idEmpresaCliente) REFERENCES EmpresaCliente(idEmpresaCliente),	
 	UNIQUE (idEmpresaCliente,nome),
@@ -150,7 +150,7 @@ CREATE TABLE UsuarioEmpresa (
 	desligamento DATE,
 	ativo BOOLEAN NOT NULL,
 	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario),
 	FOREIGN KEY (idUsuarioInclusao) REFERENCES usuario(idUsuario),	
 	FOREIGN KEY (idEmpresa) REFERENCES empresa(idEmpresa)
@@ -164,7 +164,7 @@ CREATE TABLE Departamento (
 	Departamento CHARACTER VARYING (50) NOT NULL,
 	Ativo BOOLEAN NOT NULL,
 	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
 	unique (idEmpresa,Departamento)
@@ -178,7 +178,7 @@ CREATE TABLE CentroCusto (
 	CentroCusto CHARACTER VARYING (50) NOT NULL,
 	Ativo BOOLEAN NOT NULL,
 	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
 	unique (idEmpresa,CentroCusto)
@@ -201,7 +201,7 @@ CREATE TABLE meta (
     idDepartamento BIGINT,
     idCentroCusto BIGINT,
 	idUsuarioInclusao INTEGER,
-    	dataHoraInclusao TIMESTAMP NOT NULL,
+    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
     FOREIGN KEY (idEmpresaCliente) REFERENCES EmpresaCliente (idEmpresaCliente),	
@@ -282,7 +282,7 @@ CREATE TABLE Tarefa (
     idDepartamento BIGINT,
     idCentroCusto BIGINT,
     idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
     FOREIGN KEY (idFilialEmpresa) REFERENCES FilialEmpresa(idFilialEmpresa),	
@@ -307,7 +307,7 @@ CREATE TABLE ParticipanteTarefa (
     idTarefa BIGINT NOT NULL, 
     idUsuarioParticipante INTEGER NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idUsuarioParticipante) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
@@ -322,7 +322,7 @@ CREATE TABLE AndamentoTarefa (
     comentario CHARACTER VARYING (50),
     andamentoAtual INTEGER NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
 );
@@ -336,7 +336,7 @@ CREATE TABLE BloqueioTarefa (
     status CHARACTER VARYING (50) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
     idUsuarioRemocao INTEGER,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dataHoraRemocao TIMESTAMP,
     FOREIGN KEY (status) REFERENCES statusTarefa (statusTarefa),	
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
@@ -352,7 +352,7 @@ CREATE TABLE AnexoTarefa (
     arquivo BYTEA NOT NULL,
     nome  CHARACTER VARYING (255) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
 );
@@ -367,7 +367,7 @@ CREATE TABLE ApontamentoTarefa (
     sentido CHAR(1) NOT NULL,
     observacoes  CHARACTER VARYING (60) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
 );
@@ -381,7 +381,7 @@ CREATE TABLE OrcamentoTarefa (
     sentido CHAR(1) NOT NULL,
     observacoes  CHARACTER VARYING (60) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
 );
@@ -397,7 +397,7 @@ CREATE TABLE AvaliacaoMetaTarefa (
     avaliacao INTEGER NOT NULL,
     comentario  CHARACTER VARYING (150) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idMeta) REFERENCES Meta(idMeta),
     FOREIGN KEY (idUsuarioAvaliado) REFERENCES Usuario(idUsuario),
@@ -412,7 +412,7 @@ CREATE TABLE FavoritosTarefaMeta  (
     idMeta BIGINT NOT NULL, 
     idTarefa BIGINT NOT NULL, 
     idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idMeta) REFERENCES Meta(idMeta),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
@@ -426,7 +426,7 @@ CREATE TABLE HistoricoTarefa (
     idTarefa BIGINT NOT NULL, 
     evento CHARACTER VARYING (100),
     idUsuario BIGINT NOT NULL,
-    dataHora TIMESTAMP NOT NULL,
+    dataHora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)
 );

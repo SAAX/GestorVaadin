@@ -77,8 +77,6 @@ public class FilialEmpresa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "filialEmpresa")
     private List<Tarefa> tarefas;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

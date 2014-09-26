@@ -60,8 +60,6 @@ public class ApontamentoTarefa implements Serializable {
     @Column(name = "observacoes")
     private String observacoes;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

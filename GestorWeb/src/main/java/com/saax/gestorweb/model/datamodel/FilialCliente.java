@@ -60,8 +60,6 @@ public class FilialCliente implements Serializable {
     @ManyToOne(optional = false)
     private EmpresaCliente empresaCliente;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

@@ -62,8 +62,6 @@ public class CentroCusto implements Serializable {
     @OneToMany(mappedBy = "centroCusto")
     private Collection<Meta> metas;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;

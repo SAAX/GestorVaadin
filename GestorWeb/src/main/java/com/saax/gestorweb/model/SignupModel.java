@@ -117,15 +117,17 @@ public class SignupModel {
      * @param sobreNome
      * @param email
      * @param senha
+     * @param usuarioAdm
      * @return novo usuario criado
      */
-    public Usuario criarNovoUsuario(String nome, String sobreNome, String email, String senha) {
+    public Usuario criarNovoUsuario(String nome, String sobreNome, String email, String senha, Usuario usuarioAdm) {
 
         Usuario usuario = new Usuario();
         usuario.setNome(nome);
         usuario.setSobrenome(sobreNome);
         usuario.setLogin(email);
-        
+        usuario.setUsuarioInclusao(usuarioAdm==null?usuario:usuarioAdm);
+        usuario.setDataHoraInclusao(LocalDateTime.now());
         
         
 
@@ -155,14 +157,15 @@ public class SignupModel {
      * @param nome
      * @param sobreNome
      * @param email
+     * @param usuarioAdm
      * @return novo usuario criado
      */
-    public Usuario criarNovoUsuario(String nome, String sobreNome, String email) {
+    public Usuario criarNovoUsuario(String nome, String sobreNome, String email, Usuario usuarioAdm) {
 
         String senha = "123456";
         
 
-        return criarNovoUsuario(nome, sobreNome, email, senha);
+        return criarNovoUsuario(nome, sobreNome, email, senha, usuarioAdm);
     }
 
     /**
@@ -171,9 +174,10 @@ public class SignupModel {
      * @param usuario
      * @param empresa
      * @param administrador
+     * @param usuarioADM
      * @return
      */
-    public UsuarioEmpresa relacionarUsuarioEmpresa(Usuario usuario, Empresa empresa, boolean administrador) {
+    public UsuarioEmpresa relacionarUsuarioEmpresa(Usuario usuario, Empresa empresa, boolean administrador, Usuario usuarioADM) {
 
         UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa();
         usuarioEmpresa.setUsuario(usuario);
@@ -182,7 +186,9 @@ public class SignupModel {
         usuarioEmpresa.setContratacao(LocalDate.now());
 
         usuarioEmpresa.setAdministrador(administrador);
-
+        usuarioEmpresa.setUsuarioInclusao(usuarioADM);
+        usuarioEmpresa.setDataHoraInclusao(LocalDateTime.now());
+        
         if (usuario.getEmpresas() == null) {
             usuario.setEmpresas(new ArrayList<>());
         }
@@ -208,16 +214,20 @@ public class SignupModel {
      *
      * @return nova empresa criada
      */
-    public Empresa criarNovaEmpresa(String nomeFantasia, String razaosocial, String cnpjCpf, char tipoPessoa) {
+    public Empresa criarNovaEmpresa(String nomeFantasia, String razaosocial, String cnpjCpf, char tipoPessoa, Usuario usuarioADM) {
         Empresa empresa = new Empresa();
 
         empresa.setNome(nomeFantasia);
         empresa.setRazaoSocial(razaosocial);
+        empresa.setUsuarioInclusao(usuarioADM);
+        empresa.setDataHoraInclusao(LocalDateTime.now());
 
         if (tipoPessoa == 'F') {
             empresa.setCpf((FormatterUtil.removeNonDigitChars(cnpjCpf)));
+            empresa.setCnpj(null);
         } else {
             empresa.setCnpj((FormatterUtil.removeNonDigitChars(cnpjCpf)));
+            empresa.setCpf(null);
         }
         empresa.setTipoPessoa(tipoPessoa);
         empresa.setAtiva(true);
@@ -231,10 +241,11 @@ public class SignupModel {
      *
      * @param nomeFantasia
      * @param cnpjCpf
+     * @param usuarioADM
      *
      * @return nova empresa criada
      */
-    public Empresa criarNovaEmpresaColigada(String nomeFantasia, String cnpjCpf) {
+    public Empresa criarNovaEmpresaColigada(String nomeFantasia, String cnpjCpf, Usuario usuarioADM) {
         Empresa empresa = new Empresa();
 
         char tipoPessoa = 'J';
@@ -244,6 +255,8 @@ public class SignupModel {
         empresa.setTipoPessoa(tipoPessoa);
         empresa.setRazaoSocial(nomeFantasia);
         empresa.setAtiva(true);
+        empresa.setUsuarioInclusao(usuarioADM);
+        empresa.setDataHoraInclusao(LocalDateTime.now());
 
         return empresa;
 
@@ -254,15 +267,18 @@ public class SignupModel {
      *
      * @param nome
      * @param cnpj
+     * @param usuarioADM
      *
      * @return nova empresa criada
      */
-    public FilialEmpresa criarFilialEmpresa(String nome, String cnpj) {
+    public FilialEmpresa criarFilialEmpresa(String nome, String cnpj, Usuario usuarioADM) {
 
         FilialEmpresa filialEmpresa = new FilialEmpresa();
         filialEmpresa.setNome(nome);
         filialEmpresa.setCnpj(FormatterUtil.removeNonDigitChars(cnpj));
         filialEmpresa.setAtiva(true);
+        filialEmpresa.setUsuarioInclusao(usuarioADM);
+        filialEmpresa.setDataHoraInclusao(LocalDateTime.now());
 
         return filialEmpresa;
     }
@@ -304,25 +320,16 @@ public class SignupModel {
 
     }
 
+  
+
     /**
      * Cadastra um novo usuario com a empresa (conta) principal, sub empresas
      * filiais e demais usuarios.
      *
      * @param empresaPrincipal
-     * @param endereco
-     * @param usuarioAdm
-     * @param subEmpresas
-     * @param filiaisEmpresa
-     * @param usuarios
      * @return
      */
-    public Empresa criarNovaConta(
-            Usuario usuarioAdm,
-            Empresa empresaPrincipal,
-            Endereco endereco,
-            List<Empresa> subEmpresas,
-            List<FilialEmpresa> filiaisEmpresa,
-            List<UsuarioEmpresa> usuarios) throws GestorException {
+    public Empresa criarNovaConta(Empresa empresaPrincipal) throws GestorException {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -330,58 +337,8 @@ public class SignupModel {
 
             em.getTransaction().begin();
 
-            // Criar o usuario ADM
-            usuarioAdm.setDataHoraInclusao(LocalDateTime.now());
-            em.persist(usuarioAdm);
-            usuarioAdm.setUsuarioInclusao(usuarioAdm);
-            em.merge(usuarioAdm);
-
-            // Criar a empresa principal
-            empresaPrincipal.setDataHoraInclusao(LocalDateTime.now());
-            empresaPrincipal.setUsuarioInclusao(usuarioAdm);
             em.persist(empresaPrincipal);
-
-            em.persist(relacionarUsuarioEmpresa(usuarioAdm, empresaPrincipal, true));
-
-            // Criar endereco da empresa
-            relacionarEmpresaEndereco(empresaPrincipal, endereco);
-            endereco.setUsuarioInclusao(usuarioAdm);
-            endereco.setDataHoraInclusao(LocalDateTime.now());
-            em.persist(endereco);
-
-            // criar as sub empresas
-            for (Empresa subEmpresa : subEmpresas) {
-                relacionarEmpresaColigada(empresaPrincipal, subEmpresa);
-                subEmpresa.setUsuarioInclusao(usuarioAdm);
-                subEmpresa.setDataHoraInclusao(LocalDateTime.now());
-                em.persist(subEmpresa);
-            }
-
-            // criar as filiais
-            for (FilialEmpresa filial : filiaisEmpresa) {
-                relacionarEmpresaFilial(empresaPrincipal, filial);
-                filial.setUsuarioInclusao(usuarioAdm);
-                filial.setDataHoraInclusao(LocalDateTime.now());
-                em.persist(filial);
-
-            }
-
-            // criar demais usuarios
-            for (UsuarioEmpresa usuarioEmpresa : usuarios) {
-
-                Usuario usuario = usuarioEmpresa.getUsuario();
-                usuario.setDataHoraInclusao(LocalDateTime.now());
-                usuario.setUsuarioInclusao(usuarioAdm);
-
-                em.persist(usuario);
-
-                usuarioEmpresa.setUsuarioInclusao(usuarioAdm);
-                usuarioEmpresa.setDataHoraInclusao(LocalDateTime.now());
-                
-                em.persist(usuarioEmpresa);
-
-            }
-
+            
             em.getTransaction().commit();
 
         } catch (Exception ex) {
@@ -393,7 +350,7 @@ public class SignupModel {
         return empresaPrincipal;
 
     }
-
+    
     /**
      * Cria um endereco com os parametros informados
      *
@@ -405,13 +362,15 @@ public class SignupModel {
      * @return endereco criado
      */
     public Endereco criarEndereco(String logradouro, String numero, String complemento,
-            String cep, Cidade cidade) {
+            String cep, Cidade cidade, Usuario usuarioADM) {
         Endereco endereco = new Endereco();
         endereco.setLogradouro(logradouro);
         endereco.setComplemento(complemento);
         endereco.setNumero(numero);
         endereco.setCep(cep);
         endereco.setCidade(cidade);
+        endereco.setUsuarioInclusao(usuarioADM);
+        endereco.setDataHoraInclusao(LocalDateTime.now());
 
         return endereco;
     }

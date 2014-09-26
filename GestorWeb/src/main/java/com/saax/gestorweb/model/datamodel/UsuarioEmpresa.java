@@ -37,15 +37,7 @@ import javax.validation.constraints.NotNull;
     @NamedQuery(name = "UsuarioEmpresa.findByContratacao", query = "SELECT u FROM UsuarioEmpresa u WHERE u.contratacao = :contratacao"),
     @NamedQuery(name = "UsuarioEmpresa.findByDesligamento", query = "SELECT u FROM UsuarioEmpresa u WHERE u.desligamento = :desligamento")})
 public class UsuarioEmpresa implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "datahorainclusao")
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime dataHoraInclusao;
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne(optional = false)
-    private Usuario idUsuarioInclusao;
-
+    
     
     private static final long serialVersionUID = 1L;
     
@@ -83,6 +75,18 @@ public class UsuarioEmpresa implements Serializable {
     @Column(name = "ativo")
     private boolean ativo;
     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "datahorainclusao")
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime dataHoraInclusao;
+
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne(optional = false)
+    private Usuario usuarioInclusao;
+
+    
+
     public UsuarioEmpresa() {
     }
 
@@ -185,12 +189,12 @@ public class UsuarioEmpresa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Usuario getIdUsuarioInclusao() {
-        return idUsuarioInclusao;
+    public Usuario getUsuarioInclusao() {
+        return usuarioInclusao;
     }
 
-    public void setIdUsuarioInclusao(Usuario idUsuarioInclusao) {
-        this.idUsuarioInclusao = idUsuarioInclusao;
+    public void setUsuarioInclusao(Usuario usuarioInclusao) {
+        this.usuarioInclusao = usuarioInclusao;
     }
     
 }

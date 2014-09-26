@@ -372,16 +372,13 @@ public class SignupModel {
                 Usuario usuario = usuarioEmpresa.getUsuario();
                 usuario.setDataHoraInclusao(LocalDateTime.now());
                 usuario.setUsuarioInclusao(usuarioAdm);
-                
-                
-                
-                         
-                
-               
 
                 em.persist(usuario);
 
-                em.persist(relacionarUsuarioEmpresa(usuario, empresaPrincipal, usuarioEmpresa.getAdministrador()));
+                usuarioEmpresa.setUsuarioInclusao(usuarioAdm);
+                usuarioEmpresa.setDataHoraInclusao(LocalDateTime.now());
+                
+                em.persist(usuarioEmpresa);
 
             }
 

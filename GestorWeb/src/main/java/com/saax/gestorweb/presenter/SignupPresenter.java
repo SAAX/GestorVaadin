@@ -53,6 +53,7 @@ public class SignupPresenter implements SignupViewListener {
     private Empresa empresaPrincipal;
     private ArrayList<FilialEmpresa> filiais;
     private ArrayList<UsuarioEmpresa> usuarios;
+    
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -319,7 +320,7 @@ public class SignupPresenter implements SignupViewListener {
         String numero = view.getNumeroTextField().getValue();
         String complemento = view.getComplementoTextField().getValue();
         String cep = view.getCepTextField().getValue();
-        Cidade cidade = null; // @TODO: cidade deve ser um combo
+        Cidade cidade = (Cidade) view.getCidadeComboBox().getValue(); // @TODO: cidade deve ser um combo
         if (StringUtils.isNotBlank(logradouro)) {
             endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade);
         }
@@ -342,8 +343,8 @@ public class SignupPresenter implements SignupViewListener {
             Item linhaEmpresaColigada = empresasColigadasTable.getItem(itemID);
 
             // Fer: usar o mesmo criterio abaixo para todas as tabelas:
-            String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("Nome").getValue(); // @TODO: Obter da view
-            String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty("Cnpj").getValue(); // @TODO: Obter da view
+            String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(mensagens.getString("SignupView.coligadasTable.nome")).getValue(); // @TODO: Obter da view
+            String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(mensagens.getString("SignupView.coligadasTable.cnpj")).getValue();// @TODO: Obter da view
 
             // Comentei este método pois para coligada só teremos dois campos
             // Empresa subempresa = model.criarNovaEmpresa(nomeFantasiaEmpresaColigada,
@@ -362,8 +363,8 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = filiaisTable.getItem(itemID);
 
-            String nomeFilial = (String) linha.getItemProperty("SignupView.filiaisTable.nome").getValue(); // @TODO: Obter da view
-            String cnpjFilial = (String) linha.getItemProperty("SignupView.filiaisTable.cnpj").getValue(); // @TODO: Obter da view
+            String nomeFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.nome")).getValue(); // @TODO: Obter da view
+            String cnpjFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.cnpj")).getValue(); // @TODO: Obter da view
 
             FilialEmpresa filialEmpresa = model.criarFilialEmpresa(nomeFilial, cnpjFilial);
             filiais.add(filialEmpresa);
@@ -379,10 +380,13 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = usuariosTable.getItem(itemID);
 
-            String nome = (String) linha.getItemProperty("SignupView.usuariosTable.nome").getValue();
-            String sobreNome = (String) linha.getItemProperty("SignupView.usuariosTable.sobrenome").getValue();
-            String email = (String) linha.getItemProperty("SignupView.usuariosTable.email").getValue();
-            boolean administrador = ((String) linha.getItemProperty("SignupView.usuariosTable.administrador").getValue()).equals("SIM");
+            String nome = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.nome")).getValue();
+            String sobreNome = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.sobrenome")).getValue();
+            String email = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.email")).getValue();
+            boolean administrador = ((String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.administrador")).getValue()).equals("SIM");
+            
+            
+            
 
             Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email);
             UsuarioEmpresa usuarioEmpresa = model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador);

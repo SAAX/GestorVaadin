@@ -106,7 +106,6 @@ public class Empresa implements Serializable {
     private Empresa empresaPrincipal;
 
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 150)
     @Column(name = "razaosocial")
     private String razaoSocial;

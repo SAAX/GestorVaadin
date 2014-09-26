@@ -54,8 +54,8 @@ public class EmpresaCliente implements Serializable {
     private String nome;
     
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 150)
+    @NotNull
     @Column(name = "razaosocial")
     private String razaoSocial;
     

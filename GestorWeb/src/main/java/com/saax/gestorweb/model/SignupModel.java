@@ -57,11 +57,14 @@ public class SignupModel {
             if (!FormatterUtil.validarCNPJ(cpf_cnpj)) {
                 throw new GestorException("CNPJ fora do formato correto (##.###.###/####-##): " + cpf_cnpj);
             }
-            Empresa e = (Empresa) em.createNamedQuery("Empresa.findByCnpj")
+            
+             List<Empresa> empresas = null;
+             
+            empresas = em.createNamedQuery("Empresa.findByCnpj")
                     .setParameter("cnpj", cpf_cnpj)
-                    .getSingleResult();
+                    .getResultList();
 
-            return (e != null);
+            return (!empresas.isEmpty());
 
         } else if (tipoPessoa == 'F') {
             if (!FormatterUtil.validarCPF(cpf_cnpj)) {
@@ -122,6 +125,9 @@ public class SignupModel {
         usuario.setNome(nome);
         usuario.setSobrenome(sobreNome);
         usuario.setLogin(email);
+        
+        
+        
 
         // senha pode ser nula no caso de usuarios adicionados por outro usuario
         if (senha != null) {
@@ -153,7 +159,8 @@ public class SignupModel {
      */
     public Usuario criarNovoUsuario(String nome, String sobreNome, String email) {
 
-        String senha = null;
+        String senha = "123456";
+        
 
         return criarNovoUsuario(nome, sobreNome, email, senha);
     }
@@ -208,9 +215,9 @@ public class SignupModel {
         empresa.setRazaoSocial(razaosocial);
 
         if (tipoPessoa == 'F') {
-            empresa.setCpf(cnpjCpf);
+            empresa.setCpf((FormatterUtil.removeNonDigitChars(cnpjCpf)));
         } else {
-            empresa.setCnpj(cnpjCpf);
+            empresa.setCnpj((FormatterUtil.removeNonDigitChars(cnpjCpf)));
         }
         empresa.setTipoPessoa(tipoPessoa);
         empresa.setAtiva(true);
@@ -230,9 +237,12 @@ public class SignupModel {
     public Empresa criarNovaEmpresaColigada(String nomeFantasia, String cnpjCpf) {
         Empresa empresa = new Empresa();
 
+        char tipoPessoa = 'J';
+        
         empresa.setNome(nomeFantasia);
-        empresa.setCpf(cnpjCpf);
-
+        empresa.setCpf(FormatterUtil.removeNonDigitChars(cnpjCpf));
+        empresa.setTipoPessoa(tipoPessoa);
+        empresa.setRazaoSocial(nomeFantasia);
         empresa.setAtiva(true);
 
         return empresa;
@@ -251,7 +261,7 @@ public class SignupModel {
 
         FilialEmpresa filialEmpresa = new FilialEmpresa();
         filialEmpresa.setNome(nome);
-        filialEmpresa.setCnpj(cnpj);
+        filialEmpresa.setCnpj(FormatterUtil.removeNonDigitChars(cnpj));
         filialEmpresa.setAtiva(true);
 
         return filialEmpresa;
@@ -362,6 +372,12 @@ public class SignupModel {
                 Usuario usuario = usuarioEmpresa.getUsuario();
                 usuario.setDataHoraInclusao(LocalDateTime.now());
                 usuario.setUsuarioInclusao(usuarioAdm);
+                
+                
+                
+                         
+                
+               
 
                 em.persist(usuario);
 

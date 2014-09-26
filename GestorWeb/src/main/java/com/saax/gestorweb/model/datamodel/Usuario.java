@@ -401,7 +401,8 @@ public class Usuario implements Serializable {
     public void setUsuarioInclusao(Usuario usuarioInclusao) {
         this.usuarioInclusao = usuarioInclusao;
     }
-
+    
+    
     public List<Empresa> getEmpresasIncluidas() {
         return empresasIncluidas;
     }

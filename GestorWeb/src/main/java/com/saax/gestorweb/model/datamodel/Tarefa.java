@@ -56,6 +56,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao")})
 public class Tarefa implements Serializable {
 
+
     /**
      * @return the serialVersionUID
      */
@@ -79,6 +80,8 @@ public class Tarefa implements Serializable {
     }
     
     
+    public static final String NOME = "nome";
+    public static final String EMPRESA = "empresa";
     
     private static long serialVersionUID = 1L;
     
@@ -98,11 +101,11 @@ public class Tarefa implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "titulo")
     private String titulo;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 150)
-    @Column(name = "nome")
+    @Column(name = NOME)
     private String nome;
     
     @Enumerated(EnumType.STRING)

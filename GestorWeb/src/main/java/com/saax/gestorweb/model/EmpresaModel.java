@@ -29,7 +29,6 @@ public class EmpresaModel {
         for (Empresa subempresa : empresa.getSubEmpresas()) {
             if (subempresa.getAtiva()) {
                 empresas.add(subempresa);
-
             }
 
         }

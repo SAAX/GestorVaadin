@@ -93,11 +93,15 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     private void carregaComboTipoRecorrenciaTarefa(){
         
         ComboBox tipo = view.getTipoRecorrenciaCombo();
+        
         // TODO: ...
     
         
     }
 
+    /**
+     * Carrega o combo de seleção da empresa com todas as empresas relacionadas ao usuário logado
+     */
     private void carregaComboEmpresa() {
         try {
             ComboBox empresaCombo = view.getEmpresaCombo();
@@ -190,6 +194,21 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     @Override
     public void addParticipante() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void anexoAdicionado() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void imputarHorasClicked() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void imputarOrcamentoClicked() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

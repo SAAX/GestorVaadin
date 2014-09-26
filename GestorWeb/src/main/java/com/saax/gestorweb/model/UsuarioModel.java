@@ -5,6 +5,8 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorException;
 import com.vaadin.server.VaadinSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe de negócios do objeto Usuario
@@ -32,7 +34,7 @@ public class UsuarioModel {
                 if (empresa == null){
                     empresa = usuarioEmpresa.getEmpresa();
                     
-                }else {
+                } else {
                     throw new GestorException("Usuario esta ativo em mais de uma empresa.");
                 }
             }
@@ -45,5 +47,26 @@ public class UsuarioModel {
         
 
         return empresa;
+    }
+    
+    /**
+     * Listar todos os usuários ativos da mesma empresa do usuário logado
+     *
+     * @return
+     * @throws com.saax.gestorweb.util.GestorException
+     */
+    public List<Usuario> listarUsuariosEmpresa() throws GestorException {
+
+        Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
+
+        List<Usuario> usuarios = new ArrayList<>();
+
+        for (UsuarioEmpresa usuarioEmpresa : empresa.getUsuarios()) {
+            if (usuarioEmpresa.getAtivo()) {
+                usuarios.add(usuarioEmpresa.getUsuario());
+            }
+        }
+
+        return usuarios;
     }
 }

@@ -49,19 +49,10 @@ public class DashboardModel {
      * @throws com.saax.gestorweb.util.GestorException
      */
     public List<Usuario> listarUsuariosEmpresa() throws GestorException {
-
-        Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
-
-        List<Usuario> usuarios = new ArrayList<>();
-
-        for (UsuarioEmpresa usuarioEmpresa : empresa.getUsuarios()) {
-            if (usuarioEmpresa.getAtivo()) {
-                usuarios.add(usuarioEmpresa.getUsuario());
-            }
-        }
-
-        return usuarios;
+        UsuarioModel usuarioModel = new UsuarioModel();
+        return usuarioModel.listarUsuariosEmpresa();
     }
+    
 
     /**
      * Lista as tarefas que correspondam aos filtros informados

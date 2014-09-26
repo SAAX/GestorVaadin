@@ -5,7 +5,10 @@ import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.EmpresaCliente;
+import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -35,7 +38,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     // 
     private Tarefa tarefa;
-    
+
     /**
      * Cria o presenter ligando o Model ao View
      *
@@ -51,16 +54,16 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         view.setListener(this);
 
     }
-    
+
     /**
      * Abre o pop window do cadastro de tarefas
+     *
      * @param tarefa
      */
-    public void open(Tarefa tarefa){
-        
+    public void open(Tarefa tarefa) {
+
         this.tarefa = (tarefa == null) ? new Tarefa() : tarefa;
-        
-        
+
         // Carrega os combos de seleção
         carregaComboEmpresa();
         carregaComboTipoRecorrenciaTarefa();
@@ -68,46 +71,42 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         carregaComboResponsavel();
         carregaComboParticipante();
         carregaComboEmpresaCliente();
-        
+
         // configura o componente de status e andamento
         setPopUpEvolucaoStatusEAndamento();
-        
-        // 
-        carregaTabelaParticipantes();
 
         view.ocultarAbaControleHoras();
-        
+
         UI.getCurrent().addWindow(view);
     }
-    
+
     /**
      * Carrega o combo de seleçao do tipo
      */
-    private void carregaComboStatusTarefa(){
-        
-    }
-    
-    /**
-     * Carrega o combo de seleçao com os status possiveis para a tarefa
-     */
-    private void carregaComboTipoRecorrenciaTarefa(){
-        
-        ComboBox tipo = view.getTipoRecorrenciaCombo();
-        
-        // TODO: ...
-    
-        
+    private void carregaComboStatusTarefa() {
+
     }
 
     /**
-     * Carrega o combo de seleção da empresa com todas as empresas relacionadas ao usuário logado
+     * Carrega o combo de seleçao com os status possiveis para a tarefa
+     */
+    private void carregaComboTipoRecorrenciaTarefa() {
+
+        ComboBox tipo = view.getTipoRecorrenciaCombo();
+
+        // TODO: ...
+    }
+
+    /**
+     * Carrega o combo de seleção da empresa com todas as empresas relacionadas
+     * ao usuário logado
      */
     private void carregaComboEmpresa() {
         try {
             ComboBox empresaCombo = view.getEmpresaCombo();
-            
+
             EmpresaModel empresaModel = new EmpresaModel();
-            
+
             List<Empresa> empresas = empresaModel.listarEmpresasRelacionadas();
             for (Empresa empresa : empresas) {
 
@@ -120,24 +119,52 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         }
     }
 
+    /**
+     * Carrega o combo de prioridades (alta, normal, baixa) com os valores da enumeração
+     */
     private void carregaComboPrioridade() {
         ComboBox prioridade = view.getPrioridadeCombo();
-        // TODO: ...
+        for (PrioridadeTarefa prioridadeValue : PrioridadeTarefa.values()) {
+            prioridade.addItem(prioridadeValue);
+            prioridade.setItemCaption(prioridadeValue, prioridadeValue.getLocalizedString());
+        }
     }
 
+    /**
+     * Carrega o combo de responsáveis com todos os usuários ativos da mesma
+     * empresa do usuário logado
+     */
     private void carregaComboResponsavel() {
         ComboBox responsavel = view.getResponsavelCombo();
-        // TODO: ...
+        try {
+            for (Usuario usuario : model.listarUsuariosEmpresa()) {
+                responsavel.addItem(usuario);
+                responsavel.setItemCaption(usuario, usuario.getNome());
+                
+            }
+        } catch (GestorException ex) {
+            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-   
+
+    /**
+     * Carrega o combo de participante com todos os usuários ativos da mesma
+     * empresa do usuário logado
+     */
     private void carregaComboParticipante() {
         ComboBox participante = view.getParticipantesCombo();
-        // TODO: ...
+        try {
+            for (Usuario usuario : model.listarUsuariosEmpresa()) {
+                participante.addItem(usuario);
+                participante.setItemCaption(usuario, usuario.getNome());
+                
+            }
+        } catch (GestorException ex) {
+            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+
    
-    private void carregaTabelaParticipantes(){
-        
-    }
     /**
      * Constrói o pop up de alteração de status e/ou andamento de tarefas neste
      * PopUP o usuario poderá alterar (evoluir ou regredir) um status de tarefa
@@ -157,9 +184,16 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     }
 
+    /**
+     * Carrega o combo de clientes com todos os clientes ativos de todas as empresas (empresa pricipal + subs ) do usuario logado
+     */
     private void carregaComboEmpresaCliente() {
-            ComboBox empresaCliente = view.getEmpresaClienteCombo();
-        // TODO: ...
+        ComboBox empresaCliente = view.getEmpresaClienteCombo();
+        for (EmpresaCliente cliente : model.listarEmpresasCliente()) {
+            empresaCliente.addItem(cliente);
+            empresaCliente.setItemCaption(cliente, cliente.getNome());
+        }
+        
     }
 
     @Override
@@ -212,5 +246,4 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    
 }

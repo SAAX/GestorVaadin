@@ -19,5 +19,11 @@ public interface CadastroTarefaViewListener {
     public void cancelarButtonClicked();
 
     public void addParticipante();
+
+    public void anexoAdicionado();
+
+    public void imputarHorasClicked();
+
+    public void imputarOrcamentoClicked();
     
 }

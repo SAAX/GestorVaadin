@@ -293,7 +293,7 @@ public class SignupView extends Window {
         
         
          // text field: Cnpj
-        setCnpjCpfTextField(new MaskedField());
+        setCnpjCpfTextField(new MaskedTextField("", "##.###.###/####-##"));
         containerHorizontal1.addComponent(getCnpjCpfTextField());
         getCnpjCpfTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjCpfTextField.label"));
         cnpjCpfTextField.setWidth("180px");
@@ -400,7 +400,8 @@ public class SignupView extends Window {
         nomeColigadaTextField.setWidth("300px");
         
          // text field: cnpjColigada
-        setCnpjColigadaTextField(new MaskedField());
+        
+        setCnpjColigadaTextField(new MaskedTextField("", "##.###.###/####-##"));
         containerAba5.addComponent(getCnpjColigadaTextField());
         getCnpjColigadaTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjColigadaTextField.label"));
         cnpjColigadaTextField.setWidth("300px");
@@ -452,7 +453,7 @@ public class SignupView extends Window {
         nomeFilialTextField.setWidth("300px");
         
          // text field: cnpjColigada
-        setCnpjFilialTextField(new MaskedField());
+        setCnpjFilialTextField(new MaskedTextField("", "##.###.###/####-##"));
         containerAba6.addComponent(getCnpjFilialTextField());
         getCnpjFilialTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjFilialTextField.label"));
         cnpjFilialTextField.setWidth("300px");

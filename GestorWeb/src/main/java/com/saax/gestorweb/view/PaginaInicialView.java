@@ -3,6 +3,7 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -87,8 +88,8 @@ public class PaginaInicialView extends HorizontalLayout {
             
             CadastroTarefaView view = new CadastroTarefaView();
             CadastroTarefaModel model = new CadastroTarefaModel();
-            new CadastroTarefaPresenter(model, view);
-            UI.getCurrent().addWindow(view);
+            CadastroTarefaPresenter p = new CadastroTarefaPresenter(model, view);
+            p.open(null);
             
             
         });

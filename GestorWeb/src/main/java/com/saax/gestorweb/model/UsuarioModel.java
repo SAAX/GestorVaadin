@@ -23,7 +23,7 @@ public class UsuarioModel {
     public  Empresa getEmpresaUsuarioLogado() throws GestorException{
         
         // obtem o usuario logado
-        Usuario usuario = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuario = getUsuarioLogado();
         
         // obtem a empresa ativa do usuario logado 
         // so pode haver uma
@@ -57,7 +57,7 @@ public class UsuarioModel {
      */
     public List<Usuario> listarUsuariosEmpresa() throws GestorException {
 
-        Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
+        Empresa empresa = getEmpresaUsuarioLogado();
 
         List<Usuario> usuarios = new ArrayList<>();
 
@@ -68,5 +68,9 @@ public class UsuarioModel {
         }
 
         return usuarios;
+    }
+
+    public Usuario getUsuarioLogado() {
+        return (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
     }
 }

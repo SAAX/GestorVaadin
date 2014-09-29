@@ -54,7 +54,7 @@ public class LoginModel {
         
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
         
-        Usuario usuario;
+        Usuario usuario = null;
         
         try {
             usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin")
@@ -67,7 +67,7 @@ public class LoginModel {
 
         }
         
-        return null;
+        return usuario;
         
     }
 

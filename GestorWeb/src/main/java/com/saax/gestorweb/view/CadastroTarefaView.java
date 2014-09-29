@@ -5,7 +5,6 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -13,6 +12,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -38,8 +38,7 @@ public class CadastroTarefaView extends Window {
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // bean
-    private Tarefa tarefa;
-    private BeanFieldGroup<Tarefa> binding;
+    private final BeanFieldGroup<Tarefa> binding;
     
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
@@ -82,6 +81,9 @@ public class CadastroTarefaView extends Window {
     private VerticalLayout controleHorasAba;
     private VerticalLayout controleOrcamentoAba;
 
+    
+    private Label errorMessage;
+    
     public void setListener(CadastroTarefaViewListener listener) {
         this.listener = listener;
     }
@@ -94,7 +96,8 @@ public class CadastroTarefaView extends Window {
         super();
 
         binding = new BeanFieldGroup<>(Tarefa.class);
-        binding.setItemDataSource(tarefa);
+
+        errorMessage = new Label();
         
         setCaption(mensagens.getString("CadastroTarefaView.titulo"));
         setModal(true);
@@ -103,10 +106,12 @@ public class CadastroTarefaView extends Window {
 
         // Container principal, que armazenará todos os demais containeres 
         VerticalLayout containerPrincipal = buildContainerPrincipal();
+        containerPrincipal.addComponent(errorMessage);
         containerPrincipal.setSpacing(true);
         setContent(containerPrincipal);
 
         center();
+        
 
     }
 
@@ -172,7 +177,8 @@ public class CadastroTarefaView extends Window {
         // TextField: Nome da Tarefa
         nomeTarefaTextField = new TextField(mensagens.getString("CadastroTarefaView.nomeTarefaTextField.label"));
         nomeTarefaTextField.setWidth("100%");
-        nomeTarefaTextField.addValidator(new BeanValidator(Tarefa.class, Tarefa.NOME));
+        nomeTarefaTextField.setNullRepresentation(mensagens.getString("CadastroTarefaView.nomeTarefaTextField.label"));
+       // nomeTarefaTextField.addValidator(new BeanValidator(Tarefa.class, Tarefa.NOME));
         binding.bind(nomeTarefaTextField, Tarefa.NOME);
    
         // TextField: Data de Inicio 
@@ -207,6 +213,7 @@ public class CadastroTarefaView extends Window {
         grid.setSpacing(true);
         grid.setMargin(true);
         grid.setWidth("100%");
+        grid.setHeight(null);
         
         grid.addComponent(empresaCombo);
         grid.addComponent(nomeTarefaTextField, 1, 0, 2, 0);
@@ -330,8 +337,11 @@ public class CadastroTarefaView extends Window {
         centroCustoCombo = new ComboBox(mensagens.getString("CadastroTarefaView.centroCustoCombo.caption"));
 
         adicionarAnexoButton = new Upload();
+        adicionarAnexoButton.addStartedListener((Upload.StartedEvent event) -> {
+            listener.solicitacaoParaAdicionarAnexo(event);
+        });
         adicionarAnexoButton.addFinishedListener((Upload.FinishedEvent event) -> {
-            listener.anexoAdicionado();
+            listener.anexoAdicionado(event);
         });
         
         anexosAdicionadosTable = new Table();
@@ -582,13 +592,6 @@ public class CadastroTarefaView extends Window {
      */
     public GestorWebImagens getImagens() {
         return imagens;
-    }
-
-    /**
-     * @return the tarefa
-     */
-    public Tarefa getTarefa() {
-        return tarefa;
     }
 
     /**
@@ -862,6 +865,14 @@ public class CadastroTarefaView extends Window {
      */
     public VerticalLayout getControleOrcamentoAba() {
         return controleOrcamentoAba;
+    }
+
+    public void ocultaPopUpEvolucaoStatusEAndamento() {
+        statusTarefaPopUpButton.setVisible(false);
+    }
+
+    public void apresentarErro(String message) {
+        errorMessage.setValue(message);
     }
 
 }

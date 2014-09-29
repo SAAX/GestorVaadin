@@ -146,15 +146,15 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = empresasColigadasTable.getItem(itemID);
             
-            String cpfCnpjSubEmpresa = (String) linha.getItemProperty("SignupView.coligadasTable.email").getValue(); // @ATENCAO
-            String nomeSubEmpresa = (String) linha.getItemProperty("SignupView.coligadasTable.nome").getValue(); // @ATENCAO
+            String cpfCnpjSubEmpresa = (String) linha.getItemProperty(mensagens.getString("SignupView.coligadasTable.email")).getValue(); // @ATENCAO
+            String nomeSubEmpresa = (String) linha.getItemProperty(mensagens.getString("SignupView.coligadasTable.nome")).getValue(); // @ATENCAO
             char tipoPessoaSubEmpresa = 'J'; // @TODO: Obter da view
             if (cpfCnpjSubEmpresa != null) {
                 try {
                     if (model.verificaEmpresaExistente(cpfCnpjSubEmpresa, tipoPessoaSubEmpresa)) {
 
                         // Exibe uma mensagem de erro indicando que esta empresa (pelo cnpj/cpf) já existe no sistema
-                        view.apresentaAviso("SignupPresenter.mensagem.empresaPreExistente", cpfCnpjSubEmpresa);
+                        view.apresentaAviso(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), cpfCnpjSubEmpresa);
                         return false;
                     }
                 } catch (GestorException ex) {
@@ -166,7 +166,7 @@ public class SignupPresenter implements SignupViewListener {
             if (identificadoresEmpresasColigadas.contains(nomeSubEmpresa)) {
                 // Exibe uma mensagem de erro indicando que esta sub empresa (pelo cnpj/cpf) 
                 // foi cadastrada em duplicidade
-                view.apresentaAviso("SignupPresenter.mensagem.empresaColigadaDuplicada", cpfCnpjSubEmpresa);
+                view.apresentaAviso(mensagens.getString("SignupPresenter.mensagem.empresaColigadaDuplicada"), cpfCnpjSubEmpresa);
                 return false;
 
             }
@@ -194,15 +194,15 @@ public class SignupPresenter implements SignupViewListener {
             Item linha = filiaisTable.getItem(itemID);
 
             // Valida se a filial já não está cadastrada no sistema
-            String cnpjFilial = (String) linha.getItemProperty("SignupView.filiaisTable.cnpj").getValue(); // @ATENCAO
-            String nomeFilial = (String) linha.getItemProperty("SignupView.filiaisTable.nome").getValue(); // @ATENCAO
+            String cnpjFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.cnpj")).getValue(); // @ATENCAO
+            String nomeFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.nome")).getValue(); // @ATENCAO
 
             if (StringUtils.isNotBlank(cnpjFilial)) {
                 try {
                     if (model.verificaFilialExistente(cnpjFilial)) {
 
                         // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj) já existe no sistema
-                        view.apresentaAviso("SignupPresenter.mensagem.empresaPreExistente", cnpjFilial);
+                        view.apresentaAviso(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), cnpjFilial);
                         return false;
                     }
                 } catch (GestorException ex) {
@@ -214,7 +214,7 @@ public class SignupPresenter implements SignupViewListener {
                 if (identificadoresFiliais.contains(cnpjFilial)) {
                     // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj/cpf) 
                     // foi cadastrada em duplicidade
-                    view.apresentaAviso("SignupPresenter.mensagem.filialDuplicada", cnpjFilial);
+                    view.apresentaAviso(mensagens.getString("SignupPresenter.mensagem.filialDuplicada"), cnpjFilial);
                     return false;
 
                 }
@@ -224,7 +224,7 @@ public class SignupPresenter implements SignupViewListener {
                 if (nomesFiliais.contains(nomeFilial)) {
                     // Exibe uma mensagem de erro indicando que esta filial (pelo nome) 
                     // foi cadastrada em duplicidade
-                    view.apresentaAviso("SignupPresenter.mensagem.filialDuplicada", nomeFilial);
+                    view.apresentaAviso(mensagens.getString("SignupPresenter.mensagem.filialDuplicada"), nomeFilial);
                     return false;
 
                 }
@@ -251,19 +251,19 @@ public class SignupPresenter implements SignupViewListener {
             Item linha = usuariosTable.getItem(itemID);
 
             // Valida se o usuários já não está cadastrado no sistema
-            String emailUsuario = (String) linha.getItemProperty("SignupView.usuariosTable.email").getValue(); // @ATENCAO
+            String emailUsuario = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.email")).getValue(); // @ATENCAO
             System.out.println("usuario " + emailUsuario);
             if (model.verificaLoginExistente(emailUsuario)) {
 
                 // Exibe uma mensagem de erro indicando que este usuario ja existe no sistema
-                view.apresentaErroUsuarioExistente("SignupPresenter.mensagem.usuarioExistente", emailUsuario);
+                view.apresentaErroUsuarioExistente(mensagens.getString("SignupPresenter.mensagem.usuarioExistente"), emailUsuario);
                 return false;
             }
 
             // Valida se o usuário já não está relacionado a esta mesma empresa
             if (identificadoresUsuarios.contains(emailUsuario)) {
                 // Exibe uma mensagem de erro indicando que este usuario esta duplicado
-                view.apresentaAviso("SignupPresenter.mensagem.usuarioDuplicado", emailUsuario);
+                view.apresentaAviso(mensagens.getString("SignupPresenter.mensagem.usuarioDuplicado"), emailUsuario);
                 return false;
 
             }
@@ -302,10 +302,10 @@ public class SignupPresenter implements SignupViewListener {
         String nomeFantasia = view.getNomeFantasiaTextField().getValue();
         String razaosocial = view.getRazaoSocialTextField().getValue();
         String cpfCnpj = view.getCnpjCpfTextField().getValue();
-        char tipoPessoa = '\0';
-        if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Física") { // @ATENCAO
+        char tipoPessoa = '\0';   
+        if (view.getTipoPessoaOptionGroup().getValue() == mensagens.getString("SignupView.pessoaFisicaCheckBox.label")) { // @ATENCAO
             tipoPessoa = 'F'; 
-        } else if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Jurídica") { // @ATENCAO
+        } else if (view.getTipoPessoaOptionGroup().getValue() == mensagens.getString("SignupView.pessoaJuridicaCheckBox.label")) { // @ATENCAO
             tipoPessoa = 'J';
         } else {
             return null;
@@ -471,8 +471,8 @@ public class SignupPresenter implements SignupViewListener {
             String nomeUsuarioBotao = event.getButton().getId();
 
             view.getUsuariosTable().removeItem(nomeUsuarioBotao);
-            view.getUsuariosTable().refreshRowCache();
-            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
+            view.getUsuariosTable().refreshRowCache(); 
+            Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
@@ -503,7 +503,7 @@ public class SignupPresenter implements SignupViewListener {
 
             view.getColigadasTable().removeItem(nomeColigadaBotao);
             view.getColigadasTable().refreshRowCache();
-            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE); // @ATENCAO
+            Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE); // @ATENCAO
 
         });
 
@@ -531,7 +531,7 @@ public class SignupPresenter implements SignupViewListener {
 
             view.getFiliaisTable().removeItem(nomeFilialBotao);
             view.getFiliaisTable().refreshRowCache();
-            Notification.show("Sucesso", "O item selecionado foi Excluído com Sucesso", Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
+            Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
@@ -541,8 +541,11 @@ public class SignupPresenter implements SignupViewListener {
         view.getCnpjFilialTextField().setValue("");
 
     }
-
- 
+    
+    /**
+     * Evento disparado ao ser acionado o botão selecionar o Estado da Empresa a ser cadastrada
+     * 
+     */ 
     private void carregaComboEstado() {
 
         ComboBox estadoCombo = view.getEstadoComboBox();
@@ -559,6 +562,10 @@ public class SignupPresenter implements SignupViewListener {
         }
     }
 
+    /**
+     * Evento disparado após ser selecionado o Estado da empresa a ser cadastrada
+     * e carrega o comboBox com as cidades pertencentes a este estado
+     */    
     @Override
     public void estadoSelecionado() {
 

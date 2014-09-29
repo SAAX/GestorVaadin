@@ -367,7 +367,7 @@ public class SignupModel {
         endereco.setLogradouro(logradouro);
         endereco.setComplemento(complemento);
         endereco.setNumero(numero);
-        endereco.setCep(cep);
+        endereco.setCep(FormatterUtil.removeNonDigitChars(cep));
         endereco.setCidade(cidade);
         endereco.setUsuarioInclusao(usuarioADM);
         endereco.setDataHoraInclusao(LocalDateTime.now());

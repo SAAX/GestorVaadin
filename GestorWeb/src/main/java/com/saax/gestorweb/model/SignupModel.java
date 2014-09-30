@@ -333,6 +333,13 @@ public class SignupModel {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
+        // Verifica se o parametro é válido antes de começar a transação
+        // assim, se não for válido já para o método
+        if (empresaPrincipal == null){
+            throw new IllegalArgumentException("Empresa para persistencia está NULA.");
+        }
+        
+        
         try {
 
             em.getTransaction().begin();
@@ -341,10 +348,23 @@ public class SignupModel {
             
             em.getTransaction().commit();
 
-        } catch (Exception ex) {
-            Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
-            GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
-            throw new RuntimeException(ex.getMessage());
+        } catch (RuntimeException ex) {
+            // Caso ocorra alguma exceção durante a transação, efetua o rollback
+            GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();            
+            // E propaga a exceção pra cima:
+            throw ex; // Nota: caso não fosse necessário fazer o rollback, também não seria necessário o try-catch, nem o throw
+            
+            
+            // Não é viável logar aki, o log deve estar no topo da pilha de chamada (que nao é este método e sim o 
+            // signupPresenter.okButtonClicked()
+            // Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
+            
+            
+            // Não faz sentido este "throw new", se vc já esta pegando uma exceção basta propagá-la
+            // throw new RuntimeException(ex.getMessage());
+            
+            
+            
         }
 
         return empresaPrincipal;

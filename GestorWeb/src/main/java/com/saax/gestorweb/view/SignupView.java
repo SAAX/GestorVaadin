@@ -71,7 +71,7 @@ public class SignupView extends Window {
      private TextField razaoSocialTextField;
      private TextField nomeFantasiaTextField;
      private OptionGroup tipoPessoaOptionGroup;
-     private MaskedField cnpjCpfTextField;
+     private MaskedTextField cnpjCpfTextField;
      private TextField logradouroTextField;
      private TextField numeroTextField;
      private TextField complementoTextField;
@@ -93,13 +93,13 @@ public class SignupView extends Window {
      
     //ABA #5: Adicionar Empresas Coligadas
     private TextField nomeColigadaTextField;
-    private MaskedField cnpjColigadaTextField;
+    private MaskedTextField cnpjColigadaTextField;
     private CheckBox coligadaAtivaCheckBox;
     private Table coligadasTable;
     
     //ABA #6: Adicionar Empresas Filiais
     private TextField nomeFilialTextField;
-    private MaskedField cnpjFilialTextField;
+    private MaskedTextField cnpjFilialTextField;
     private CheckBox filialAtivaCheckBox;
     private Table filiaisTable;
    
@@ -786,7 +786,7 @@ public class SignupView extends Window {
     /**
      * @param cnpjTextField the cnpjTextField to set
      */
-    public void setCnpjCpfTextField(MaskedField cnpjTextField) {
+    public void setCnpjCpfTextField(MaskedTextField cnpjTextField) {
         this.cnpjCpfTextField = cnpjTextField;
     }
 
@@ -927,7 +927,7 @@ public class SignupView extends Window {
     /**
      * @param cnpjColigadaTextField the cnpjColigadaTextField to set
      */
-    public void setCnpjColigadaTextField(MaskedField cnpjColigadaTextField) {
+    public void setCnpjColigadaTextField(MaskedTextField cnpjColigadaTextField) {
         this.cnpjColigadaTextField = cnpjColigadaTextField;
     }
     
@@ -941,7 +941,7 @@ public class SignupView extends Window {
     /**
      * @param cnpjFilialTextField the cnpjFilialTextField to set
      */
-    public void setCnpjFilialTextField(MaskedField cnpjFilialTextField) {
+    public void setCnpjFilialTextField(MaskedTextField cnpjFilialTextField) {
         this.cnpjFilialTextField = cnpjFilialTextField;
     }
 

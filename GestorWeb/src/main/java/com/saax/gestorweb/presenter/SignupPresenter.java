@@ -424,8 +424,9 @@ public class SignupPresenter implements SignupViewListener {
             model.criarNovaConta(empresa);
             view.close();
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
-        } catch (GestorException ex) {
+        } catch (RuntimeException ex) {
             Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            view.apresentarErro(ex.getMessage());
         }
         
         VaadinSession.getCurrent().setAttribute("usuarioLogado", empresa.getUsuarioInclusao());

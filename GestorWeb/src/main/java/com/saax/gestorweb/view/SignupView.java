@@ -1126,6 +1126,10 @@ public class SignupView extends Window {
         nomeFilialTextField.setComponentError(new UserError(mensagem));        
     }
 
+    public void apresentarErro(String message) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 
 

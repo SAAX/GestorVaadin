@@ -329,7 +329,7 @@ public class SignupModel {
      * @param empresaPrincipal
      * @return
      */
-    public Empresa criarNovaConta(Empresa empresaPrincipal) throws GestorException {
+    public Empresa criarNovaConta(Empresa empresaPrincipal) throws RuntimeException {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -344,7 +344,7 @@ public class SignupModel {
         } catch (Exception ex) {
             Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
             GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
-            throw new GestorException(ex.getMessage());
+            throw new RuntimeException(ex.getMessage());
         }
 
         return empresaPrincipal;

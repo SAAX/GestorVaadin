@@ -425,6 +425,7 @@ public class SignupPresenter implements SignupViewListener {
             view.close();
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         } catch (RuntimeException ex) {
+            // Este é o topo da pilha de chamada ( o try catch mais alto) portante este deve logar a exceção:
             Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
             view.apresentarErro(ex.getMessage());
         }

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -56,21 +55,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao")})
 public class Tarefa implements Serializable {
 
-
-    /**
-     * @return the serialVersionUID
-     */
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    /**
-     * @param aSerialVersionUID the serialVersionUID to set
-     */
-    public static void setSerialVersionUID(long aSerialVersionUID) {
-        serialVersionUID = aSerialVersionUID;
-    }
-
     @Transient
     private String globalID;
 
@@ -78,10 +62,6 @@ public class Tarefa implements Serializable {
         globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
         return globalID;
     }
-    
-    
-    public static final String NOME = "nome";
-    public static final String EMPRESA = "empresa";
     
     private static long serialVersionUID = 1L;
     
@@ -105,7 +85,7 @@ public class Tarefa implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 150)
-    @Column(name = NOME)
+    @Column(name = "nome")
     private String nome;
     
     @Enumerated(EnumType.STRING)
@@ -171,7 +151,8 @@ public class Tarefa implements Serializable {
     private Tarefa proximaTarefa;
     
     @Enumerated(EnumType.STRING)
-    private TipoTarefa tipo;
+    @Column(name = "tipo")
+    private TipoTarefa tipoRecorrencia;
     
     @JoinColumn(name = "idtarefapai", referencedColumnName = "idtarefa")
     @ManyToOne
@@ -229,7 +210,31 @@ public class Tarefa implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
 
+    /**
+     * Constrói uma tarefa com valores default
+     */
     public Tarefa() {
+        
+        andamento = 0;
+        andamentos = new ArrayList<>();
+        anexos = new ArrayList<>();
+        apontamentoHoras = false;
+        apontamentos = new ArrayList<>();
+        avaliacoes = new ArrayList<>();
+        bloqueios = new ArrayList<>();
+        
+        favoritados = new ArrayList<>();
+        historico = new ArrayList<>();
+        nivel = 1;
+        orcamentoControlado = false;
+        orcamentos = new ArrayList<>();
+        participantes = new ArrayList<>();
+        prioridade = PrioridadeTarefa.NORMAL;
+        status = StatusTarefa.NAO_ACEITA;
+        subTarefas = new ArrayList<>();
+        
+        titulo = "Tarefa";
+        
     }
 
     public Tarefa(Integer idtarefa) {
@@ -293,16 +298,8 @@ public class Tarefa implements Serializable {
         this.descricao = descricao;
     }
 
-    public boolean getApontamentoHoras() {
-        return isApontamentoHoras();
-    }
-
     public void setApontamentoHoras(boolean apontamentoHoras) {
         this.apontamentoHoras = apontamentoHoras;
-    }
-
-    public boolean getOrcamentoControlado() {
-        return isOrcamentoControlado();
     }
 
     public void setOrcamentoControlado(boolean orcamentoControlado) {
@@ -487,12 +484,12 @@ public class Tarefa implements Serializable {
         this.proximaTarefa = proximaTarefa;
     }
 
-    public TipoTarefa getTipo() {
-        return tipo;
+    public TipoTarefa getTipoRecorrencia() {
+        return tipoRecorrencia;
     }
 
-    public void setTipo(TipoTarefa tipo) {
-        this.tipo = tipo;
+    public void setTipoRecorrencia(TipoTarefa tipoRecorrencia) {
+        this.tipoRecorrencia = tipoRecorrencia;
     }
 
 

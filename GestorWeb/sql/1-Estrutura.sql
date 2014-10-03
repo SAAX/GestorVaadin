@@ -365,6 +365,8 @@ CREATE TABLE ApontamentoTarefa (
     idTarefa BIGINT NOT NULL, 
     horas TIME NOT NULL,
     sentido CHAR(1) NOT NULL,
+    custohora NUMERIC(10,2),
+    custototal NUMERIC(10,3),
     observacoes  CHARACTER VARYING (60) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

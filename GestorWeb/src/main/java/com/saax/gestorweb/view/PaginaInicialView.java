@@ -3,6 +3,7 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
@@ -78,6 +79,8 @@ public class PaginaInicialView extends HorizontalLayout {
         final Button previewDashboardButton = new Button("dashboard preview", (Button.ClickEvent event) -> {
             Usuario usuarioTeste = new LoginModel().getUsuario("teste-user@gmail.com");
             getSession().setAttribute("usuarioLogado", usuarioTeste);
+            usuarioTeste.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
+            getSession().setAttribute("usuarioLogado", usuarioTeste);
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         });
 
@@ -85,7 +88,8 @@ public class PaginaInicialView extends HorizontalLayout {
         final Button previewTarefasButton = new Button("Tarefas preview", (Button.ClickEvent event) -> {
             Usuario usuarioTeste = new LoginModel().getUsuario("teste-user@gmail.com");
             getSession().setAttribute("usuarioLogado", usuarioTeste);
-            
+            usuarioTeste.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
+            getSession().setAttribute("usuarioLogado", usuarioTeste);
             CadastroTarefaView view = new CadastroTarefaView();
             CadastroTarefaModel model = new CadastroTarefaModel();
             CadastroTarefaPresenter p = new CadastroTarefaPresenter(model, view);

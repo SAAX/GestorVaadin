@@ -1,10 +1,15 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.vaadin.data.Property;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -12,7 +17,8 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -23,11 +29,23 @@ import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
- * A visualização será em uma estrutura de accordion com tres abas: 1. Dados
- * inicias da tarefa 2. Descrição e responsáveis 3. Detalhes
+ * Pop-up Window do cadastro de tarefas
+ * <p>
+ * A visualização será em uma estrutura de accordion com tres abas:
+ * <br>
+ * <ol>
+ * <li>Dados inicias da tarefa</li>
+ * <li>Descrição e responsáveis</li>
+ * <li>Controle de horas (opcional) </li>
+ * <li>Controle de orçamento (opcional) </li>
+ * <li>Subtarefas </li>
+ * </ol>
+ *
  *
  * @author rodrigo
  */
@@ -37,68 +55,103 @@ public class CadastroTarefaView extends Window {
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
-    // bean
-    private final BeanFieldGroup<Tarefa> binding;
-    
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
     private CadastroTarefaViewListener listener;
+
+    // Propriedades do Bean: Tarefa
+    @PropertyId("nome")
     private TextField nomeTarefaTextField;
+
+    @PropertyId("empresa")
     private ComboBox empresaCombo;
-    private TextField tituloTarefaTextField;
+
+    @PropertyId("dataInicio")
+    private PopupDateField dataInicioDateField;
+
+    @PropertyId("dataFim")
+    private PopupDateField dataFimDateField;
+
+    @PropertyId("tipoRecorrencia")
+    private ComboBox tipoRecorrenciaCombo;
+
+    @PropertyId("prioridade")
+    private ComboBox prioridadeCombo;
+
+    @PropertyId("usuarioResponsavel")
+    private ComboBox usuarioResponsavelCombo;
+
+    // TODO
+    private Table participantesTable;
+
+    @PropertyId("empresaCliente")
+    private ComboBox empresaClienteCombo;
+
+    @PropertyId("descricao")
+    private RichTextArea descricaoTarefaTextArea;
+
+    @PropertyId("departamento")
+    private ComboBox departamentoCombo;
+
+    @PropertyId("centroCusto")
+    private ComboBox centroCustoCombo;
+
+    // TODO
+    private Table anexosAdicionadosTable;
+
+    // TODO
+    private Table controleHorasTable;
+
+    // TODO
+    private Table controleOrcamentoTable;
+
     private HorizontalLayout barraBotoesSuperior;
     private Button addSubButton;
     private Button chatButton;
     private Button projecaoButton;
-    private TextField dataInicioTextField;
-    private TextField dataFimTextField;
-    private ComboBox tipoRecorrenciaCombo;
-    private ComboBox prioridadeCombo;
-    private Button avisoButton;
-    private ComboBox responsavelCombo;
     private ComboBox participantesCombo;
-    private Table participantesTable;
-    private ComboBox empresaClienteCombo;
-    private RichTextArea descricaoTarefaTextArea;
-    private ComboBox departamentoCombo;
-    private ComboBox centroCustoCombo;
+    private Button avisoButton;
     private Upload adicionarAnexoButton;
-    private Table anexosAdicionadosTable;
+
     private TextField custoHoraTextField;
     private TextField imputarHorasTextField;
     private TextField observacaoHorasTextField;
     private Button imputarHorasButton;
-    private Table controleHorasTable;
+
     private TextField imputarOrcamentoTextField;
     private TextField observacaoOrcamentoTextField;
     private Button imputarOrcamentoButton;
-    private Table controleOrcamentoTable;
     private Button gravarButton;
     private Button cancelarButton;
+
     private TreeTable subTarefasTable;
     private PopupButton statusTarefaPopUpButton;
     private Accordion accordion;
     private VerticalLayout controleHorasAba;
     private VerticalLayout controleOrcamentoAba;
 
-    
-    private Label errorMessage;
-    
+    private BeanItem<Tarefa> tarefaBeanItem;
+    private FieldGroup tarefaFieldGroup;
+    private BeanItemContainer<ApontamentoTarefa> controleHorasContainer;
+    private BeanItem<ApontamentoTarefa> apontamentoTarefaBeanItem;
+    private FieldGroup apontamentoTarefaFieldGroup;
+
+    /**
+     * Configura o listener de eventos da view
+     *
+     * @param listener
+     */
     public void setListener(CadastroTarefaViewListener listener) {
         this.listener = listener;
     }
 
     /**
-     * Cria a view
+     * Cria a view e todos os componentes
      *
      */
     public CadastroTarefaView() {
         super();
 
-        binding = new BeanFieldGroup<>(Tarefa.class);
-
-        errorMessage = new Label();
-        
         setCaption(mensagens.getString("CadastroTarefaView.titulo"));
         setModal(true);
         setWidth(1000, Unit.PIXELS);
@@ -106,26 +159,45 @@ public class CadastroTarefaView extends Window {
 
         // Container principal, que armazenará todos os demais containeres 
         VerticalLayout containerPrincipal = buildContainerPrincipal();
-        containerPrincipal.addComponent(errorMessage);
         containerPrincipal.setSpacing(true);
         setContent(containerPrincipal);
 
         center();
-        
 
     }
 
+    /**
+     * Bind (liga) a tarefa ao formulário
+     * @param tarefa      
+     */
+    public void setTarefa(Tarefa tarefa) {
+
+        tarefaBeanItem = new BeanItem<>(tarefa);
+        tarefaFieldGroup = new FieldGroup(tarefaBeanItem);
+
+        tarefaFieldGroup.bindMemberFields(this);
+
+    }
     
     /**
-     * Constroi o container principal que armazenará todos os demais
+     * Obtem a tarefa ligada (binding) ao form
      * @return 
+     */
+    public Tarefa getTarefa(){
+        return tarefaBeanItem.getBean();
+    }
+
+    /**
+     * Constroi o container principal que armazenará todos os demais
+     *
+     * @return
      */
     private VerticalLayout buildContainerPrincipal() {
 
         VerticalLayout containerPrincipal = new VerticalLayout();
         containerPrincipal.setMargin(true);
         containerPrincipal.setSpacing(true);
-        containerPrincipal.setSizeFull(); 
+        containerPrincipal.setSizeFull();
 
         // adiciona a barra de botoes superior (botões de chat, adicionar sub, etc)
         containerPrincipal.addComponent(buildBarraBotoesSuperior());
@@ -148,43 +220,38 @@ public class CadastroTarefaView extends Window {
         accordion.addTab(buildAbaSubTarefas(), mensagens.getString("CadastroTarefaView.AbaSubTarefas.titulo"), null);
 
         containerPrincipal.addComponent(accordion);
-        containerPrincipal.setExpandRatio(accordion,1);
-        
+        containerPrincipal.setExpandRatio(accordion, 1);
+
         // adiciona a barra de botoes inferior, com os botões de salvar e cancelas
         Component barraInferior = buildBarraBotoesInferior();
         containerPrincipal.addComponent(barraInferior);
         containerPrincipal.setComponentAlignment(barraInferior, Alignment.MIDDLE_CENTER);
-        
 
-        ocultarAbaControleHoras();
-        
         return containerPrincipal;
 
     }
 
     /**
      * Constroi a aba de dados inicias:
-     * @return 
+     *
+     * @return
      */
     private Component buildAbaDadosIniciais() {
 
-        
         // Combo: Empresa
         empresaCombo = new ComboBox(mensagens.getString("CadastroTarefaView.empresaCombo.label"));
         empresaCombo.setWidth("100%");
-        binding.bind(empresaCombo, Tarefa.EMPRESA);
 
         // TextField: Nome da Tarefa
         nomeTarefaTextField = new TextField(mensagens.getString("CadastroTarefaView.nomeTarefaTextField.label"));
         nomeTarefaTextField.setWidth("100%");
-        nomeTarefaTextField.setNullRepresentation(mensagens.getString("CadastroTarefaView.nomeTarefaTextField.label"));
-       // nomeTarefaTextField.addValidator(new BeanValidator(Tarefa.class, Tarefa.NOME));
-        binding.bind(nomeTarefaTextField, Tarefa.NOME);
-   
+        nomeTarefaTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.nomeTarefaTextField.inputPrompt"));
+
         // TextField: Data de Inicio 
-        dataInicioTextField = new TextField(mensagens.getString("CadastroTarefaView.dataInicioTextField.label"));
-        dataInicioTextField.setWidth("100%");
-        
+        dataInicioDateField = new PopupDateField(mensagens.getString("CadastroTarefaView.dataInicioTextField.label"));
+        dataInicioDateField.setWidth("100%");
+        dataInicioDateField.setConverter(new DateToLocalDateConverter());
+
         // Combo Recorrencia
         tipoRecorrenciaCombo = new ComboBox(mensagens.getString("CadastroTarefaView.tipoRecorrenciaCombo.label"));
         tipoRecorrenciaCombo.setWidth("100%");
@@ -192,35 +259,34 @@ public class CadastroTarefaView extends Window {
         // Combo Prioridade
         prioridadeCombo = new ComboBox(mensagens.getString("CadastroTarefaView.prioridadeCombo.label"));
         prioridadeCombo.setWidth("100%");
-        
+
         // Pop-up de status
         statusTarefaPopUpButton = new PopupButton();
         statusTarefaPopUpButton.setWidth("100%");
 
         // TextField: Data Fim
-        dataFimTextField = new TextField(mensagens.getString("CadastroTarefaView.dataFimTextField.label"));
-        dataFimTextField.setWidth("100%");
+        dataFimDateField = new PopupDateField(mensagens.getString("CadastroTarefaView.dataFimTextField.label"));
+        dataFimDateField.setWidth("100%");
 
         // Componente de aviso
         avisoButton = new Button(mensagens.getString("CadastroTarefaView.avisoButton.caption"), (Button.ClickEvent event) -> {
             listener.avisoButtonClicked();
         });
         avisoButton.setWidth("100%");
-        
-        
+
         // configura o layout usando uma grid
         GridLayout grid = new GridLayout(3, 3);
         grid.setSpacing(true);
         grid.setMargin(true);
         grid.setWidth("100%");
         grid.setHeight(null);
-        
+
         grid.addComponent(empresaCombo);
         grid.addComponent(nomeTarefaTextField, 1, 0, 2, 0);
-        grid.addComponent(dataInicioTextField);
+        grid.addComponent(dataInicioDateField);
         grid.addComponent(tipoRecorrenciaCombo);
         grid.addComponent(prioridadeCombo);
-        grid.addComponent(dataFimTextField);
+        grid.addComponent(dataFimDateField);
         grid.addComponent(statusTarefaPopUpButton);
         grid.addComponent(avisoButton);
 
@@ -229,72 +295,82 @@ public class CadastroTarefaView extends Window {
 
     /**
      * Constrói e retorna a barra de botões superior
-     * @return 
+     *
+     * @return
      */
     private Component buildBarraBotoesSuperior() {
-        
+
         barraBotoesSuperior = new HorizontalLayout();
         barraBotoesSuperior.setSizeUndefined();
-        
+
         addSubButton = new Button("[Add Sub]", (Button.ClickEvent event) -> {
             listener.addSubButtonClicked();
         });
         barraBotoesSuperior.addComponent(addSubButton);
-        
+
         chatButton = new Button("[Chat]", (Button.ClickEvent event) -> {
             listener.chatButtonClicked();
         });
         barraBotoesSuperior.addComponent(chatButton);
-        
+
         projecaoButton = new Button("[Projeção]", (Button.ClickEvent event) -> {
             listener.projecaoButtonClicked();
         });
         barraBotoesSuperior.addComponent(projecaoButton);
-        
+
         return barraBotoesSuperior;
     }
 
     /**
      * Constrói e retorna a barra de botões superior
-     * @return 
+     *
+     * @return
      */
     private Component buildBarraBotoesInferior() {
-    
+
         HorizontalLayout barraBotoesInferior = new HorizontalLayout();
         barraBotoesInferior.setSizeUndefined();
         barraBotoesInferior.setSpacing(true);
-        
+
         gravarButton = new Button(mensagens.getString("CadastroTarefaView.gravarButton.caption"), (Button.ClickEvent event) -> {
-            listener.gravarButtonClicked();
+            try {
+                tarefaFieldGroup.commit();
+                listener.gravarButtonClicked();
+            } catch (FieldGroup.CommitException ex) {
+                Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
+
         barraBotoesInferior.addComponent(gravarButton);
-        
+
         cancelarButton = new Button(mensagens.getString("CadastroTarefaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
             listener.cancelarButtonClicked();
         });
         barraBotoesInferior.addComponent(cancelarButton);
-        
+
         return barraBotoesInferior;
     }
 
     /**
      * Constrói e retorna a aba de descrição e responsáveis
-     * @return 
+     *
+     * @return
      */
     private Component buildAbaDescricaoEResponsaveis() {
-        
 
         descricaoTarefaTextArea = new RichTextArea();
         descricaoTarefaTextArea.setSizeFull();
-        
-        responsavelCombo = new ComboBox(mensagens.getString("CadastroTarefaView.responsavelCombo.label"));
+        descricaoTarefaTextArea.setNullRepresentation("");
+
+        usuarioResponsavelCombo = new ComboBox(mensagens.getString("CadastroTarefaView.responsavelCombo.label"));
 
         participantesCombo = new ComboBox(mensagens.getString("CadastroTarefaView.participantesCombo.label"));
-        
+
         participantesCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.addParticipante();
         });
-        
+
         participantesTable = new Table();
         participantesTable.addContainerProperty(mensagens.getString("CadastroTarefaView.participantesTable.colunaParticipante"), String.class, "");
         participantesTable.setColumnWidth(mensagens.getString("CadastroTarefaView.participantesTable.colunaParticipante"), 70);
@@ -305,7 +381,6 @@ public class CadastroTarefaView extends Window {
         participantesTable.setWidth("100%");
         participantesTable.setPageLength(5);
 
-        
         empresaClienteCombo = new ComboBox(mensagens.getString("CadastroTarefaView.empresaClienteCombo.label"));
 
         // do layout :
@@ -313,25 +388,26 @@ public class CadastroTarefaView extends Window {
         layout.setMargin(true);
         layout.setSpacing(true);
         layout.setSizeFull();
-        
-        layout.addComponent(responsavelCombo, 0, 0);
+
+        layout.addComponent(usuarioResponsavelCombo, 0, 0);
         layout.addComponent(participantesCombo, 0, 1);
         layout.addComponent(participantesTable, 0, 2);
         layout.addComponent(empresaClienteCombo, 0, 3);
         layout.setColumnExpandRatio(1, 1);
         layout.setRowExpandRatio(3, 1);
-        
+
         layout.addComponent(descricaoTarefaTextArea, 1, 0, 1, 3);
-        
+
         return layout;
     }
 
     /**
      * constrói e retorna a aba de detalhes
-     * @return 
+     *
+     * @return
      */
     private Component buildAbaDetalhes() {
-        
+
         departamentoCombo = new ComboBox(mensagens.getString("CadastroTarefaView.departamentoCombo.caption"));
 
         centroCustoCombo = new ComboBox(mensagens.getString("CadastroTarefaView.centroCustoCombo.caption"));
@@ -343,7 +419,7 @@ public class CadastroTarefaView extends Window {
         adicionarAnexoButton.addFinishedListener((Upload.FinishedEvent event) -> {
             listener.anexoAdicionado(event);
         });
-        
+
         anexosAdicionadosTable = new Table();
         anexosAdicionadosTable.addContainerProperty(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"), String.class, "");
         anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"), 100);
@@ -355,8 +431,7 @@ public class CadastroTarefaView extends Window {
         anexosAdicionadosTable.setImmediate(true);
         anexosAdicionadosTable.setWidth("100%");
         anexosAdicionadosTable.setPageLength(5);
-        
-        
+
         // Do layout:
         GridLayout layout = new GridLayout(2, 2);
         layout.setSpacing(true);
@@ -371,37 +446,70 @@ public class CadastroTarefaView extends Window {
 
         layout.setRowExpandRatio(0, 0);
         layout.setRowExpandRatio(1, 1);
-        
+
         layout.setColumnExpandRatio(0, 0);
         layout.setColumnExpandRatio(1, 1);
-        
+
         return layout;
     }
 
+    
     /**
-     * Constroi e retorna a aba de controle de horas
+     * Bind (liga) um apontamento de tarefa (horas) ao formulário
+     * @param apontamentoTarefa
+     */
+    public void setApontamentoTarefa(ApontamentoTarefa apontamentoTarefa){
+
+        apontamentoTarefaBeanItem = new BeanItem<>(apontamentoTarefa);
+        apontamentoTarefaFieldGroup = new FieldGroup(apontamentoTarefaBeanItem);
+
+        apontamentoTarefaFieldGroup.bind(custoHoraTextField, "custoHora");
+        apontamentoTarefaFieldGroup.bind(imputarHorasTextField, "horas");
+        apontamentoTarefaFieldGroup.bind(observacaoHorasTextField, "observacoes");
+        
+
+    }
+    
+    /**
+     * Obtem o apontamento de tarefa (horas) ligada (binding) ao form
      * @return 
      */
-    private Component buildAbaControleHoras() {
+    public ApontamentoTarefa getApontamentoTarefa(){
+        return apontamentoTarefaBeanItem.getBean();
+    }
 
+
+    /**
+     * Constroi e retorna a aba de controle de horas
+     *
+     * @return
+     */
+    private Component buildAbaControleHoras() {
+            
         // Campos do controle de horas
         custoHoraTextField = new TextField();
         custoHoraTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.custoHoraTextField.inputPrompt"));
-        
+
         imputarHorasTextField = new TextField();
         imputarHorasTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.imputarHorasTextField.inputPrompt"));
-        
+
         observacaoHorasTextField = new TextField();
         observacaoHorasTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.observacaoHorasTextField.inputPrompt"));
-        
+
         imputarHorasButton = new Button(mensagens.getString("CadastroTarefaView.imputarHorasButton.caption"));
         imputarHorasButton.addClickListener((Button.ClickEvent event) -> {
             listener.imputarHorasClicked();
         });
-        
+
+        controleHorasContainer = new BeanItemContainer<>(ApontamentoTarefa.class);
+
+
         controleHorasTable = new Table();
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaData"), String.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaData"), 80);
+        controleHorasTable.setContainerDataSource(controleHorasContainer);
+ 
+        controleHorasTable.setColumnWidth("dataHoraInclusao", 80);
+        controleHorasTable.setColumnHeader("dataHoraInclusao", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaData"));
+        /*
         controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaObservacoes"), String.class, "");
         controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaObservacoes"), 150);
         controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaCreditoHoras"), String.class, "");
@@ -416,70 +524,51 @@ public class CadastroTarefaView extends Window {
         controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaDebitoValor"), 80);
         controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"), String.class, "");
         controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"), 80);
-
         controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaBotaoRemover"), Button.class, "");
         controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaBotaoRemover"), 20);
+        */
         controleHorasTable.setSelectable(true);
         controleHorasTable.setImmediate(true);
         controleHorasTable.setPageLength(5);
         controleHorasTable.setWidth("100%");
 
         // Do layout:
-        HorizontalLayout controleHorasContainer = new HorizontalLayout();
-        controleHorasContainer.setSpacing(true);
-        controleHorasContainer.addComponent(custoHoraTextField);
-        controleHorasContainer.addComponent(imputarHorasTextField);
-        controleHorasContainer.addComponent(observacaoHorasTextField);
-        controleHorasContainer.addComponent(imputarHorasButton);
-        
-        
+        HorizontalLayout controleHorasLayout = new HorizontalLayout();
+        controleHorasLayout.setSpacing(true);
+        controleHorasLayout.addComponent(custoHoraTextField);
+        controleHorasLayout.addComponent(imputarHorasTextField);
+        controleHorasLayout.addComponent(observacaoHorasTextField);
+        controleHorasLayout.addComponent(imputarHorasButton);
+
         controleHorasAba = new VerticalLayout();
         controleHorasAba.setMargin(true);
         controleHorasAba.setSpacing(true);
 
-        controleHorasAba.addComponent(controleHorasContainer);
+        controleHorasAba.addComponent(controleHorasLayout);
         controleHorasAba.addComponent(controleHorasTable);
 
         return controleHorasAba;
     }
-    
-    
-    /**
-     * Oculta a aba de controle de horas
-     */
-    public void ocultarAbaControleHoras(){
-        
-        TabSheet.Tab tab = accordion.getTab(controleHorasAba);
-        tab.setVisible(false);
-        
-    }
-    
-    /**
-     * Revela (exibe) a aba de controle de horas
-     */
-    public void revelarAbaControleHoras(){
-        TabSheet.Tab tab = accordion.getTab(controleHorasAba);
-        tab.setVisible(true);
-        
-    }
+
 
     /**
      * Constrói e retorna a aba de controle de orçamento
-     * @return 
+     *
+     * @return
      */
     private Component buildAbaOrcamento() {
 
         // Campos do controle de orçamento
         imputarOrcamentoTextField = new TextField();
         imputarOrcamentoTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.imputarOrcamentoTextField.inputPrompt"));
-        
+
         observacaoOrcamentoTextField = new TextField();
         observacaoOrcamentoTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.observacaoOrcamentoTextField.inputPrompt"));
-        
+
         imputarOrcamentoButton = new Button(mensagens.getString("CadastroTarefaView.imputarOrcamentoButton.caption"), (Button.ClickEvent event) -> {
             listener.imputarOrcamentoClicked();
         });
-        
+
         controleOrcamentoTable = new Table();
         controleOrcamentoTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaData"), String.class, "");
         controleOrcamentoTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaData"), 80);
@@ -498,8 +587,6 @@ public class CadastroTarefaView extends Window {
         controleOrcamentoTable.setImmediate(true);
         controleOrcamentoTable.setPageLength(5);
         controleOrcamentoTable.setWidth("100%");
-        
-        
 
         // Do layout:
         HorizontalLayout orcamentoContainer = new HorizontalLayout();
@@ -507,45 +594,45 @@ public class CadastroTarefaView extends Window {
         orcamentoContainer.addComponent(imputarOrcamentoTextField);
         orcamentoContainer.addComponent(observacaoOrcamentoTextField);
         orcamentoContainer.addComponent(imputarOrcamentoButton);
-        
-        
+
         controleOrcamentoAba = new VerticalLayout();
         controleOrcamentoAba.setMargin(true);
         controleOrcamentoAba.setSpacing(true);
 
         controleOrcamentoAba.addComponent(orcamentoContainer);
         controleOrcamentoAba.addComponent(controleOrcamentoTable);
-        
 
         return controleOrcamentoAba;
     }
 
     /**
-     * Oculta a aba de controle de Orcamento
+     * Oculta / revela a aba de controle de horas
+     * @param visible
      */
-    public void ocultarAbaControleOrcamento(){
-        
-        TabSheet.Tab tab = accordion.getTab(controleOrcamentoAba);
-        tab.setVisible(false);
-        
-    }
-    
-    /**
-     * Revela (exibe) a aba de controle de Orcamento
-     */
-    public void revelarAbaControleOrcamento(){
-        TabSheet.Tab tab = accordion.getTab(controleOrcamentoAba);
-        tab.setVisible(true);
-        
+    public void setAbaControleHorasVisible(boolean visible) {
+
+        TabSheet.Tab tab = accordion.getTab(controleHorasAba);
+        tab.setVisible(visible);
+
     }
 
     /**
-     * 
-     * @return 
+     * Oculta / revela a aba de controle de Orcamento
+     * @param visible
+     */
+    public void setAbaControleOrcamentoVisible(boolean visible) {
+
+        TabSheet.Tab tab = accordion.getTab(controleOrcamentoAba);
+        tab.setVisible(visible);
+
+    }
+
+    /**
+     *
+     * @return
      */
     private Component buildAbaSubTarefas() {
-        
-        
+
         subTarefasTable = new TreeTable();
         subTarefasTable.setWidth("100%");
         subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaCod"), String.class, "");
@@ -595,13 +682,6 @@ public class CadastroTarefaView extends Window {
     }
 
     /**
-     * @return the binding
-     */
-    public BeanFieldGroup<Tarefa> getBinding() {
-        return binding;
-    }
-
-    /**
      * @return the listener
      */
     public CadastroTarefaViewListener getListener() {
@@ -620,13 +700,6 @@ public class CadastroTarefaView extends Window {
      */
     public ComboBox getEmpresaCombo() {
         return empresaCombo;
-    }
-
-    /**
-     * @return the tituloTarefaTextField
-     */
-    public TextField getTituloTarefaTextField() {
-        return tituloTarefaTextField;
     }
 
     /**
@@ -658,17 +731,17 @@ public class CadastroTarefaView extends Window {
     }
 
     /**
-     * @return the dataInicioTextField
+     * @return the dataInicioDateField
      */
-    public TextField getDataInicioTextField() {
-        return dataInicioTextField;
+    public PopupDateField getDataInicioDateField() {
+        return dataInicioDateField;
     }
 
     /**
-     * @return the dataFimTextField
+     * @return the dataFimDateField
      */
-    public TextField getDataFimTextField() {
-        return dataFimTextField;
+    public PopupDateField getDataFimDateField() {
+        return dataFimDateField;
     }
 
     /**
@@ -693,10 +766,10 @@ public class CadastroTarefaView extends Window {
     }
 
     /**
-     * @return the responsavelCombo
+     * @return the usuarioResponsavelCombo
      */
-    public ComboBox getResponsavelCombo() {
-        return responsavelCombo;
+    public ComboBox getUsuarioResponsavelCombo() {
+        return usuarioResponsavelCombo;
     }
 
     /**
@@ -871,8 +944,18 @@ public class CadastroTarefaView extends Window {
         statusTarefaPopUpButton.setVisible(false);
     }
 
-    public void apresentarErro(String message) {
-        errorMessage.setValue(message);
+    public void exibeTituloCadastro() {
+        setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro"));
     }
 
+    public void exibeTituloEdicao() {
+        setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao"));
+    }
+
+    public BeanItemContainer<ApontamentoTarefa> getControleHorasContainer() {
+        return controleHorasContainer;
+    }
+
+    
+    
 }

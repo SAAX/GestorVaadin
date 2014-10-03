@@ -5,15 +5,13 @@ import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
+import com.vaadin.server.VaadinSession;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -52,7 +50,6 @@ public class DashboardModel {
         UsuarioModel usuarioModel = new UsuarioModel();
         return usuarioModel.listarUsuariosEmpresa();
     }
-    
 
     /**
      * Lista as tarefas que correspondam aos filtros informados
@@ -178,25 +175,19 @@ public class DashboardModel {
      */
     public List<Tarefa> listarTarefasPrincipais(Usuario usuarioLogado) {
 
-        try {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-            EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        Empresa empresa = usuarioLogado.getEmpresaAtiva();
 
-            Empresa empresa = new UsuarioModel().getEmpresaUsuarioLogado();
+        String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante ORDER BY t.dataFim DESC";
 
-            String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante ORDER BY t.dataFim DESC";
+        Query q = em.createQuery(sql)
+                .setParameter("empresa", empresa)
+                .setParameter("usuarioSolicitante", usuarioLogado);
 
-            Query q = em.createQuery(sql)
-                    .setParameter("empresa", empresa)
-                    .setParameter("usuarioSolicitante", usuarioLogado);
+        List<Tarefa> tarefas = q.getResultList();
 
-            List<Tarefa> tarefas = q.getResultList();
-
-            return tarefas;
-        } catch (GestorException ex) {
-            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
+        return tarefas;
 
     }
 

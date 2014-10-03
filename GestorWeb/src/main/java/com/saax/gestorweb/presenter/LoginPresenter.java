@@ -92,6 +92,8 @@ public final class LoginPresenter implements LoginViewListener {
         
         // Configura o usuáio logado na seção
         VaadinSession.getCurrent().setAttribute("usuarioLogado",u);
+        u.setEmpresaAtiva(model.getEmpresaUsuarioLogado());
+        
 
         // verifica se o usuário quer gravar o login na sessão e grava o cookie
         if (view.getLembrarLoginCheckBox().getValue()){

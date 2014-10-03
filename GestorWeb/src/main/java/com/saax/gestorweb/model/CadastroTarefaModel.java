@@ -7,7 +7,6 @@ package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
-import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -70,104 +69,96 @@ public class CadastroTarefaModel {
 
     }
 
-    public void gravarTarefa(Tarefa tarefa) {
+    /**
+     * Persiste (Grava) uma tarefa
+     * @param tarefa 
+     * @return a tarefa grava se sucesso, null caso contrario 
+     * 
+     */
+    public Tarefa gravarTarefa(Tarefa tarefa) {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
+        if (tarefa==null){
+            throw new IllegalArgumentException("Tarefa NULA para persistencia");
+        }
         try {
 
             em.getTransaction().begin();
 
-            em.persist(tarefa);
+            if (tarefa.getId()==null){
+                em.persist(tarefa);
+            } else {
+                em.merge(em);
+            }
+                
 
             em.getTransaction().commit();
 
-        } catch (Exception ex) {
-            Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
-            GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
+            
+        } catch (RuntimeException ex) {
+            // Caso a persistencia falhe, efetua rollback no banco
+            if (GestorEntityManagerProvider.getEntityManager().getTransaction().isActive()) {
+                GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
+            }
+            // propaga a exceção pra cima
+            throw ex;
         }
-
-    }
-
-    public Tarefa criarNovaTarefa() {
-
-        UsuarioModel usuarioModel = new UsuarioModel();
-
-        Tarefa tarefa = new Tarefa();
-        tarefa.setStatus(StatusTarefa.NAO_ACEITA);
-        tarefa.setUsuarioInclusao(usuarioModel.getUsuarioLogado());
-        tarefa.setAndamento(0);
-        tarefa.setAndamentos(new ArrayList<>());
-        tarefa.setAnexos(new ArrayList<>());
-        tarefa.setApontamentoHoras(false);
-        tarefa.setApontamentos(new ArrayList<>());
-        tarefa.setAvaliacoes(new ArrayList<>());
-        tarefa.setBloqueios(new ArrayList<>());
-        tarefa.setFavoritados(new ArrayList<>());
-        tarefa.setHistorico(new ArrayList<>());
-        tarefa.setNivel(1);
-        tarefa.setOrcamentoControlado(false);
-        tarefa.setOrcamentos(new ArrayList<>());
-        tarefa.setParticipantes(new ArrayList<>());
-        tarefa.setSubTarefas(new ArrayList<>());
-        tarefa.setTitulo("Tarefa");
 
         return tarefa;
     }
 
+    
     /**
      * Valida o arquivo que será enviado ao servidor. <br>
-     * Regras: 
-     * 1. O arquivo deve existir
-     * 2. O arquivo deve ter menos que 10 mb
+     * Regras: 1. O arquivo deve existir 2. O arquivo deve ter menos que 10 mb
      * 3. O arquivo nao pode ser executavel por risco de virus
-     * 
-     * NOTA AO FERNANDAO: Veja que este metodo nao tem try-catch, isto significa que 
-     * ele não trata a exceção, apenas PROPAGA pra cima até quem o chamou.
-     * 
-     * NOTA AO FERNANDAO (2): IllegalArgumentException e SecurityException são exceções não verificadas
-     * (sub classes de runtime) portando não precisam estar na cláusula "throws".
-     * Mas se forem lançadas irão parar a execução do mesmo jeito.
-     * 
-     * 
+     *
+     * NOTA AO FERNANDAO: Veja que este metodo nao tem try-catch, isto significa
+     * que ele não trata a exceção, apenas PROPAGA pra cima até quem o chamou.
+     *
+     * NOTA AO FERNANDAO (2): IllegalArgumentException e SecurityException são
+     * exceções não verificadas (sub classes de runtime) portando não precisam
+     * estar na cláusula "throws". Mas se forem lançadas irão parar a execução
+     * do mesmo jeito.
+     *
+     *
      * @throws java.io.FileNotFoundException
-     * @throws IllegalArgumentException 
-     * @throws SecurityException 
+     * @throws IllegalArgumentException
+     * @throws SecurityException
      * @param event
      */
     public void validarArquivo(Upload.StartedEvent event) throws FileNotFoundException {
-        
+
         if (event == null) {
             throw new IllegalArgumentException("Parâmetro inválido: Event");
         }
-        
-        
-        if (!new File(event.getFilename()).exists()){
+
+        if (!new File(event.getFilename()).exists()) {
             throw new FileNotFoundException("Arquivo não encontrado");
         }
-        
+
         double tamanho = event.getContentLength();
-        
+
         // tamanho em KB
         tamanho = tamanho / 1024;
         // tamanho em MB
         tamanho = tamanho / 1024;
-        
-        if (tamanho > 10D){
+
+        if (tamanho > 10D) {
             throw new IllegalArgumentException("Arquivo deve ter menos que 10mb");
         }
-        
-        
+
         String extensao = event.getFilename().substring(event.getFilename().lastIndexOf('.'));
-        
+
         Set<String> extensoesProibidas = new HashSet<>();
         extensoesProibidas.add("exe");
         extensoesProibidas.add("bat");
         extensoesProibidas.add("sh");
-        
-        if (extensoesProibidas.contains(extensao)){
-            throw new SecurityException("Arquivo não permitido: "+extensao);
+
+        if (extensoesProibidas.contains(extensao)) {
+            throw new SecurityException("Arquivo não permitido: " + extensao);
         }
-        
+
     }
 
 }

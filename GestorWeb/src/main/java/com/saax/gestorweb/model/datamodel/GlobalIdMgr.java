@@ -34,7 +34,7 @@ public class GlobalIdMgr {
         
         mapaClasseID.put(FilialEmpresa.class.getCanonicalName(), "F");
        // mapaIDClasse.put("F",FilialEmpresa.class);
-        
+
     }
 
     public static GlobalIdMgr instance() {
@@ -61,7 +61,7 @@ public class GlobalIdMgr {
         
         StringBuilder idFormatado = new StringBuilder();
         idFormatado.append(identificador);
-        idFormatado.append(decimalFormatterID.format(id));
+        idFormatado.append(decimalFormatterID.format(id == null ? 0 : id));
         
         return idFormatado.toString();
     }

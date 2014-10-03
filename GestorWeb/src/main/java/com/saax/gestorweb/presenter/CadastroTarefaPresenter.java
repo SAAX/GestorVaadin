@@ -4,6 +4,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
@@ -16,7 +17,10 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.FileNotFoundException;
@@ -26,6 +30,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Presenter:
+ * <p>
+ * Listener de eventos da view do cadastro de tarefas
  *
  * @author rodrigo
  */
@@ -39,8 +46,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
-    private Tarefa tarefa;
-    
     /**
      * Cria o presenter ligando o Model ao View
      *
@@ -55,27 +60,37 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
         view.setListener(this);
 
-
     }
 
     /**
-     * Abre o pop window do cadastro de tarefas
+     * Abre o pop window do cadastro de tarefas Se informada uma tarefa abre em
+     * modo edição, senão em modo criação
      *
-     * @param tarefa
+     * @param tarefaToEdit
      */
     @Override
-    public final void open(Tarefa tarefa) {
+    public final void open(Tarefa tarefaToEdit) {
 
-        if (tarefa==null){
-            this.tarefa = model.criarNovaTarefa();
+        Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Tarefa tarefa;
+
+        // Verifica se deve criar uma nova tarefa ou editar uma existente
+        if (tarefaToEdit == null) {
+
+            // Cria uma nova tarefa com valores default
+            tarefa = new Tarefa();
+            tarefa.setEmpresa(usuarioLogado.getEmpresaAtiva());
+            tarefa.setUsuarioInclusao(usuarioLogado);
+
             view.ocultaPopUpEvolucaoStatusEAndamento();
+            view.exibeTituloCadastro();
+
         } else {
-            this.tarefa = tarefa;
-            // configura o componente de status e andamento
-            setPopUpEvolucaoStatusEAndamento();
-            
+
+            view.exibeTituloEdicao();
+            tarefa = tarefaToEdit;
         }
-        
+
         // Carrega os combos de seleção
         carregaComboEmpresa();
         carregaComboTipoRecorrenciaTarefa();
@@ -83,12 +98,26 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         carregaComboResponsavel();
         carregaComboParticipante();
         carregaComboEmpresaCliente();
+        setPopUpEvolucaoStatusEAndamento(tarefa);
 
+        // Configuras os beans de 1-N
+        view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, usuarioLogado));
 
-        view.ocultarAbaControleHoras();
+        view.setAbaControleHorasVisible(tarefa.isApontamentoHoras());
+        view.setAbaControleOrcamentoVisible(tarefa.isOrcamentoControlado());
 
-        view.getBinding().setItemDataSource(tarefa);
         UI.getCurrent().addWindow(view);
+
+        view.setTarefa(tarefa);
+
+    }
+
+    private void removerParticipante(Button.ClickEvent event) {
+
+        String id = event.getButton().getId();
+
+        // remove o item selecionado
+        view.getParticipantesTable().removeItem(id);
     }
 
     /**
@@ -142,7 +171,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
      * empresa do usuário logado
      */
     private void carregaComboResponsavel() {
-        ComboBox responsavel = view.getResponsavelCombo();
+        ComboBox responsavel = view.getUsuarioResponsavelCombo();
         try {
             for (Usuario usuario : model.listarUsuariosEmpresa()) {
                 responsavel.addItem(usuario);
@@ -178,8 +207,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
      *
      * @return
      */
-    private void setPopUpEvolucaoStatusEAndamento() {
-        
+    private void setPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
+
         // comportmento e regras:
         PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
         PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
@@ -225,7 +254,17 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     @Override
     public void gravarButtonClicked() {
-        model.gravarTarefa(tarefa);
+        Tarefa tarefa = (Tarefa) view.getTarefa();
+        try {
+            model.gravarTarefa(tarefa);
+            view.close();
+        } catch (RuntimeException e) {
+            // caso ocorra alguma exceçao ao gravar, nao adianta mostrar o erro ao
+            // usuario pois nao ha nada que o coitado possa fazer
+            // ao inves disto mostrar um erro generico e loga
+            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, e);
+            Notification.show(mensagens.getString("Gestor.mensagemErroGenerica"), Notification.Type.ERROR_MESSAGE);
+        }
     }
 
     @Override
@@ -245,6 +284,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     @Override
     public void imputarHorasClicked() {
+
+        view.getControleHorasContainer().addItem(new ApontamentoTarefa());
+
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -255,39 +297,39 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     /**
      * Evento disparado quando o upload no anexo foi concluído
-     * @param event 
+     *
+     * @param event
      */
     @Override
     public void anexoAdicionado(Upload.FinishedEvent event) {
-        
+
     }
 
     /**
-     * Evento disparado quando o usuário seleciona o arquivo para upload
-     * Visa validar o arquivo, aceitando ou regeitando-o.
-     * 
+     * Evento disparado quando o usuário seleciona o arquivo para upload Visa
+     * validar o arquivo, aceitando ou regeitando-o.
+     *
      * NOTA AO FERNANDAO: Este é o metodo do client. É ele que deve pegar a
      * exceção e tratar.
-     * 
-     * @param event 
+     *
+     * @param event
      */
     @Override
     public void solicitacaoParaAdicionarAnexo(Upload.StartedEvent event) {
-        
+
         try {
             // chama o metodo de validação de arquivo 
             // que pode lançar duas exceções não verificadas (filhas de RuntimeException )
             // ou uma verificada: FileNotFoundException
             model.validarArquivo(event);
-            
+
         } catch (FileNotFoundException | RuntimeException ex) {
             // caso alguma exceção ocorra, loga:
             Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
             // e exibe ao usuario:
-            view.apresentarErro(ex.getMessage());
+            Notification.show(ex.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
-        
-        
+
     }
 
 }

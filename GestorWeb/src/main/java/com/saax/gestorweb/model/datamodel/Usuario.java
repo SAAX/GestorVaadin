@@ -81,6 +81,8 @@ public class Usuario implements Serializable {
     @Column(name = "senha")
     private String senha;
 
+    private transient Empresa empresaAtiva;
+        
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
     private Collection<UsuarioEmpresa> empresas;
     
@@ -433,5 +435,14 @@ public class Usuario implements Serializable {
         this.historicosTarefa = historicosTarefa;
     }
 
+    public void setEmpresaAtiva(Empresa empresaAtiva) {
+        this.empresaAtiva = empresaAtiva;
+    }
+
+    public Empresa getEmpresaAtiva() {
+        return empresaAtiva;
+    }
+
+    
     
 }

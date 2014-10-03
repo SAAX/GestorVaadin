@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import javax.persistence.Basic;
@@ -35,8 +36,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "ApontamentoTarefa.findByDatahorainclusao", query = "SELECT a FROM ApontamentoTarefa a WHERE a.dataHoraInclusao = :datahorainclusao")})
 public class ApontamentoTarefa implements Serializable {
     
-    private static final long serialVersionUID = 1L;
-    
+    private static long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -53,6 +54,12 @@ public class ApontamentoTarefa implements Serializable {
     @NotNull
     @Column(name = "sentido")
     private Character sentido;
+    
+    @Column(name = "custohora", precision = 10, scale = 3)
+    private BigDecimal custoHora;
+    
+    @Column(name = "custototal", precision = 10, scale = 2)
+    private BigDecimal custoTotal;
     
     @Basic(optional = false)
     @NotNull
@@ -79,14 +86,12 @@ public class ApontamentoTarefa implements Serializable {
         this.id = idapontamentotarefa;
     }
 
-    public ApontamentoTarefa(Integer idapontamentotarefa, LocalTime horas, Character sentido, String observacoes, LocalDateTime dataHoraInclusao) {
-        this.id = idapontamentotarefa;
-        this.horas = horas;
-        this.sentido = sentido;
-        this.observacoes = observacoes;
-        this.dataHoraInclusao = dataHoraInclusao;
+    public ApontamentoTarefa(Tarefa tarefa, Usuario usuarioInclusao) {
+        this.tarefa = tarefa;
+        this.usuarioInclusao = usuarioInclusao;
     }
 
+    
     public Integer getId() {
         return id;
     }
@@ -168,26 +173,33 @@ public class ApontamentoTarefa implements Serializable {
         return "com.saax.gestorweb.ApontamentoTarefa[ idapontamentotarefa=" + id + " ]";
     }
 
-/**
- *   public HistoricoTarefaBackup buildHistorico(){
-        
-        StringBuilder descricao = new StringBuilder();
-        
-        descricao.append("Registrado ");
-        if (getSentido()=='C'){
-            descricao.append("Crédito ");
-        } else {
-            descricao.append("Débito ");
-            
-        }
-        descricao.append("de ");
-        descricao.append(getHoras().toString());
-        descricao.append("com comentário: ");
-        descricao.append(getObservacoes());
-        
-        return new HistoricoTarefaBackup(dataHoraInclusao, descricao.toString(),getUsuarioInclusao());
+    /**
+     * @return the custoHora
+     */
+    public BigDecimal getCustoHora() {
+        return custoHora;
     }
- * 
- */ 
+
+    /**
+     * @param custoHora the custoHora to set
+     */
+    public void setCustoHora(BigDecimal custoHora) {
+        this.custoHora = custoHora;
+    }
+
+    /**
+     * @return the custoTotal
+     */
+    public BigDecimal getCustoTotal() {
+        return custoTotal;
+    }
+
+    /**
+     * @param custoTotal the custoTotal to set
+     */
+    public void setCustoTotal(BigDecimal custoTotal) {
+        this.custoTotal = custoTotal;
+    }
+
     
 }

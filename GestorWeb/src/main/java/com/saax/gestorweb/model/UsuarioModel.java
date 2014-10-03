@@ -14,40 +14,6 @@ import java.util.List;
  */
 public class UsuarioModel {
     
-    /**
-     * Obtém a empresa do usuario logado
-     * Só pode have uma
-     * @return empresa
-     * @throws GestorException se empresa não for encontrada ou existir mais que uma
-     */
-    public  Empresa getEmpresaUsuarioLogado() throws GestorException{
-        
-        // obtem o usuario logado
-        Usuario usuario = getUsuarioLogado();
-        
-        // obtem a empresa ativa do usuario logado 
-        // so pode haver uma
-        Empresa empresa = null;
-        for (UsuarioEmpresa usuarioEmpresa : usuario.getEmpresas()) {
-            
-            if (usuarioEmpresa.getAtivo()){
-                if (empresa == null){
-                    empresa = usuarioEmpresa.getEmpresa();
-                    
-                } else {
-                    throw new GestorException("Usuario esta ativo em mais de uma empresa.");
-                }
-            }
-        }
-
-        // dispara exceção se nao encontrar a empresa do usuario logado
-        if (empresa==null){
-            throw new GestorException("Não foram encontrados os usuarios da empresa");
-        }
-        
-
-        return empresa;
-    }
     
     /**
      * Listar todos os usuários ativos da mesma empresa do usuário logado
@@ -57,7 +23,8 @@ public class UsuarioModel {
      */
     public List<Usuario> listarUsuariosEmpresa() throws GestorException {
 
-        Empresa empresa = getEmpresaUsuarioLogado();
+        Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Empresa empresa = usuarioLogado.getEmpresaAtiva();
 
         List<Usuario> usuarios = new ArrayList<>();
 
@@ -70,7 +37,4 @@ public class UsuarioModel {
         return usuarios;
     }
 
-    public Usuario getUsuarioLogado() {
-        return (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
-    }
 }

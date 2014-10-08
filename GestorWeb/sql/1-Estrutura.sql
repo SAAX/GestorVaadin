@@ -1,8 +1,5 @@
 
 
-DROP TABLE IF EXISTS RelacionamentoEmpresaCliente CASCADE;
-
-
 
 -- Usuário
 DROP TABLE IF EXISTS usuario CASCADE;
@@ -363,11 +360,14 @@ DROP TABLE IF EXISTS ApontamentoTarefa CASCADE;
 CREATE TABLE ApontamentoTarefa (
     idApontamentoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
-    horas TIME NOT NULL,
-    sentido CHAR(1) NOT NULL,
-    custohora NUMERIC(10,2),
-    custototal NUMERIC(10,3),
-    observacoes  CHARACTER VARYING (60) NOT NULL,
+    creditoHoras TIME,
+    debitoHoras TIME,
+    saldoHoras TIME,
+    custoHora NUMERIC(10,2),
+    creditoValor NUMERIC(10,3),
+    debitoValor NUMERIC(10,3),
+    saldoValor NUMERIC(10,3),
+    observacoes  CHARACTER VARYING (60),
     idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),

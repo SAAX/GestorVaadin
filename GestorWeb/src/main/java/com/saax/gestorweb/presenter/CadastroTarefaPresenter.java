@@ -14,6 +14,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.view.ApontamentoTarefaDTO;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
@@ -101,7 +102,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         setPopUpEvolucaoStatusEAndamento(tarefa);
 
         // Configuras os beans de 1-N
-        view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, usuarioLogado));
+        view.setApontamentoTarefa(new ApontamentoTarefaDTO());
 
         view.setAbaControleHorasVisible(tarefa.isApontamentoHoras());
         view.setAbaControleOrcamentoVisible(tarefa.isOrcamentoControlado());

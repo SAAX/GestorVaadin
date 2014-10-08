@@ -13,30 +13,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
  * Entity bean da tabela Apontamento Tarefa com as namequerys configuradas.<br><br>
- * 
- * O objetivo desta entidade e armazenar os apontamentos de horas das tarefas / subs <br><br>
+ 
+ O objetivo desta entidade e armazenar os apontamentos de creditoHoras das tarefas / subs <br><br>
  *
  * @author rodrigo
  */
 @Entity
 @Table(name = "apontamentotarefa")
-@NamedQueries({
-    @NamedQuery(name = "ApontamentoTarefa.findAll", query = "SELECT a FROM ApontamentoTarefa a"),
-    @NamedQuery(name = "ApontamentoTarefa.findByHoras", query = "SELECT a FROM ApontamentoTarefa a WHERE a.horas = :horas"),
-    @NamedQuery(name = "ApontamentoTarefa.findBySentido", query = "SELECT a FROM ApontamentoTarefa a WHERE a.sentido = :sentido"),
-    @NamedQuery(name = "ApontamentoTarefa.findByObservacoes", query = "SELECT a FROM ApontamentoTarefa a WHERE a.observacoes = :observacoes"),
-    @NamedQuery(name = "ApontamentoTarefa.findByDatahorainclusao", query = "SELECT a FROM ApontamentoTarefa a WHERE a.dataHoraInclusao = :datahorainclusao")})
 public class ApontamentoTarefa implements Serializable {
-    
-    private static long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,25 +33,30 @@ public class ApontamentoTarefa implements Serializable {
     @Column(name = "idapontamentotarefa")
     private Integer id;
     
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "horas")
+    @Column(name = "creditohoras")
     @Convert(converter = LocalTimePersistenceConverter.class)
-    private LocalTime horas;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "sentido")
-    private Character sentido;
-    
+    private LocalTime creditoHoras;
+
+    @Column(name = "debitohoras")
+    @Convert(converter = LocalTimePersistenceConverter.class)
+    private LocalTime debitoHoras;
+
+    @Column(name = "saldohoras")
+    @Convert(converter = LocalTimePersistenceConverter.class)
+    private LocalTime saldoHoras;
+        
     @Column(name = "custohora", precision = 10, scale = 3)
     private BigDecimal custoHora;
     
-    @Column(name = "custototal", precision = 10, scale = 2)
-    private BigDecimal custoTotal;
+    @Column(name = "creditovalor", precision = 10, scale = 2)
+    private BigDecimal creditoValor;
     
-    @Basic(optional = false)
-    @NotNull
+    @Column(name = "debitovalor", precision = 10, scale = 2)
+    private BigDecimal debitoValor;
+    
+    @Column(name = "saldovalor", precision = 10, scale = 2)
+    private BigDecimal saldoValor;
+    
     @Size(min = 1, max = 60)
     @Column(name = "observacoes")
     private String observacoes;
@@ -91,7 +85,6 @@ public class ApontamentoTarefa implements Serializable {
         this.usuarioInclusao = usuarioInclusao;
     }
 
-    
     public Integer getId() {
         return id;
     }
@@ -100,20 +93,60 @@ public class ApontamentoTarefa implements Serializable {
         this.id = id;
     }
 
-    public LocalTime getHoras() {
-        return horas;
+    public LocalTime getCreditoHoras() {
+        return creditoHoras;
     }
 
-    public void setHoras(LocalTime horas) {
-        this.horas = horas;
+    public void setCreditoHoras(LocalTime creditoHoras) {
+        this.creditoHoras = creditoHoras;
     }
 
-    public Character getSentido() {
-        return sentido;
+    public LocalTime getDebitoHoras() {
+        return debitoHoras;
     }
 
-    public void setSentido(Character sentido) {
-        this.sentido = sentido;
+    public void setDebitoHoras(LocalTime debitoHoras) {
+        this.debitoHoras = debitoHoras;
+    }
+
+    public LocalTime getSaldoHoras() {
+        return saldoHoras;
+    }
+
+    public void setSaldoHoras(LocalTime saldoHoras) {
+        this.saldoHoras = saldoHoras;
+    }
+
+    public BigDecimal getCustoHora() {
+        return custoHora;
+    }
+
+    public void setCustoHora(BigDecimal custoHora) {
+        this.custoHora = custoHora;
+    }
+
+    public BigDecimal getCreditoValor() {
+        return creditoValor;
+    }
+
+    public void setCreditoValor(BigDecimal creditoValor) {
+        this.creditoValor = creditoValor;
+    }
+
+    public BigDecimal getDebitoValor() {
+        return debitoValor;
+    }
+
+    public void setDebitoValor(BigDecimal debitoValor) {
+        this.debitoValor = debitoValor;
+    }
+
+    public BigDecimal getSaldoValor() {
+        return saldoValor;
+    }
+
+    public void setSaldoValor(BigDecimal saldoValor) {
+        this.saldoValor = saldoValor;
     }
 
     public String getObservacoes() {
@@ -148,6 +181,8 @@ public class ApontamentoTarefa implements Serializable {
         this.usuarioInclusao = usuarioInclusao;
     }
 
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -162,43 +197,12 @@ public class ApontamentoTarefa implements Serializable {
             return false;
         }
         ApontamentoTarefa other = (ApontamentoTarefa) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 
     @Override
     public String toString() {
         return "com.saax.gestorweb.ApontamentoTarefa[ idapontamentotarefa=" + id + " ]";
-    }
-
-    /**
-     * @return the custoHora
-     */
-    public BigDecimal getCustoHora() {
-        return custoHora;
-    }
-
-    /**
-     * @param custoHora the custoHora to set
-     */
-    public void setCustoHora(BigDecimal custoHora) {
-        this.custoHora = custoHora;
-    }
-
-    /**
-     * @return the custoTotal
-     */
-    public BigDecimal getCustoTotal() {
-        return custoTotal;
-    }
-
-    /**
-     * @param custoTotal the custoTotal to set
-     */
-    public void setCustoTotal(BigDecimal custoTotal) {
-        this.custoTotal = custoTotal;
     }
 
     

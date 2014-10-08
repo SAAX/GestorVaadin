@@ -5,6 +5,7 @@ import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
+import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
@@ -13,6 +14,8 @@ import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
@@ -133,7 +136,7 @@ public class CadastroTarefaView extends Window {
     private BeanItem<Tarefa> tarefaBeanItem;
     private FieldGroup tarefaFieldGroup;
     private BeanItemContainer<ApontamentoTarefa> controleHorasContainer;
-    private BeanItem<ApontamentoTarefa> apontamentoTarefaBeanItem;
+    private BeanItem<ApontamentoTarefaDTO> apontamentoTarefaBeanItem;
     private FieldGroup apontamentoTarefaFieldGroup;
 
     /**
@@ -168,7 +171,8 @@ public class CadastroTarefaView extends Window {
 
     /**
      * Bind (liga) a tarefa ao formulário
-     * @param tarefa      
+     *
+     * @param tarefa
      */
     public void setTarefa(Tarefa tarefa) {
 
@@ -178,12 +182,13 @@ public class CadastroTarefaView extends Window {
         tarefaFieldGroup.bindMemberFields(this);
 
     }
-    
+
     /**
      * Obtem a tarefa ligada (binding) ao form
-     * @return 
+     *
+     * @return
      */
-    public Tarefa getTarefa(){
+    public Tarefa getTarefa() {
         return tarefaBeanItem.getBean();
     }
 
@@ -453,12 +458,12 @@ public class CadastroTarefaView extends Window {
         return layout;
     }
 
-    
     /**
      * Bind (liga) um apontamento de tarefa (horas) ao formulário
+     *
      * @param apontamentoTarefa
      */
-    public void setApontamentoTarefa(ApontamentoTarefa apontamentoTarefa){
+    public void setApontamentoTarefa(ApontamentoTarefaDTO apontamentoTarefa) {
 
         apontamentoTarefaBeanItem = new BeanItem<>(apontamentoTarefa);
         apontamentoTarefaFieldGroup = new FieldGroup(apontamentoTarefaBeanItem);
@@ -466,18 +471,17 @@ public class CadastroTarefaView extends Window {
         apontamentoTarefaFieldGroup.bind(custoHoraTextField, "custoHora");
         apontamentoTarefaFieldGroup.bind(imputarHorasTextField, "horas");
         apontamentoTarefaFieldGroup.bind(observacaoHorasTextField, "observacoes");
-        
 
     }
-    
+
     /**
      * Obtem o apontamento de tarefa (horas) ligada (binding) ao form
-     * @return 
+     *
+     * @return
      */
-    public ApontamentoTarefa getApontamentoTarefa(){
+    public ApontamentoTarefaDTO getApontamentoTarefa() {
         return apontamentoTarefaBeanItem.getBean();
     }
-
 
     /**
      * Constroi e retorna a aba de controle de horas
@@ -485,7 +489,7 @@ public class CadastroTarefaView extends Window {
      * @return
      */
     private Component buildAbaControleHoras() {
-            
+
         // Campos do controle de horas
         custoHoraTextField = new TextField();
         custoHoraTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.custoHoraTextField.inputPrompt"));
@@ -503,30 +507,35 @@ public class CadastroTarefaView extends Window {
 
         controleHorasContainer = new BeanItemContainer<>(ApontamentoTarefa.class);
 
-
         controleHorasTable = new Table();
         controleHorasTable.setContainerDataSource(controleHorasContainer);
- 
+
         controleHorasTable.setColumnWidth("dataHoraInclusao", 80);
         controleHorasTable.setColumnHeader("dataHoraInclusao", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaData"));
-        /*
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaObservacoes"), String.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaObservacoes"), 150);
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaCreditoHoras"), String.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaCreditoHoras"), 80);
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaDebitoHoras"), String.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaDebitoHoras"), 80);
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoHoras"), String.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoHoras"), 80);
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaCreditoValor"), String.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaCreditoValor"), 80);
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaDebitoValor"), String.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaDebitoValor"), 80);
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"), String.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"), 80);
-        controleHorasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaBotaoRemover"), Button.class, "");
-        controleHorasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleHorasTable.colunaBotaoRemover"), 20);
-        */
+        controleHorasTable.setColumnWidth("observacoes", 150);
+        controleHorasTable.setColumnHeader("observacoes", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaObservacoes"));
+        controleHorasTable.setColumnWidth("creditoHoras", 80);
+        controleHorasTable.setColumnHeader("creditoHoras", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaCreditoHoras"));
+        controleHorasTable.setColumnWidth("debitoHoras", 80);
+        controleHorasTable.setColumnHeader("debitoHoras", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaDebitoHoras"));
+        controleHorasTable.setColumnWidth("saldoHoras", 80);
+        controleHorasTable.setColumnHeader("saldoHoras", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoHoras"));
+        controleHorasTable.setColumnWidth("creditoValor", 80);
+        controleHorasTable.setColumnHeader("creditoValor", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaCreditoValor"));
+        controleHorasTable.setColumnWidth("debitoValor", 80);
+        controleHorasTable.setColumnHeader("debitoValor", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaDebitoValor"));
+        controleHorasTable.setColumnWidth("saldoValor", 80);
+        controleHorasTable.setColumnHeader("saldoValor", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"));
+
+        // Adicionar coluna do botão "remover"
+        controleHorasTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button("x");
+            removeButton.addClickListener((ClickEvent event) -> {
+                controleHorasTable.removeItem(itemId);
+            });
+            return removeButton;
+        });
+
         controleHorasTable.setSelectable(true);
         controleHorasTable.setImmediate(true);
         controleHorasTable.setPageLength(5);
@@ -549,7 +558,6 @@ public class CadastroTarefaView extends Window {
 
         return controleHorasAba;
     }
-
 
     /**
      * Constrói e retorna a aba de controle de orçamento
@@ -607,6 +615,7 @@ public class CadastroTarefaView extends Window {
 
     /**
      * Oculta / revela a aba de controle de horas
+     *
      * @param visible
      */
     public void setAbaControleHorasVisible(boolean visible) {
@@ -618,6 +627,7 @@ public class CadastroTarefaView extends Window {
 
     /**
      * Oculta / revela a aba de controle de Orcamento
+     *
      * @param visible
      */
     public void setAbaControleOrcamentoVisible(boolean visible) {
@@ -956,6 +966,4 @@ public class CadastroTarefaView extends Window {
         return controleHorasContainer;
     }
 
-    
-    
 }

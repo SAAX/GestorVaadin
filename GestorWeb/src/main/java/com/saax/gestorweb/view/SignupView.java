@@ -1069,12 +1069,12 @@ public class SignupView extends Window {
      senhaTextField.setValidationVisible(true);
      aceitaTermosCheckBox.setValidationVisible(true);
         
-     //nomeTextField.validate();
-     //sobrenomeTextField.validate();
-     //emailUsuarioTextField.validate();
-     //confirmaEmailUsuarioTextField.validate();
-     //senhaTextField.validate();
-     //aceitaTermosCheckBox.validate();
+     nomeTextField.validate();
+     sobrenomeTextField.validate();
+     emailUsuarioTextField.validate();
+     confirmaEmailUsuarioTextField.validate();
+     senhaTextField.validate();
+     aceitaTermosCheckBox.validate();
         
         
      razaoSocialTextField.setValidationVisible(true);
@@ -1109,29 +1109,5 @@ public class SignupView extends Window {
     }
 
     
-    /**
-     * Exibe uma mensagem de erro indicando que este login (email) jÃ¡ 
-     * existe no sistema e pergunta ao usuÃ¡rio se ele nÃ£o quer recuperar sua senha
-     * 
-     * @param chave chave do resource
-     */
-    private Label mensagemAviso = new Label();
-    public void apresentaAviso(String chave, Object ... params) {
-        String mensagem = MessageFormat.format(mensagens.getString(chave), params);
-        mensagemAviso.setValue(mensagem);
-    }
-    
-    public void apresentaErroUsuarioExistente(String chave, Object ... params) {
-        String mensagem = MessageFormat.format(mensagens.getString(chave), params);
-        nomeFilialTextField.setComponentError(new UserError(mensagem));        
-    }
-
-    public void apresentarErro(String message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-
-
-
-    
+      
 }

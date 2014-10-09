@@ -5,17 +5,19 @@ import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
-import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.data.validator.NullValidator;
+import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
@@ -83,6 +85,12 @@ public class CadastroTarefaView extends Window {
 
     @PropertyId("usuarioResponsavel")
     private ComboBox usuarioResponsavelCombo;
+    
+    @PropertyId("apontamentoHoras")
+    private CheckBox apontamentoHorasCheckBox;
+
+    @PropertyId("orcamentoControlado")
+    private CheckBox orcamentoControladoCheckBox;
 
     // TODO
     private Table participantesTable;
@@ -136,7 +144,7 @@ public class CadastroTarefaView extends Window {
     private BeanItem<Tarefa> tarefaBeanItem;
     private FieldGroup tarefaFieldGroup;
     private BeanItemContainer<ApontamentoTarefa> controleHorasContainer;
-    private BeanItem<ApontamentoTarefaDTO> apontamentoTarefaBeanItem;
+    private BeanItem<ApontamentoTarefa> apontamentoTarefaBeanItem;
     private FieldGroup apontamentoTarefaFieldGroup;
 
     /**
@@ -210,7 +218,7 @@ public class CadastroTarefaView extends Window {
 
         // cria o acordeon de abas e adiciona as abas
         accordion = new Accordion();
-        accordion.setSizeFull();
+        accordion.setWidth("100%");
         // adiciona a aba de dados iniciais
         accordion.addTab(buildAbaDadosIniciais(), mensagens.getString("CadastroTarefaView.AbaDadosIniciais.titulo"), null);
         // adiciona a aba de descrição e responsáveis
@@ -246,11 +254,14 @@ public class CadastroTarefaView extends Window {
         // Combo: Empresa
         empresaCombo = new ComboBox(mensagens.getString("CadastroTarefaView.empresaCombo.label"));
         empresaCombo.setWidth("100%");
+        empresaCombo.addValidator(new BeanValidator(Tarefa.class, "empresa"));
 
         // TextField: Nome da Tarefa
         nomeTarefaTextField = new TextField(mensagens.getString("CadastroTarefaView.nomeTarefaTextField.label"));
         nomeTarefaTextField.setWidth("100%");
         nomeTarefaTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.nomeTarefaTextField.inputPrompt"));
+        nomeTarefaTextField.setNullRepresentation("");
+        nomeTarefaTextField.addValidator(new BeanValidator(Tarefa.class, "nome"));
 
         // TextField: Data de Inicio 
         dataInicioDateField = new PopupDateField(mensagens.getString("CadastroTarefaView.dataInicioTextField.label"));
@@ -308,6 +319,21 @@ public class CadastroTarefaView extends Window {
         barraBotoesSuperior = new HorizontalLayout();
         barraBotoesSuperior.setSizeUndefined();
 
+        apontamentoHorasCheckBox = new CheckBox(mensagens.getString("CadastroTarefaView.apontamentoHorasCheckBox.caption"));
+        apontamentoHorasCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.apontamentoHorasSwitched(event);
+        });
+        
+        barraBotoesSuperior.addComponent(apontamentoHorasCheckBox);
+        
+        orcamentoControladoCheckBox = new CheckBox(mensagens.getString("CadastroTarefaView.orcamentoControladoCheckBox.caption")); 
+        orcamentoControladoCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.controleOrcamentoSwitched(event);
+        });
+        
+        
+        barraBotoesSuperior.addComponent(orcamentoControladoCheckBox);
+        
         addSubButton = new Button("[Add Sub]", (Button.ClickEvent event) -> {
             listener.addSubButtonClicked();
         });
@@ -463,13 +489,13 @@ public class CadastroTarefaView extends Window {
      *
      * @param apontamentoTarefa
      */
-    public void setApontamentoTarefa(ApontamentoTarefaDTO apontamentoTarefa) {
+    public void setApontamentoTarefa(ApontamentoTarefa apontamentoTarefa) {
 
         apontamentoTarefaBeanItem = new BeanItem<>(apontamentoTarefa);
         apontamentoTarefaFieldGroup = new FieldGroup(apontamentoTarefaBeanItem);
 
         apontamentoTarefaFieldGroup.bind(custoHoraTextField, "custoHora");
-        apontamentoTarefaFieldGroup.bind(imputarHorasTextField, "horas");
+        apontamentoTarefaFieldGroup.bind(imputarHorasTextField, "inputHoras");
         apontamentoTarefaFieldGroup.bind(observacaoHorasTextField, "observacoes");
 
     }
@@ -478,8 +504,10 @@ public class CadastroTarefaView extends Window {
      * Obtem o apontamento de tarefa (horas) ligada (binding) ao form
      *
      * @return
+     * @throws com.vaadin.data.fieldgroup.FieldGroup.CommitException
      */
-    public ApontamentoTarefaDTO getApontamentoTarefa() {
+    public ApontamentoTarefa getApontamentoTarefa() throws FieldGroup.CommitException {
+        apontamentoTarefaFieldGroup.commit();
         return apontamentoTarefaBeanItem.getBean();
     }
 
@@ -493,12 +521,15 @@ public class CadastroTarefaView extends Window {
         // Campos do controle de horas
         custoHoraTextField = new TextField();
         custoHoraTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.custoHoraTextField.inputPrompt"));
+        custoHoraTextField.setNullRepresentation("");
 
         imputarHorasTextField = new TextField();
         imputarHorasTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.imputarHorasTextField.inputPrompt"));
+        imputarHorasTextField.setNullRepresentation("");
 
         observacaoHorasTextField = new TextField();
         observacaoHorasTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.observacaoHorasTextField.inputPrompt"));
+        observacaoHorasTextField.setNullRepresentation("");
 
         imputarHorasButton = new Button(mensagens.getString("CadastroTarefaView.imputarHorasButton.caption"));
         imputarHorasButton.addClickListener((Button.ClickEvent event) -> {
@@ -527,6 +558,7 @@ public class CadastroTarefaView extends Window {
         controleHorasTable.setColumnWidth("saldoValor", 80);
         controleHorasTable.setColumnHeader("saldoValor", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"));
 
+        controleHorasTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras");
         // Adicionar coluna do botão "remover"
         controleHorasTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("x");

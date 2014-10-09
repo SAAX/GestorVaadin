@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.vaadin.data.Property;
 import com.vaadin.ui.Upload;
 
 /**
@@ -34,5 +35,9 @@ public interface CadastroTarefaViewListener {
     public void anexoAdicionado(Upload.FinishedEvent event);
 
     public void solicitacaoParaAdicionarAnexo(Upload.StartedEvent event);
+
+    public void apontamentoHorasSwitched(Property.ValueChangeEvent event);
+
+    public void controleOrcamentoSwitched(Property.ValueChangeEvent event);
     
 }

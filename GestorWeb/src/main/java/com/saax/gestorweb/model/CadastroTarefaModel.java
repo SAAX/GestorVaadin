@@ -5,15 +5,22 @@
  */
 package com.saax.gestorweb.model;
 
+import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -161,4 +168,57 @@ public class CadastroTarefaModel {
 
     }
 
+    /**
+     * Configura os campos de credito e débido do apontamento de acordo com o usuário logado.
+     * @param apontamentoTarefa
+     * @return 
+     */
+    public ApontamentoTarefa configuraApontamento(ApontamentoTarefa apontamentoTarefa) {
+        
+        // Identifica os usuários relacionados ao apontamento e a tarefa
+        Usuario usuarioApontamento = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuarioResponsavel = apontamentoTarefa.getTarefa().getUsuarioResponsavel();
+        Usuario usuarioSolicitante = apontamentoTarefa.getTarefa().getUsuarioSolicitante();
+        
+        LocalTime inputHoras = null;
+        try {
+            inputHoras = LocalTime.parse(apontamentoTarefa.getInputHoras(), DateTimeFormatter.ofPattern("[HH]:mm"));
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Hora deve ser informada como HH:MM");
+        }
+        
+        // se o usuário for o responsavel as horas inputadas são "debito"
+        if (usuarioApontamento.equals(usuarioResponsavel)){
+            
+            apontamentoTarefa.setDebitoHoras(inputHoras);
+            apontamentoTarefa.setDebitoValor(calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras));
+        } else if (usuarioApontamento.equals(usuarioSolicitante)){
+            // se o usuário for o solicitante as horas inputadas são "credito"
+            apontamentoTarefa.setCreditoHoras(inputHoras);
+            apontamentoTarefa.setCreditoValor(calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras));
+        } else {
+            // TODO: remover comentario
+            // se não for nem um nem outro, o usuário não deveria ter acesso ao apontamento.
+            // throw new IllegalStateException("Usuário não deveria ter acesso aos apontamentos.");
+                        apontamentoTarefa.setCreditoHoras(inputHoras);
+                        apontamentoTarefa.setCreditoValor(calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras));
+
+        }
+        
+                
+        return apontamentoTarefa;
+        
+    }
+
+
+    /**
+     * Calcula o custo total como: custo / hora * quantidade de horas
+     * @param custoHora
+     * @param horas
+     * @return 
+     */
+    private BigDecimal calculaCustoTotalHora(BigDecimal custoHora, LocalTime horas){
+        double tempo = horas.getHour() + (horas.getMinute() / 60);
+        return new BigDecimal(tempo).multiply(custoHora);
+    }
 }

@@ -14,10 +14,11 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.view.ApontamentoTarefaDTO;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
+import com.vaadin.data.Property;
+import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -102,7 +103,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         setPopUpEvolucaoStatusEAndamento(tarefa);
 
         // Configuras os beans de 1-N
-        view.setApontamentoTarefa(new ApontamentoTarefaDTO());
+        view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, usuarioLogado));
 
         view.setAbaControleHorasVisible(tarefa.isApontamentoHoras());
         view.setAbaControleOrcamentoVisible(tarefa.isOrcamentoControlado());
@@ -286,9 +287,15 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     @Override
     public void imputarHorasClicked() {
 
-        view.getControleHorasContainer().addItem(new ApontamentoTarefa());
+        try {
+            ApontamentoTarefa apontamentoTarefa = view.getApontamentoTarefa();
+            apontamentoTarefa = model.configuraApontamento(apontamentoTarefa);
+            view.getControleHorasContainer().addItem(apontamentoTarefa);
+        } catch (Exception ex) {
+            Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -331,6 +338,16 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
             Notification.show(ex.getMessage(), Notification.Type.ERROR_MESSAGE);
         }
 
+    }
+
+    @Override
+    public void apontamentoHorasSwitched(Property.ValueChangeEvent event) {
+        view.setAbaControleHorasVisible((boolean) event.getProperty().getValue());
+    }
+
+    @Override
+    public void controleOrcamentoSwitched(Property.ValueChangeEvent event) {
+        view.setAbaControleOrcamentoVisible((boolean) event.getProperty().getValue());
     }
 
 }

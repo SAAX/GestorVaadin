@@ -83,7 +83,7 @@ public class Tarefa implements Serializable {
     private String titulo;
 
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "Informe o nome da tarefa")
     @Size(min = 1, max = 150)
     @Column(name = "nome")
     private String nome;
@@ -131,6 +131,7 @@ public class Tarefa implements Serializable {
     @ManyToOne
     private Departamento departamento;
     
+    @NotNull(message = "Informe a empresa")
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -218,7 +219,7 @@ public class Tarefa implements Serializable {
         andamento = 0;
         andamentos = new ArrayList<>();
         anexos = new ArrayList<>();
-        apontamentoHoras = false;
+        apontamentoHoras = true;
         apontamentos = new ArrayList<>();
         avaliacoes = new ArrayList<>();
         bloqueios = new ArrayList<>();
@@ -226,7 +227,7 @@ public class Tarefa implements Serializable {
         favoritados = new ArrayList<>();
         historico = new ArrayList<>();
         nivel = 1;
-        orcamentoControlado = false;
+        orcamentoControlado = true;
         orcamentos = new ArrayList<>();
         participantes = new ArrayList<>();
         prioridade = PrioridadeTarefa.NORMAL;

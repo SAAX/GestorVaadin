@@ -32,6 +32,11 @@ public class ApontamentoTarefa implements Serializable {
     @Basic(optional = false)
     @Column(name = "idapontamentotarefa")
     private Integer id;
+
+    /** Horas imputadas pelo usuário.
+     * campo transiente, pois as horas serão gravadas em "creditoHoras" ou "debitoHoras"
+     */
+    private transient String inputHoras;
     
     @Column(name = "creditohoras")
     @Convert(converter = LocalTimePersistenceConverter.class)
@@ -83,6 +88,7 @@ public class ApontamentoTarefa implements Serializable {
     public ApontamentoTarefa(Tarefa tarefa, Usuario usuarioInclusao) {
         this.tarefa = tarefa;
         this.usuarioInclusao = usuarioInclusao;
+        this.dataHoraInclusao = LocalDateTime.now();
     }
 
     public Integer getId() {
@@ -181,6 +187,15 @@ public class ApontamentoTarefa implements Serializable {
         this.usuarioInclusao = usuarioInclusao;
     }
 
+    public void setInputHoras(String inputHoras) {
+        this.inputHoras = inputHoras;
+    }
+
+    public String getInputHoras() {
+        return inputHoras;
+    }
+
+    
     
 
     @Override

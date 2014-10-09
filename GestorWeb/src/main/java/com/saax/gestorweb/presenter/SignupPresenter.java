@@ -496,6 +496,7 @@ public class SignupPresenter implements SignupViewListener {
     public void incluirColigadas() {
 
         String nomeColigada = view.getNomeColigadaTextField().getValue();
+        view.getCnpjColigadaTextField().commit(); // Veja se dá certo
         String cnpjColigada = view.getCnpjColigadaTextField().getValue();
 
         Button removerColigadasButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));

@@ -1,10 +1,12 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.ChatModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.PaginaInicialModel;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.saax.gestorweb.view.PaginaInicialViewListener;
@@ -77,6 +79,21 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener, Serial
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(signupView);
         signupPresenter.open();
+    }
+    
+      @Override
+    public void chatButtonClicked() {
+        
+        //Cria o pop up para registrar a conta (model e viw)
+        ChatModel chatModel = new ChatModel();
+        ChatView chatView = new ChatView();
+        
+       //o presenter liga model e view
+        ChatPresenter chatPresenter;
+        chatPresenter = new ChatPresenter(chatModel, chatView);
+        //adiciona a visualização à UI
+        UI.getCurrent().addWindow(chatView);
+        chatPresenter.open();
     }
     
 

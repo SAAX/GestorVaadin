@@ -920,7 +920,7 @@ public class SignupView extends Window {
     /**
      * @return the cnpjColigadaTextField
      */
-    public TextField getCnpjColigadaTextField() {
+    public MaskedTextField getCnpjColigadaTextField() {
         return cnpjColigadaTextField;
     }
 

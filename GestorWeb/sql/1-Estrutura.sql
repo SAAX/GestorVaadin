@@ -265,12 +265,12 @@ CREATE TABLE Tarefa (
     tipo  CHARACTER VARYING (20) NOT NULL,
     idProximaTarefa BIGINT, 
     status CHARACTER VARYING (50) NOT NULL,
-    projecao CHARACTER VARYING (50) NOT NULL,
+    projecao CHARACTER VARYING (50),
     andamento INTEGER NOT NULL,
     dataInicio DATE NOT NULL,
-    dataFim DATE NOT NULL, 	-- data esperada para o fim da tarefa, pode ser diferente da data real do termino da mesma
+    dataFim DATE, 	-- data esperada para o fim da tarefa, pode ser diferente da data real do termino da mesma
     dataTermino DATE, 		-- data real do termino da tarefa, 
-    descricao TEXT NOT NULL,
+    descricao TEXT,
     idEmpresaCliente BIGINT, 
     idUsuarioSolicitante BIGINT NOT NULL,
     idUsuarioResponsavel BIGINT NOT NULL,

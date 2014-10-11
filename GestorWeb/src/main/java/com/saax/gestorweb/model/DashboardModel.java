@@ -34,6 +34,7 @@ public class DashboardModel {
 
         List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findByUsuarioResponsavel")
                 .setParameter("usuarioResponsavel", usuarioLogado)
+                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
                 .getResultList();
 
         return tarefas;

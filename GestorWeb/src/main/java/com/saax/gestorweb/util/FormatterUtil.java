@@ -80,7 +80,9 @@ public class FormatterUtil {
      * @return 
      */
     public static String formatDate(LocalDate date){
-        
+        if (date == null){
+            return "";
+        }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return date.format(formatter); 
         

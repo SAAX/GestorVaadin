@@ -8,6 +8,7 @@ package com.saax.gestorweb.model;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
+import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -17,6 +18,7 @@ import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -88,10 +90,14 @@ public class CadastroTarefaModel {
         if (tarefa==null){
             throw new IllegalArgumentException("Tarefa NULA para persistencia");
         }
+        
         try {
 
             em.getTransaction().begin();
 
+            tarefa.setDataHoraInclusao(LocalDateTime.now());
+            tarefa.setProjecao(ProjecaoTarefa.NORMAL);
+            
             if (tarefa.getId()==null){
                 em.persist(tarefa);
             } else {
@@ -197,12 +203,7 @@ public class CadastroTarefaModel {
             apontamentoTarefa.setCreditoHoras(inputHoras);
             apontamentoTarefa.setCreditoValor(calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras));
         } else {
-            // TODO: remover comentario
-            // se não for nem um nem outro, o usuário não deveria ter acesso ao apontamento.
-            // throw new IllegalStateException("Usuário não deveria ter acesso aos apontamentos.");
-                        apontamentoTarefa.setCreditoHoras(inputHoras);
-                        apontamentoTarefa.setCreditoValor(calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras));
-
+            throw new IllegalStateException("Usuário não deveria ter acesso aos apontamentos.");
         }
         
                 

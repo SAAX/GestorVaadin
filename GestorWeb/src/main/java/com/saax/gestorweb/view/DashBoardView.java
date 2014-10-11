@@ -1,7 +1,6 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -26,22 +25,10 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
- * Raiz + menuSuperiorContainer - menuSuperior + filtrosPesquisaContainer +
- * filtrosPesquisaEsquerdaContainer + filtroUsuarioButton -
- * filtroUsuarioOptionGroup + filtroEmpresaButton - filtroEmpresaOptionGroup +
- * filtroDataFimButton - filtroDataFimDateField + filtroProjecaoButton -
- * filtroProjecaoOptionGroup - aplicarFiltroPesquisa - removerFiltroPesquisa +
- * filtrosPesquisaDireitaContainer - filtroPesquisaRapidaTextField -
- * filtroPesquisaAvancadaButton + dataAtualContainer - labelDataAtual +
- * abasContainer + painelAbas - tarefasTable + abasContainer -
- * principaisTarefasContainer - principaisProjecoesContainer -
- * principaisConvitesContainer
  *
  * @author Rodrigo
  */
@@ -173,7 +160,9 @@ public class DashBoardView extends VerticalLayout {
         getMenuSuperior().setHtmlContentAllowed(true);
 
         MenuBar.MenuItem criar = getMenuSuperior().addItem("<h3>Criar</h3>", null, null);
-        MenuBar.MenuItem criarTarefas = criar.addItem("Tarefas/Sub", null, null);
+        MenuBar.MenuItem criarTarefas = criar.addItem("Tarefas/Sub", (MenuBar.MenuItem selectedItem) -> {
+            listener.criarNovaTarefa();
+        });
         MenuBar.MenuItem criarMetas = criar.addItem("Metas", null, null);
 
         MenuBar.MenuItem publicacoes = getMenuSuperior().addItem("<h3>Publicações</h3>", null, null);

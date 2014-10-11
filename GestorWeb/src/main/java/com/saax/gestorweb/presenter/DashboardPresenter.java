@@ -1,6 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.CadastroTarefaModel;
 
 import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.EmpresaModel;
@@ -14,6 +15,8 @@ import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
+import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
@@ -42,7 +45,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class DashboardPresenter implements DashboardViewListenter, Serializable {
+public class DashboardPresenter implements DashboardViewListenter, CadastroTarefaCallBackListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient DashBoardView view;
@@ -51,6 +54,40 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    
+    
+    /**
+     * Abre o cadastro de tarefas para criação de uma nova tarefa
+     */
+    @Override
+    public void criarNovaTarefa() {
+        CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+        presenter.setCallBackListener(this);
+        presenter.open(null);
+    }
+    
+    
+    /**
+     * Callback notificando que o cadastro de uma nova tarefa foi concluido
+     * @param tarefaCriada 
+     */
+    @Override
+    public void cadastroNovaTarefaConcluido(Tarefa tarefaCriada){
+         
+        adicionarTarefaTable(tarefaCriada);
+        organizarHierarquiaTreeTable(tarefaCriada);
+    }
+
+    /**
+     * Sobrecarga de organizarHierarquiaTreeTable (list)
+     * @param tarefaCriada 
+     */
+    private void organizarHierarquiaTreeTable(Tarefa tarefaCriada) {
+        List<Tarefa> lista = new ArrayList<>();
+        lista.add(tarefaCriada);
+        organizarHierarquiaTreeTable(lista);
+
+    }
 
     // enumeracao do tipo de pesquisa
     public enum TipoPesquisa {
@@ -208,11 +245,37 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
      */
     public void exibirListaTarefas(List<Tarefa> listaTarefas) {
 
-        view.getTarefasTable().removeAllItems();
         
+        view.getTarefasTable().removeAllItems();
+
         Object[] linha;
+        listaTarefas.stream().forEach((tarefa) -> {
+            adicionarTarefaTable(tarefa);
+        });
+
+        organizarHierarquiaTreeTable(listaTarefas);
+        
+
+    }
+    
+    /**
+     * Configura a hierarquia da tree table de acordo com o relacionamento das tarefas e subs
+     */
+    private void organizarHierarquiaTreeTable(List<Tarefa> listaTarefas){
+        
         for (Tarefa tarefa : listaTarefas) {
-            linha = new Object[]{
+            if (tarefa.getTarefaPai() != null) {
+                view.getTarefasTable().setParent(tarefa.getGlobalID(), tarefa.getTarefaPai().getGlobalID());
+            }
+        }
+    }
+    
+    /**
+     * Adiciona a tarefa na tree table 
+     * @param tarefa 
+     */
+    private void adicionarTarefaTable(Tarefa tarefa){
+        Object[] linha  = new Object[]{
                 tarefa.getGlobalID(),
                 tarefa.getTitulo(),
                 tarefa.getNome(),
@@ -230,18 +293,7 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
 
             view.getTarefasTable().addItem(linha, tarefa.getGlobalID());
 
-        }
-
-        for (Tarefa tarefa : listaTarefas) {
-            if (tarefa.getTarefaPai() != null) {
-                view.getTarefasTable().setParent(tarefa.getGlobalID(), tarefa.getTarefaPai().getGlobalID());
-
-            }
-
-        }
-
     }
-
 
     /**
      * Aplicar filtros de pesquisa selecionado
@@ -249,16 +301,16 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
      */
     @Override
     public void aplicarFiltroPesquisa() {
-        
+
         TipoPesquisa tipoPesquisa = (TipoPesquisa) view.getPermutacaoPesquisaOptionGroup().getValue();
 
-        if (tipoPesquisa==null){
+        if (tipoPesquisa == null) {
             view.getPermutacaoPesquisaOptionGroup().setValue(TipoPesquisa.INCLUSIVA_OU);
         } else {
             aplicarFiltroPesquisa(tipoPesquisa);
         }
     }
-    
+
     /**
      * Aplicar filtros de pesquisa selecionado
      *
@@ -332,6 +384,5 @@ public class DashboardPresenter implements DashboardViewListenter, Serializable 
         view.getPermutacaoPesquisaOptionGroup().setValue(null);
 
     }
-
 
 }

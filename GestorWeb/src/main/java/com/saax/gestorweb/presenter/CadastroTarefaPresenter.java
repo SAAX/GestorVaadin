@@ -14,13 +14,12 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.data.Property;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
@@ -47,6 +46,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private CadastroTarefaCallBackListener callbackListener;
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -83,6 +83,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
             tarefa = new Tarefa();
             tarefa.setEmpresa(usuarioLogado.getEmpresaAtiva());
             tarefa.setUsuarioInclusao(usuarioLogado);
+            tarefa.setUsuarioSolicitante(usuarioLogado);
 
             view.ocultaPopUpEvolucaoStatusEAndamento();
             view.exibeTituloCadastro();
@@ -112,14 +113,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
         view.setTarefa(tarefa);
 
-    }
-
-    private void removerParticipante(Button.ClickEvent event) {
-
-        String id = event.getButton().getId();
-
-        // remove o item selecionado
-        view.getParticipantesTable().removeItem(id);
     }
 
     /**
@@ -258,7 +251,16 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     public void gravarButtonClicked() {
         Tarefa tarefa = (Tarefa) view.getTarefa();
         try {
-            model.gravarTarefa(tarefa);
+            
+            // Obter os participantes
+            tarefa.setParticipantes(view.getParticipantesContainer().getItemIds());
+            
+            tarefa = model.gravarTarefa(tarefa);
+
+            // notica (se existir) algum listener interessado em saber que o cadastro foi finalizado.
+            if (callbackListener != null) {
+                callbackListener.cadastroNovaTarefaConcluido(tarefa);
+            }
             view.close();
         } catch (RuntimeException e) {
             // caso ocorra alguma exceçao ao gravar, nao adianta mostrar o erro ao
@@ -271,11 +273,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     @Override
     public void cancelarButtonClicked() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addParticipante() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -349,5 +346,15 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     public void controleOrcamentoSwitched(Property.ValueChangeEvent event) {
         view.setAbaControleOrcamentoVisible((boolean) event.getProperty().getValue());
     }
+
+    /**
+     * Configura um listener para ser chamado quando o cadastro for concluido
+     * @param callback 
+     */
+    @Override
+    public void setCallBackListener(CadastroTarefaCallBackListener callback) {
+        this.callbackListener = callback;
+    }
+    
 
 }

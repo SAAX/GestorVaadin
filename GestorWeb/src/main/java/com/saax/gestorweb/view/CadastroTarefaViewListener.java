@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Upload;
 
@@ -22,8 +23,6 @@ public interface CadastroTarefaViewListener {
 
     public void cancelarButtonClicked();
 
-    public void addParticipante();
-
     public void anexoAdicionado();
 
     public void imputarHorasClicked();
@@ -39,5 +38,7 @@ public interface CadastroTarefaViewListener {
     public void apontamentoHorasSwitched(Property.ValueChangeEvent event);
 
     public void controleOrcamentoSwitched(Property.ValueChangeEvent event);
+    
+    public void setCallBackListener(CadastroTarefaCallBackListener presenter);
     
 }

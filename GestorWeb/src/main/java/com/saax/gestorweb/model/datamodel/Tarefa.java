@@ -60,6 +60,7 @@ public class Tarefa implements Serializable {
 
     public String getGlobalID() {
         globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
+        
         return globalID;
     }
     
@@ -72,7 +73,7 @@ public class Tarefa implements Serializable {
     private Integer id;
     
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "Informe o nível da tarefa.")
     @Column(name = "nivel")
     private int nivel;
     
@@ -83,12 +84,13 @@ public class Tarefa implements Serializable {
     private String titulo;
 
     @Basic(optional = false)
-    @NotNull(message = "Informe o nome da tarefa")
-    @Size(min = 1, max = 150)
+    @NotNull(message = "Informe o nome da tarefa.")
+    @Size(min = 5, max = 150, message = "Nome da tarefa deve ter de 5 a 150 caracteres.")
     @Column(name = "nome")
     private String nome;
     
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Informe a prioridade da tarefa: Baixa, Normal ou Alta.")
     private PrioridadeTarefa prioridade;
 
     @Enumerated(EnumType.STRING)
@@ -103,8 +105,6 @@ public class Tarefa implements Serializable {
     private int andamento;
 
     
-    @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 2147483647)
     @Column(name = "descricao")
     private String descricao;
@@ -152,6 +152,7 @@ public class Tarefa implements Serializable {
     private Tarefa proximaTarefa;
     
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Informe se a tarefa é recorrente ou única")
     @Column(name = "tipo")
     private TipoTarefa tipoRecorrencia;
     
@@ -168,6 +169,7 @@ public class Tarefa implements Serializable {
     private Usuario usuarioSolicitante;
     
     @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
+    @NotNull(message = "Informe o usuário reponsável.")
     @ManyToOne(optional = false)
     private Usuario usuarioResponsavel;
     
@@ -200,6 +202,7 @@ public class Tarefa implements Serializable {
     private LocalDate dataTermino;
     
     @Column(name = "datainicio")
+    @NotNull(message = "Informe a data de início.")
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataInicio;
     
@@ -211,6 +214,7 @@ public class Tarefa implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
 
+    
     /**
      * Constrói uma tarefa com valores default
      */
@@ -233,7 +237,7 @@ public class Tarefa implements Serializable {
         prioridade = PrioridadeTarefa.NORMAL;
         status = StatusTarefa.NAO_ACEITA;
         subTarefas = new ArrayList<>();
-        
+
         titulo = "Tarefa";
         
     }

@@ -12,5 +12,6 @@ package com.saax.gestorweb.view;
 public interface ChatViewListener {
     
      public void cancelButtonClicked();
+     
     
 }

@@ -7,12 +7,15 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Table;
@@ -37,7 +40,7 @@ public class ChatView extends Window{
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
-    // Este acesso se dÃƒÂ¡ por uma interface para manter a abstraÃƒÂ§ÃƒÂ£o das camadas
+    // Este acesso se dÃƒÆ’Ã‚Â¡ por uma interface para manter a abstraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o das camadas
     private ChatViewListener listener;
     
     // Create the selection component
@@ -53,7 +56,7 @@ public class ChatView extends Window{
     
     
     /**
-     * Cria o pop-up de login, com campos para usuÃƒÂ¡rio e senha
+     * Cria o pop-up de login, com campos para usuÃƒÆ’Ã‚Â¡rio e senha
      *
      */
     public ChatView() {
@@ -61,7 +64,7 @@ public class ChatView extends Window{
 
         setCaption(mensagens.getString("ChatView.titulo"));
         setModal(true);
-        setWidth(600, Unit.PIXELS);
+        setWidth(300, Unit.PIXELS);
         setHeight(600, Unit.PIXELS);
 
         // Container que armazena os elementos visuais (campos de login e senha)       
@@ -70,17 +73,17 @@ public class ChatView extends Window{
         setContent(container);
         
         VerticalLayout tabela = containerTabelaUsuarios();
-        VerticalLayout mensagens = mensagensChat();
+      
         
-        //monta a grid para armazenar a tabela dos funcionários e as textAreas
+        //monta a grid para armazenar a tabela dos funcionÃ¡rios e as textAreas
         GridLayout layout = new GridLayout(2, 2);
         layout.setMargin(false);
         layout.setSpacing(false);
-        layout.setWidth("600px");
+        layout.setWidth("300px");
         layout.setHeight("600px");
 
         layout.addComponent(tabela, 0, 0);
-        layout.addComponent(mensagens, 1, 0);
+        
                 
         
         container.addComponent(layout);
@@ -96,14 +99,15 @@ public class ChatView extends Window{
     
     /**
      * Cria e retorna a barra de botoes
-     * @return barra com o botÃ£o Fechar
+     * @return barra com o botÃƒÂ£o Fechar
      */
     private HorizontalLayout buildBarraBotoes(){
         
         HorizontalLayout barraBotoes = new HorizontalLayout();
         
+           
                     
-        // botÃƒÂ£o para cancelar
+        // botão para cancelar
         final Button cancelButton = new Button(mensagens.getString("SignupView.cancelButton.label"), (Button.ClickEvent event) -> {
             getListener().cancelButtonClicked();
         });
@@ -120,7 +124,7 @@ public class ChatView extends Window{
         VerticalLayout usuarios = new VerticalLayout();
         
         containerTabelaUsuarios = new Panel();
-        containerTabelaUsuarios.setSizeFull();
+        containerTabelaUsuarios.setWidth("300px");
 
         usuariosTable = new Table();
         containerTabelaUsuarios.setContent(usuariosTable);
@@ -129,36 +133,22 @@ public class ChatView extends Window{
         usuariosTable.addContainerProperty("", String.class, null);
         usuariosTable.addContainerProperty("Usuario", String.class, null);
         usuariosTable.addContainerProperty("Ativo", String.class, null);
+        getUsuariosTable().addItem(new Object[]{"X", "Fernando Stávale", "On-Line"}, "Fernando");
+        getUsuariosTable().addItem(new Object[]{"X", "Daniel Stávale", "Off-Line"}, "Daniel");
         usuariosTable.setImmediate(true);
         usuariosTable.setSelectable(true);
         
-         
+
         
+       
+         
         
         usuarios.addComponent(containerTabelaUsuarios);
         
         return usuarios;
     }
     
-    private VerticalLayout mensagensChat(){
-        
-        VerticalLayout mensagens = new VerticalLayout();
-        
-        historico = new TextArea();
-        historico.setWordwrap(false);
-        historico.setValue("Fernando diz: se Deus quiser logo aprendo o Vaadin!");
-        historico.setSizeFull();
-        
-        textoEnviar = new TextArea();
-        textoEnviar.setSizeFull();
-        
-        
-        mensagens.addComponent(historico);
-        mensagens.addComponent(textoEnviar);
-        
-        return mensagens;
-    }
-    
+
     /**
      * @return the listener
      */
@@ -166,5 +156,19 @@ public class ChatView extends Window{
         return listener;
     }
     
+     /**
+     * @return the usuariosTable
+     */
+    public Table getUsuariosTable() {
+        return usuariosTable;
+    }
+
+    /**
+     * @param usuariosTable the UsuariosTable to set
+     */
+    public void setUsuariosTable(Table usuariosTable) {
+        this.usuariosTable = usuariosTable;
+    }
     
 }
+

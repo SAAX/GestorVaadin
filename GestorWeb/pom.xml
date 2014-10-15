@@ -57,6 +57,12 @@
 			<artifactId>vaadin-client-compiled</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
+                <dependency>
+                        <groupId>org.vaadin.addons</groupId>
+                        <artifactId>chatbox</artifactId>
+                        <version>0.7.4</version>
+                </dependency>
+       
 		<!--
 		  Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory).
 		  

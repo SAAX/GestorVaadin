@@ -75,31 +75,44 @@ public class ChatView extends Window{
 
         setCaption(mensagens.getString("ChatView.titulo"));
         setModal(true);
-        setWidth(600, Unit.PIXELS);
-        setHeight(600, Unit.PIXELS);
-          
-        VerticalLayout layout = new VerticalLayout();
+        setWidth(800, Unit.PIXELS);
+        setHeight(400, Unit.PIXELS);
+        
+        Panel panel = new Panel("Chat");
+        
+        VerticalLayout container = new VerticalLayout();
+        container.setMargin(true);
+        setContent(container);
         
         
         HorizontalLayout hlayout = new HorizontalLayout();
         
-        Panel panel = new Panel("Chat");
+        
         
         // Have a horizontal split panel as its content
         HorizontalSplitPanel hsplit = new HorizontalSplitPanel();
-        panel.setContent(hsplit);
+        hsplit.setWidth("800px");
         
         // Put a component in the left panel
-        hsplit.setFirstComponent(containerTabelaUsuarios);
-
+        hsplit.setFirstComponent(containerTabelaUsuarios());
+        hsplit.getFirstComponent().setWidth("300px");
         // A static variable so that everybody gets the same instance.
         ChatBox cb = new ChatBox(chat);
+        
         ChatUser user = ChatUser.newUser("Fernando Stávale");
         cb.setUser(user);
-        
+        cb.setWidth("500px");
         
         hsplit.setSecondComponent(cb);
-        layout.addComponent(hlayout);
+        hsplit.getSecondComponent().setWidth("500px");
+        
+        //Rodrigo, como devo fazer para deixar ela invisível no começo
+        //hsplit.getSecondComponent().isVisible(false);
+                
+
+        panel.setContent(hsplit);
+        hlayout.addComponent(panel);
+        container.addComponent(hlayout);
         
         
       
@@ -117,7 +130,7 @@ public class ChatView extends Window{
 
         usuariosTable = new Table();
         containerTabelaUsuarios.setContent(usuariosTable);
-        usuariosTable.setSizeFull();
+        
 
         usuariosTable.addContainerProperty("", String.class, null);
         usuariosTable.addContainerProperty("Usuario", String.class, null);

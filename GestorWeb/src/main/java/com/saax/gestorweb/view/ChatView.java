@@ -14,6 +14,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
@@ -21,6 +23,7 @@ import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree;
 
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -55,6 +58,9 @@ public class ChatView extends Window{
     
     private static SharedChat chat= new SharedChat();
     
+    
+
+    
     public void setListener(ChatViewListener listener) {
         this.listener = listener;
     }
@@ -71,67 +77,35 @@ public class ChatView extends Window{
         setModal(true);
         setWidth(600, Unit.PIXELS);
         setHeight(600, Unit.PIXELS);
+          
+        VerticalLayout layout = new VerticalLayout();
+        
+        
+        HorizontalLayout hlayout = new HorizontalLayout();
+        
+        Panel panel = new Panel("Chat");
+        
+        // Have a horizontal split panel as its content
+        HorizontalSplitPanel hsplit = new HorizontalSplitPanel();
+        panel.setContent(hsplit);
+        
+        // Put a component in the left panel
+        hsplit.setFirstComponent(containerTabelaUsuarios);
 
-        // Container que armazena os elementos visuais (campos de login e senha)       
-        VerticalLayout container = new VerticalLayout();
-        container.setMargin(true);
-        setContent(container);
-        
-        VerticalLayout tabela = containerTabelaUsuarios();
-      
-        
-        //monta a grid para armazenar a tabela dos funcionÃ¡rios e as textAreas
-        GridLayout layout = new GridLayout(2, 2);
-        layout.setMargin(false);
-        layout.setSpacing(false);
-        layout.setWidth("600px");
-        layout.setHeight("600px");
-
-        layout.addComponent(tabela, 0, 0);
-        
-                
-        
-        container.addComponent(layout);
-        
-              
-        // barra dos botoes
-        HorizontalLayout barraBotoes = buildBarraBotoes();
-        container.addComponent(barraBotoes);
-        container.setComponentAlignment(barraBotoes, Alignment.MIDDLE_CENTER);
-        
         // A static variable so that everybody gets the same instance.
         ChatBox cb = new ChatBox(chat);
-        ChatUser user = ChatUser.newUser("Pertti Pasanen");
+        ChatUser user = ChatUser.newUser("Fernando Stávale");
         cb.setUser(user);
-        container.addComponent(cb);
-                       
-        center();
+        
+        
+        hsplit.setSecondComponent(cb);
+        layout.addComponent(hlayout);
+        
+        
+      
     }
     
-    /**
-     * Cria e retorna a barra de botoes
-     * @return barra com o botÃƒÂ£o Fechar
-     */
-    private HorizontalLayout buildBarraBotoes(){
-        
-        HorizontalLayout barraBotoes = new HorizontalLayout();
-        
-         // botão para mensagem
-        final Button mensagemButton = new Button(mensagens.getString("ChatView.mensagemButton.label"), (Button.ClickEvent event) -> {
-            getListener().mensagemButtonClicked();
-        });   
-                    
-        // botão para cancelar
-        final Button cancelButton = new Button(mensagens.getString("ChatView.cancelButton.label"), (Button.ClickEvent event) -> {
-            getListener().cancelButtonClicked();
-        });
-
        
-        barraBotoes.addComponent(mensagemButton);
-        barraBotoes.addComponent(cancelButton);
-        
-        return barraBotoes;
-    } 
     
     
     private VerticalLayout containerTabelaUsuarios(){
@@ -163,11 +137,7 @@ public class ChatView extends Window{
         return usuarios;
     }
     
-    private void mensagensChat(){
-    Window window = new Window("Mensagens");
-    window.setModal(true);
-    }
-    
+       
 
     /**
      * @return the listener

@@ -26,6 +26,9 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
+import org.vaadin.chatbox.ChatBox;
+import org.vaadin.chatbox.SharedChat;
+import org.vaadin.chatbox.client.ChatUser;
 
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -50,6 +53,8 @@ public class ChatView extends Window{
     private TextArea textoEnviar;
     private TextArea historico;
     
+    private static SharedChat chat= new SharedChat();
+    
     public void setListener(ChatViewListener listener) {
         this.listener = listener;
     }
@@ -64,7 +69,7 @@ public class ChatView extends Window{
 
         setCaption(mensagens.getString("ChatView.titulo"));
         setModal(true);
-        setWidth(300, Unit.PIXELS);
+        setWidth(600, Unit.PIXELS);
         setHeight(600, Unit.PIXELS);
 
         // Container que armazena os elementos visuais (campos de login e senha)       
@@ -79,7 +84,7 @@ public class ChatView extends Window{
         GridLayout layout = new GridLayout(2, 2);
         layout.setMargin(false);
         layout.setSpacing(false);
-        layout.setWidth("300px");
+        layout.setWidth("600px");
         layout.setHeight("600px");
 
         layout.addComponent(tabela, 0, 0);
@@ -93,6 +98,12 @@ public class ChatView extends Window{
         HorizontalLayout barraBotoes = buildBarraBotoes();
         container.addComponent(barraBotoes);
         container.setComponentAlignment(barraBotoes, Alignment.MIDDLE_CENTER);
+        
+        // A static variable so that everybody gets the same instance.
+        ChatBox cb = new ChatBox(chat);
+        ChatUser user = ChatUser.newUser("Pertti Pasanen");
+        cb.setUser(user);
+        container.addComponent(cb);
                        
         center();
     }
@@ -105,14 +116,18 @@ public class ChatView extends Window{
         
         HorizontalLayout barraBotoes = new HorizontalLayout();
         
-           
+         // botão para mensagem
+        final Button mensagemButton = new Button(mensagens.getString("ChatView.mensagemButton.label"), (Button.ClickEvent event) -> {
+            getListener().mensagemButtonClicked();
+        });   
                     
         // botão para cancelar
-        final Button cancelButton = new Button(mensagens.getString("SignupView.cancelButton.label"), (Button.ClickEvent event) -> {
+        final Button cancelButton = new Button(mensagens.getString("ChatView.cancelButton.label"), (Button.ClickEvent event) -> {
             getListener().cancelButtonClicked();
         });
 
        
+        barraBotoes.addComponent(mensagemButton);
         barraBotoes.addComponent(cancelButton);
         
         return barraBotoes;
@@ -146,6 +161,11 @@ public class ChatView extends Window{
         usuarios.addComponent(containerTabelaUsuarios);
         
         return usuarios;
+    }
+    
+    private void mensagensChat(){
+    Window window = new Window("Mensagens");
+    window.setModal(true);
     }
     
 

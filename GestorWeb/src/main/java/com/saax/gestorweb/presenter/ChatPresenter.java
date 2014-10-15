@@ -53,8 +53,25 @@ public class ChatPresenter implements ChatViewListener {
 
     }
     
+    
+    
     @Override
     public void cancelButtonClicked() {
         ((GestorMDI) UI.getCurrent()).logout();
+    }
+    
+     @Override
+    public void mensagemButtonClicked() {
+        
+        //Cria o pop up para registrar a conta (model e viw)
+        ChatModel chatModel = new ChatModel();
+        ChatView chatView = new ChatView();
+        
+       //o presenter liga model e view
+        ChatPresenter chatPresenter;
+        chatPresenter = new ChatPresenter(chatModel, chatView);
+        //adiciona a visualização à UI
+        UI.getCurrent().addWindow(chatView);
+        chatPresenter.open();
     }
 }

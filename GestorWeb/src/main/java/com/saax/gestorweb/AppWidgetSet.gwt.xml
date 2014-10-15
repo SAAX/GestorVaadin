@@ -41,4 +41,6 @@
     
 
     <inherits name="org.vaadin.addons.maskedtextfield.MaskedTextFieldWidgetset" />
+
+    <inherits name="org.vaadin.chatbox.WidgetSet" />
 </module>

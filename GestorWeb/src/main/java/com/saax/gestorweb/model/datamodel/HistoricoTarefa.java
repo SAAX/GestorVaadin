@@ -134,15 +134,22 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof HistoricoTarefa)) {
             return false;
         }
         HistoricoTarefa other = (HistoricoTarefa) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        if ( this == other) return true;
+
+        // se o ID estiver setado, compara por ele
+        if ( this.getId() != null) {
+            return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
+            
+        } else {
+            // senao compara por campos setados na criação da tarefa
+            return this.getUsuario().equals(other.getUsuario())
+                   && this.getDatahora().equals(other.getDatahora());
+
         }
-        return true;
     }
     
     

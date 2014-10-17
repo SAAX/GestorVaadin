@@ -4,14 +4,18 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
+import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
@@ -20,15 +24,19 @@ import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.data.Property;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.FileNotFoundException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  * Presenter:
@@ -37,7 +45,7 @@ import java.util.logging.Logger;
  *
  * @author rodrigo
  */
-public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
+public class CadastroTarefaPresenter implements CadastroTarefaViewListener, CadastroTarefaCallBackListener {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient CadastroTarefaView view;
@@ -47,6 +55,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private CadastroTarefaCallBackListener callbackListener;
+    private final Usuario usuarioLogado;
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -62,38 +71,70 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
         view.setListener(this);
 
+        usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+
     }
 
     /**
-     * Abre o pop window do cadastro de tarefas Se informada uma tarefa abre em
-     * modo edição, senão em modo criação
+     * Abre o pop window do cadastro de tarefas para criação de uma nova tarefa
+     */
+    @Override
+    public void criarNovaTarefa() {
+
+        
+        Tarefa tarefa;
+        // Cria uma nova tarefa com valores default
+        tarefa = new Tarefa();
+        tarefa.setEmpresa(usuarioLogado.getEmpresaAtiva());
+        tarefa.setUsuarioInclusao(usuarioLogado);
+        tarefa.setUsuarioSolicitante(usuarioLogado);
+        tarefa.setDataHoraInclusao(LocalDateTime.now());
+
+        view.ocultaPopUpEvolucaoStatusEAndamento();
+        view.exibeTituloCadastro();
+
+        init(tarefa);
+    }
+
+    /**
+     * Abre o pop window do cadastro de tarefas para criação de uma sub tarefa
+     *
+     * @param tarefaPai
+     */
+    @Override
+    public void criarSubTarefa(Tarefa tarefaPai) {
+        Tarefa tarefa;
+        // Cria uma nova tarefa com valores default
+        tarefa = new Tarefa();
+        tarefa.setEmpresa(usuarioLogado.getEmpresaAtiva());
+        tarefa.setUsuarioInclusao(usuarioLogado);
+        tarefa.setUsuarioSolicitante(usuarioLogado);
+        tarefa.setTarefaPai(tarefaPai);
+
+        view.ocultaPopUpEvolucaoStatusEAndamento();
+        view.exibeTituloCadastro();
+
+        init(tarefa);
+
+    }
+
+    /**
+     * Abre o pop window do cadastro de tarefas para edição da tarefa informada
      *
      * @param tarefaToEdit
      */
     @Override
-    public final void open(Tarefa tarefaToEdit) {
+    public void editar(Tarefa tarefaToEdit) {
 
-        Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
-        Tarefa tarefa;
+        view.exibeTituloEdicao();
 
-        // Verifica se deve criar uma nova tarefa ou editar uma existente
-        if (tarefaToEdit == null) {
+        init(tarefaToEdit);
+    }
 
-            // Cria uma nova tarefa com valores default
-            tarefa = new Tarefa();
-            tarefa.setEmpresa(usuarioLogado.getEmpresaAtiva());
-            tarefa.setUsuarioInclusao(usuarioLogado);
-            tarefa.setUsuarioSolicitante(usuarioLogado);
-
-            view.ocultaPopUpEvolucaoStatusEAndamento();
-            view.exibeTituloCadastro();
-
-        } else {
-
-            view.exibeTituloEdicao();
-            tarefa = tarefaToEdit;
-        }
-
+    /**
+     * inicializa a gui
+     */
+    private void init(Tarefa tarefa) {
         // Carrega os combos de seleção
         carregaComboEmpresa();
         carregaComboTipoRecorrenciaTarefa();
@@ -105,6 +146,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
         // Configuras os beans de 1-N
         view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, usuarioLogado));
+        view.setOrcamentoTarefa(new OrcamentoTarefa(tarefa, usuarioLogado));
 
         view.setAbaControleHorasVisible(tarefa.isApontamentoHoras());
         view.setAbaControleOrcamentoVisible(tarefa.isOrcamentoControlado());
@@ -232,9 +274,15 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * abre um novo presenter para o cadastro de uma sub tarefa desta tarefa
+     */
     @Override
     public void addSubButtonClicked() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+        presenter.setCallBackListener(this);
+        presenter.criarSubTarefa(view.getTarefa());
     }
 
     @Override
@@ -251,11 +299,21 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     public void gravarButtonClicked() {
         Tarefa tarefa = (Tarefa) view.getTarefa();
         try {
+
             
-            // Obter os participantes
-            tarefa.setParticipantes(view.getParticipantesContainer().getItemIds());
-            
+//            // tratamento especial para o caso de cadastro de uma sub tarefa, para uma tarefa que
+//            // ainda não está persistida
+//            // neste caso o sistema não deve persistir a sub tarefa
+//            // e sim aguardar a tarefa pai ser gravada
+//            if (tarefa.getTarefaPai() != null && tarefa.getTarefaPai().getId() == null){
+//                
+//            } else {
+//                tarefa = model.gravarTarefa(tarefa);
+//                
+//            }
+             
             tarefa = model.gravarTarefa(tarefa);
+ 
 
             // notica (se existir) algum listener interessado em saber que o cadastro foi finalizado.
             if (callbackListener != null) {
@@ -273,7 +331,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     @Override
     public void cancelarButtonClicked() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        UI.getCurrent().removeWindow(view);
     }
 
     @Override
@@ -281,6 +339,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Tratamento para o evento disparado ao acionar o comando para imputar horas no controle de horas da tarefa
+     */
     @Override
     public void imputarHorasClicked() {
 
@@ -288,6 +349,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
             ApontamentoTarefa apontamentoTarefa = view.getApontamentoTarefa();
             apontamentoTarefa = model.configuraApontamento(apontamentoTarefa);
             view.getControleHorasContainer().addItem(apontamentoTarefa);
+            // criar um novo apontamento em branco para o usuario adicionar um novo:
+            view.setApontamentoTarefa(new ApontamentoTarefa(view.getTarefa(), usuarioLogado));
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
             Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
@@ -296,9 +359,39 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
     }
 
     @Override
-    public void imputarOrcamentoClicked() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void removerApontamentoHoras(ApontamentoTarefa apontamentoTarefa) {
+
+        view.getControleHorasTable().removeItem(apontamentoTarefa);
+        model.removerApontamentoHoras(apontamentoTarefa);
+
     }
+
+    /**
+     * Tratamento para o evento disparado ao acionar o comando para imputar valores no controle de orçamento da tarefa
+     */
+    @Override
+    public void imputarOrcamentoClicked() {
+        
+        try {
+            OrcamentoTarefa orcamentoTarefa = view.getOrcamentoTarefa();
+            orcamentoTarefa = model.configuraInputOrcamento(orcamentoTarefa);
+            view.getOrcamentoContainer().addItem(orcamentoTarefa);
+        
+            // criar um novo apontamento de orçamento em branco para o usuario adicionar um novo:
+            view.setOrcamentoTarefa(new OrcamentoTarefa(view.getTarefa(), usuarioLogado));
+
+        } catch (Exception ex) {
+            Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    @Override
+    public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa) {
+        view.getControleOrcamentoTable().removeItem(orcamentoTarefa);
+        model.removerOrcamentoTarefa(orcamentoTarefa);
+    }
+    
 
     /**
      * Evento disparado quando o upload no anexo foi concluído
@@ -307,8 +400,17 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
      */
     @Override
     public void anexoAdicionado(Upload.FinishedEvent event) {
-
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+
+    @Override
+    public void removerAnexo(AnexoTarefa anexoTarefa) {
+        view.getAnexosAdicionadosTable().removeItem(anexoTarefa);
+        Tarefa tarefa = view.getTarefa();
+        tarefa.getAnexos().remove(anexoTarefa);
+    }
+    
 
     /**
      * Evento disparado quando o usuário seleciona o arquivo para upload Visa
@@ -349,12 +451,95 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener {
 
     /**
      * Configura um listener para ser chamado quando o cadastro for concluido
-     * @param callback 
+     *
+     * @param callback
      */
     @Override
     public void setCallBackListener(CadastroTarefaCallBackListener callback) {
         this.callbackListener = callback;
     }
+
+    /**
+     * metodo chamado quando uma subtarefa foi criada 
+     * @param tarefa
+     */
+    @Override
+    public void cadastroNovaTarefaConcluido(Tarefa tarefa) {
+        // monta os dados para adicionar na grid
+        Object[] linha = new Object[]{
+                
+                tarefa.getGlobalID(),
+                tarefa.getTitulo(),
+                tarefa.getNome(),
+                tarefa.getEmpresa().getNome()
+                + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""),
+                tarefa.getUsuarioSolicitante().getNome(),
+                tarefa.getUsuarioResponsavel().getNome(),
+                FormatterUtil.formatDate(tarefa.getDataInicio()),
+                FormatterUtil.formatDate(tarefa.getDataFim()),
+                buildPopUpEvolucaoStatusEAndamento(tarefa),
+                tarefa.getProjecao().toString().charAt(0),
+                new Button("E"),
+                new Button("C")
+                
+            
+        };
+        view.getSubTarefasTable().addItem(linha, tarefa);
+    }
+    
+        /**
+     * Constrói o pop up de alteração de status e/ou andamento de tarefas neste
+     * PopUP o usuario poderá alterar (evoluir ou regredir) um status de tarefa
+     * ou indicar seu andamento.
+     *
+     * @param tarefa
+     * @return
+     */
+    private PopupButton buildPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
+
+        // comportmento e regras:
+        PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
+        PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
+
+        PopUpEvolucaoStatusPresenter presenter = new PopUpEvolucaoStatusPresenter(viewPopUP, modelPopUP);
+
+        presenter.load(tarefa);
+
+        // evento disparado quando o pop-up se torna visivel:
+        // seleciona a linha correta na tabela
+        presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
+            if (event.isPopupVisible()) {
+                // selecionar a linha clicada:
+                String idTarefa = event.getPopupButton().getId();
+                this.view.getSubTarefasTable().setValue(idTarefa);
+            }
+        });
+
+        return presenter.getStatusButton();
+    }
+
+    @Override
+    public void removerParticipante(ParticipanteTarefa participanteTarefa) {
+        view.getParticipantesTable().removeItem(participanteTarefa);
+        Tarefa tarefa = view.getTarefa();
+        tarefa.getParticipantes().remove(participanteTarefa);
+    }
+
+    @Override
+    public void adicionarParticipante(ParticipanteTarefa participanteTarefa) {
+        view.getParticipantesContainer().addBean(participanteTarefa);
+        Tarefa tarefa = view.getTarefa();
+        
+        if (tarefa.getParticipantes()==null){
+            tarefa.setParticipantes(new ArrayList<>());
+        }
+        
+        tarefa.getParticipantes().add(participanteTarefa);
+        
+    }
+
+
+
     
 
 }

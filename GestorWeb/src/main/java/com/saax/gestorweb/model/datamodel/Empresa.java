@@ -24,9 +24,9 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entity bean da tabela Empresa com as namequerys configuradas<br><br>
- * 
+ *
  * O objetivo desta entidade e armazenar os nossos Clientes<br><br>
- * 
+ *
  * Esta será a classe chave para segmentação dos dados armezenados.<br>
  *
  *
@@ -45,7 +45,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Empresa.findByAtiva", query = "SELECT e FROM Empresa e WHERE e.ativa = :ativa")})
 public class Empresa implements Serializable {
 
-    
     @Transient
     private String globalID;
 
@@ -53,7 +52,6 @@ public class Empresa implements Serializable {
         globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
         return globalID;
     }
-    
 
     private static final long serialVersionUID = 1L;
 
@@ -68,7 +66,6 @@ public class Empresa implements Serializable {
     @Size(min = 1, max = 100)
     @Column(name = "nome")
     private String nome;
-
 
     @Size(max = 18)
     @Column(name = "cnpj")
@@ -109,12 +106,12 @@ public class Empresa implements Serializable {
     @Size(min = 1, max = 150)
     @Column(name = "razaosocial")
     private String razaoSocial;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "tipopessoa")
     private Character tipoPessoa;
-    
+
     @JoinColumn(name = "idendereco", referencedColumnName = "idendereco")
     @ManyToOne(cascade = CascadeType.ALL)
     private Endereco endereco;
@@ -122,14 +119,14 @@ public class Empresa implements Serializable {
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<Tarefa> tarefas;
-    
+
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuarioInclusao;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<EmpresaCliente> clientes;
 
@@ -151,7 +148,6 @@ public class Empresa implements Serializable {
     public void setNome(String nome) {
         this.nome = nome;
     }
-
 
     public String getCnpj() {
         return cnpj;
@@ -242,15 +238,23 @@ public class Empresa implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+
         if (!(object instanceof Empresa)) {
             return false;
         }
         Empresa other = (Empresa) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+
+        // se o ID estiver setado, compara por ele
+        if (this.getId() != null) {
+            return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
+
+        } else {
+            // senao compara por campos setados na criação da tarefa
+            return this.getNome().equals(other.getNome())
+                    && this.getCnpj().equals(other.getCnpj());
+
         }
-        return true;
+
     }
 
     public String getRazaoSocial() {
@@ -276,7 +280,6 @@ public class Empresa implements Serializable {
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
     }
-
 
     @Override
     public String toString() {

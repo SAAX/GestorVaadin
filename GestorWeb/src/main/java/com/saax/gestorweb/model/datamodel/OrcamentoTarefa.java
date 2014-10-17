@@ -29,8 +29,6 @@ import javax.validation.constraints.Size;
 @Table(name = "orcamentotarefa")
 @NamedQueries({
     @NamedQuery(name = "OrcamentoTarefa.findAll", query = "SELECT o FROM OrcamentoTarefa o"),
-    @NamedQuery(name = "OrcamentoTarefa.findByValor", query = "SELECT o FROM OrcamentoTarefa o WHERE o.valor = :valor"),
-    @NamedQuery(name = "OrcamentoTarefa.findBySentido", query = "SELECT o FROM OrcamentoTarefa o WHERE o.sentido = :sentido"),
     @NamedQuery(name = "OrcamentoTarefa.findByObservacoes", query = "SELECT o FROM OrcamentoTarefa o WHERE o.observacoes = :observacoes"),
     @NamedQuery(name = "OrcamentoTarefa.findByDatahorainclusao", query = "SELECT o FROM OrcamentoTarefa o WHERE o.dataHoraInclusao = :dataHoraInclusao")})
 public class OrcamentoTarefa implements Serializable {
@@ -43,16 +41,25 @@ public class OrcamentoTarefa implements Serializable {
     @Column(name = "idorcamentotarefa")
     private Integer id;
     
+    /** Valor imputado pelo usuário.
+     * campo transiente, pois o valor será gravado em "credito" ou "debito"
+     */
+    @NotNull(message = "Informe o valor à creditar / debitar")
+    private transient String inputValor;
+
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "credito", precision = 10, scale = 2)
+    private BigDecimal credito;
+
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "debito", precision = 10, scale = 2)
+    private BigDecimal debito;
+
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
-    @Column(name = "valor", precision = 10, scale = 2)
-    private BigDecimal valor;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "sentido")
-    private Character sentido;
+    @Column(name = "saldo", precision = 10, scale = 2)
+    private BigDecimal saldo;
     
     @Basic(optional = false)
     @NotNull
@@ -79,12 +86,10 @@ public class OrcamentoTarefa implements Serializable {
         this.id = idorcamentotarefa;
     }
 
-    public OrcamentoTarefa(Integer idorcamentotarefa, BigDecimal valor, Character sentido, String observacoes, LocalDateTime dataHoraInclusao) {
-        this.id = idorcamentotarefa;
-        this.valor = valor;
-        this.sentido = sentido;
-        this.observacoes = observacoes;
-        this.dataHoraInclusao = dataHoraInclusao;
+    public OrcamentoTarefa(Tarefa tarefa, Usuario usuarioInclusao) {
+        this.tarefa = tarefa;
+        this.usuarioInclusao = usuarioInclusao;
+        this.dataHoraInclusao = LocalDateTime.now();
     }
 
     public Integer getId() {
@@ -95,20 +100,12 @@ public class OrcamentoTarefa implements Serializable {
         this.id = id;
     }
 
-    public BigDecimal getValor() {
-        return valor;
+    public BigDecimal getCredito() {
+        return credito;
     }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
-
-    public Character getSentido() {
-        return sentido;
-    }
-
-    public void setSentido(Character sentido) {
-        this.sentido = sentido;
+    public void setCredito(BigDecimal credito) {
+        this.credito = credito;
     }
 
     public String getObservacoes() {
@@ -143,6 +140,32 @@ public class OrcamentoTarefa implements Serializable {
         this.usuarioInclusao = usuarioInclusao;
     }
 
+    public void setDebito(BigDecimal debito) {
+        this.debito = debito;
+    }
+
+    public BigDecimal getDebito() {
+        return debito;
+    }
+
+    public void setSaldo(BigDecimal saldo) {
+        this.saldo = saldo;
+    }
+
+    public BigDecimal getSaldo() {
+        return saldo;
+    }
+
+    public void setInputValor(String inputValor) {
+        this.inputValor = inputValor;
+    }
+
+    public String getInputValor() {
+        return inputValor;
+    }
+
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -152,15 +175,22 @@ public class OrcamentoTarefa implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof OrcamentoTarefa)) {
             return false;
         }
         OrcamentoTarefa other = (OrcamentoTarefa) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        if ( this == other) return true;
+
+        // se o ID estiver setado, compara por ele
+        if ( this.getId() != null) {
+            return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
+            
+        } else {
+            // senao compara por campos setados na criação da tarefa
+            return this.getUsuarioInclusao().equals(other.getUsuarioInclusao())
+                   && this. getDataHoraInclusao().equals(other.getDataHoraInclusao());
+
         }
-        return true;
     }
 
     @Override

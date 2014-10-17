@@ -449,15 +449,24 @@ public class Tarefa implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Tarefa)) {
             return false;
         }
         Tarefa other = (Tarefa) object;
-        if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
-            return false;
+        if ( this == other) return true;
+
+        // se o ID estiver setado, compara por ele
+        if ( this.getId() != null) {
+            return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
+            
+        } else {
+            // senao compara por campos setados na criação da tarefa
+            return this.getEmpresa().equals(other.getEmpresa())
+                    && this.getUsuarioInclusao().equals(other.getUsuarioInclusao())
+                    && this.getUsuarioSolicitante().equals(other.getUsuarioSolicitante())
+                    && this. getDataHoraInclusao().equals(other.getDataHoraInclusao());
+
         }
-        return true;
     }
 
     @Override
@@ -605,6 +614,13 @@ public class Tarefa implements Serializable {
             setHistorico(new ArrayList<>());
         }
         getHistorico().add(historicoTarefa);
+    }
+
+    public void addApontamento(ApontamentoTarefa apontamento) {
+         if (getApontamentos()==null){
+             setApontamentos(new ArrayList<>());
+        }
+        getApontamentos().add(apontamento);
     }
 
     

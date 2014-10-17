@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Random;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -207,12 +208,23 @@ public class ApontamentoTarefa implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof ApontamentoTarefa)) {
             return false;
         }
         ApontamentoTarefa other = (ApontamentoTarefa) object;
-        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+        if ( this == other) return true;
+
+        // se o ID estiver setado, compara por ele
+        if ( this.getId() != null) {
+            return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
+            
+        } else {
+            // senao compara por campos setados na criação da tarefa
+            return this.getUsuarioInclusao().equals(other.getUsuarioInclusao())
+                   && this. getDataHoraInclusao().equals(other.getDataHoraInclusao());
+
+        }
+        
     }
 
     @Override

@@ -98,7 +98,7 @@ public class PaginaInicialView extends HorizontalLayout {
             CadastroTarefaView view = new CadastroTarefaView();
             CadastroTarefaModel model = new CadastroTarefaModel();
             CadastroTarefaPresenter p = new CadastroTarefaPresenter(model, view);
-            p.open(null);
+            p.criarNovaTarefa();
             
             
         });

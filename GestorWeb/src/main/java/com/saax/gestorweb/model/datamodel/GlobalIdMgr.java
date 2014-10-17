@@ -9,6 +9,7 @@ package com.saax.gestorweb.model.datamodel;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Singleton class para os IDs global

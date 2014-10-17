@@ -63,7 +63,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     public void criarNovaTarefa() {
         CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
         presenter.setCallBackListener(this);
-        presenter.open(null);
+        presenter.criarNovaTarefa();
     }
     
     

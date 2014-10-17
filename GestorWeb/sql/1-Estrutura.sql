@@ -379,8 +379,9 @@ DROP TABLE IF EXISTS OrcamentoTarefa CASCADE;
 CREATE TABLE OrcamentoTarefa (
     idOrcamentoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
-    valor NUMERIC(10,2) NOT NULL,
-    sentido CHAR(1) NOT NULL,
+    credito NUMERIC(10,2),
+    debito NUMERIC(10,2),
+    saldo NUMERIC(10,2) NOT NULL,
     observacoes  CHARACTER VARYING (60) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

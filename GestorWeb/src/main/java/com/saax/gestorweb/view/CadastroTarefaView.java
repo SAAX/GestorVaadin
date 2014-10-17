@@ -1,7 +1,9 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -145,6 +147,8 @@ public class CadastroTarefaView extends Window {
     private ComboBox centroCustoCombo;
     
     private Upload adicionarAnexoButton;
+    private BeanItemContainer<AnexoTarefa> anexoTarefaContainer;;
+    
 
     
     // -------------------------------------------------------------------------
@@ -172,13 +176,20 @@ public class CadastroTarefaView extends Window {
     private Button imputarOrcamentoButton;
     private Button gravarButton;
     private Button cancelarButton;
+    private BeanItemContainer<OrcamentoTarefa> orcamentoContainer;
+    private BeanItem<OrcamentoTarefa> orcamentoTarefaBeanItem;
+    private FieldGroup orcamentoTarefaFieldGroup;
     
     // -------------------------------------------------------------------------
     // Componentes da Aba de SubTarefa
     // -------------------------------------------------------------------------
 
     private TreeTable subTarefasTable;
-
+    private Table controleHorasTable;
+    private Table participantesTable;
+    private Table anexosAdicionadosTable;
+    private Table controleOrcamentoTable;
+    
     
     
     
@@ -353,7 +364,6 @@ public class CadastroTarefaView extends Window {
         // configura o layout usando uma grid
         GridLayout grid = new GridLayout(3, 3);
         grid.setSpacing(true);
-        grid.setMargin(true);
         grid.setWidth("100%");
         grid.setHeight(null);
 
@@ -460,13 +470,14 @@ public class CadastroTarefaView extends Window {
         participantesCombo = new ComboBox(mensagens.getString("CadastroTarefaView.participantesCombo.label"));
 
         participantesCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            participantesContainer.addBean((ParticipanteTarefa) event.getProperty().getValue());
+            listener.adicionarParticipante((ParticipanteTarefa) event.getProperty().getValue());
+            
         });
 
         participantesContainer = new BeanItemContainer<>(ParticipanteTarefa.class);
         
 
-        Table participantesTable = new Table();
+        participantesTable = new Table();
         participantesTable.setContainerDataSource(participantesContainer);
         
         participantesTable.setColumnWidth("usuarioParticipante", 120);
@@ -477,9 +488,9 @@ public class CadastroTarefaView extends Window {
 
         // Adicionar coluna do botão "remover"
         participantesTable.addGeneratedColumn(mensagens.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button("x");
+            Button removeButton = new Button(mensagens.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
-                participantesTable.removeItem(itemId);
+                listener.removerParticipante((ParticipanteTarefa) itemId);
             });
             return removeButton;
         });
@@ -492,16 +503,15 @@ public class CadastroTarefaView extends Window {
         empresaClienteCombo = new ComboBox(mensagens.getString("CadastroTarefaView.empresaClienteCombo.label"));
 
         // do layout :
-        GridLayout layout = new GridLayout(2, 4);
-        layout.setMargin(true);
+        GridLayout layout = new GridLayout(3, 3);
         layout.setSpacing(true);
         layout.setSizeFull();
 
         layout.addComponent(usuarioResponsavelCombo, 0, 0);
-        layout.addComponent(participantesCombo, 0, 1);
-        layout.addComponent(participantesTable, 0, 2);
-        layout.addComponent(empresaClienteCombo, 0, 3);
-        layout.addComponent(descricaoTarefaTextArea, 1, 0, 1, 3);
+        layout.addComponent(participantesCombo, 1, 0);
+        layout.addComponent(participantesTable, 0, 1, 1,1);
+        layout.addComponent(empresaClienteCombo, 0, 2, 1, 2);
+        layout.addComponent(descricaoTarefaTextArea, 2, 0, 2, 2);
         
         return layout;
     }
@@ -525,13 +535,26 @@ public class CadastroTarefaView extends Window {
             listener.anexoAdicionado(event);
         });
 
-        Table anexosAdicionadosTable = new Table();
-        anexosAdicionadosTable.addContainerProperty(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"), String.class, "");
-        anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"), 100);
-        anexosAdicionadosTable.addContainerProperty(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaArquivo"), String.class, "");
-        anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaArquivo"), 70);
-        anexosAdicionadosTable.addContainerProperty(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), Button.class, "");
-        anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), 20);
+        anexoTarefaContainer = new BeanItemContainer<>(AnexoTarefa.class);
+
+        anexosAdicionadosTable = new Table();
+        anexosAdicionadosTable.setContainerDataSource(anexoTarefaContainer);
+        
+        anexosAdicionadosTable.setColumnWidth("nome", 120);
+        anexosAdicionadosTable.setColumnHeader("nome", mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"));
+                
+        anexosAdicionadosTable.setVisibleColumns("nome");
+
+        // Adicionar coluna do botão "remover"
+        anexosAdicionadosTable.addGeneratedColumn(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"));
+            removeButton.addClickListener((ClickEvent event) -> {
+                listener.removerAnexo((AnexoTarefa)itemId);
+                
+            });
+            return removeButton;
+        });
+
         anexosAdicionadosTable.setSelectable(true);
         anexosAdicionadosTable.setImmediate(true);
         anexosAdicionadosTable.setWidth("100%");
@@ -540,7 +563,6 @@ public class CadastroTarefaView extends Window {
         // Do layout:
         GridLayout layout = new GridLayout(2, 2);
         layout.setSpacing(true);
-        layout.setMargin(true);
         layout.setSizeFull();
 
         layout.addComponent(departamentoCombo, 0, 0);
@@ -585,6 +607,8 @@ public class CadastroTarefaView extends Window {
         return apontamentoTarefaBeanItem.getBean();
     }
 
+
+
     /**
      * Constroi e retorna a aba de controle de horas
      *
@@ -612,7 +636,7 @@ public class CadastroTarefaView extends Window {
 
         controleHorasContainer = new BeanItemContainer<>(ApontamentoTarefa.class);
 
-        Table controleHorasTable = new Table();
+        controleHorasTable = new Table();
         controleHorasTable.setContainerDataSource(controleHorasContainer);
 
         controleHorasTable.setColumnWidth("dataHoraInclusao", 80);
@@ -637,7 +661,8 @@ public class CadastroTarefaView extends Window {
         controleHorasTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("x");
             removeButton.addClickListener((ClickEvent event) -> {
-                controleHorasTable.removeItem(itemId);
+                listener.removerApontamentoHoras((ApontamentoTarefa) itemId);
+                
             });
             return removeButton;
         });
@@ -656,13 +681,38 @@ public class CadastroTarefaView extends Window {
         controleHorasLayout.addComponent(imputarHorasButton);
 
         controleHorasAba = new VerticalLayout();
-        controleHorasAba.setMargin(true);
         controleHorasAba.setSpacing(true);
 
         controleHorasAba.addComponent(controleHorasLayout);
         controleHorasAba.addComponent(controleHorasTable);
 
         return controleHorasAba;
+    }
+
+    /**
+     * Bind (liga) um registro de orçamento de tarefa ao formulário
+     *
+     * @param orcamentoTarefa
+     */
+    public void setOrcamentoTarefa(OrcamentoTarefa orcamentoTarefa) {
+
+        orcamentoTarefaBeanItem = new BeanItem<>(orcamentoTarefa);
+        orcamentoTarefaFieldGroup = new FieldGroup(orcamentoTarefaBeanItem);
+
+        orcamentoTarefaFieldGroup.bind(imputarOrcamentoTextField, "inputValor");
+        orcamentoTarefaFieldGroup.bind(observacaoOrcamentoTextField, "observacoes");
+
+    }
+
+    /**
+     * Obtem o controle de orçamento ligado (binding) ao form
+     *
+     * @return
+     * @throws com.vaadin.data.fieldgroup.FieldGroup.CommitException
+     */
+    public OrcamentoTarefa getOrcamentoTarefa() throws FieldGroup.CommitException {
+        orcamentoTarefaFieldGroup.commit();
+        return orcamentoTarefaBeanItem.getBean();
     }
 
     /**
@@ -683,37 +733,49 @@ public class CadastroTarefaView extends Window {
             listener.imputarOrcamentoClicked();
         });
 
-        Table controleOrcamentoTable = new Table();
-        controleOrcamentoTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaData"), String.class, "");
-        controleOrcamentoTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaData"), 80);
-        controleOrcamentoTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaObservacoes"), String.class, "");
-        controleOrcamentoTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaObservacoes"), 150);
-        controleOrcamentoTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaCredito"), String.class, "");
-        controleOrcamentoTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaCredito"), 80);
-        controleOrcamentoTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaDebito"), String.class, "");
-        controleOrcamentoTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaDebito"), 80);
-        controleOrcamentoTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaSaldo"), String.class, "");
-        controleOrcamentoTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaSaldo"), 80);
+        orcamentoContainer = new BeanItemContainer<>(OrcamentoTarefa.class);
+        
+        controleOrcamentoTable = new Table();
+        controleOrcamentoTable.setContainerDataSource(orcamentoContainer);
+        controleOrcamentoTable.setColumnWidth("dataHoraInclusao", 80);
+        controleOrcamentoTable.setColumnHeader("dataHoraInclusao", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaData"));
+        controleOrcamentoTable.setColumnWidth("observacoes", 150);
+        controleOrcamentoTable.setColumnHeader("observacoes", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaObservacoes"));
+        controleOrcamentoTable.setColumnWidth("credito", 80);
+        controleOrcamentoTable.setColumnHeader("credito", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaCredito"));
+        controleOrcamentoTable.setColumnWidth("debito", 80);
+        controleOrcamentoTable.setColumnHeader("debito", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaDebito"));
+        controleOrcamentoTable.setColumnWidth("saldo", 80);
+        controleOrcamentoTable.setColumnHeader("saldo", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaSaldo"));
 
-        controleOrcamentoTable.addContainerProperty(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaBotaoRemover"), Button.class, "");
-        controleOrcamentoTable.setColumnWidth(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaBotaoRemover"), 20);
+        
+        controleOrcamentoTable.setVisibleColumns("dataHoraInclusao", "credito", "debito", "saldo", "observacoes");
+
+        // Adicionar coluna do botão "remover"
+        controleOrcamentoTable.addGeneratedColumn(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaBotaoRemover"));
+            removeButton.addClickListener((ClickEvent event) -> {
+                listener.removerRegistroOrcamento((OrcamentoTarefa)itemId);
+            });
+            return removeButton;
+        });
+
         controleOrcamentoTable.setSelectable(true);
         controleOrcamentoTable.setImmediate(true);
         controleOrcamentoTable.setPageLength(5);
         controleOrcamentoTable.setWidth("100%");
 
         // Do layout:
-        HorizontalLayout orcamentoContainer = new HorizontalLayout();
-        orcamentoContainer.setSpacing(true);
-        orcamentoContainer.addComponent(imputarOrcamentoTextField);
-        orcamentoContainer.addComponent(observacaoOrcamentoTextField);
-        orcamentoContainer.addComponent(imputarOrcamentoButton);
+        HorizontalLayout orcamentoLayout = new HorizontalLayout();
+        orcamentoLayout.setSpacing(true);
+        orcamentoLayout.addComponent(imputarOrcamentoTextField);
+        orcamentoLayout.addComponent(observacaoOrcamentoTextField);
+        orcamentoLayout.addComponent(imputarOrcamentoButton);
 
         controleOrcamentoAba = new VerticalLayout();
-        controleOrcamentoAba.setMargin(true);
         controleOrcamentoAba.setSpacing(true);
 
-        controleOrcamentoAba.addComponent(orcamentoContainer);
+        controleOrcamentoAba.addComponent(orcamentoLayout);
         controleOrcamentoAba.addComponent(controleOrcamentoTable);
 
         return controleOrcamentoAba;
@@ -1048,5 +1110,32 @@ public class CadastroTarefaView extends Window {
         return participantesContainer;
     }
 
+    public BeanItemContainer<OrcamentoTarefa> getOrcamentoContainer() {
+        return orcamentoContainer;
+    }
+
+    public Table getControleHorasTable() {
+        return controleHorasTable;
+    }
+
+    public Table getParticipantesTable() {
+        return participantesTable;
+    }
+
+    public BeanItemContainer<AnexoTarefa> getAnexoTarefaContainer() {
+        return anexoTarefaContainer;
+    }
+
+    public Table getAnexosAdicionadosTable() {
+        return anexosAdicionadosTable;
+    }
+
+    public Table getControleOrcamentoTable() {
+        return controleOrcamentoTable;
+    }
+
+    
+    
+    
     
 }

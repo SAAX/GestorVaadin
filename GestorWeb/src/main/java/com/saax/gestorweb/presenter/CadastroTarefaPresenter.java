@@ -6,6 +6,8 @@ import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.CentroCusto;
+import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
@@ -17,13 +19,13 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorException;
+import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.data.Property;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
@@ -71,7 +73,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
 
         view.setListener(this);
 
-        usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
     }
 
@@ -129,6 +131,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         view.exibeTituloEdicao();
 
         init(tarefaToEdit);
+        
+        
     }
 
     /**
@@ -142,6 +146,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         carregaComboResponsavel();
         carregaComboParticipante();
         carregaComboEmpresaCliente();
+        carregaComboDepartamento();
+        carregaComboCentroCusto();
         setPopUpEvolucaoStatusEAndamento(tarefa);
 
         // Configuras os beans de 1-N
@@ -269,6 +275,32 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
 
     }
 
+    /**
+     * Carrega o combo de departamentos 
+     */
+    private void carregaComboDepartamento() {
+        
+        ComboBox departamento = view.getDepartamentoCombo();
+        for (Departamento depto : model.listDepartamentos()) {
+            departamento.addItem(depto);
+            departamento.setItemCaption(depto, depto.getDepartamento());
+        }
+
+    }
+
+    /**
+     * Carrega o combo de centros de custo 
+     */
+    private void carregaComboCentroCusto() {
+        
+        ComboBox centrocusto = view.getCentroCustoCombo();
+        for (CentroCusto cc : model.listCentroCusto()) {
+            centrocusto.addItem(cc);
+            centrocusto.setItemCaption(cc, cc.getCentroCusto());
+        }
+
+    }
+
     @Override
     public void avisoButtonClicked() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -320,6 +352,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
                 callbackListener.cadastroNovaTarefaConcluido(tarefa);
             }
             view.close();
+            Notification.show("Tarefa criada!", Notification.Type.HUMANIZED_MESSAGE);
         } catch (RuntimeException e) {
             // caso ocorra alguma exceçao ao gravar, nao adianta mostrar o erro ao
             // usuario pois nao ha nada que o coitado possa fazer
@@ -526,7 +559,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
     }
 
     @Override
-    public void adicionarParticipante(ParticipanteTarefa participanteTarefa) {
+    public void adicionarParticipante(Usuario usuario) {
+        ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
         view.getParticipantesContainer().addBean(participanteTarefa);
         Tarefa tarefa = view.getTarefa();
         

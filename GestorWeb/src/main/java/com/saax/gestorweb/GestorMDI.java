@@ -48,6 +48,9 @@ public class GestorMDI extends UI {
     private transient PaginaInicialPresenter paginaInicialPresenter;
     private ResourceBundle mensagens;
     private GestorWebImagens gestorWebImagens;
+    
+    
+    
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
@@ -154,27 +157,19 @@ public class GestorMDI extends UI {
 
         setStyleName("blue");
 
-        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Iniciando atendimento de requisição.");
-
-        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens para o locale: {0}", request.getLocale());
-
         // obtém o arquivo de mensagens de acordo com o locale do usuário
         mensagens = (ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt", "br")));
 
         //obtém os cookies da sessão
         CookiesManager cookieManager = new CookiesManager();
-        getSession().setAttribute("cookieManager", cookieManager);
+        //getSession().setAttribute("cookieManager", cookieManager);
 
         // obtém e armazena as imagens
         gestorWebImagens = new GestorWebImagens();
 
-        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Carregando arquivo de mensagens carregado");
-
         loadPaginaInicial();
 
         setSizeFull();
-
-        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Atendimento de requisição concluído.");
 
     }
 

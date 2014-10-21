@@ -8,7 +8,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
-import com.vaadin.server.VaadinSession;
+import com.saax.gestorweb.util.GestorSession;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

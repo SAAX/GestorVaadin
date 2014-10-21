@@ -11,7 +11,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusViewListener;
-import com.vaadin.server.VaadinSession;
+import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.UI;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -45,7 +45,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     public PopUpEvolucaoStatusPresenter(PopUpEvolucaoStatusView view, PopUpEvolucaoStatusModel model) {
         this.view = view;
         this.model = model;
-        usuario = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        usuario = (Usuario) GestorSession.getAttribute("usuarioLogado");
         view.setListener(this);
 
     }

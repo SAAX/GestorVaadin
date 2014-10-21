@@ -2477,19 +2477,19 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-margin-top {
-	padding-top: 37px;
+	padding-top: 10px;
 }
 
 .mytheme .v-margin-right {
-	padding-right: 37px;
+	padding-right: 10px;
 }
 
 .mytheme .v-margin-bottom {
-	padding-bottom: 37px;
+	padding-bottom: 10px;
 }
 
 .mytheme .v-margin-left {
-	padding-left: 37px;
+	padding-left: 10px;
 }
 
 .mytheme .v-spacing {
@@ -6840,19 +6840,19 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-gridlayout-margin-top {
-	padding-top: 37px;
+	padding-top: 10px;
 }
 
 .mytheme .v-gridlayout-margin-bottom {
-	padding-bottom: 37px;
+	padding-bottom: 10px;
 }
 
 .mytheme .v-gridlayout-margin-left {
-	padding-left: 37px;
+	padding-left: 10px;
 }
 
 .mytheme .v-gridlayout-margin-right {
-	padding-right: 37px;
+	padding-right: 10px;
 }
 
 .mytheme .v-gridlayout-spacing-on {
@@ -12705,4 +12705,20 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-select-optiongroup-horizontal .v-select-option.v-radiobutton {
 	padding-right: 10px;
+}
+
+.mytheme .v-margin-left {
+	padding-left: 10px;
+}
+
+.mytheme .v-margin-right {
+	padding-right: 10px;
+}
+
+.mytheme .v-margin-top {
+	padding-top: 10px;
+}
+
+.mytheme .v-margin-bottom {
+	padding-bottom: 10px;
 }

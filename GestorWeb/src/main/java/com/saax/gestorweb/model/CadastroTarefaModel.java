@@ -6,15 +6,18 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.CentroCusto;
+import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
-import com.vaadin.server.VaadinSession;
+import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -98,6 +101,10 @@ public class CadastroTarefaModel {
         
         try {
             
+            if (tarefa.getUsuarioResponsavel()==null){
+                tarefa.setUsuarioResponsavel(tarefa.getUsuarioInclusao());
+            }
+            
             em.getTransaction().begin();
 
             // TODO: Colocar projecao calculada
@@ -106,7 +113,7 @@ public class CadastroTarefaModel {
             if (tarefa.getId() == null) {
                 em.persist(tarefa);
             } else {
-                em.merge(em);
+                em.merge(tarefa);
             }
             
             em.getTransaction().commit();
@@ -186,7 +193,7 @@ public class CadastroTarefaModel {
     public ApontamentoTarefa configuraApontamento(ApontamentoTarefa apontamentoTarefa) {
 
         // Identifica os usuários relacionados ao apontamento e a tarefa
-        Usuario usuarioApontamento = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("usuarioLogado");
         Usuario usuarioResponsavel = apontamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = apontamentoTarefa.getTarefa().getUsuarioSolicitante();
         
@@ -304,7 +311,7 @@ public class CadastroTarefaModel {
     public OrcamentoTarefa configuraInputOrcamento(OrcamentoTarefa orcamentoTarefa) {
 
         // Identifica os usuários relacionados ao apontamento e a tarefa
-        Usuario usuarioApontamento = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("usuarioLogado");
         Usuario usuarioResponsavel = orcamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = orcamentoTarefa.getTarefa().getUsuarioSolicitante();
         
@@ -385,5 +392,36 @@ public class CadastroTarefaModel {
         orcamentos.remove(orcamentoTarefa);
         
         recalculaSaldoOrcamento(orcamentos);
+    }
+
+    public ParticipanteTarefa criarParticipante(Usuario usuario, Tarefa tarefa) {
+        
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        
+        ParticipanteTarefa participanteTarefa = new ParticipanteTarefa();
+        participanteTarefa.setTarefa(tarefa);
+        participanteTarefa.setUsuarioInclusao(usuarioLogado);
+        participanteTarefa.setUsuarioParticipante(usuario);
+        participanteTarefa.setDataHoraInclusao(LocalDateTime.now());
+        
+        return participanteTarefa;
+    }
+
+    public List<Departamento> listDepartamentos() {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        return em.createNamedQuery("Departamento.findAll").getResultList();
+        
+        
+    }
+
+    public List<CentroCusto> listCentroCusto() {
+
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        return em.createNamedQuery("CentroCusto.findByEmpresa")
+                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .getResultList();
+    
     }
 }

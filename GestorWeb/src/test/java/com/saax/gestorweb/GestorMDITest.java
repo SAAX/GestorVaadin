@@ -6,7 +6,7 @@
 
 package com.saax.gestorweb;
 
-import com.saax.gestorweb.util.UserData;
+import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.view.DashBoardView;
 import com.vaadin.server.VaadinRequest;
 import org.junit.After;
@@ -27,10 +27,12 @@ public class GestorMDITest {
     
     @BeforeClass
     public static void setUpClass() {
+        DBConnect.getInstance().assertConnection();
     }
     
     @AfterClass
     public static void tearDownClass() {
+        
     }
     
     @Before

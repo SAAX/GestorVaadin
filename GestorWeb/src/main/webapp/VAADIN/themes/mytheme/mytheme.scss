@@ -18,10 +18,10 @@ $v-error-indicator-color: hsl(349, 66%, 56%);
 @import "../valo/valo";
 
 .tests-valo-light .valo-menu .valo-menu-title {
-  background: $v-app-background-color;
-  color: $v-selection-color;
-  text-shadow: none;
-  border-color: first-color(valo-border($color: $v-app-background-color, $strength: 0.5));
+    background: $v-app-background-color;
+    color: $v-selection-color;
+    text-shadow: none;
+    border-color: first-color(valo-border($color: $v-app-background-color, $strength: 0.5));
 }
 
 
@@ -30,6 +30,10 @@ $v-font-size: 14px;
 $v-unit-size: 25px;
 $v-line-height: 1.0;
 $v-app-loading-text: "Preparando seu gestor Veertual...";
+$v-layout-margin-top: 10px;
+$v-layout-margin-right: 10px;
+$v-layout-margin-bottom: 10px;
+$v-layout-margin-left: 10px;
 
 // Import valo after setting the parameters
 @import "../valo/valo";
@@ -40,7 +44,7 @@ $v-app-loading-text: "Preparando seu gestor Veertual...";
 @mixin mytheme {
 
     /* Include all the styles from the reindeer theme */
-  @include valo;
+    @include valo;
 
 
     /* Insert your theme rules here */
@@ -52,11 +56,11 @@ $v-app-loading-text: "Preparando seu gestor Veertual...";
     .v-tree-node-no-children{
         background: none;
     }
-/*
-    v-tree-node-expanded {
-        background-position: -5px -10px;
-    }
-*/
+    /*
+        v-tree-node-expanded {
+            background-position: -5px -10px;
+        }
+    */
     .v-tree-node {
         background-image: url("img/icone-treeview.jpeg");
 
@@ -74,4 +78,9 @@ $v-app-loading-text: "Preparando seu gestor Veertual...";
     .v-select-optiongroup-horizontal .v-select-option.v-radiobutton {
         padding-right: 10px;
     }
+
+    .v-margin-left   {padding-left:   10px;}
+    .v-margin-right  {padding-right:  10px;}
+    .v-margin-top    {padding-top:    10px;}
+    .v-margin-bottom {padding-bottom: 10px;}
 }

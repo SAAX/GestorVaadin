@@ -4,7 +4,7 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.vaadin.server.VaadinSession;
+import com.saax.gestorweb.util.GestorSession;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +29,7 @@ public class LoginModel {
     public  Empresa getEmpresaUsuarioLogado()  {
         
         // obtem o usuario logado
-        Usuario usuario = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuario = (Usuario) GestorSession.getAttribute("usuarioLogado");
         
         // obtem a empresa ativa do usuario logado 
         // so pode haver uma

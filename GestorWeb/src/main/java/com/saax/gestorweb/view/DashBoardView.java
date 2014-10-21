@@ -115,11 +115,11 @@ public class DashBoardView extends VerticalLayout {
 
         tarefasTable = new TreeTable();
         getTarefasTable().setWidth("100%");
-        getTarefasTable().addContainerProperty("Cod", String.class, "");
+        getTarefasTable().addContainerProperty("Cod", Button.class, "");
         getTarefasTable().setColumnWidth("Cod", 70);
-        getTarefasTable().addContainerProperty("Título", String.class, "");
+        getTarefasTable().addContainerProperty("Título", Button.class, "");
         getTarefasTable().setColumnWidth("Título", 50);
-        getTarefasTable().addContainerProperty("Nome", String.class, "");
+        getTarefasTable().addContainerProperty("Nome", Button.class, "");
         getTarefasTable().setColumnWidth("Nome", 250);
         getTarefasTable().addContainerProperty("Empresa/Filial", String.class, "");
         getTarefasTable().setColumnWidth("Empresa/Filial", 200);

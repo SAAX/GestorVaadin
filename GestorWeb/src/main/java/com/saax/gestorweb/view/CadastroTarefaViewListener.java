@@ -5,6 +5,7 @@ import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Upload;
 
@@ -52,7 +53,7 @@ public interface CadastroTarefaViewListener {
 
     public void removerParticipante(ParticipanteTarefa participanteTarefa);
 
-    public void adicionarParticipante(ParticipanteTarefa participanteTarefa);
+    public void adicionarParticipante(Usuario participanteTarefa);
 
     public void removerAnexo(AnexoTarefa anexoTarefa);
 

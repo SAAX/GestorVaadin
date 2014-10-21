@@ -14,7 +14,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
-import com.vaadin.server.VaadinSession;
+import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
@@ -440,7 +440,7 @@ public class SignupPresenter implements SignupViewListener {
             
         }
         
-        VaadinSession.getCurrent().setAttribute("usuarioLogado", empresa.getUsuarioInclusao());
+        GestorSession.setAttribute("usuarioLogado", empresa.getUsuarioInclusao());
         
 
     }

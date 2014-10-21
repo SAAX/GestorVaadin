@@ -8,8 +8,6 @@ package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -24,7 +22,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -32,7 +29,7 @@ import javax.validation.constraints.Size;
  * @author rodrigo
  */
 @Entity
-@Table(name = "bloqueiotarefa", catalog = "gestor", schema = "public")
+@Table(name = "bloqueiotarefa")
 @NamedQueries({
     @NamedQuery(name = "BloqueioTarefa.findAll", query = "SELECT b FROM BloqueioTarefa b"),
     @NamedQuery(name = "BloqueioTarefa.findById", query = "SELECT b FROM BloqueioTarefa b WHERE b.id= :id"),

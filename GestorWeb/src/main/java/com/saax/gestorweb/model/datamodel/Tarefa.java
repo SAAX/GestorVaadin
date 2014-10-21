@@ -623,6 +623,7 @@ public class Tarefa implements Serializable {
         getApontamentos().add(apontamento);
     }
 
+   
     
     
 }

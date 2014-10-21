@@ -20,7 +20,8 @@ import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
-import com.vaadin.server.VaadinSession;
+import com.vaadin.data.Item;
+import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
@@ -54,8 +55,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    
-    
+
     /**
      * Abre o cadastro de tarefas para criação de uma nova tarefa
      */
@@ -65,27 +65,74 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         presenter.setCallBackListener(this);
         presenter.criarNovaTarefa();
     }
-    
-    
+
     /**
      * Callback notificando que o cadastro de uma nova tarefa foi concluido
-     * @param tarefaCriada 
+     *
+     * @param tarefaCriada
      */
     @Override
-    public void cadastroNovaTarefaConcluido(Tarefa tarefaCriada){
-         
-        adicionarTarefaTable(tarefaCriada);
+    public void cadastroNovaTarefaConcluido(Tarefa tarefaCriada) {
+
+        // verifica se a tarefa já esta da tabela (no caso de edição)
+        if (view.getTarefasTable().getItemIds().contains(tarefaCriada.getGlobalID())) {
+            atualizarTarefaTable(tarefaCriada);
+        } else {
+            adicionarTarefaTable(tarefaCriada);
+        }
         organizarHierarquiaTreeTable(tarefaCriada);
     }
 
     /**
      * Sobrecarga de organizarHierarquiaTreeTable (list)
-     * @param tarefaCriada 
+     *
+     * @param tarefaCriada
      */
     private void organizarHierarquiaTreeTable(Tarefa tarefaCriada) {
         List<Tarefa> lista = new ArrayList<>();
         lista.add(tarefaCriada);
         organizarHierarquiaTreeTable(lista);
+
+    }
+
+    private Button buildButtonEditarTarefa(Tarefa tarefa, String caption) {
+        Button link = new Button(caption);
+        link.setStyleName("link");
+        CadastroTarefaCallBackListener callback = this;
+        link.addClickListener((Button.ClickEvent event) -> {
+            view.getTarefasTable().setValue(tarefa.getGlobalID());
+            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            presenter.setCallBackListener(callback);
+            presenter.editar(tarefa);
+        });
+        return link;
+    }
+
+    private void atualizarTarefaTable(Tarefa tarefa) {
+        Item it = view.getTarefasTable().getItem(tarefa.getGlobalID());
+
+        it.getItemProperty("Cod").setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
+        it.getItemProperty("Título").setValue(buildButtonEditarTarefa(tarefa, tarefa.getTitulo()));
+        it.getItemProperty("Nome").setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
+        it.getItemProperty("Empresa/Filial").setValue(tarefa.getEmpresa().getNome()
+                + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
+        it.getItemProperty("Solicitante").setValue(tarefa.getUsuarioSolicitante().getNome());
+        it.getItemProperty("Responsável").setValue(tarefa.getUsuarioResponsavel().getNome());
+        it.getItemProperty("Data Início").setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty("Data Fim").setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty("Status").setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
+        it.getItemProperty("Projeção").setValue(tarefa.getProjecao().toString().charAt(0));
+        it.getItemProperty("Email").setValue(new Button("E"));
+        it.getItemProperty("Chat").setValue(new Button("C"));
+
+        // se a tarefa possui subs, chama recursivamente
+        for (Tarefa subTarefa : tarefa.getSubTarefas()) {
+            if (view.getTarefasTable().getItemIds().contains(subTarefa.getGlobalID())) {
+                atualizarTarefaTable(subTarefa);
+            } else {
+                adicionarTarefaTable(subTarefa);
+            }
+        }
 
     }
 
@@ -187,7 +234,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     public void carregarListaTarefasUsuarioLogado() {
 
         // Usuario logado
-        Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
         List<Tarefa> listaTarefas = model.listarTarefas(usuarioLogado);
 
@@ -200,7 +247,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
      */
     private void carregarListaTarefasPrincipais() {
 
-        Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
         List<Tarefa> tarefasPrincipais = model.listarTarefasPrincipais(usuarioLogado);
 
@@ -245,7 +292,6 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
      */
     public void exibirListaTarefas(List<Tarefa> listaTarefas) {
 
-        
         view.getTarefasTable().removeAllItems();
 
         Object[] linha;
@@ -254,44 +300,51 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         });
 
         organizarHierarquiaTreeTable(listaTarefas);
-        
 
     }
-    
+
     /**
-     * Configura a hierarquia da tree table de acordo com o relacionamento das tarefas e subs
+     * Configura a hierarquia da tree table de acordo com o relacionamento das
+     * tarefas e subs
      */
-    private void organizarHierarquiaTreeTable(List<Tarefa> listaTarefas){
-        
+    private void organizarHierarquiaTreeTable(List<Tarefa> listaTarefas) {
+
         for (Tarefa tarefa : listaTarefas) {
             if (tarefa.getTarefaPai() != null) {
                 view.getTarefasTable().setParent(tarefa.getGlobalID(), tarefa.getTarefaPai().getGlobalID());
             }
         }
     }
-    
-    /**
-     * Adiciona a tarefa na tree table 
-     * @param tarefa 
-     */
-    private void adicionarTarefaTable(Tarefa tarefa){
-        Object[] linha  = new Object[]{
-                tarefa.getGlobalID(),
-                tarefa.getTitulo(),
-                tarefa.getNome(),
-                tarefa.getEmpresa().getNome()
-                + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""),
-                tarefa.getUsuarioSolicitante().getNome(),
-                tarefa.getUsuarioResponsavel().getNome(),
-                FormatterUtil.formatDate(tarefa.getDataInicio()),
-                FormatterUtil.formatDate(tarefa.getDataFim()),
-                buildPopUpEvolucaoStatusEAndamento(tarefa),
-                tarefa.getProjecao().toString().charAt(0),
-                new Button("E"),
-                new Button("C")
-            };
 
-            view.getTarefasTable().addItem(linha, tarefa.getGlobalID());
+    /**
+     * Adiciona a tarefa na tree table
+     *
+     * @param tarefa
+     */
+    private void adicionarTarefaTable(Tarefa tarefa) {
+
+        Object[] linha = new Object[]{
+            buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()),
+            buildButtonEditarTarefa(tarefa, tarefa.getTitulo()),
+            buildButtonEditarTarefa(tarefa, tarefa.getNome()),
+            tarefa.getEmpresa().getNome()
+            + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""),
+            tarefa.getUsuarioSolicitante().getNome(),
+            tarefa.getUsuarioResponsavel().getNome(),
+            FormatterUtil.formatDate(tarefa.getDataInicio()),
+            FormatterUtil.formatDate(tarefa.getDataFim()),
+            buildPopUpEvolucaoStatusEAndamento(tarefa),
+            tarefa.getProjecao().toString().charAt(0),
+            new Button("E"),
+            new Button("C")
+        };
+
+        view.getTarefasTable().addItem(linha, tarefa.getGlobalID());
+
+        // se a tarefa possui subs, chama recursivamente
+        for (Tarefa subTarefa : tarefa.getSubTarefas()) {
+            adicionarTarefaTable(subTarefa);
+        }
 
     }
 

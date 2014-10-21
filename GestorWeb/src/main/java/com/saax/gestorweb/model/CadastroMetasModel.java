@@ -11,7 +11,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
-import com.vaadin.server.VaadinSession;
+import com.saax.gestorweb.util.GestorSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -62,7 +62,7 @@ public class CadastroMetasModel {
     public List<Empresa> obterListaEmpresasUsuarioLogado() {
 
         // Usuário logado na sessão
-        Usuario usuario = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuario = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
         List<Empresa> empresas = new ArrayList<Empresa>();
         for (UsuarioEmpresa empresaUsuario : usuario.getEmpresas()) {

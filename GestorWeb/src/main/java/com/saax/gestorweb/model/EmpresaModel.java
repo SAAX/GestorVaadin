@@ -3,7 +3,7 @@ package com.saax.gestorweb.model;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorException;
-import com.vaadin.server.VaadinSession;
+import com.saax.gestorweb.util.GestorSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class EmpresaModel {
      */
     public List<Empresa> listarEmpresasRelacionadas() throws GestorException {
 
-        Usuario usuarioLogado = (Usuario) VaadinSession.getCurrent().getAttribute("usuarioLogado");
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
         Empresa empresa = usuarioLogado.getEmpresaAtiva();
 
         List<Empresa> empresas = new ArrayList<>();

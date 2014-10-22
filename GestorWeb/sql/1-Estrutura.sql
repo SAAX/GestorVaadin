@@ -360,9 +360,9 @@ DROP TABLE IF EXISTS ApontamentoTarefa CASCADE;
 CREATE TABLE ApontamentoTarefa (
     idApontamentoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
-    creditoHoras TIME,
-    debitoHoras TIME,
-    saldoHoras TIME,
+    creditoHoras INTEGER,
+    debitoHoras INTEGER,
+    saldoHoras INTEGER NOT NULL,
     custoHora NUMERIC(10,2),
     creditoValor NUMERIC(10,3),
     debitoValor NUMERIC(10,3),

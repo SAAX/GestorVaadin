@@ -74,12 +74,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     @Override
     public void cadastroNovaTarefaConcluido(Tarefa tarefaCriada) {
 
-        // verifica se a tarefa já esta da tabela (no caso de edição)
-        if (view.getTarefasTable().getItemIds().contains(tarefaCriada.getGlobalID())) {
-            atualizarTarefaTable(tarefaCriada);
-        } else {
-            adicionarTarefaTable(tarefaCriada);
-        }
+        adicionarTarefaTable(tarefaCriada);
         organizarHierarquiaTreeTable(tarefaCriada);
     }
 
@@ -100,7 +95,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         link.setStyleName("link");
         CadastroTarefaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
-            view.getTarefasTable().setValue(tarefa.getGlobalID());
+            view.getTarefasTable().setValue(tarefa);
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
             presenter.setCallBackListener(callback);
             presenter.editar(tarefa);
@@ -109,7 +104,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     }
 
     private void atualizarTarefaTable(Tarefa tarefa) {
-        Item it = view.getTarefasTable().getItem(tarefa.getGlobalID());
+        Item it = view.getTarefasTable().getItem(tarefa);
 
         it.getItemProperty("Cod").setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
         it.getItemProperty("Título").setValue(buildButtonEditarTarefa(tarefa, tarefa.getTitulo()));
@@ -127,13 +122,19 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
 
         // se a tarefa possui subs, chama recursivamente
         for (Tarefa subTarefa : tarefa.getSubTarefas()) {
-            if (view.getTarefasTable().getItemIds().contains(subTarefa.getGlobalID())) {
+            if (view.getTarefasTable().getItemIds().contains(subTarefa)) {
                 atualizarTarefaTable(subTarefa);
             } else {
                 adicionarTarefaTable(subTarefa);
             }
         }
 
+    }
+
+    @Override
+    public void edicaoTarefaConcluida(Tarefa tarefa) {
+        atualizarTarefaTable(tarefa);
+        organizarHierarquiaTreeTable(tarefa);
     }
 
     // enumeracao do tipo de pesquisa
@@ -277,8 +278,8 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
             if (event.isPopupVisible()) {
                 // selecionar a linha clicada:
-                String idTarefa = event.getPopupButton().getId();
-                this.view.getTarefasTable().setValue(idTarefa);
+                Tarefa tarefaEditada = (Tarefa) event.getPopupButton().getData();
+                this.view.getTarefasTable().setValue(tarefa);
             }
         });
 
@@ -311,7 +312,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
 
         for (Tarefa tarefa : listaTarefas) {
             if (tarefa.getTarefaPai() != null) {
-                view.getTarefasTable().setParent(tarefa.getGlobalID(), tarefa.getTarefaPai().getGlobalID());
+                view.getTarefasTable().setParent(tarefa, tarefa.getTarefaPai());
             }
         }
     }
@@ -339,7 +340,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
             new Button("C")
         };
 
-        view.getTarefasTable().addItem(linha, tarefa.getGlobalID());
+        view.getTarefasTable().addItem(linha, tarefa);
 
         // se a tarefa possui subs, chama recursivamente
         for (Tarefa subTarefa : tarefa.getSubTarefas()) {

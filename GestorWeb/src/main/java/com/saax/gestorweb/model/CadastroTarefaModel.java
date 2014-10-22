@@ -22,21 +22,17 @@ import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.TemporalAmount;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
-import org.eclipse.persistence.internal.core.helper.CoreClassConstants;
 
 /**
  *
@@ -100,10 +96,6 @@ public class CadastroTarefaModel {
         }
         
         try {
-            
-            if (tarefa.getUsuarioResponsavel()==null){
-                tarefa.setUsuarioResponsavel(tarefa.getUsuarioInclusao());
-            }
             
             em.getTransaction().begin();
 
@@ -197,10 +189,13 @@ public class CadastroTarefaModel {
         Usuario usuarioResponsavel = apontamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = apontamentoTarefa.getTarefa().getUsuarioSolicitante();
         
-        LocalTime inputHoras = null;
+        Duration inputHoras = null;
         try {
-            inputHoras = LocalTime.parse(apontamentoTarefa.getInputHoras(), DateTimeFormatter.ofPattern("[HH]:mm"));
-        } catch (DateTimeParseException e) {
+            String[] input = apontamentoTarefa.getInputHoras().split(":");
+            long hour = Long.parseLong(input[0]);
+            long minutes = Long.parseLong(input[1]);
+            inputHoras = Duration.ofHours(hour).plus(minutes, ChronoUnit.MINUTES);
+        } catch (RuntimeException e) {
             throw new RuntimeException("Hora deve ser informada como HH:MM");
         }
 
@@ -232,32 +227,32 @@ public class CadastroTarefaModel {
         Collections.sort(apontamentos, (ApontamentoTarefa o1, ApontamentoTarefa o2) -> o1.getDataHoraInclusao().compareTo(o2.getDataHoraInclusao()));
 
         // calcula o saldo:
-        LocalTime saldoAnterior = LocalTime.of(0, 0, 0);
+        Duration saldoAnterior = Duration.of(0, ChronoUnit.HOURS);
         BigDecimal saldoAnteriorValor = BigDecimal.ZERO;
         for (ApontamentoTarefa apontamentoElement : apontamentos) {
 
             // ----------------------------------------------------------------
             // Calculo das horas
             // ----------------------------------------------------------------
-            LocalTime credito = apontamentoElement.getCreditoHoras();
-            LocalTime debito = apontamentoElement.getDebitoHoras();
+            Duration credito = apontamentoElement.getCreditoHoras();
+            Duration debito = apontamentoElement.getDebitoHoras();
 
             // Calcula saldo = saldoAnterior + Credito - Debito
             //      1. Saldo = Saldo Anterior
-            LocalTime saldo = LocalTime.of(saldoAnterior.getHour(), saldoAnterior.getMinute());
+            Duration saldo = saldoAnterior;
             //      2. Saldo = Saldo + Credito
             if (credito != null) {
-                saldo = saldo.plusHours(credito.getHour()).plusMinutes(credito.getMinute());
+                saldo = saldo.plus(credito);
             }
             //      3. Saldo = Saldo - Debito
             if (debito != null) {
-                saldo = saldo.minusHours(debito.getHour()).minusMinutes(debito.getMinute());
+                saldo = saldo.minus(debito);
             }
             
             apontamentoElement.setSaldoHoras(saldo);
 
             // configura o saldo alterior a ser usado na proxima iteraçao
-            saldoAnterior = LocalTime.of(saldo.getHour(), saldo.getMinute(), saldo.getSecond());
+            saldoAnterior = saldo;
 
             // ----------------------------------------------------------------
             // Calculo dos valores
@@ -290,15 +285,15 @@ public class CadastroTarefaModel {
      * Calcula o custo total como: custo / hora * quantidade de horas
      *
      * @param custoHora
-     * @param horas
+     * @param tempo
      * @return
      */
-    private BigDecimal calculaCustoTotalHora(BigDecimal custoHora, LocalTime horas) {
-        double tempo = horas.getHour() + (horas.getMinute() / 60);
+    private BigDecimal calculaCustoTotalHora(BigDecimal custoHora, Duration tempo) {
+        double tempoEmHoras = tempo.toMinutes() / 60D;
         if (custoHora == null) {
             return BigDecimal.ZERO;
         }
-        return new BigDecimal(tempo).multiply(custoHora);
+        return new BigDecimal(tempoEmHoras).multiply(custoHora);
     }
 
     /**

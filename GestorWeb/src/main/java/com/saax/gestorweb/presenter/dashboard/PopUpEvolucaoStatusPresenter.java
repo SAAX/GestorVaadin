@@ -63,7 +63,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
         statusButton = new PopupButton(getStatusTarefaDescription(tarefa));
 
         // vincula o botão a tarefa
-        statusButton.setId(tarefa.getGlobalID());
+        statusButton.setData(tarefa);
 
         configurarView();
 

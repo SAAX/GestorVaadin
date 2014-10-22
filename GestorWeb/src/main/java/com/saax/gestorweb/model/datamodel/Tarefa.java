@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -213,6 +214,11 @@ public class Tarefa implements Serializable {
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
+
+    /**
+     * Custo de hora para todos os apontamentos
+     */
+    transient BigDecimal custoHoraApontamento;
 
     
     /**
@@ -623,7 +629,16 @@ public class Tarefa implements Serializable {
         getApontamentos().add(apontamento);
     }
 
-   
+
+    public void setCustoHoraApontamento(BigDecimal custoHoraApontamento) {
+        this.custoHoraApontamento = custoHoraApontamento;
+    }
+
+    public BigDecimal getCustoHoraApontamento() {
+        return custoHoraApontamento;
+    }
+    
+       
     
     
 }

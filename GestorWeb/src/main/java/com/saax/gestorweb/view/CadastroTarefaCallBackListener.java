@@ -13,6 +13,8 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
  */
 public interface CadastroTarefaCallBackListener {
 
-        void cadastroNovaTarefaConcluido(Tarefa tarefaCriada);
+    void cadastroNovaTarefaConcluido(Tarefa tarefaCriada);
+
+    public void edicaoTarefaConcluida(Tarefa tarefa);
 
 }

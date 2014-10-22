@@ -2,9 +2,8 @@ package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Random;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -40,16 +39,16 @@ public class ApontamentoTarefa implements Serializable {
     private transient String inputHoras;
     
     @Column(name = "creditohoras")
-    @Convert(converter = LocalTimePersistenceConverter.class)
-    private LocalTime creditoHoras;
+    @Convert(converter = DurationConverter.class)
+    private Duration creditoHoras;
 
     @Column(name = "debitohoras")
-    @Convert(converter = LocalTimePersistenceConverter.class)
-    private LocalTime debitoHoras;
+    @Convert(converter = DurationConverter.class)
+    private Duration debitoHoras;
 
     @Column(name = "saldohoras")
-    @Convert(converter = LocalTimePersistenceConverter.class)
-    private LocalTime saldoHoras;
+    @Convert(converter = DurationConverter.class)
+    private Duration saldoHoras;
         
     @Column(name = "custohora", precision = 10, scale = 3)
     private BigDecimal custoHora;
@@ -90,6 +89,9 @@ public class ApontamentoTarefa implements Serializable {
         this.tarefa = tarefa;
         this.usuarioInclusao = usuarioInclusao;
         this.dataHoraInclusao = LocalDateTime.now();
+        if (tarefa.getCustoHoraApontamento()!=null){
+            this.custoHora = tarefa.getCustoHoraApontamento();
+        }
     }
 
     public Integer getId() {
@@ -100,27 +102,27 @@ public class ApontamentoTarefa implements Serializable {
         this.id = id;
     }
 
-    public LocalTime getCreditoHoras() {
+    public Duration getCreditoHoras() {
         return creditoHoras;
     }
 
-    public void setCreditoHoras(LocalTime creditoHoras) {
+    public void setCreditoHoras(Duration creditoHoras) {
         this.creditoHoras = creditoHoras;
     }
 
-    public LocalTime getDebitoHoras() {
+    public Duration getDebitoHoras() {
         return debitoHoras;
     }
 
-    public void setDebitoHoras(LocalTime debitoHoras) {
+    public void setDebitoHoras(Duration debitoHoras) {
         this.debitoHoras = debitoHoras;
     }
 
-    public LocalTime getSaldoHoras() {
+    public Duration getSaldoHoras() {
         return saldoHoras;
     }
 
-    public void setSaldoHoras(LocalTime saldoHoras) {
+    public void setSaldoHoras(Duration saldoHoras) {
         this.saldoHoras = saldoHoras;
     }
 

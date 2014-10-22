@@ -903,7 +903,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.3.2";
+	content: "7.3.3";
 }
 
 .v-widget {
@@ -989,6 +989,11 @@
 
 .v-ios5.v-webkit .v-scrollable {
 	-webkit-overflow-scrolling: none;
+}
+
+.v-webkit.v-ios .v-browserframe {
+	-webkit-overflow-scrolling: touch;
+	overflow: auto;
 }
 
 .v-assistive-device-only {
@@ -5831,6 +5836,11 @@ div.v-layout.v-horizontal.v-widget {
 	border-color: #4783eb;
 }
 
+.mytheme .v-datefield-popup .v-datefield-calendarpanel-day.v-datefield-calendarpanel-day-outside-range, .mytheme .v-datefield-popup .v-datefield-calendarpanel-day.v-datefield-calendarpanel-day-outside-range:hover {
+	color: #a2a2a2;
+	cursor: not-allowed;
+}
+
 .mytheme .v-datefield-popup .v-datefield-calendarpanel-weekdays {
 	height: 18px;
 	color: rgba(135, 135, 135, 0.85);
@@ -5845,7 +5855,7 @@ div.v-layout.v-horizontal.v-widget {
 	white-space: nowrap;
 }
 
-.mytheme .v-datefield-popup td[class$="year"] button, .mytheme .v-datefield-popup td[class$="month"] button {
+.mytheme .v-datefield-popup td[class*="year"] button, .mytheme .v-datefield-popup td[class*="month"] button {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	-ms-appearance: none;
@@ -5865,7 +5875,7 @@ div.v-layout.v-horizontal.v-widget {
 	vertical-align: middle;
 }
 
-.mytheme .v-datefield-popup td[class$="year"] button:before, .mytheme .v-datefield-popup td[class$="month"] button:before {
+.mytheme .v-datefield-popup td[class*="year"] button:before, .mytheme .v-datefield-popup td[class*="month"] button:before {
 	color: #a2a2a2;
 	font-size: 18px;
 	line-height: 21px;
@@ -5874,13 +5884,18 @@ div.v-layout.v-horizontal.v-widget {
 	transition: color 200ms;
 }
 
-.mytheme .v-datefield-popup td[class$="year"] button:hover, .mytheme .v-datefield-popup td[class$="month"] button:hover {
-	opacity: 1;
-	filter: none ;
+.mytheme .v-datefield-popup td[class*="year"] button:hover:before, .mytheme .v-datefield-popup td[class*="month"] button:hover:before {
+	color: #4783eb;
 }
 
-.mytheme .v-datefield-popup td[class$="year"] button:hover:before, .mytheme .v-datefield-popup td[class$="month"] button:hover:before {
-	color: #4783eb;
+.mytheme .v-datefield-popup td[class*="year"] button.outside-range, .mytheme .v-datefield-popup td[class*="month"] button.outside-range {
+	cursor: default;
+	opacity: 0.3;
+	filter: alpha(opacity=30.0) ;
+}
+
+.mytheme .v-datefield-popup td[class*="year"] button.outside-range:hover:before, .mytheme .v-datefield-popup td[class*="month"] button.outside-range:hover:before {
+	color: #a2a2a2;
 }
 
 .mytheme .v-datefield-popup .v-button-prevyear:before {
@@ -6014,6 +6029,11 @@ div.v-layout.v-horizontal.v-widget {
 	border-color: #4783eb;
 }
 
+.mytheme .v-datefield-calendarpanel-day.v-datefield-calendarpanel-day-outside-range, .mytheme .v-datefield-calendarpanel-day.v-datefield-calendarpanel-day-outside-range:hover {
+	color: #a2a2a2;
+	cursor: not-allowed;
+}
+
 .mytheme .v-datefield-calendarpanel-weekdays {
 	height: 18px;
 	color: rgba(135, 135, 135, 0.85);
@@ -6028,7 +6048,7 @@ div.v-layout.v-horizontal.v-widget {
 	white-space: nowrap;
 }
 
-.mytheme td[class$="year"] button, .mytheme td[class$="month"] button {
+.mytheme td[class*="year"] button, .mytheme td[class*="month"] button {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	-ms-appearance: none;
@@ -6048,7 +6068,7 @@ div.v-layout.v-horizontal.v-widget {
 	vertical-align: middle;
 }
 
-.mytheme td[class$="year"] button:before, .mytheme td[class$="month"] button:before {
+.mytheme td[class*="year"] button:before, .mytheme td[class*="month"] button:before {
 	color: #a2a2a2;
 	font-size: 18px;
 	line-height: 21px;
@@ -6057,13 +6077,18 @@ div.v-layout.v-horizontal.v-widget {
 	transition: color 200ms;
 }
 
-.mytheme td[class$="year"] button:hover, .mytheme td[class$="month"] button:hover {
-	opacity: 1;
-	filter: none ;
+.mytheme td[class*="year"] button:hover:before, .mytheme td[class*="month"] button:hover:before {
+	color: #4783eb;
 }
 
-.mytheme td[class$="year"] button:hover:before, .mytheme td[class$="month"] button:hover:before {
-	color: #4783eb;
+.mytheme td[class*="year"] button.outside-range, .mytheme td[class*="month"] button.outside-range {
+	cursor: default;
+	opacity: 0.3;
+	filter: alpha(opacity=30.0) ;
+}
+
+.mytheme td[class*="year"] button.outside-range:hover:before, .mytheme td[class*="month"] button.outside-range:hover:before {
+	color: #a2a2a2;
 }
 
 .mytheme .v-button-prevyear:before {
@@ -6715,6 +6740,11 @@ div.v-layout.v-horizontal.v-widget {
 	border-color: #4783eb;
 }
 
+.mytheme .v-inline-datefield-calendarpanel-day.v-inline-datefield-calendarpanel-day-outside-range, .mytheme .v-inline-datefield-calendarpanel-day.v-inline-datefield-calendarpanel-day-outside-range:hover {
+	color: #a2a2a2;
+	cursor: not-allowed;
+}
+
 .mytheme .v-inline-datefield-calendarpanel-weekdays {
 	height: 18px;
 	color: rgba(135, 135, 135, 0.85);
@@ -6729,7 +6759,7 @@ div.v-layout.v-horizontal.v-widget {
 	white-space: nowrap;
 }
 
-.mytheme td[class$="year"] button, .mytheme td[class$="month"] button {
+.mytheme td[class*="year"] button, .mytheme td[class*="month"] button {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	-ms-appearance: none;
@@ -6749,7 +6779,7 @@ div.v-layout.v-horizontal.v-widget {
 	vertical-align: middle;
 }
 
-.mytheme td[class$="year"] button:before, .mytheme td[class$="month"] button:before {
+.mytheme td[class*="year"] button:before, .mytheme td[class*="month"] button:before {
 	color: #a2a2a2;
 	font-size: 18px;
 	line-height: 21px;
@@ -6758,13 +6788,18 @@ div.v-layout.v-horizontal.v-widget {
 	transition: color 200ms;
 }
 
-.mytheme td[class$="year"] button:hover, .mytheme td[class$="month"] button:hover {
-	opacity: 1;
-	filter: none ;
+.mytheme td[class*="year"] button:hover:before, .mytheme td[class*="month"] button:hover:before {
+	color: #4783eb;
 }
 
-.mytheme td[class$="year"] button:hover:before, .mytheme td[class$="month"] button:hover:before {
-	color: #4783eb;
+.mytheme td[class*="year"] button.outside-range, .mytheme td[class*="month"] button.outside-range {
+	cursor: default;
+	opacity: 0.3;
+	filter: alpha(opacity=30.0) ;
+}
+
+.mytheme td[class*="year"] button.outside-range:hover:before, .mytheme td[class*="month"] button.outside-range:hover:before {
+	color: #a2a2a2;
 }
 
 .mytheme .v-button-prevyear:before {
@@ -8706,9 +8741,14 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-table-footer-container, .mytheme .v-table-caption-container {
 	overflow: hidden;
 	line-height: 1;
+	min-height: 37px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+}
+
+.v-ie8 .mytheme .v-table-footer-container, .v-ie8 .mytheme .v-table-caption-container {
+	min-height: 14px;
 }
 
 .mytheme .v-table-footer-container {
@@ -12684,6 +12724,10 @@ div.v-layout.v-horizontal.v-widget {
 	display: inline-block;
 	width: 13px;
 	overflow: hidden;
+}
+
+.mytheme .v-window-subtarefa {
+	background: #adc4eb;
 }
 
 .mytheme .v-tree-node-no-children {

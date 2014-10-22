@@ -9,7 +9,6 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
-import com.saax.gestorweb.view.validator.DataFuturaValidator;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
@@ -39,6 +38,9 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.eclipse.persistence.internal.core.helper.CoreClassConstants;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -206,7 +209,6 @@ public class CadastroTarefaView extends Window {
 
         camposObrigatorios = new ArrayList();
 
-        setCaption(mensagens.getString("CadastroTarefaView.titulo"));
         setModal(true);
         setWidth(1000, Unit.PIXELS);
         setHeight(600, Unit.PIXELS);
@@ -645,8 +647,24 @@ public class CadastroTarefaView extends Window {
                 // Format by property type
                 if (property.getType() == LocalDateTime.class) {
                     
-                    
                     return ((LocalDateTime) property.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+                    
+                } else if (property.getType() == Duration.class) {
+                    
+                    if ((Duration) property.getValue()==null) return null;
+                    
+                    DecimalFormat df = new DecimalFormat("00");
+                    long hour = ((Duration) property.getValue()).toHours();
+                    long minute = ((Duration) property.getValue()).toMinutes() % 60;
+                    
+                    return new StringBuilder().append(df.format(hour)).append(":").append(df.format(minute)).toString();
+                } else if (property.getType() == BigDecimal.class) {
+                    
+                    if (property.getValue()==null) return null;
+                    
+                    DecimalFormat df = new DecimalFormat("\u00A4 #,##0.00");
+                    
+                    return df.format(((BigDecimal) property.getValue()));
                 }
 
                 return super.formatPropertyValue(rowId, colId, property);
@@ -666,13 +684,16 @@ public class CadastroTarefaView extends Window {
         controleHorasTable.setColumnWidth("saldoHoras", 80);
         controleHorasTable.setColumnHeader("saldoHoras", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoHoras"));
         controleHorasTable.setColumnWidth("creditoValor", 80);
+        controleHorasTable.setColumnAlignment("creditoValor", Table.Align.RIGHT);
         controleHorasTable.setColumnHeader("creditoValor", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaCreditoValor"));
         controleHorasTable.setColumnWidth("debitoValor", 80);
+        controleHorasTable.setColumnAlignment("debitoValor", Table.Align.RIGHT);
         controleHorasTable.setColumnHeader("debitoValor", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaDebitoValor"));
         controleHorasTable.setColumnWidth("saldoValor", 80);
+        controleHorasTable.setColumnAlignment("saldoValor", Table.Align.RIGHT);
         controleHorasTable.setColumnHeader("saldoValor", mensagens.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"));
 
-        controleHorasTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras");
+        controleHorasTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor");
         // Adicionar coluna do botão "remover"
         controleHorasTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("x");
@@ -744,9 +765,11 @@ public class CadastroTarefaView extends Window {
         // Campos do controle de orçamento
         imputarOrcamentoTextField = new TextField();
         imputarOrcamentoTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.imputarOrcamentoTextField.inputPrompt"));
+        imputarOrcamentoTextField.setNullRepresentation("");
 
         observacaoOrcamentoTextField = new TextField();
         observacaoOrcamentoTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.observacaoOrcamentoTextField.inputPrompt"));
+        observacaoOrcamentoTextField.setNullRepresentation("");
 
         imputarOrcamentoButton = new Button(mensagens.getString("CadastroTarefaView.imputarOrcamentoButton.caption"), (Button.ClickEvent event) -> {
             listener.imputarOrcamentoClicked();
@@ -758,10 +781,9 @@ public class CadastroTarefaView extends Window {
             @Override
             protected String formatPropertyValue(Object rowId,
                     Object colId, Property property) {
+                
                 // Format by property type
                 if (property.getType() == LocalDateTime.class) {
-                    
-                    
                     return ((LocalDateTime) property.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
                 }
 
@@ -775,10 +797,13 @@ public class CadastroTarefaView extends Window {
         controleOrcamentoTable.setColumnHeader("observacoes", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaObservacoes"));
         controleOrcamentoTable.setColumnWidth("credito", 80);
         controleOrcamentoTable.setColumnHeader("credito", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaCredito"));
+        controleOrcamentoTable.setColumnAlignment("credito", Table.Align.RIGHT);
         controleOrcamentoTable.setColumnWidth("debito", 80);
         controleOrcamentoTable.setColumnHeader("debito", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaDebito"));
+        controleOrcamentoTable.setColumnAlignment("debito", Table.Align.RIGHT);
         controleOrcamentoTable.setColumnWidth("saldo", 80);
         controleOrcamentoTable.setColumnHeader("saldo", mensagens.getString("CadastroTarefaView.controleOrcamentoTable.colunaSaldo"));
+        controleOrcamentoTable.setColumnAlignment("saldo", Table.Align.RIGHT);
 
         controleOrcamentoTable.setVisibleColumns("dataHoraInclusao", "credito", "debito", "saldo", "observacoes");
 
@@ -847,11 +872,11 @@ public class CadastroTarefaView extends Window {
 
         subTarefasTable = new TreeTable();
         subTarefasTable.setWidth("100%");
-        subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaCod"), String.class, "");
+        subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaCod"), Button.class, "");
         subTarefasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaCod"), 70);
-        subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaTitulo"), String.class, "");
+        subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaTitulo"), Button.class, "");
         subTarefasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaTitulo"), 50);
-        subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaNome"), String.class, "");
+        subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaNome"), Button.class, "");
         subTarefasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaNome"), 250);
         subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaEmpresaFilial"), String.class, "");
         subTarefasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaEmpresaFilial"), 200);
@@ -867,10 +892,10 @@ public class CadastroTarefaView extends Window {
         subTarefasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaStatus"), 200);
         subTarefasTable.addContainerProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaProjecao"), Character.class, "");
         subTarefasTable.setColumnWidth(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaProjecao"), 30);
-        subTarefasTable.addContainerProperty("[Email]", Button.class, "");
-        subTarefasTable.setColumnWidth("[Email]", 30);
-        subTarefasTable.addContainerProperty("[Chat]", Button.class, "");
-        subTarefasTable.setColumnWidth("[Chat]", 30);
+        subTarefasTable.addContainerProperty("[E]", Button.class, "");
+        subTarefasTable.setColumnWidth("[E]", 30);
+        subTarefasTable.addContainerProperty("[C]", Button.class, "");
+        subTarefasTable.setColumnWidth("[C]", 30);
 
         subTarefasTable.setPageLength(4);
         subTarefasTable.setSelectable(true);
@@ -1128,11 +1153,24 @@ public class CadastroTarefaView extends Window {
         statusTarefaPopUpButton.setVisible(false);
     }
 
-    public void exibeTituloCadastro() {
-        setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro"));
+    private String getSubTarefaTitulo(Tarefa tarefa){
+        if (tarefa.getTarefaPai()!=null){
+            return " >> " + getSubTarefaTitulo(tarefa.getTarefaPai());
+        } else {
+            return tarefa.getNome();
+        }
+    }
+    
+    public void exibeTituloCadastro(Tarefa tarefapai) {
+        if (tarefapai!=null){
+            setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro")+"\n"+getSubTarefaTitulo(tarefapai));
+        } else {
+            setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro"));
+            
+        }
     }
 
-    public void exibeTituloEdicao() {
+    public void exibeTituloEdicao(Tarefa tarefapai) {
         setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao"));
     }
 
@@ -1168,4 +1206,17 @@ public class CadastroTarefaView extends Window {
         return controleOrcamentoTable;
     }
 
+    public CheckBox getOrcamentoControladoCheckBox() {
+        return orcamentoControladoCheckBox;
+    }
+
+    public CheckBox getApontamentoHorasCheckBox() {
+        return apontamentoHorasCheckBox;
+    }
+
+    public void apresentarCorFundoSubTarefa() {
+        addStyleName("subtarefa");
+    }
+
+    
 }

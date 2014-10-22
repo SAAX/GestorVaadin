@@ -24,6 +24,7 @@
         <class>com.saax.gestorweb.model.datamodel.StatusTarefa</class>
         <class>com.saax.gestorweb.model.datamodel.PrioridadeTarefa</class>
         <class>com.saax.gestorweb.model.datamodel.TipoTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.DurationConverter</class>
         <class>com.saax.gestorweb.model.datamodel.LocalDatePersistenceConverter</class>
         <class>com.saax.gestorweb.model.datamodel.LocalDateTimePersistenceConverter</class>
         <class>com.saax.gestorweb.model.datamodel.LocalTimePersistenceConverter</class>

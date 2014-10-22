@@ -46,7 +46,10 @@ $v-layout-margin-left: 10px;
     /* Include all the styles from the reindeer theme */
     @include valo;
 
-
+    // CSS
+    .v-window-subtarefa {
+        background: #adc4eb;
+    }
     /* Insert your theme rules here */
     /*.v-table-body{
         overflow: hidden !important;

@@ -47,7 +47,7 @@ public interface CadastroTarefaViewListener {
     
     public void criarNovaTarefa();
     
-    public void criarSubTarefa(Tarefa tarefaPai);
+    public void criarNovaTarefa(Tarefa tarefaPai);
 
     public void removerApontamentoHoras(ApontamentoTarefa apontamentoTarefa);
 

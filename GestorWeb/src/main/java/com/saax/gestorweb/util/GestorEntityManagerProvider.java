@@ -22,7 +22,7 @@ public class GestorEntityManagerProvider {
 
             EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
             setCurrentEntityManager(em);
-            Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.WARNING, "Criando EM por demanda...");
+            Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.INFO, "Criando EM por demanda...");
         }
         if (!entityManagerThreadLocal.get().isOpen()) {
             throw new RuntimeException("Entity Manager está FECHADO!");

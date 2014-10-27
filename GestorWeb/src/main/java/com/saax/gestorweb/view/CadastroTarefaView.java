@@ -581,7 +581,9 @@ public class CadastroTarefaView extends Window {
         // Barra de progresso do upload
         uploadHorizontalLayout = new HorizontalLayout();
         uploadHorizontalLayout.setWidth("100%");
+
         anexoProgressBar = new ProgressBar();
+        anexoProgressBar.setWidth("100%");
 
         adicionarAnexoButton = new Upload("", new Upload.Receiver() {
 
@@ -629,7 +631,6 @@ public class CadastroTarefaView extends Window {
                         }
                         float newValue = readBytes / (float) contentLength;
                         anexoProgressBar.setValue(newValue);
-                        UI.getCurrent().push();
                     }
                 });
             }

@@ -25,19 +25,8 @@ import org.atmosphere.cpr.AtmosphereResource;
 */
 public class AtmosphereFilter extends AtmosphereInterceptorAdapter {
 
-    class MyAtmosphereInterceptor extends AtmosphereInterceptorAdapter {
-
         @Override
         public Action inspect(AtmosphereResource r) {
-//            // do pre-request stuff
-//
-//            // Cria um entity manager por requisição
-//            EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
-//            // Armazena na thread
-//            GestorEntityManagerProvider.setCurrentEntityManager(em);
-//
-//                        Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Criando EM na requisicao");
-//
             return super.inspect(r);
         }
 
@@ -53,10 +42,3 @@ public class AtmosphereFilter extends AtmosphereInterceptorAdapter {
         }
     }
 
-//    
-//    <init-param>
-//    <param-name>org.atmosphere.cpr.AtmosphereInterceptor</param-name>
-//    <!-- comma-separated list of fully-qualified class names -->
-//    <param-value>com.example.MyAtmosphereInterceptor/param-value>
-//</init-param>
-}

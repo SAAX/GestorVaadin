@@ -10,10 +10,12 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractField;
@@ -29,6 +31,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -38,6 +41,10 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -45,10 +52,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.eclipse.persistence.internal.core.helper.CoreClassConstants;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -90,6 +97,9 @@ public class CadastroTarefaView extends Window {
 
     @PropertyId("orcamentoControlado")
     private CheckBox orcamentoControladoCheckBox;
+
+    @PropertyId("template")
+    private CheckBox templateCheckBox;
 
     private HorizontalLayout barraBotoesSuperior;
     private Button addSubButton;
@@ -190,6 +200,9 @@ public class CadastroTarefaView extends Window {
     private Table participantesTable;
     private Table anexosAdicionadosTable;
     private Table controleOrcamentoTable;
+    private Label caminhoTarefaLabel;
+    private HorizontalLayout uploadHorizontalLayout;
+    private ProgressBar anexoProgressBar;
 
     /**
      * Configura o listener de eventos da view
@@ -236,6 +249,7 @@ public class CadastroTarefaView extends Window {
 
         tarefaFieldGroup.bindMemberFields(this);
 
+        caminhoTarefaLabel.setValue(getCaminhoTarefa(tarefa));
     }
 
     /**
@@ -262,6 +276,10 @@ public class CadastroTarefaView extends Window {
         // adiciona a barra de botoes superior (botões de chat, adicionar sub, etc)
         containerPrincipal.addComponent(buildBarraBotoesSuperior());
         containerPrincipal.setComponentAlignment(barraBotoesSuperior, Alignment.MIDDLE_RIGHT);
+
+        // label com caminho da tarefa
+        caminhoTarefaLabel = new Label();
+        containerPrincipal.addComponent(caminhoTarefaLabel);
 
         // cria o acordeon de abas e adiciona as abas
         accordion = new Accordion();
@@ -405,6 +423,10 @@ public class CadastroTarefaView extends Window {
 
         barraBotoesSuperior.addComponent(orcamentoControladoCheckBox);
 
+        templateCheckBox = new CheckBox(mensagens.getString("CadastroTarefaView.templateCheckBox.caption"));
+
+        barraBotoesSuperior.addComponent(templateCheckBox);
+
         addSubButton = new Button("[Add Sub]", (Button.ClickEvent event) -> {
             listener.addSubButtonClicked();
         });
@@ -440,8 +462,17 @@ public class CadastroTarefaView extends Window {
                 tarefaFieldGroup.commit();
                 listener.gravarButtonClicked();
             } catch (FieldGroup.CommitException ex) {
-                
-                Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                String mensagem = "";
+                if (ex.getCause() instanceof Validator.InvalidValueException) {
+                    Validator.InvalidValueException validationException = (Validator.InvalidValueException) ex.getCause();
+                    for (Validator.InvalidValueException cause : validationException.getCauses()) {
+                        mensagem += cause.getMessage() + "\n";
+                    }
+
+                } else {
+                    mensagem = ex.getLocalizedMessage();
+                }
+                Notification.show(mensagem, Notification.Type.ERROR_MESSAGE);
                 Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
@@ -478,7 +509,21 @@ public class CadastroTarefaView extends Window {
 
         participantesContainer = new BeanItemContainer<>(ParticipanteTarefa.class);
 
-        participantesTable = new Table();
+        participantesTable = new Table() {
+            @Override
+            protected String formatPropertyValue(Object rowId,
+                    Object colId, Property property) {
+                // Format by property type
+                if (property.getType() == Usuario.class) {
+
+                    return ((Usuario) property.getValue()).getNome() + " " + ((Usuario) property.getValue()).getSobrenome();
+
+                }
+
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+
         participantesTable.setContainerDataSource(participantesContainer);
 
         participantesTable.setColumnWidth("usuarioParticipante", 120);
@@ -527,17 +572,86 @@ public class CadastroTarefaView extends Window {
      */
     private Component buildAbaDetalhes() {
 
+        // Combo de departamento
         departamentoCombo = new ComboBox(mensagens.getString("CadastroTarefaView.departamentoCombo.caption"));
 
+        // Centro custo combo
         centroCustoCombo = new ComboBox(mensagens.getString("CadastroTarefaView.centroCustoCombo.caption"));
 
-        adicionarAnexoButton = new Upload();
-        adicionarAnexoButton.addStartedListener((Upload.StartedEvent event) -> {
-            listener.solicitacaoParaAdicionarAnexo(event);
+        // Barra de progresso do upload
+        uploadHorizontalLayout = new HorizontalLayout();
+        uploadHorizontalLayout.setWidth("100%");
+        anexoProgressBar = new ProgressBar();
+
+        adicionarAnexoButton = new Upload("", new Upload.Receiver() {
+
+            @Override
+            public OutputStream receiveUpload(String filename, String mimeType) {
+                FileOutputStream fos = null;
+                try {
+                    File randomFolder = new File(String.valueOf(Math.abs(new Random().nextInt())));
+                    randomFolder.mkdir();
+
+                    File file = new File(randomFolder, filename);
+                    fos = new FileOutputStream(file);
+
+                    // cria uma pasta temporaria para gravação
+                    adicionarAnexoButton.setData(file);
+
+                } catch (FileNotFoundException e) {
+                    Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                    return null;
+                }
+                return fos;
+            }
+
         });
-        adicionarAnexoButton.addFinishedListener((Upload.FinishedEvent event) -> {
-            listener.anexoAdicionado(event);
+        adicionarAnexoButton.addSucceededListener(new Upload.SucceededListener() {
+
+            @Override
+            public void uploadSucceeded(Upload.SucceededEvent event) {
+                listener.anexoAdicionado(event);
+            }
         });
+        adicionarAnexoButton.addProgressListener(new Upload.ProgressListener() {
+
+            @Override
+            public void updateProgress(long readBytes, long contentLength) {
+                UI.getCurrent().access(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // let's slow down upload a bit
+                            Thread.sleep(100);
+                            Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.WARNING, "Remover sleep");
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        float newValue = readBytes / (float) contentLength;
+                        anexoProgressBar.setValue(newValue);
+                        UI.getCurrent().push();
+                    }
+                });
+            }
+        });
+        adicionarAnexoButton.addFinishedListener(new Upload.FinishedListener() {
+
+            @Override
+            public void uploadFinished(Upload.FinishedEvent event) {
+                uploadHorizontalLayout.removeComponent(anexoProgressBar);
+                Notification.show("Upload finished.", Notification.Type.TRAY_NOTIFICATION);
+            }
+        });
+        adicionarAnexoButton.addStartedListener(new Upload.StartedListener() {
+
+            @Override
+            public void uploadStarted(Upload.StartedEvent event) {
+                uploadHorizontalLayout.addComponent(anexoProgressBar);
+                Notification.show("Upload started.", Notification.Type.TRAY_NOTIFICATION);
+
+            }
+        });
+        //uploadHorizontalLayout.addComponent(anexoProgressBar);
 
         anexoTarefaContainer = new BeanItemContainer<>(AnexoTarefa.class);
 
@@ -565,7 +679,7 @@ public class CadastroTarefaView extends Window {
         anexosAdicionadosTable.setPageLength(3);
 
         // Do layout:
-        GridLayout layout = new GridLayout(2, 2);
+        GridLayout layout = new GridLayout(2, 3);
         layout.setSpacing(true);
         layout.setMargin(true);
         layout.setWidth("100%");
@@ -574,7 +688,8 @@ public class CadastroTarefaView extends Window {
         layout.addComponent(departamentoCombo, 0, 0);
         layout.addComponent(centroCustoCombo, 0, 1);
         layout.addComponent(adicionarAnexoButton, 1, 0);
-        layout.addComponent(anexosAdicionadosTable, 1, 1);
+        layout.addComponent(uploadHorizontalLayout, 1, 1);
+        layout.addComponent(anexosAdicionadosTable, 1, 2);
         layout.setComponentAlignment(anexosAdicionadosTable, Alignment.TOP_RIGHT);
 
         layout.setRowExpandRatio(0, 0);
@@ -624,6 +739,7 @@ public class CadastroTarefaView extends Window {
         custoHoraTextField = new TextField();
         custoHoraTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.custoHoraTextField.inputPrompt"));
         custoHoraTextField.setNullRepresentation("");
+        custoHoraTextField.setConverter(new StringToBigDecimalConverter());
 
         imputarHorasTextField = new TextField();
         imputarHorasTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.imputarHorasTextField.inputPrompt"));
@@ -646,24 +762,28 @@ public class CadastroTarefaView extends Window {
                     Object colId, Property property) {
                 // Format by property type
                 if (property.getType() == LocalDateTime.class) {
-                    
+
                     return ((LocalDateTime) property.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-                    
+
                 } else if (property.getType() == Duration.class) {
-                    
-                    if ((Duration) property.getValue()==null) return null;
-                    
+
+                    if ((Duration) property.getValue() == null) {
+                        return null;
+                    }
+
                     DecimalFormat df = new DecimalFormat("00");
                     long hour = ((Duration) property.getValue()).toHours();
                     long minute = ((Duration) property.getValue()).toMinutes() % 60;
-                    
+
                     return new StringBuilder().append(df.format(hour)).append(":").append(df.format(minute)).toString();
                 } else if (property.getType() == BigDecimal.class) {
-                    
-                    if (property.getValue()==null) return null;
-                    
-                    DecimalFormat df = new DecimalFormat("\u00A4 #,##0.00");
-                    
+
+                    if (property.getValue() == null) {
+                        return null;
+                    }
+
+                    DecimalFormat df = new DecimalFormat("¤ #,##0.00");
+
                     return df.format(((BigDecimal) property.getValue()));
                 }
 
@@ -777,11 +897,11 @@ public class CadastroTarefaView extends Window {
 
         orcamentoContainer = new BeanItemContainer<>(OrcamentoTarefa.class);
 
-        controleOrcamentoTable = new Table(){
+        controleOrcamentoTable = new Table() {
             @Override
             protected String formatPropertyValue(Object rowId,
                     Object colId, Property property) {
-                
+
                 // Format by property type
                 if (property.getType() == LocalDateTime.class) {
                     return ((LocalDateTime) property.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
@@ -1153,21 +1273,16 @@ public class CadastroTarefaView extends Window {
         statusTarefaPopUpButton.setVisible(false);
     }
 
-    private String getSubTarefaTitulo(Tarefa tarefa){
-        if (tarefa.getTarefaPai()!=null){
-            return " >> " + getSubTarefaTitulo(tarefa.getTarefaPai());
+    private String getCaminhoTarefa(Tarefa tarefa) {
+        if (tarefa.getTarefaPai() != null) {
+            return getCaminhoTarefa(tarefa.getTarefaPai()) + " >> " + tarefa.getNome() == null ? "[NOVA]" : tarefa.getNome();
         } else {
-            return tarefa.getNome();
+            return tarefa.getNome() == null ? "[NOVA]" : tarefa.getNome();
         }
     }
-    
+
     public void exibeTituloCadastro(Tarefa tarefapai) {
-        if (tarefapai!=null){
-            setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro")+"\n"+getSubTarefaTitulo(tarefapai));
-        } else {
-            setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro"));
-            
-        }
+        setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro"));
     }
 
     public void exibeTituloEdicao(Tarefa tarefapai) {
@@ -1218,5 +1333,12 @@ public class CadastroTarefaView extends Window {
         addStyleName("subtarefa");
     }
 
-    
+    public Label getCaminhoTarefaLabel() {
+        return caminhoTarefaLabel;
+    }
+
+    public FieldGroup getTarefaFieldGroup() {
+        return tarefaFieldGroup;
+    }
+
 }

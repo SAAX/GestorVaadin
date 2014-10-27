@@ -2,7 +2,6 @@ package com.saax.gestorweb.view;
 //teste de commit -> volta
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.util.MaskedField;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;

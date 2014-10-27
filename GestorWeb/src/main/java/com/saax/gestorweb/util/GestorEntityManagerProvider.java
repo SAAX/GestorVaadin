@@ -5,6 +5,8 @@
  */
 package com.saax.gestorweb.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -16,27 +18,30 @@ public class GestorEntityManagerProvider {
     private static final ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();
 
     public static EntityManager getEntityManager() {
-//        if (entityManagerThreadLocal.get()==null){
-//            throw new GestorException("Entity Manager está NULO!");
-//        }
-//        if (!entityManagerThreadLocal.get().isOpen()){
-//            throw new GestorException("Entity Manager está FECHADO!");
-//        }
+        if (entityManagerThreadLocal.get() == null) {
+
+            EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
+            setCurrentEntityManager(em);
+            Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.WARNING, "Criando EM por demanda...");
+        }
+        if (!entityManagerThreadLocal.get().isOpen()) {
+            throw new RuntimeException("Entity Manager está FECHADO!");
+        }
         return entityManagerThreadLocal.get();
     }
 
     public static void setCurrentEntityManager(EntityManager em) {
-//        if (em==null){
-//            throw new GestorException("Entity Manager está NULO!");
-//        }
-//        if (!em.isOpen()){
-//            throw new GestorException("Entity Manager está FECHADO!");
-//        }
+        if (em==null){
+            throw new RuntimeException("Entity Manager está NULO!");
+        }
+        if (!em.isOpen()){
+            throw new RuntimeException("Entity Manager está FECHADO!");
+        }
         entityManagerThreadLocal.set(em);
-        
+
     }
-    
-    public static void remove(){
+
+    public static void remove() {
         entityManagerThreadLocal.remove();
     }
 }

@@ -51,7 +51,7 @@ public class Cidade implements Serializable {
     @ManyToOne(optional = false)
     private Estado estado;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cidade")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "cidade")
     private List<Endereco> enderecos;
 
     public Cidade() {

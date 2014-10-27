@@ -64,238 +64,238 @@ INSERT INTO CentroCusto (idEmpresa,CentroCusto,Ativo, idUsuarioInclusao,  dataHo
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 1', 'Tarefa de prioridade alta, em andamento, com 10% concluido',
     'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (1, 2, 1, 'Tarefa', 'Tarefa Exemplo 2 (sub da 1)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (2, 3, 1, 'Tarefa', 'Tarefa Exemplo 3 (sub da 2)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 
 -- Tarefa "Tarefa Exemplo 4"
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 2, 'Tarefa', 'Tarefa Exemplo 4', 'Tarefa de prioridade baixa, bloqueada',
     'BAIXA', 'UNICA', NULL, 'NAO_ACEITA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (4, 2, 2, 'Tarefa', 'Tarefa Exemplo 5 (sub da 4)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 4',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (5, 3, 2, 'Tarefa', 'Tarefa Exemplo 6 (sub da 5)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 5',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 -- Tarefa "Tarefa Exemplo 7"
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 2, 'Tarefa', 'Tarefa Exemplo 7', 'Tarefa de prioridade baixa, bloqueada',
     'BAIXA', 'UNICA', NULL, 'NAO_ACEITA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 2, 3, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 2, 3, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (7, 2, 2, 'Tarefa', 'Tarefa Exemplo 8 (sub da 7)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 4',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 2, 3, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 2, 3, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 
 -- Tarefa "Tarefa Exemplo 9"
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 9', 'Tarefa de prioridade baixa, bloqueada',
     'BAIXA', 'UNICA', NULL, 'NAO_ACEITA', 0, '2014-06-01', '2014-06-30', NULL, 
-    1, 3, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 3, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (9, 2, 1, 'Tarefa', 'Tarefa Exemplo 10 (sub da 9)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 4',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
-    1, 3, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 3, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 
 -- Tarefa "Tarefa Exemplo 11"
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 11', 'Tarefa de prioridade alta, em andamento, com 10% concluido',
     'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-06-01', '2014-06-30', NULL, 
-    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (11, 2, 1, 'Tarefa', 'Tarefa Exemplo 12 (sub da 11)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
-    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (11, 2, 1, 'Tarefa', 'Tarefa Exemplo 13 (sub da 11)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
-    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 
 -- Tarefa "Tarefa Exemplo 14"
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 14', 'Tarefa de prioridade baixa, bloqueada',
     'BAIXA', 'UNICA', NULL, 'NAO_ACEITA', 0, '2014-06-01', '2014-06-30', NULL, 
-    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (14, 2, 1, 'Tarefa', 'Tarefa Exemplo 15 (sub da 14)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 4',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
-    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (15, 3, 1, 'Tarefa', 'Tarefa Exemplo 16 (sub da 15)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 5',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-06-01', '2014-06-30', NULL, 
-    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE');
+    1, 1, 2, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'DESCENDENTE', false);
 
 
 -- Tarefa "Tarefa Exemplo 16"
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 17', 'Tarefa de prioridade alta, em andamento, com 10% concluido',
     'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 3, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 3, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (17, 2, 1, 'Tarefa', 'Tarefa Exemplo 18 (sub da 17)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 3, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 3, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (18, 3, 1, 'Tarefa', 'Tarefa Exemplo 19 (sub da 18)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 3, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 3, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 -- Tarefa "Tarefa Exemplo 19"
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 'Tarefa', 'Tarefa Exemplo 20', 'Tarefa de prioridade alta, em andamento, com 10% concluido',
     'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 2, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 2, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (20, 2, 1, 'Tarefa', 'Tarefa Exemplo 21 (sub da 20)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 2, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 2, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (20, 2, 1, 'Tarefa', 'Tarefa Exemplo 22 (sub da 20)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 2, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 2, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 -- Tarefas para filiais
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 1, 'Tarefa', 'Tarefa Exemplo 23', 'Tarefa de prioridade alta, em andamento, com 10% concluido',
     'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (23, 2, 1, 1, 'Tarefa', 'Tarefa Exemplo 24 (sub da 23)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (23, 2, 1, 1, 'Tarefa', 'Tarefa Exemplo 24 (sub da 23)', 'Tarefa de prioridade alta, nao iniciada, sub tarefa da 1',
     'ALTA', 'UNICA', NULL, 'NAO_INICIADA', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 1, 4, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 -- Tarefas onde o solicitante é o test-user 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 1, 'Tarefa', 'Tarefa Exemplo 25', 'Tarefa 1 onde o solicitante eh o test',
     'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 1, 'Tarefa', 'Tarefa Exemplo 26', 'Tarefa 2 onde o solicitante eh o test',
     'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 INSERT INTO Tarefa (idTarefaPai, nivel, idEmpresa, idFilialEmpresa, titulo, nome, descricao,
     prioridade, tipo, idProximaTarefa, status, andamento, dataInicio, dataFim, dataTermino,
     idEmpresaCliente, idUsuarioSolicitante, idUsuarioResponsavel, apontamentoHoras, orcamentoControlado, 
-    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao )
+    idDepartamento, idCentroCusto, idUsuarioInclusao, dataHoraInclusao, projecao, template )
 VALUES (NULL, 1, 1, 1, 'Tarefa', 'Tarefa Exemplo 27', 'Tarefa 3 onde o solicitante eh o test',
     'ALTA', 'UNICA', NULL, 'EM_ANDAMENTO', 0, '2014-05-01', '2014-05-31', NULL, 
-    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE');
+    1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 

@@ -1,11 +1,15 @@
 package com.saax.gestorweb.model.datamodel;
 
+import com.saax.gestorweb.util.GestorSession;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +17,7 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,10 +30,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.apache.commons.beanutils.BeanUtils;
 
 /**
  * Entity bean da tabela Tarefa com as namequerys configuradas.<br><br>
- * 
+ *
  * O objetivo desta entidade é armazenar as Tarefas e subs do sistema <br><br>
  *
  * @author rodrigo
@@ -49,6 +55,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Tarefa.findByProjecao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.projecao = :projecao"),
     @NamedQuery(name = "Tarefa.findByAndamento", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.andamento = :andamento"),
     @NamedQuery(name = "Tarefa.findByDescricao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.descricao = :descricao"),
+    @NamedQuery(name = "Tarefa.findByTemplate", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.template = :template"),
     @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.apontamentoHoras = :apontamentohoras"),
     @NamedQuery(name = "Tarefa.findByUsuarioResponsavel", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioResponsavel = :usuarioResponsavel"),
     @NamedQuery(name = "Tarefa.findByUsuarioSolicitante", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante"),
@@ -59,25 +66,76 @@ public class Tarefa implements Serializable {
     @Transient
     private String globalID;
 
+    /**
+     * Cria uma nova tarefa usando esta como template Todos os campos da tarefa
+     * de template são copiados (inclusive das subs), exceto:
+     * <ul>
+     * <li>ID</li>
+     * <li>Usuario Inclusão = Usuario logado</li>
+     * <li>Usuario Solicitante = Usuario logado</li>
+     * <li>Data Hora Inclusão = Agora</li>
+     * <li>Andamentos</li>
+     * <li>Avaliações</li>
+     * <li>Bloqueios</li>
+     * <li>Histórico</li>
+     * </ul>
+     *
+     * @return o clone
+     */
+    @Override
+    public Tarefa clone() {
+
+        Tarefa clone = null;
+        try {
+            clone = (Tarefa) BeanUtils.cloneBean(this);
+            List<Tarefa> cloneSubs = new ArrayList<>();
+            for (Tarefa sub : clone.getSubTarefas()) {
+                cloneSubs.add(sub.clone());
+            }
+            clone.setSubTarefas(cloneSubs);
+
+            Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+            
+            clone.setId(null);
+            clone.setUsuarioInclusao(usuarioLogado);
+            clone.setUsuarioSolicitante(usuarioLogado);
+            clone.setDataHoraInclusao(LocalDateTime.now());
+            clone.setAndamento(0);
+            clone.setAndamentos(new ArrayList<>());
+            clone.setApontamentos(new ArrayList<>());
+            clone.setAvaliacoes(new ArrayList<>());
+            clone.setBloqueios(new ArrayList<>());
+            clone.setFavoritados(new ArrayList<>());
+            clone.setHistorico(new ArrayList<>());
+            clone.setOrcamentos(new ArrayList<>());
+            clone.setStatus(StatusTarefa.NAO_ACEITA);
+            
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
+            throw new RuntimeException("Falha ao clonar tarefa");
+        }
+
+        return clone;
+    }
+
     public String getGlobalID() {
         globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
-        
+
         return globalID;
     }
-    
+
     private static long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idtarefa")
     private Integer id;
-    
+
     @Basic(optional = false)
     @NotNull(message = "Informe o nível da tarefa.")
     @Column(name = "nivel")
     private int nivel;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -89,78 +147,79 @@ public class Tarefa implements Serializable {
     @Size(min = 5, max = 150, message = "Nome da tarefa deve ter de 5 a 150 caracteres.")
     @Column(name = "nome")
     private String nome;
-    
+
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Informe a prioridade da tarefa: Baixa, Normal ou Alta.")
     private PrioridadeTarefa prioridade;
 
     @Enumerated(EnumType.STRING)
     private StatusTarefa status;
-        
+
     @Enumerated(EnumType.STRING)
     private ProjecaoTarefa projecao;
-        
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "andamento")
     private int andamento;
 
-    
+    @Column(name = "template")
+    private boolean template;
+
     @Size(min = 1, max = 2147483647)
     @Column(name = "descricao")
     private String descricao;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "apontamentohoras")
     private boolean apontamentoHoras;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "orcamentocontrolado")
     private boolean orcamentoControlado;
-    
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<FavoritosTarefaMeta> favoritados;
-    
+
     @JoinColumn(name = "idcentrocusto", referencedColumnName = "idcentrocusto")
     @ManyToOne
     private CentroCusto centroCusto;
-    
+
     @JoinColumn(name = "iddepartamento", referencedColumnName = "iddepartamento")
     @ManyToOne
     private Departamento departamento;
-    
+
     @NotNull(message = "Informe a empresa")
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
     @ManyToOne(optional = false)
     private Empresa empresa;
-    
+
     @JoinColumn(name = "idfilialempresa", referencedColumnName = "idfilialempresa")
     @ManyToOne
     private FilialEmpresa filialEmpresa;
-    
+
     @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private EmpresaCliente empresaCliente;
-    
+
     @OneToMany(mappedBy = "tarefaPai")
     private List<Tarefa> subTarefas;
-    
+
     @JoinColumn(name = "idproximatarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
     private Tarefa proximaTarefa;
-    
+
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Informe se a tarefa é recorrente ou única")
     @Column(name = "tipo")
     private TipoTarefa tipoRecorrencia;
-    
+
     @JoinColumn(name = "idtarefapai", referencedColumnName = "idtarefa")
     @ManyToOne
     private Tarefa tarefaPai;
-    
+
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne
     private Usuario usuarioInclusao;
@@ -168,49 +227,49 @@ public class Tarefa implements Serializable {
     @JoinColumn(name = "idusuariosolicitante", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuarioSolicitante;
-    
+
     @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
     @NotNull(message = "Informe o usuário reponsável.")
     @ManyToOne(optional = false)
     private Usuario usuarioResponsavel;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<ParticipanteTarefa> participantes;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<AvaliacaoMetaTarefa> avaliacoes;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<OrcamentoTarefa> orcamentos;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<ApontamentoTarefa> apontamentos;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<AnexoTarefa> anexos;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<AndamentoTarefa> andamentos;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<BloqueioTarefa> bloqueios;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<HistoricoTarefa> historico;
 
     @Column(name = "datatermino")
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataTermino;
-    
+
     @Column(name = "datainicio")
     @NotNull(message = "Informe a data de início.")
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataInicio;
-    
+
     @Column(name = "datafim")
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataFim;
-    
+
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
@@ -220,12 +279,11 @@ public class Tarefa implements Serializable {
      */
     transient BigDecimal custoHoraApontamento;
 
-    
     /**
      * Constrói uma tarefa com valores default
      */
     public Tarefa() {
-        
+
         andamento = 0;
         andamentos = new ArrayList<>();
         anexos = new ArrayList<>();
@@ -233,7 +291,7 @@ public class Tarefa implements Serializable {
         apontamentos = new ArrayList<>();
         avaliacoes = new ArrayList<>();
         bloqueios = new ArrayList<>();
-        
+
         favoritados = new ArrayList<>();
         historico = new ArrayList<>();
         nivel = 1;
@@ -244,8 +302,10 @@ public class Tarefa implements Serializable {
         status = StatusTarefa.NAO_ACEITA;
         subTarefas = new ArrayList<>();
 
+        apontamentoHoras = false;
+
         titulo = "Tarefa";
-        
+
     }
 
     public Tarefa(Integer idtarefa) {
@@ -300,7 +360,6 @@ public class Tarefa implements Serializable {
         this.andamento = andamento;
     }
 
-
     public String getDescricao() {
         return descricao;
     }
@@ -316,7 +375,6 @@ public class Tarefa implements Serializable {
     public void setOrcamentoControlado(boolean orcamentoControlado) {
         this.orcamentoControlado = orcamentoControlado;
     }
-
 
     public List<FavoritosTarefaMeta> getFavoritados() {
         return favoritados;
@@ -357,7 +415,7 @@ public class Tarefa implements Serializable {
     public void setFilialEmpresa(FilialEmpresa filialEmpresa) {
         this.filialEmpresa = filialEmpresa;
     }
-    
+
     public EmpresaCliente getEmpresaCliente() {
         return empresaCliente;
     }
@@ -459,18 +517,20 @@ public class Tarefa implements Serializable {
             return false;
         }
         Tarefa other = (Tarefa) object;
-        if ( this == other) return true;
+        if (this == other) {
+            return true;
+        }
 
         // se o ID estiver setado, compara por ele
-        if ( this.getId() != null) {
+        if (this.getId() != null) {
             return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
-            
+
         } else {
             // senao compara por campos setados na criação da tarefa
             return this.getEmpresa().equals(other.getEmpresa())
                     && this.getUsuarioInclusao().equals(other.getUsuarioInclusao())
                     && this.getUsuarioSolicitante().equals(other.getUsuarioSolicitante())
-                    && this. getDataHoraInclusao().equals(other.getDataHoraInclusao());
+                    && this.getDataHoraInclusao().equals(other.getDataHoraInclusao());
 
         }
     }
@@ -512,7 +572,6 @@ public class Tarefa implements Serializable {
         this.tipoRecorrencia = tipoRecorrencia;
     }
 
-
     public void setAndamentos(List<AndamentoTarefa> andamentos) {
         this.andamentos = andamentos;
     }
@@ -522,7 +581,7 @@ public class Tarefa implements Serializable {
     }
 
     public void addAndamento(AndamentoTarefa andamentoTarefa) {
-        if (getAndamentos()==null){
+        if (getAndamentos() == null) {
             setAndamentos(new ArrayList<>());
         }
         getAndamentos().add(andamentoTarefa);
@@ -604,31 +663,27 @@ public class Tarefa implements Serializable {
     public void setHistorico(List<HistoricoTarefa> historico) {
         this.historico = historico;
     }
-    
-    
 
     public void addBloqueio(BloqueioTarefa bloqueioTarefa) {
-         if (getBloqueios()==null){
+        if (getBloqueios() == null) {
             setBloqueios(new ArrayList<>());
         }
         getBloqueios().add(bloqueioTarefa);
     }
-    
 
     public void addHistorico(HistoricoTarefa historicoTarefa) {
-         if (getHistorico()==null){
+        if (getHistorico() == null) {
             setHistorico(new ArrayList<>());
         }
         getHistorico().add(historicoTarefa);
     }
 
     public void addApontamento(ApontamentoTarefa apontamento) {
-         if (getApontamentos()==null){
-             setApontamentos(new ArrayList<>());
+        if (getApontamentos() == null) {
+            setApontamentos(new ArrayList<>());
         }
         getApontamentos().add(apontamento);
     }
-
 
     public void setCustoHoraApontamento(BigDecimal custoHoraApontamento) {
         this.custoHoraApontamento = custoHoraApontamento;
@@ -637,8 +692,5 @@ public class Tarefa implements Serializable {
     public BigDecimal getCustoHoraApontamento() {
         return custoHoraApontamento;
     }
-    
-       
-    
-    
+
 }

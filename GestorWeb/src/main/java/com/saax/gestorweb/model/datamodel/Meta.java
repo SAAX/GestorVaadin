@@ -112,10 +112,10 @@ public class Meta implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meta")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meta")
     private List<FavoritosTarefaMeta> favoritados;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meta")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meta")
     private List<AvaliacaoMetaTarefa> avaliacoes;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")

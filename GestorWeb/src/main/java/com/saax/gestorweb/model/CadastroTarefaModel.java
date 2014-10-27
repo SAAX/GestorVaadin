@@ -57,10 +57,10 @@ public class CadastroTarefaModel {
      * @return
      */
     public List<EmpresaCliente> listarEmpresasCliente() {
-        
+
         List<EmpresaCliente> clientes = new ArrayList<>();
         try {
-            
+
             EmpresaModel empresaModel = new EmpresaModel();
 
             // obtem as coligadas a empresa do usuario logado
@@ -76,9 +76,9 @@ public class CadastroTarefaModel {
         } catch (GestorException ex) {
             Logger.getLogger(CadastroTarefaModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return clientes;
-        
+
     }
 
     /**
@@ -90,26 +90,37 @@ public class CadastroTarefaModel {
      */
     public Tarefa gravarTarefa(Tarefa tarefa) {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        
+
         if (tarefa == null) {
             throw new IllegalArgumentException("Tarefa NULA para persistencia");
         }
-        
-        try {
-            
-            em.getTransaction().begin();
 
+        try {
+
+            // so abre transação na gravacao da tarefa pai
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
+
+            
+            for (Tarefa sub : tarefa.getSubTarefas()) {
+                gravarTarefa(sub);
+            }
+            
             // TODO: Colocar projecao calculada
             tarefa.setProjecao(ProjecaoTarefa.NORMAL);
-            
+
             if (tarefa.getId() == null) {
                 em.persist(tarefa);
             } else {
                 em.merge(tarefa);
             }
-            
-            em.getTransaction().commit();
-            
+
+            // so comita na gravação da tarefa pai
+            if (tarefa.getTarefaPai() == null) {
+                em.getTransaction().commit();
+            }
+
         } catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
             if (GestorEntityManagerProvider.getEntityManager().getTransaction().isActive()) {
@@ -118,7 +129,7 @@ public class CadastroTarefaModel {
             // propaga a exceção pra cima
             throw ex;
         }
-        
+
         return tarefa;
     }
 
@@ -142,37 +153,37 @@ public class CadastroTarefaModel {
      * @param event
      */
     public void validarArquivo(Upload.StartedEvent event) throws FileNotFoundException {
-        
+
         if (event == null) {
             throw new IllegalArgumentException("Parâmetro inválido: Event");
         }
-        
+
         if (!new File(event.getFilename()).exists()) {
             throw new FileNotFoundException("Arquivo não encontrado");
         }
-        
+
         double tamanho = event.getContentLength();
 
         // tamanho em KB
         tamanho = tamanho / 1024;
         // tamanho em MB
         tamanho = tamanho / 1024;
-        
+
         if (tamanho > 10D) {
             throw new IllegalArgumentException("Arquivo deve ter menos que 10mb");
         }
-        
+
         String extensao = event.getFilename().substring(event.getFilename().lastIndexOf('.'));
-        
+
         Set<String> extensoesProibidas = new HashSet<>();
         extensoesProibidas.add("exe");
         extensoesProibidas.add("bat");
         extensoesProibidas.add("sh");
-        
+
         if (extensoesProibidas.contains(extensao)) {
             throw new SecurityException("Arquivo não permitido: " + extensao);
         }
-        
+
     }
 
     /**
@@ -188,7 +199,7 @@ public class CadastroTarefaModel {
         Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("usuarioLogado");
         Usuario usuarioResponsavel = apontamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = apontamentoTarefa.getTarefa().getUsuarioSolicitante();
-        
+
         Duration inputHoras = null;
         try {
             String[] input = apontamentoTarefa.getInputHoras().split(":");
@@ -201,7 +212,7 @@ public class CadastroTarefaModel {
 
         // se o usuário for o responsavel as horas inputadas são "debito"
         if (usuarioApontamento.equals(usuarioResponsavel)) {
-            
+
             apontamentoTarefa.setDebitoHoras(inputHoras);
             apontamentoTarefa.setDebitoValor(calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras));
         } else if (usuarioApontamento.equals(usuarioSolicitante)) {
@@ -215,15 +226,15 @@ public class CadastroTarefaModel {
         // Adiciona o apontamento na tarefa e ordena os apontamento por data/hora de inclusao
         List<ApontamentoTarefa> apontamentos = apontamentoTarefa.getTarefa().getApontamentos();
         apontamentos.add(apontamentoTarefa);
-        
+
         recalculaSaldoApontamentoHoras(apontamentos);
-        
+
         return apontamentoTarefa;
-        
+
     }
-    
+
     private void recalculaSaldoApontamentoHoras(List<ApontamentoTarefa> apontamentos) {
-        
+
         Collections.sort(apontamentos, (ApontamentoTarefa o1, ApontamentoTarefa o2) -> o1.getDataHoraInclusao().compareTo(o2.getDataHoraInclusao()));
 
         // calcula o saldo:
@@ -248,7 +259,7 @@ public class CadastroTarefaModel {
             if (debito != null) {
                 saldo = saldo.minus(debito);
             }
-            
+
             apontamentoElement.setSaldoHoras(saldo);
 
             // configura o saldo alterior a ser usado na proxima iteraçao
@@ -271,14 +282,14 @@ public class CadastroTarefaModel {
             if (debitoValor != null) {
                 saldoValor = saldoValor.subtract(debitoValor);
             }
-            
+
             apontamentoElement.setSaldoValor(saldoValor);
 
             // configura o saldo alterior a ser usado na proxima iteraçao
             saldoAnteriorValor = saldoValor.setScale(2);
-            
+
         }
-        
+
     }
 
     /**
@@ -309,19 +320,19 @@ public class CadastroTarefaModel {
         Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("usuarioLogado");
         Usuario usuarioResponsavel = orcamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = orcamentoTarefa.getTarefa().getUsuarioSolicitante();
-        
+
         BigDecimal inputValor = null;
         try {
             inputValor = new BigDecimal(orcamentoTarefa.getInputValor());
             inputValor.setScale(2);
-            
+
         } catch (Exception e) {
             throw new RuntimeException("Não foi possível identificar o valor informado: " + orcamentoTarefa.getInputValor());
         }
 
         // se o usuário for o responsavel os valores inputadas são "debito"
         if (usuarioApontamento.equals(usuarioResponsavel)) {
-            
+
             orcamentoTarefa.setDebito(inputValor);
         } else if (usuarioApontamento.equals(usuarioSolicitante)) {
             // se o usuário for o solicitante as horas inputadas são "credito"
@@ -333,20 +344,20 @@ public class CadastroTarefaModel {
         // Adiciona o valor de orçamento na tarefa e ordena os registros de orçamento por data/hora de inclusao
         List<OrcamentoTarefa> orcamentos = orcamentoTarefa.getTarefa().getOrcamentos();
         orcamentos.add(orcamentoTarefa);
-        
+
         recalculaSaldoOrcamento(orcamentos);
-        
+
         return orcamentoTarefa;
     }
-    
+
     private void recalculaSaldoOrcamento(List<OrcamentoTarefa> orcamentos) {
-        
+
         Collections.sort(orcamentos, (OrcamentoTarefa o1, OrcamentoTarefa o2) -> o1.getDataHoraInclusao().compareTo(o2.getDataHoraInclusao()));
 
         // calcula o saldo:
         BigDecimal saldoAnterior = BigDecimal.ZERO;
         for (OrcamentoTarefa orcamentoElement : orcamentos) {
-            
+
             BigDecimal credito = orcamentoElement.getCredito();
             BigDecimal debito = orcamentoElement.getDebito();
 
@@ -361,44 +372,44 @@ public class CadastroTarefaModel {
             if (debito != null) {
                 saldo = saldo.subtract(debito);
             }
-            
+
             orcamentoElement.setSaldo(saldo);
 
             // configura o saldo alterior a ser usado na proxima iteraçao
             saldoAnterior = saldo.setScale(2);
-            
+
         }
-        
+
     }
-    
+
     public void removerApontamentoHoras(ApontamentoTarefa apontamentoTarefa) {
 
         // Adiciona o apontamento na tarefa e ordena os apontamento por data/hora de inclusao
         List<ApontamentoTarefa> apontamentos = apontamentoTarefa.getTarefa().getApontamentos();
         apontamentos.remove(apontamentoTarefa);
-        
+
         recalculaSaldoApontamentoHoras(apontamentos);
-        
+
     }
 
     public void removerOrcamentoTarefa(OrcamentoTarefa orcamentoTarefa) {
         // Adiciona o apontamento na tarefa e ordena os apontamento por data/hora de inclusao
         List<OrcamentoTarefa> orcamentos = orcamentoTarefa.getTarefa().getOrcamentos();
         orcamentos.remove(orcamentoTarefa);
-        
+
         recalculaSaldoOrcamento(orcamentos);
     }
 
     public ParticipanteTarefa criarParticipante(Usuario usuario, Tarefa tarefa) {
-        
+
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
-        
+
         ParticipanteTarefa participanteTarefa = new ParticipanteTarefa();
         participanteTarefa.setTarefa(tarefa);
         participanteTarefa.setUsuarioInclusao(usuarioLogado);
         participanteTarefa.setUsuarioParticipante(usuario);
         participanteTarefa.setDataHoraInclusao(LocalDateTime.now());
-        
+
         return participanteTarefa;
     }
 
@@ -406,8 +417,7 @@ public class CadastroTarefaModel {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
         return em.createNamedQuery("Departamento.findAll").getResultList();
-        
-        
+
     }
 
     public List<CentroCusto> listCentroCusto() {
@@ -417,6 +427,8 @@ public class CadastroTarefaModel {
         return em.createNamedQuery("CentroCusto.findByEmpresa")
                 .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
                 .getResultList();
-    
+
     }
+
+    
 }

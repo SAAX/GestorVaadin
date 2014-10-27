@@ -22,8 +22,15 @@ import com.saax.gestorweb.view.DashboardViewListenter;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.data.Item;
 import com.saax.gestorweb.util.GestorSession;
+import com.vaadin.data.Property;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -135,6 +142,70 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     public void edicaoTarefaConcluida(Tarefa tarefa) {
         atualizarTarefaTable(tarefa);
         organizarHierarquiaTreeTable(tarefa);
+    }
+
+    public Layout buildChooseTemplatePopUp(Window window) {
+
+        VerticalLayout content = new VerticalLayout();
+        content.setMargin(true);
+        content.setSpacing(true);
+        content.setSizeUndefined();
+
+        ListSelect listaTemplates = new ListSelect();
+        listaTemplates.setMultiSelect(false);
+        listaTemplates.setWidth("300px");
+
+        List<Tarefa> templates = model.getTarefasTemplate();
+
+        for (Tarefa template : templates) {
+            listaTemplates.addItem(template);
+            listaTemplates.setItemCaption(template, template.getNome());
+        }
+
+        content.addComponent(listaTemplates);
+
+        Button cancelar = new Button("Cancelar", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                window.close();
+            }
+        });
+        DashboardPresenter callback = this;
+        Button criar = new Button("Criar Tarefa", new Button.ClickListener() {
+
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                Tarefa template = (Tarefa) listaTemplates.getValue();
+                if (template != null) {
+                    CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+                    presenter.setCallBackListener(callback);
+
+                    Tarefa novaTarefa = template.clone();
+                    novaTarefa.setTarefaPai(null);
+                    presenter.editar(novaTarefa);
+
+                }
+            }
+        }
+        );
+        content.addComponent(new HorizontalLayout(cancelar, criar));
+
+        return content;
+    }
+
+    @Override
+    public void criarNovaTarefaViaTemplate() {
+
+        Window templatesWindow = new Window("Escolha a tarefa modelo");
+        templatesWindow.setModal(true);
+
+        templatesWindow.setContent(buildChooseTemplatePopUp(templatesWindow));
+
+        templatesWindow.center();
+
+        UI.getCurrent().addWindow(templatesWindow);
+
     }
 
     // enumeracao do tipo de pesquisa

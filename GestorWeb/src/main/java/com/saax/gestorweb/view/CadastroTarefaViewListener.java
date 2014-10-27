@@ -27,16 +27,12 @@ public interface CadastroTarefaViewListener {
 
     public void cancelarButtonClicked();
 
-    public void anexoAdicionado();
-
     public void imputarHorasClicked();
 
     public void imputarOrcamentoClicked();
 
-    public void editar(Tarefa tarefaToEdit);
-
-    public void anexoAdicionado(Upload.FinishedEvent event);
-
+    public void editar(Tarefa tarefaToEdit);   
+    
     public void solicitacaoParaAdicionarAnexo(Upload.StartedEvent event);
 
     public void apontamentoHorasSwitched(Property.ValueChangeEvent event);
@@ -58,4 +54,6 @@ public interface CadastroTarefaViewListener {
     public void removerAnexo(AnexoTarefa anexoTarefa);
 
     public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa);
+
+    public void anexoAdicionado(Upload.SucceededEvent event);
 }

@@ -80,22 +80,22 @@ public class Empresa implements Serializable {
     @Column(name = "ativa")
     private boolean ativa;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "matriz")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "matriz")
     private List<FilialEmpresa> filiais;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
     private List<CentroCusto> centrosDeCusto;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
     private List<UsuarioEmpresa> usuarios;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
     private List<Meta> metas;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
     private List<Departamento> departamentos;
 
-    @OneToMany(mappedBy = "empresaPrincipal", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "empresaPrincipal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Empresa> subEmpresas;
 
     @JoinColumn(name = "idempresaprincipal", referencedColumnName = "idempresa")
@@ -120,14 +120,14 @@ public class Empresa implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
     private List<Tarefa> tarefas;
 
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuarioInclusao;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
     private List<EmpresaCliente> clientes;
 
     public Empresa() {

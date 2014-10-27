@@ -78,7 +78,7 @@ public class EmpresaCliente implements Serializable {
     @Column(name = "ativa")
     private boolean ativa;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresaCliente")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresaCliente")
     private List<FilialCliente> filiais;
     
     @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
@@ -96,7 +96,7 @@ public class EmpresaCliente implements Serializable {
     @OneToMany(mappedBy = "empresaCliente")
     private List<Tarefa> tarefas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cliente")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "cliente")
     private List<Meta> metas;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")

@@ -2,17 +2,15 @@ package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.PaginaInicialModel;
-import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.presenter.PaginaInicialPresenter;
-import com.saax.gestorweb.presenter.SignupPresenter;
 import com.saax.gestorweb.util.CookiesManager;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.PaginaInicialView;
-import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.Page;
@@ -28,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Rodrigo
  */
 @Theme("mytheme")
-@PreserveOnRefresh
+@Push
 public class GestorMDI extends UI {
 
     private transient PaginaInicialModel paginaInicialModel;
@@ -52,29 +51,30 @@ public class GestorMDI extends UI {
     
     
 
-    @WebServlet(value = "/*", asyncSupported = true)
+    @WebServlet(value = "/*", asyncSupported = true,  initParams = {
+                        @WebInitParam(name="org.atmosphere.cpr.AtmosphereInterceptor", value="com.saax.gestorweb.util.AtmosphereFilter")
+                     }/*, initParams = <init-param>
+    <param-name>org.atmosphere.cpr.AtmosphereInterceptor</param-name>
+    <!-- comma-separated list of fully-qualified class names -->
+    <param-value>com.example.MyAtmosphereInterceptor/param-value></init-param>*/)
     @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
     public static class Servlet extends VaadinServlet {
 
         @Override
         protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-            // Cria um entity manager por requisição
-            EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
-            // Armazena na thread
-            GestorEntityManagerProvider.setCurrentEntityManager(em);
-            
             try {
                 
-                Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Tratando requisição...");
                 super.service(req, resp);
                 
             } finally {
                 // Fecha o entity manger ao fim da requisição
-                GestorEntityManagerProvider.getEntityManager().close();
-                // Libera a variável da thread
-                GestorEntityManagerProvider.setCurrentEntityManager(null);
-                GestorEntityManagerProvider.remove();
+                if (GestorEntityManagerProvider.getEntityManager()!=null){
+                    Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Fechando EM no service");
+                    GestorEntityManagerProvider.getEntityManager().close();
+                    // Libera a variável da thread
+                    GestorEntityManagerProvider.remove();
+                }
             }
         }
 

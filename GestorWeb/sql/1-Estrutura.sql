@@ -276,6 +276,7 @@ CREATE TABLE Tarefa (
     idUsuarioResponsavel BIGINT NOT NULL,
     apontamentoHoras BOOLEAN NOT NULL,
     orcamentoControlado BOOLEAN NOT NULL,
+    template BOOLEAN NOT NULL,
     idDepartamento BIGINT,
     idCentroCusto BIGINT,
     idUsuarioInclusao INTEGER NOT NULL,
@@ -364,9 +365,9 @@ CREATE TABLE ApontamentoTarefa (
     debitoHoras INTEGER,
     saldoHoras INTEGER NOT NULL,
     custoHora NUMERIC(10,2),
-    creditoValor NUMERIC(10,3),
-    debitoValor NUMERIC(10,3),
-    saldoValor NUMERIC(10,3),
+    creditoValor NUMERIC(10,2),
+    debitoValor NUMERIC(10,2),
+    saldoValor NUMERIC(10,2),
     observacoes  CHARACTER VARYING (60),
     idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -438,5 +439,4 @@ CREATE TABLE HistoricoTarefa (
 -- 100 chars
 -- 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 --          1         1         1         1         1         1         1         1         1         1
-
 

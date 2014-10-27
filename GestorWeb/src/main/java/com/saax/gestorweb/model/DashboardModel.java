@@ -192,4 +192,22 @@ public class DashboardModel {
 
     }
 
+    public List<Tarefa> getTarefasTemplate() {
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        List<Tarefa> templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
+                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("template", true)
+                .getResultList();
+
+        for (Empresa subEmpresa : usuarioLogado.getEmpresaAtiva().getSubEmpresas()) {
+            templates.addAll(
+                    GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
+                    .setParameter("empresa", subEmpresa)
+                    .setParameter("template", true)
+                    .getResultList());
+        }
+        
+        return templates;
+    }
+
 }

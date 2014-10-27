@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -163,6 +164,15 @@ public class DashBoardView extends VerticalLayout {
         MenuBar.MenuItem criarTarefas = criar.addItem("Tarefas/Sub", (MenuBar.MenuItem selectedItem) -> {
             listener.criarNovaTarefa();
         });
+        MenuBar.MenuItem criarTarefasViaTemplate = criar.addItem("Tarefas via Template", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                listener.criarNovaTarefaViaTemplate();
+            }
+        });
+
+        
         MenuBar.MenuItem criarMetas = criar.addItem("Metas", null, null);
 
         MenuBar.MenuItem publicacoes = getMenuSuperior().addItem("<h3>Publicações</h3>", null, null);

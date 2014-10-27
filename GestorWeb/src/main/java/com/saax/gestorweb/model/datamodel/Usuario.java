@@ -83,65 +83,65 @@ public class Usuario implements Serializable {
 
     private transient Empresa empresaAtiva;
         
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
     private Collection<UsuarioEmpresa> empresas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioResponsavel")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioResponsavel")
     private Collection<Meta> metasSobResponsabilidade;
     
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<FavoritosTarefaMeta> favoritosIncluidos;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<CentroCusto> centrosCustoIncluidos;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<Endereco> enderecosIncluidos;
     
     @OneToMany(mappedBy = "usuarioInclusao")
     private List<Tarefa> tarefasIncluidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioSolicitante")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioSolicitante")
     private List<Tarefa> tarefasSolicitadas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioResponsavel")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioResponsavel")
     private List<Tarefa> tarefasSobResponsabilidade;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<ParticipanteTarefa> paricipacoesIncluidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioParticipante")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioParticipante")
     private List<ParticipanteTarefa> tarefasParticipantes;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<FilialCliente> filiaisClientesIncluidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<FilialEmpresa> filiaisEmpresaIncluidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<AvaliacaoMetaTarefa> avaliacoesIncluidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioAvaliador")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioAvaliador")
     private List<AvaliacaoMetaTarefa> avaliacoesSubmetidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioAvaliado")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioAvaliado")
     private List<AvaliacaoMetaTarefa> avaliacoesRecebidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<OrcamentoTarefa> orcamentosIncluidos;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<ApontamentoTarefa> apontamentosIncluidos;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<Departamento> departamentosIncluidos;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
     private List<HistoricoTarefa> historicosTarefa;
     
     @OneToMany(mappedBy = "usuarioInclusao")
@@ -151,13 +151,13 @@ public class Usuario implements Serializable {
     @ManyToOne
     private Usuario usuarioInclusao;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<Empresa> empresasIncluidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<EmpresaCliente> empresasClienteIncluidas;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioInclusao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<AnexoTarefa> anexosTarefaIncluidos;
     
     

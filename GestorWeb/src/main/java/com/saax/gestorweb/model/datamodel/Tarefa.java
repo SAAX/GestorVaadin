@@ -43,8 +43,6 @@ import org.apache.commons.beanutils.BeanUtils;
 @Table(name = "tarefa")
 @NamedQueries({
     @NamedQuery(name = "Tarefa.findAll", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa"),
-    @NamedQuery(name = "Tarefa.findByNivel", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.nivel = :nivel"),
-    @NamedQuery(name = "Tarefa.findByTitulo", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.titulo = :titulo"),
     @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.nome = :nome"),
     @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa"),
     @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.prioridade = :prioridade"),
@@ -130,17 +128,6 @@ public class Tarefa implements Serializable {
     @Basic(optional = false)
     @Column(name = "idtarefa")
     private Integer id;
-
-    @Basic(optional = false)
-    @NotNull(message = "Informe o nível da tarefa.")
-    @Column(name = "nivel")
-    private int nivel;
-
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "titulo")
-    private String titulo;
 
     @Basic(optional = false)
     @NotNull(message = "Informe o nome da tarefa.")
@@ -274,38 +261,16 @@ public class Tarefa implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
 
+    @JoinColumn(name = "idhierarquiaprojetodetalhe", referencedColumnName = "idhierarquiaprojetodetalhe")
+    @ManyToOne
+    private HierarquiaProjetoDetalhe hierarquia;
+
     /**
      * Custo de hora para todos os apontamentos
      */
     transient BigDecimal custoHoraApontamento;
 
-    /**
-     * Constrói uma tarefa com valores default
-     */
     public Tarefa() {
-
-        andamento = 0;
-        andamentos = new ArrayList<>();
-        anexos = new ArrayList<>();
-        apontamentoHoras = true;
-        apontamentos = new ArrayList<>();
-        avaliacoes = new ArrayList<>();
-        bloqueios = new ArrayList<>();
-
-        favoritados = new ArrayList<>();
-        historico = new ArrayList<>();
-        nivel = 1;
-        orcamentoControlado = true;
-        orcamentos = new ArrayList<>();
-        participantes = new ArrayList<>();
-        prioridade = PrioridadeTarefa.NORMAL;
-        status = StatusTarefa.NAO_ACEITA;
-        subTarefas = new ArrayList<>();
-
-        apontamentoHoras = false;
-
-        titulo = "Tarefa";
-
     }
 
     public Tarefa(Integer idtarefa) {
@@ -318,22 +283,6 @@ public class Tarefa implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public int getNivel() {
-        return nivel;
-    }
-
-    public void setNivel(int nivel) {
-        this.nivel = nivel;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
     }
 
     public String getNome() {
@@ -692,5 +641,15 @@ public class Tarefa implements Serializable {
     public BigDecimal getCustoHoraApontamento() {
         return custoHoraApontamento;
     }
+
+    public void setHierarquia(HierarquiaProjetoDetalhe hierarquia) {
+        this.hierarquia = hierarquia;
+    }
+
+    public HierarquiaProjetoDetalhe getHierarquia() {
+        return hierarquia;
+    }
+    
+    
 
 }

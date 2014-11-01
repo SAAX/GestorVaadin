@@ -3,12 +3,14 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -17,6 +19,9 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.Resource;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Accordion;
@@ -115,6 +120,9 @@ public class CadastroTarefaView extends Window {
     @PropertyId("empresa")
     private ComboBox empresaCombo;
 
+    @PropertyId("hierarquia")
+    private ComboBox hierarquiaCombo;
+    
     @PropertyId("nome")
     private TextField nomeTarefaTextField;
 
@@ -130,7 +138,7 @@ public class CadastroTarefaView extends Window {
     @PropertyId("prioridade")
     private ComboBox prioridadeCombo;
 
-    private Button avisoButton;
+//    private Button avisoButton;
 
     private PopupButton statusTarefaPopUpButton;
 
@@ -203,6 +211,7 @@ public class CadastroTarefaView extends Window {
     private Label caminhoTarefaLabel;
     private HorizontalLayout uploadHorizontalLayout;
     private ProgressBar anexoProgressBar;
+
 
     /**
      * Configura o listener de eventos da view
@@ -333,6 +342,15 @@ public class CadastroTarefaView extends Window {
         empresaCombo.addValidator(new BeanValidator(Tarefa.class, "empresa"));
         camposObrigatorios.add(empresaCombo);
 
+        // Combo: Categoria
+        hierarquiaCombo = new ComboBox(mensagens.getString("CadastroTarefaView.hierarquiaCombo.label"));
+        hierarquiaCombo.setWidth("140px");
+        hierarquiaCombo.addValidator(new BeanValidator(Tarefa.class, "hierarquia"));
+        hierarquiaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.hierarquiaSelecionada((HierarquiaProjetoDetalhe)event.getProperty().getValue());
+        });
+        camposObrigatorios.add(hierarquiaCombo);
+
         // TextField: Nome da Tarefa
         nomeTarefaTextField = new TextField(mensagens.getString("CadastroTarefaView.nomeTarefaTextField.label"));
         nomeTarefaTextField.setWidth("100%");
@@ -373,10 +391,10 @@ public class CadastroTarefaView extends Window {
         dataFimDateField.setConverter(new DateToLocalDateConverter());
 
         // Componente de aviso
-        avisoButton = new Button(mensagens.getString("CadastroTarefaView.avisoButton.caption"), (Button.ClickEvent event) -> {
-            listener.avisoButtonClicked();
-        });
-        avisoButton.setWidth("100%");
+//        avisoButton = new Button(mensagens.getString("CadastroTarefaView.avisoButton.caption"), (Button.ClickEvent event) -> {
+//            listener.avisoButtonClicked();
+//        });
+//        avisoButton.setWidth("100%");
 
         // configura o layout usando uma grid
         GridLayout grid = new GridLayout(3, 3);
@@ -385,16 +403,25 @@ public class CadastroTarefaView extends Window {
         grid.setWidth("100%");
         grid.setHeight(null);
 
+        HorizontalLayout categoriaENomeContainer = new HorizontalLayout();
+        categoriaENomeContainer.setSpacing(true);
+        categoriaENomeContainer.setSizeFull();
+        categoriaENomeContainer.addComponent(hierarquiaCombo);
+        categoriaENomeContainer.addComponent(nomeTarefaTextField);
+        categoriaENomeContainer.setExpandRatio(nomeTarefaTextField, 1);
+        categoriaENomeContainer.setComponentAlignment(hierarquiaCombo, Alignment.BOTTOM_CENTER);
+        
         grid.addComponent(empresaCombo);
-        grid.addComponent(nomeTarefaTextField, 1, 0, 2, 0);
+        grid.addComponent(categoriaENomeContainer, 1, 0, 2, 0);
         grid.addComponent(dataInicioDateField);
         grid.addComponent(tipoRecorrenciaCombo);
         grid.addComponent(prioridadeCombo);
         grid.addComponent(dataFimDateField);
         grid.addComponent(statusTarefaPopUpButton);
         grid.setComponentAlignment(statusTarefaPopUpButton, Alignment.BOTTOM_CENTER);
-        grid.addComponent(avisoButton);
-        grid.setComponentAlignment(avisoButton, Alignment.BOTTOM_CENTER);
+//        grid.addComponent(avisoButton);
+//        grid.setComponentAlignment(avisoButton, Alignment.BOTTOM_CENTER);
+        
 
         return grid;
     }
@@ -407,7 +434,12 @@ public class CadastroTarefaView extends Window {
     private Component buildBarraBotoesSuperior() {
 
         barraBotoesSuperior = new HorizontalLayout();
+        barraBotoesSuperior.setSpacing(true);
         barraBotoesSuperior.setSizeUndefined();
+
+        templateCheckBox = new CheckBox(mensagens.getString("CadastroTarefaView.templateCheckBox.caption"));
+
+        barraBotoesSuperior.addComponent(templateCheckBox);
 
         apontamentoHorasCheckBox = new CheckBox(mensagens.getString("CadastroTarefaView.apontamentoHorasCheckBox.caption"));
         apontamentoHorasCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
@@ -422,10 +454,6 @@ public class CadastroTarefaView extends Window {
         });
 
         barraBotoesSuperior.addComponent(orcamentoControladoCheckBox);
-
-        templateCheckBox = new CheckBox(mensagens.getString("CadastroTarefaView.templateCheckBox.caption"));
-
-        barraBotoesSuperior.addComponent(templateCheckBox);
 
         addSubButton = new Button("[Add Sub]", (Button.ClickEvent event) -> {
             listener.addSubButtonClicked();
@@ -461,7 +489,7 @@ public class CadastroTarefaView extends Window {
                 setValidatorsVisible(true);
                 tarefaFieldGroup.commit();
                 listener.gravarButtonClicked();
-            } catch (FieldGroup.CommitException ex) {
+            } catch (Exception ex) {
                 String mensagem = "";
                 if (ex.getCause() instanceof Validator.InvalidValueException) {
                     Validator.InvalidValueException validationException = (Validator.InvalidValueException) ex.getCause();
@@ -585,113 +613,94 @@ public class CadastroTarefaView extends Window {
         anexoProgressBar = new ProgressBar();
         anexoProgressBar.setWidth("100%");
 
-        adicionarAnexoButton = new Upload("", new Upload.Receiver() {
+        adicionarAnexoButton = new Upload(mensagens.getString("CadastroTarefaView.adicionarAnexoButton.filechooser.caption"), (String filename, String mimeType) -> {
+            FileOutputStream fos = null;
+            try {
+                File randomFolder = new File(System.getProperty("user.dir") + "/tmp/" + String.valueOf(Math.abs(new Random().nextInt())));
+                randomFolder.mkdirs();
 
-            @Override
-            public OutputStream receiveUpload(String filename, String mimeType) {
-                FileOutputStream fos = null;
-                try {
-                    File randomFolder = new File(String.valueOf(Math.abs(new Random().nextInt())));
-                    randomFolder.mkdir();
+                File file = new File(randomFolder, filename);
+                fos = new FileOutputStream(file);
 
-                    File file = new File(randomFolder, filename);
-                    fos = new FileOutputStream(file);
+                // cria uma pasta temporaria para gravação
+                adicionarAnexoButton.setData(file);
 
-                    // cria uma pasta temporaria para gravação
-                    adicionarAnexoButton.setData(file);
-
-                } catch (FileNotFoundException e) {
-                    Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
-                    return null;
-                }
-                return fos;
+            } catch (FileNotFoundException e) {
+                Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                return null;
             }
-
+            return fos;
         });
-        adicionarAnexoButton.addSucceededListener(new Upload.SucceededListener() {
+        adicionarAnexoButton.setButtonCaption(mensagens.getString("CadastroTarefaView.adicionarAnexoButton.caption"));
 
-            @Override
-            public void uploadSucceeded(Upload.SucceededEvent event) {
-                listener.anexoAdicionado(event);
-            }
+        adicionarAnexoButton.addSucceededListener((Upload.SucceededEvent event) -> {
+            listener.anexoAdicionado((File) event.getUpload().getData());
         });
-        adicionarAnexoButton.addProgressListener(new Upload.ProgressListener() {
-
-            @Override
-            public void updateProgress(long readBytes, long contentLength) {
-                UI.getCurrent().access(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            // let's slow down upload a bit
-                            Thread.sleep(100);
-                            Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.WARNING, "Remover sleep");
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        float newValue = readBytes / (float) contentLength;
-                        anexoProgressBar.setValue(newValue);
-                    }
-                });
-            }
+        adicionarAnexoButton.addProgressListener((long readBytes, long contentLength) -> {
+            UI.getCurrent().access(() -> {
+                float newValue = readBytes / (float) contentLength;
+                anexoProgressBar.setValue(newValue);
+            });
         });
-        adicionarAnexoButton.addFinishedListener(new Upload.FinishedListener() {
-
-            @Override
-            public void uploadFinished(Upload.FinishedEvent event) {
-                uploadHorizontalLayout.removeComponent(anexoProgressBar);
-                Notification.show("Upload finished.", Notification.Type.TRAY_NOTIFICATION);
-            }
+        adicionarAnexoButton.addFinishedListener((Upload.FinishedEvent event) -> {
+            uploadHorizontalLayout.removeComponent(anexoProgressBar);
+            Notification.show(mensagens.getString("CadastroTarefaView.adicionarAnexoButton.uploadConcluido.mensagem"), Notification.Type.TRAY_NOTIFICATION);
         });
-        adicionarAnexoButton.addStartedListener(new Upload.StartedListener() {
-
-            @Override
-            public void uploadStarted(Upload.StartedEvent event) {
-                uploadHorizontalLayout.addComponent(anexoProgressBar);
-                Notification.show("Upload started.", Notification.Type.TRAY_NOTIFICATION);
-
-            }
+        adicionarAnexoButton.addStartedListener((Upload.StartedEvent event) -> {
+            uploadHorizontalLayout.addComponent(anexoProgressBar);
         });
-        //uploadHorizontalLayout.addComponent(anexoProgressBar);
+        
+        uploadHorizontalLayout.addComponent(adicionarAnexoButton);
 
         anexoTarefaContainer = new BeanItemContainer<>(AnexoTarefa.class);
 
         anexosAdicionadosTable = new Table();
         anexosAdicionadosTable.setContainerDataSource(anexoTarefaContainer);
 
-        anexosAdicionadosTable.setColumnWidth("nome", 120);
+        anexosAdicionadosTable.setColumnWidth("nome", 350);
+        
         anexosAdicionadosTable.setColumnHeader("nome", mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"));
 
         anexosAdicionadosTable.setVisibleColumns("nome");
+
+        // Adicionar coluna do botão "download"
+        anexosAdicionadosTable.addGeneratedColumn(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
+            Button downloadButton = new Button(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"));
+            AnexoTarefa anexoTarefa =  (AnexoTarefa) itemId;
+            FileDownloader fd = new FileDownloader(new FileResource(anexoTarefa.getArquivo() == null ? anexoTarefa.getArquivoTemporario() : anexoTarefa.getArquivo()));
+            fd.extend(downloadButton);
+
+            return downloadButton;
+        });
+        anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
 
         // Adicionar coluna do botão "remover"
         anexosAdicionadosTable.addGeneratedColumn(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerAnexo((AnexoTarefa) itemId);
-
             });
             return removeButton;
         });
-
+        anexosAdicionadosTable.setColumnWidth(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
         anexosAdicionadosTable.setSelectable(true);
         anexosAdicionadosTable.setImmediate(true);
         anexosAdicionadosTable.setWidth("100%");
+        anexosAdicionadosTable.setHeight("150px");
         anexosAdicionadosTable.setPageLength(3);
 
         // Do layout:
-        GridLayout layout = new GridLayout(2, 3);
+        GridLayout layout = new GridLayout(2, 2);
         layout.setSpacing(true);
         layout.setMargin(true);
         layout.setWidth("100%");
         layout.setHeight(null);
 
+        
         layout.addComponent(departamentoCombo, 0, 0);
         layout.addComponent(centroCustoCombo, 0, 1);
-        layout.addComponent(adicionarAnexoButton, 1, 0);
-        layout.addComponent(uploadHorizontalLayout, 1, 1);
-        layout.addComponent(anexosAdicionadosTable, 1, 2);
-        layout.setComponentAlignment(anexosAdicionadosTable, Alignment.TOP_RIGHT);
+        layout.addComponent(uploadHorizontalLayout, 1, 0);
+        layout.addComponent(anexosAdicionadosTable, 1, 1);
 
         layout.setRowExpandRatio(0, 0);
         layout.setRowExpandRatio(1, 1);
@@ -1119,9 +1128,9 @@ public class CadastroTarefaView extends Window {
     /**
      * @return the avisoButton
      */
-    public Button getAvisoButton() {
-        return avisoButton;
-    }
+//    public Button getAvisoButton() {
+//        return avisoButton;
+//    }
 
     /**
      * @return the usuarioResponsavelCombo
@@ -1340,6 +1349,10 @@ public class CadastroTarefaView extends Window {
 
     public FieldGroup getTarefaFieldGroup() {
         return tarefaFieldGroup;
+    }
+
+    public ComboBox getHierarquiaCombo() {
+        return hierarquiaCombo;
     }
 
 }

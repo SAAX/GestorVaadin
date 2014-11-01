@@ -1,5 +1,6 @@
 package com.saax.gestorweb.model.datamodel;
 
+import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Basic;
@@ -10,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -63,10 +63,12 @@ public class AnexoTarefa implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Lob
-    @Column(name = "arquivo")
-    private byte[] arquivo;
+    @Column(name = "caminhoCompleto")
+    @Size(min = 1, max = 255)
+    private String caminhoCompleto;
     
+    transient File arquivo;
+    transient File arquivoTemporario;
 
     public AnexoTarefa() {
     }
@@ -75,9 +77,9 @@ public class AnexoTarefa implements Serializable {
         this.id = idanexotarefa;
     }
 
-    public AnexoTarefa(Integer idanexotarefa, byte[] arquivo, String nome, LocalDateTime dataHoraInclusao) {
+    public AnexoTarefa(Integer idanexotarefa, String path, String nome, LocalDateTime dataHoraInclusao) {
         this.id = idanexotarefa;
-        this.arquivo = arquivo;
+        this.caminhoCompleto = path;
         this.nome = nome;
         this.dataHoraInclusao = dataHoraInclusao;
     }
@@ -155,12 +157,29 @@ public class AnexoTarefa implements Serializable {
         return "com.saax.gestorweb.AnexoTarefa[ idanexotarefa=" + id + " ]";
     }
 
-    public byte[] getArquivo() {
+    public String getCaminhoCompleto() {
+        return caminhoCompleto;
+    }
+
+    public void setCaminhoCompleto(String caminhoCompleto) {
+        this.caminhoCompleto = caminhoCompleto;
+    }
+
+    public void setArquivo(File arquivo) {
+        this.arquivo = arquivo;
+    }
+
+    public File getArquivo() {
         return arquivo;
     }
 
-    public void setArquivo(byte[] arquivo) {
-        this.arquivo = arquivo;
+    public void setArquivoTemporario(File arquivoTemporario) {
+        this.arquivoTemporario = arquivoTemporario;
     }
+
+    public File getArquivoTemporario() {
+        return arquivoTemporario;
+    }
+
     
 }

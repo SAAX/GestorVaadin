@@ -5,19 +5,25 @@
  */
 package com.saax.gestorweb.model;
 
+import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorSession;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -102,11 +108,10 @@ public class CadastroTarefaModel {
                 em.getTransaction().begin();
             }
 
-            
             for (Tarefa sub : tarefa.getSubTarefas()) {
                 gravarTarefa(sub);
             }
-            
+
             // TODO: Colocar projecao calculada
             tarefa.setProjecao(ProjecaoTarefa.NORMAL);
 
@@ -121,6 +126,11 @@ public class CadastroTarefaModel {
                 em.getTransaction().commit();
             }
 
+            // mover anexos das pastas temporarias para as oficiais
+            tarefa.getAnexos().stream().filter((anexo) -> (anexo.getArquivoTemporario() != null)).forEach((anexo) -> {
+                moverAnexoTemporario(anexo);
+            });
+
         } catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
             if (GestorEntityManagerProvider.getEntityManager().getTransaction().isActive()) {
@@ -131,6 +141,65 @@ public class CadastroTarefaModel {
         }
 
         return tarefa;
+    }
+
+    /**
+     * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ
+     * e do ID Tarefa.
+     *
+     * @param anexoTarefa anexo a ser movido
+     */
+    public void moverAnexoTemporario(AnexoTarefa anexoTarefa) {
+
+        if (anexoTarefa.getTarefa() == null) {
+            throw new IllegalArgumentException("Parametro inválido: AnexoTarefa");
+        }
+
+        Tarefa tarefa = anexoTarefa.getTarefa();
+
+        String relativePath = ((GestorMDI) UI.getCurrent()).getApplication().getProperty("anexos.relative.path");
+
+        if (relativePath == null) {
+            throw new IllegalStateException("Não encontrada propriedade: 'anexos.relative.path'");
+        }
+
+        String path = System.getProperty("user.dir") + "/" + relativePath;
+
+        String cnpj = FormatterUtil.removeNonDigitChars(tarefa.getEmpresa().getCnpj());
+
+        if (cnpj == null) {
+            throw new IllegalStateException("Empresa não possui CNPJ");
+        }
+
+        File folder = new File(path + "/" + cnpj + "/" + tarefa.getId());
+
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        if (!folder.exists() || !folder.canWrite()) {
+            throw new IllegalStateException("Não é possível gravar no destino: '" + folder.getAbsolutePath() + "'.");
+        }
+
+        File arquivoTMP = anexoTarefa.getArquivoTemporario();
+
+        if (!arquivoTMP.exists() || !arquivoTMP.canWrite()) {
+            throw new IllegalStateException("Não é possível ler arquivo de origem: '" + arquivoTMP.getAbsolutePath() + "'.");
+        }
+
+        File arquivoOficial = new File(folder, arquivoTMP.getName());
+
+        boolean sucess = arquivoTMP.renameTo(arquivoOficial);
+
+        if (!sucess) {
+            throw new RuntimeException("Falha ao gravar anexo: " + arquivoOficial.getAbsolutePath());
+        }
+        anexoTarefa.setArquivo(arquivoOficial);
+        anexoTarefa.setArquivoTemporario(null);
+        anexoTarefa.setCaminhoCompleto(arquivoOficial.getAbsolutePath());
+
+        GestorEntityManagerProvider.getEntityManager().merge(anexoTarefa);
+
     }
 
     /**
@@ -430,5 +499,67 @@ public class CadastroTarefaModel {
 
     }
 
-    
+    public List<HierarquiaProjetoDetalhe> listaCategorias() {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        return em.createNamedQuery("HierarquiaProjetoDetalhe.findAll")
+                .getResultList();
+    }
+
+    public List<HierarquiaProjetoDetalhe> listaCategoriasNivelTarefa() {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        return em.createNamedQuery("HierarquiaProjetoDetalhe.findByNivel")
+                .setParameter("nivel", 2)
+                .getResultList();
+
+    }
+
+    public HierarquiaProjetoDetalhe getCategoriaDefaultTarefa() {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
+                .setParameter("nome", "Meta")
+                .getSingleResult();
+
+        for (HierarquiaProjetoDetalhe categoria : hierarquiaProjetoDefault.getCategorias()) {
+            if (categoria.getNivel() == 2) {
+                return categoria;
+            }
+        }
+
+        return null;
+    }
+
+    public List<HierarquiaProjetoDetalhe> getProximasCategorias(Tarefa tarefaPai) {
+
+        List<HierarquiaProjetoDetalhe> categoriasPossiveis = new ArrayList<>();
+
+        int proximoNivel = tarefaPai.getHierarquia().getNivel() + 1;
+
+        List<HierarquiaProjetoDetalhe> categorias = tarefaPai.getHierarquia().getHierarquia().getCategorias();
+        for (HierarquiaProjetoDetalhe categoria : categorias) {
+            if (categoria.getNivel() == proximoNivel) {
+                categoriasPossiveis.add(categoria);
+            }
+        }
+
+        return categoriasPossiveis;
+    }
+
+    public List<HierarquiaProjetoDetalhe> getProximasCategorias(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe) {
+        
+        List<HierarquiaProjetoDetalhe> categoriasPossiveis = new ArrayList<>();
+
+        int proximoNivel = hierarquiaProjetoDetalhe.getNivel() + 1;
+
+        
+        List<HierarquiaProjetoDetalhe> categorias = hierarquiaProjetoDetalhe.getHierarquia().getCategorias();
+        for (HierarquiaProjetoDetalhe categoria : categorias) {
+            if (categoria.getNivel() == proximoNivel) {
+                categoriasPossiveis.add(categoria);
+            }
+        }
+
+        return categoriasPossiveis;
+    }
+
 }

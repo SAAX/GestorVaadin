@@ -8,11 +8,14 @@ import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
+import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
@@ -28,6 +31,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.ListSelect;
+import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -38,11 +42,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -64,13 +70,37 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     /**
-     * Abre o cadastro de tarefas para criação de uma nova tarefa
+     * Inicializa o presenter
      */
     @Override
-    public void criarNovaTarefa() {
-        CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
-        presenter.setCallBackListener(this);
-        presenter.criarNovaTarefa();
+    public void init() {
+
+        adicionarHierarquiasProjeto();
+        carregaVisualizacaoInicial();
+    }
+
+    /**
+     * Obtem as hierarquias de projeto customizadas e adiciona no menu "Criar"
+     */
+    private void adicionarHierarquiasProjeto() {
+
+        // obtem as hierarquias customizadas
+        List<HierarquiaProjeto> hierarquias = model.getHierarquiasProjeto();
+
+        // menu "Criar"
+        MenuBar.MenuItem menuCriar = view.getCriarNovoMenuItem();
+
+        // adiciona cada hierarquia customizada
+        for (HierarquiaProjeto hierarquia : hierarquias) {
+            MenuBar.MenuItem menuProjeto = menuCriar.addItemBefore(hierarquia.getNome(), null, null, view.getCriarViaTemplateMenuItem());
+            Collections.sort(hierarquia.getCategorias());
+            for (HierarquiaProjetoDetalhe categoria : hierarquia.getCategorias()) {
+                menuProjeto.addItem(categoria.getCategoria(), (MenuBar.MenuItem selectedItem) -> {
+                    criarNova(categoria);
+                });
+            }
+
+        }
     }
 
     /**
@@ -114,7 +144,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         Item it = view.getTarefasTable().getItem(tarefa);
 
         it.getItemProperty("Cod").setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
-        it.getItemProperty("Título").setValue(buildButtonEditarTarefa(tarefa, tarefa.getTitulo()));
+        it.getItemProperty("Categoria").setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
         it.getItemProperty("Nome").setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
         it.getItemProperty("Empresa/Filial").setValue(tarefa.getEmpresa().getNome()
                 + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
@@ -208,6 +238,16 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
 
     }
 
+    private void criarNova(HierarquiaProjetoDetalhe categoria) {
+
+        if (categoria.getNivel() == 2) {
+            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            presenter.setCallBackListener(this);
+            presenter.criarNovaTarefa(categoria);
+        }
+
+    }
+
     // enumeracao do tipo de pesquisa
     public enum TipoPesquisa {
 
@@ -242,8 +282,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     /**
      * Carrega os campos necessarios ao abrir a visualização
      */
-    @Override
-    public void carregaVisualizacaoInicial() {
+    private void carregaVisualizacaoInicial() {
 
         carregarListaTarefasUsuarioLogado();
         carregarFiltrosPesquisa();
@@ -397,7 +436,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
 
         Object[] linha = new Object[]{
             buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()),
-            buildButtonEditarTarefa(tarefa, tarefa.getTitulo()),
+            buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()),
             buildButtonEditarTarefa(tarefa, tarefa.getNome()),
             tarefa.getEmpresa().getNome()
             + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""),

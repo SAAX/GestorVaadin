@@ -89,20 +89,7 @@ public class PaginaInicialView extends HorizontalLayout {
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         });
 
-        // botão para preview do dashboard
-        final Button previewTarefasButton = new Button("Tarefas preview", (Button.ClickEvent event) -> {
-            Usuario usuarioTeste = new LoginModel().getUsuario("teste-user@gmail.com");
-            getSession().setAttribute("usuarioLogado", usuarioTeste);
-            usuarioTeste.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
-            getSession().setAttribute("usuarioLogado", usuarioTeste);
-            CadastroTarefaView view = new CadastroTarefaView();
-            CadastroTarefaModel model = new CadastroTarefaModel();
-            CadastroTarefaPresenter p = new CadastroTarefaPresenter(model, view);
-            p.criarNovaTarefa();
-            
-            
-        });
-
+        
         // barra dos botoes
         HorizontalLayout barraBotoes = new HorizontalLayout();
         containerDireito.addComponent(barraBotoes);
@@ -112,8 +99,7 @@ public class PaginaInicialView extends HorizontalLayout {
         barraBotoes.addComponent(chatButton);
         barraBotoes.addComponent(loginButton);
         barraBotoes.addComponent(previewDashboardButton);
-        barraBotoes.addComponent(previewTarefasButton);
-
+        
         // Adicona os dois containers, lado-a-lado
         addComponent(containerEsquerdo);
         setComponentAlignment(containerEsquerdo, Alignment.MIDDLE_LEFT);

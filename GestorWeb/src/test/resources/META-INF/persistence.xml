@@ -32,6 +32,8 @@
         <class>com.saax.gestorweb.model.datamodel.AndamentoTarefa</class>
         <class>com.saax.gestorweb.model.datamodel.BloqueioTarefa</class>
         <class>com.saax.gestorweb.model.datamodel.HistoricoTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.HierarquiaProjeto</class>
+        <class>com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor_test"/>

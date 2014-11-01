@@ -1,6 +1,3 @@
-
-
-
 -- Usuário
 DROP TABLE IF EXISTS usuario CASCADE;
 CREATE TABLE usuario (
@@ -181,6 +178,33 @@ CREATE TABLE CentroCusto (
 	unique (idEmpresa,CentroCusto)
 ) ;
 
+
+-- HierarquiaProjeto 
+DROP TABLE IF EXISTS HierarquiaProjeto CASCADE;
+DROP TABLE IF EXISTS HierarquiaProjetoDetalhe CASCADE;
+CREATE TABLE HierarquiaProjeto (
+    idHierarquiaProjeto SERIAL NOT NULL PRIMARY KEY, 
+    nome CHARACTER VARYING (50) NOT NULL,
+    idEmpresa BIGINT, 
+    FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
+    idUsuarioInclusao INTEGER NOT NULL,
+    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(nome)
+);
+
+CREATE TABLE HierarquiaProjetoDetalhe (
+    idHierarquiaProjetoDetalhe SERIAL NOT NULL PRIMARY KEY, 
+    idHierarquiaProjeto BIGINT NOT NULL, 
+    FOREIGN KEY (idHierarquiaProjeto) REFERENCES HierarquiaProjeto(idHierarquiaProjeto),	
+    nivel INTEGER NOT NULL,
+    categoria CHARACTER VARYING (20) NOT NULL,
+    idUsuarioInclusao INTEGER NOT NULL,
+    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -- Meta 
 DROP TABLE IF EXISTS meta CASCADE;
 CREATE TABLE meta (
@@ -256,10 +280,8 @@ DROP TABLE IF EXISTS Tarefa CASCADE;
 CREATE TABLE Tarefa (
     idTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefaPai BIGINT, 
-    nivel INTEGER NOT NULL,
     idEmpresa BIGINT NOT NULL, 
     idFilialEmpresa BIGINT, 
-    titulo CHARACTER VARYING (50) NOT NULL,
     nome CHARACTER VARYING (150) NOT NULL,
     prioridade CHARACTER VARYING (10) NOT NULL,
     tipo  CHARACTER VARYING (20) NOT NULL,
@@ -281,6 +303,8 @@ CREATE TABLE Tarefa (
     idCentroCusto BIGINT,
     idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    idHierarquiaProjetoDetalhe INTEGER NOT NULL,
+    FOREIGN KEY (idHierarquiaProjetoDetalhe) REFERENCES HierarquiaProjetoDetalhe(idHierarquiaProjetoDetalhe),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
     FOREIGN KEY (idFilialEmpresa) REFERENCES FilialEmpresa(idFilialEmpresa),	
@@ -347,8 +371,8 @@ DROP TABLE IF EXISTS AnexoTarefa CASCADE;
 CREATE TABLE AnexoTarefa (
     idAnexoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
-    arquivo BYTEA NOT NULL,
     nome  CHARACTER VARYING (255) NOT NULL,
+    caminhocompleto CHARACTER VARYING (255) NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),

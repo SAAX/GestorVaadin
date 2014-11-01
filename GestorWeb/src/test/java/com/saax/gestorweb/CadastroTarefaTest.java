@@ -12,6 +12,8 @@ import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
@@ -29,6 +31,8 @@ import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -42,7 +46,6 @@ import org.junit.Assert;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -141,7 +144,6 @@ public class CadastroTarefaTest {
      * Testa o cadastro de uma tarefa simples, onde só os campos obrigatórios
      * são preenchidos
      */
-    @Ignore
     @Test
     public void cadastrarTarefaSimples() {
 
@@ -149,7 +151,8 @@ public class CadastroTarefaTest {
 
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
-        presenter.criarNovaTarefa();
+        HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
+        presenter.criarNovaTarefa(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa #1";
         view.getNomeTarefaTextField().setValue(nome);
@@ -157,7 +160,13 @@ public class CadastroTarefaTest {
         view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         view.getDataInicioDateField().setValue(new Date());
         view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
-        view.getGravarButton().click();
+        try {
+            view.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        presenter.gravarButtonClicked();        
+        
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
@@ -184,7 +193,8 @@ public class CadastroTarefaTest {
 
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
-        presenter.criarNovaTarefa();
+        HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
+        presenter.criarNovaTarefa(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa com Anexo";
         view.getNomeTarefaTextField().setValue(nome);
@@ -192,9 +202,23 @@ public class CadastroTarefaTest {
         view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         view.getDataInicioDateField().setValue(new Date());
         view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
-        view.getAdicionarAnexoButton().startUpload();
-        view.getGravarButton().click();
 
+        File anexoTeste = new File(System.getProperty("user.dir")+"/anexoTeste.pdf");
+        try {
+            anexoTeste.createNewFile();
+            presenter.anexoAdicionado(anexoTeste);
+        } catch (IOException ex) {
+            fail(ex.getMessage());
+        }
+        
+        
+        try {
+            view.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        presenter.gravarButtonClicked();        
+        
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
@@ -210,12 +234,10 @@ public class CadastroTarefaTest {
 
     }
 
-
     /**
      * Testa o cadastro completo de uma tarefa, com todos os campos disponiveis
      * na
      */
-    @Ignore
     @Test
     public void cadastrarTarefaCompleta() {
 
@@ -224,15 +246,24 @@ public class CadastroTarefaTest {
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
         Usuario usuarioResponsavel = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
 
-        presenter.criarNovaTarefa();
+        HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
+        presenter.criarNovaTarefa(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa #2";
 
         // ---------------------------------------------------------------------
         // Setando os campos
         //        private Integer id;
-        //        private int nivel;
-        //        private String titulo;
+        //        private HierarquiaProjetoDetalhe hierarquia;
+        HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
+                .setParameter("nome", "Norma e Procedimento")
+                .getSingleResult();
+ 
+        for (HierarquiaProjetoDetalhe categoria : hierarquiaProjetoDefault.getCategorias()) {
+            if (categoria.getNivel()==2){
+                view.getHierarquiaCombo().setValue(categoria);
+            }
+        }
         //        private String nome;
         view.getNomeTarefaTextField().setValue(nome);
         //        private PrioridadeTarefa prioridade;
@@ -325,7 +356,13 @@ public class CadastroTarefaTest {
         //        private List<HistoricoTarefa> historico;
         //        private LocalDateTime dataHoraInclusao;
 
-        view.getGravarButton().click();
+        try {
+            view.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        presenter.gravarButtonClicked();        
+        
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
@@ -339,9 +376,9 @@ public class CadastroTarefaTest {
         // ---------------------------------------------------------------------
         //        private Integer id;
         //        private int nivel;
-        Assert.assertEquals(1, t.getNivel());
+        Assert.assertEquals(2, t.getHierarquia().getNivel());
         //        private String titulo;
-        Assert.assertEquals("Tarefa", t.getTitulo());
+        Assert.assertEquals("Tarefa", t.getHierarquia().getCategoria());
         //        private String nome;
         Assert.assertEquals(nome, t.getNome());
         //        private PrioridadeTarefa prioridade;
@@ -408,7 +445,6 @@ public class CadastroTarefaTest {
 
     }
 
-    @Ignore
     @Test
     public void cadastrarMultiplasSubTarefas() {
 
@@ -419,7 +455,8 @@ public class CadastroTarefaTest {
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis
         // -------------------------------------------------------------------------------------
-        presenter.criarNovaTarefa();
+        HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
+        presenter.criarNovaTarefa(categoriaDefaultMeta);
 
         String nome_principal = "Teste Multiplos Niveis";
         view.getNomeTarefaTextField().setValue(nome_principal);
@@ -437,7 +474,7 @@ public class CadastroTarefaTest {
         CadastroTarefaPresenter presenter_sub1 = new CadastroTarefaPresenter(model_sub1, view_sub1);
         presenter_sub1.setCallBackListener(presenter);
 
-        presenter_sub1.criarNovaTarefa(view.getTarefa());
+        presenter_sub1.criarNovaSubTarefa(view.getTarefa());
 
         String nome_sub1 = "Sub 1";
         view_sub1.getNomeTarefaTextField().setValue(nome_sub1);
@@ -454,7 +491,7 @@ public class CadastroTarefaTest {
         CadastroTarefaPresenter presenter_sub2 = new CadastroTarefaPresenter(model_sub2, view_sub2);
         presenter_sub2.setCallBackListener(presenter_sub1);
 
-        presenter_sub2.criarNovaTarefa(view_sub1.getTarefa());
+        presenter_sub2.criarNovaSubTarefa(view_sub1.getTarefa());
 
         String nome_sub2 = "Sub 2";
         view_sub2.getNomeTarefaTextField().setValue(nome_sub2);
@@ -463,11 +500,29 @@ public class CadastroTarefaTest {
         view_sub2.getDataInicioDateField().setValue(new Date());
 
         // Grava a sub nivel 2
-        view_sub2.getGravarButton().click();
+        try {
+            view_sub2.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        presenter_sub2.gravarButtonClicked();        
+        
         // Grava a sub nivel 1
-        view_sub1.getGravarButton().click();
+        try {
+            view_sub1.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        presenter_sub1.gravarButtonClicked();        
+        
         // Grava a principal
-        view.getGravarButton().click();
+        try {
+            view.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        presenter.gravarButtonClicked();        
+        
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome_principal)
@@ -490,6 +545,7 @@ public class CadastroTarefaTest {
         Assert.assertEquals(nome_sub1, sub1.getNome());
         Assert.assertEquals(StatusTarefa.NAO_ACEITA, sub1.getStatus());
         Assert.assertNotNull(sub1.getDataHoraInclusao());
+        
 
         // Valida resultados da sub nivel 2
         Assert.assertEquals(sub2.getTarefaPai(), sub1);
@@ -504,7 +560,6 @@ public class CadastroTarefaTest {
      * Testa a edição da tarefa completa
      * 
      */
-    @Ignore
     @Test
     public void editarTarefaCompleta() {
 
@@ -615,7 +670,13 @@ public class CadastroTarefaTest {
 //        //        private List<HistoricoTarefa> historico;
 //        //        private LocalDateTime dataHoraInclusao;
 
-        view.getGravarButton().click();
+        try {
+            view.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        presenter.gravarButtonClicked();        
+        
         
         
         // obtem novamente a tarefa do banco
@@ -631,9 +692,9 @@ public class CadastroTarefaTest {
         // ---------------------------------------------------------------------
         //        private Integer id;
         //        private int nivel;
-        Assert.assertEquals(1, t.getNivel());
+        Assert.assertEquals(2, t.getHierarquia().getNivel());
         //        private String titulo;
-        Assert.assertEquals("Tarefa", t.getTitulo());
+        Assert.assertEquals("Tarefa", t.getHierarquia().getCategoria());
         //        private String nome;
         Assert.assertEquals(novonome, t.getNome());
         //        private PrioridadeTarefa prioridade;

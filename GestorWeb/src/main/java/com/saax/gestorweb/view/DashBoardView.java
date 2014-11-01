@@ -2,6 +2,7 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -43,6 +44,9 @@ public class DashBoardView extends VerticalLayout {
     // Este acesso se dá por uma interface para manter a abstração das camadas
     private DashboardViewListenter listener;
     private OptionGroup permutacaoPesquisaOptionGroup;
+    private MenuBar.MenuItem criarNovoMenuItem;
+    private MenuBar.MenuItem criarPadraoMenuItem;
+    private MenuBar.MenuItem criarViaTemplateMenuItem;
 
     public void setListener(DashboardViewListenter listener) {
         this.listener = listener;
@@ -160,20 +164,17 @@ public class DashBoardView extends VerticalLayout {
         getMenuSuperior().setHeight("100%");
         getMenuSuperior().setHtmlContentAllowed(true);
 
-        MenuBar.MenuItem criar = getMenuSuperior().addItem("<h3>Criar</h3>", null, null);
-        MenuBar.MenuItem criarTarefas = criar.addItem("Tarefas/Sub", (MenuBar.MenuItem selectedItem) -> {
-            listener.criarNovaTarefa();
-        });
-        MenuBar.MenuItem criarTarefasViaTemplate = criar.addItem("Tarefas via Template", new MenuBar.Command() {
+        // menu: Criar
+        criarNovoMenuItem = getMenuSuperior().addItem("<h3>Criar</h3>", null, null);
 
+        // menu: Criar -> Projeto
+        criarViaTemplateMenuItem = criarNovoMenuItem.addItem("Via Template", new MenuBar.Command() {
             @Override
             public void menuSelected(MenuBar.MenuItem selectedItem) {
                 listener.criarNovaTarefaViaTemplate();
             }
         });
-
         
-        MenuBar.MenuItem criarMetas = criar.addItem("Metas", null, null);
 
         MenuBar.MenuItem publicacoes = getMenuSuperior().addItem("<h3>Publicações</h3>", null, null);
 
@@ -652,4 +653,14 @@ public class DashBoardView extends VerticalLayout {
 
     }
 
+    public MenuBar.MenuItem getCriarNovoMenuItem() {
+        return criarNovoMenuItem;
+    }
+
+    public MenuBar.MenuItem getCriarViaTemplateMenuItem() {
+        return criarViaTemplateMenuItem;
+    }
+
+    
+    
 }

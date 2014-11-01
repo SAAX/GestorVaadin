@@ -2,12 +2,14 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Upload;
+import java.io.File;
 
 /**
  *
@@ -41,9 +43,7 @@ public interface CadastroTarefaViewListener {
     
     public void setCallBackListener(CadastroTarefaCallBackListener presenter);
     
-    public void criarNovaTarefa();
-    
-    public void criarNovaTarefa(Tarefa tarefaPai);
+    public void criarNovaSubTarefa(Tarefa tarefaPai);
 
     public void removerApontamentoHoras(ApontamentoTarefa apontamentoTarefa);
 
@@ -55,5 +55,8 @@ public interface CadastroTarefaViewListener {
 
     public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa);
 
-    public void anexoAdicionado(Upload.SucceededEvent event);
+    public void anexoAdicionado(File anexo);
+
+    public void hierarquiaSelecionada(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe);
+
 }

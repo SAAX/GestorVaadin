@@ -6,6 +6,8 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.ui.Alignment;
@@ -44,6 +46,7 @@ public class ChatView extends Window{
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final Usuario usuarioLogado;
     
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dÃƒÆ’Ã‚Â¡ por uma interface para manter a abstraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o das camadas
@@ -99,17 +102,15 @@ public class ChatView extends Window{
         // A static variable so that everybody gets the same instance.
         ChatBox cb = new ChatBox(chat);
         
-        ChatUser user = ChatUser.newUser("Fernando Stávale");
+        
+        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        ChatUser user = ChatUser.newUser(usuarioLogado.getNome());
         cb.setUser(user);
         cb.setWidth("500px");
         
         hsplit.setSecondComponent(cb);
         hsplit.getSecondComponent().setWidth("500px");
         
-        //Rodrigo, como devo fazer para deixar ela invisível no começo
-        //hsplit.getSecondComponent().isVisible(false);
-                
-
         panel.setContent(hsplit);
         hlayout.addComponent(panel);
         container.addComponent(hlayout);
@@ -132,11 +133,9 @@ public class ChatView extends Window{
         containerTabelaUsuarios.setContent(usuariosTable);
         
 
-        usuariosTable.addContainerProperty("", String.class, null);
         usuariosTable.addContainerProperty("Usuario", String.class, null);
-        usuariosTable.addContainerProperty("Ativo", String.class, null);
-        getUsuariosTable().addItem(new Object[]{"X", "Fernando Stávale", "On-Line"}, "Fernando");
-        getUsuariosTable().addItem(new Object[]{"X", "Daniel Stávale", "Off-Line"}, "Daniel");
+        usuariosTable.addContainerProperty("Função na Tarefa", String.class, null);
+        
         usuariosTable.setImmediate(true);
         usuariosTable.setSelectable(true);
         

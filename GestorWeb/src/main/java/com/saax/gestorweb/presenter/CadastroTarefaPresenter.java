@@ -2,6 +2,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.ChatModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.dashboard.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
@@ -27,6 +28,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
+import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -408,7 +410,17 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
 
     @Override
     public void chatButtonClicked() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Cria o pop up para registrar a conta (model e viw)
+        ChatModel chatModel = new ChatModel();
+        ChatView chatView = new ChatView();
+        
+       //o presenter liga model e view
+        ChatPresenter chatPresenter;
+        chatPresenter = new ChatPresenter(chatModel, chatView);
+        chatPresenter.carregarTabela(view.getTarefa());
+        //adiciona a visualização à UI
+        UI.getCurrent().addWindow(chatView);
+        chatPresenter.open();
     }
 
     @Override

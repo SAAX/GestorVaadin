@@ -204,32 +204,62 @@ CREATE TABLE HierarquiaProjetoDetalhe (
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Status Meta
+DROP TABLE IF EXISTS StatusMeta CASCADE;
+CREATE TABLE StatusMeta (
+    StatusMeta CHARACTER VARYING (50) NOT NULL PRIMARY KEY
+);
+
+INSERT INTO statusMeta VALUES ('NAO_INICIADA');
+INSERT INTO statusMeta VALUES ('EM_ANDAMENTO');
+INSERT INTO statusMeta VALUES ('CONCLUIDA');
+INSERT INTO statusMeta VALUES ('CANCELADA');
+
+-- Prioridade Meta
+DROP TABLE IF EXISTS PrioridadeMeta CASCADE;
+CREATE TABLE PrioridadeMeta (
+    PrioridadeMeta CHARACTER VARYING (10) NOT NULL PRIMARY KEY
+);
+
+INSERT INTO PrioridadeMeta VALUES ('BAIXA');
+INSERT INTO PrioridadeMeta VALUES ('NORMAL');
+INSERT INTO PrioridadeMeta VALUES ('ALTA');
 
 -- Meta 
 DROP TABLE IF EXISTS meta CASCADE;
-CREATE TABLE meta (
+CREATE TABLE Meta (
     idMeta SERIAL NOT NULL PRIMARY KEY, 
     idEmpresa BIGINT NOT NULL, 
-    nome CHARACTER VARYING (100) NOT NULL,
-    descricao TEXT NOT NULL,
+    idFilialEmpresa BIGINT, 
+    nome CHARACTER VARYING (150) NOT NULL,
     dataInicio DATE NOT NULL,
-    dataFim DATE NOT NULL, 	-- data esperada para o fim da meta, pode ser diferente da data real do termino da mesma
-    dataTermino DATE, 		-- data real do termino da tarefa, portando pode ser nulo
-    idEmpresaCliente BIGINT NOT NULL, 
-    horasEstimadas TIME NOT NULL,
-    horasRealizadas TIME,
-    idUsuarioResponsavel BIGINT NOT NULL,
+    dataFim DATE, 	-- data esperada para o fim da tarefa, pode ser diferente da data real do termino da mesma
+    dataTermino DATE, 		-- data real do termino da tarefa, 
+    descricao TEXT,
+    prioridade CHARACTER VARYING (10) NOT NULL,
+    status CHARACTER VARYING (50) NOT NULL,
+    idEmpresaCliente BIGINT, 
+    template BOOLEAN NOT NULL,
     idDepartamento BIGINT,
     idCentroCusto BIGINT,
-	idUsuarioInclusao INTEGER,
-    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
+    idUsuarioInclusao INTEGER NOT NULL,
+    idUsuarioSolicitante INTEGER NOT NULL,
+    idUsuarioResponsavel INTEGER NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    idHierarquiaProjetoDetalhe INTEGER NOT NULL,
+    FOREIGN KEY (idHierarquiaProjetoDetalhe) REFERENCES HierarquiaProjetoDetalhe(idHierarquiaProjetoDetalhe),
+    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
+    FOREIGN KEY (idFilialEmpresa) REFERENCES FilialEmpresa(idFilialEmpresa),	
+    FOREIGN KEY (status) REFERENCES statusMeta (statusMeta),	
+    FOREIGN KEY (Prioridade) REFERENCES PrioridadeMeta (PrioridadeMeta),	
     FOREIGN KEY (idEmpresaCliente) REFERENCES EmpresaCliente (idEmpresaCliente),	
+    FOREIGN KEY (idUsuarioSolicitante) REFERENCES Usuario(idUsuario),	
+    FOREIGN KEY (idUsuarioResponsavel) REFERENCES Usuario(idUsuario),	
     FOREIGN KEY (idDepartamento) REFERENCES Departamento(idDepartamento),	
-    FOREIGN KEY (idCentroCusto) REFERENCES CentroCusto(idCentroCusto),	
-    FOREIGN KEY (idUsuarioResponsavel) REFERENCES Usuario(idUsuario)	
+    FOREIGN KEY (idCentroCusto) REFERENCES CentroCusto(idCentroCusto)	
 );
+
 
 -- Status Tarefa
 DROP TABLE IF EXISTS StatusTarefa CASCADE;
@@ -280,6 +310,7 @@ DROP TABLE IF EXISTS Tarefa CASCADE;
 CREATE TABLE Tarefa (
     idTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefaPai BIGINT, 
+    idMeta BIGINT,
     idEmpresa BIGINT NOT NULL, 
     idFilialEmpresa BIGINT, 
     nome CHARACTER VARYING (150) NOT NULL,
@@ -310,6 +341,7 @@ CREATE TABLE Tarefa (
     FOREIGN KEY (idFilialEmpresa) REFERENCES FilialEmpresa(idFilialEmpresa),	
     FOREIGN KEY (idTarefaPai) REFERENCES Tarefa(idTarefa),
     FOREIGN KEY (idProximaTarefa) REFERENCES Tarefa(idTarefa),
+    FOREIGN KEY (idMeta) REFERENCES Meta(idMeta),
     FOREIGN KEY (status) REFERENCES statusTarefa (statusTarefa),	
     FOREIGN KEY (projecao) REFERENCES projecaoTarefa (projecaoTarefa),	
     FOREIGN KEY (tipo) REFERENCES tipoTarefa (tipoTarefa),	

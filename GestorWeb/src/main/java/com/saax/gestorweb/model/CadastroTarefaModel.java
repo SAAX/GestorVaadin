@@ -62,25 +62,21 @@ public class CadastroTarefaModel {
      *
      * @return
      */
-    public List<EmpresaCliente> listarEmpresasCliente() {
+    public List<EmpresaCliente> listarEmpresasCliente(Usuario usuarioLogado) {
 
         List<EmpresaCliente> clientes = new ArrayList<>();
-        try {
 
-            EmpresaModel empresaModel = new EmpresaModel();
+        EmpresaModel empresaModel = new EmpresaModel();
 
-            // obtem as coligadas a empresa do usuario logado
-            for (Empresa empresa : empresaModel.listarEmpresasRelacionadas()) {
-                // obtem os clientes destas empresas
-                for (EmpresaCliente cliente : empresa.getClientes()) {
-                    // verifica se o cliente é ativo e adiciona na lista de retorno
-                    if (cliente.getAtiva()) {
-                        clientes.add(cliente);
-                    }
+        // obtem as coligadas a empresa do usuario logado
+        for (Empresa empresa : empresaModel.listarEmpresasParaSelecao(usuarioLogado)) {
+            // obtem os clientes destas empresas
+            for (EmpresaCliente cliente : empresa.getClientes()) {
+                // verifica se o cliente é ativo e adiciona na lista de retorno
+                if (cliente.getAtiva()) {
+                    clientes.add(cliente);
                 }
             }
-        } catch (GestorException ex) {
-            Logger.getLogger(CadastroTarefaModel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return clientes;
@@ -293,10 +289,9 @@ public class CadastroTarefaModel {
         }
 
         // Adiciona o apontamento na tarefa e ordena os apontamento por data/hora de inclusao
-        List<ApontamentoTarefa> apontamentos = apontamentoTarefa.getTarefa().getApontamentos();
-        apontamentos.add(apontamentoTarefa);
+        apontamentoTarefa.getTarefa().addApontamento(apontamentoTarefa);
 
-        recalculaSaldoApontamentoHoras(apontamentos);
+        recalculaSaldoApontamentoHoras(apontamentoTarefa.getTarefa().getApontamentos());
 
         return apontamentoTarefa;
 
@@ -411,10 +406,9 @@ public class CadastroTarefaModel {
         }
 
         // Adiciona o valor de orçamento na tarefa e ordena os registros de orçamento por data/hora de inclusao
-        List<OrcamentoTarefa> orcamentos = orcamentoTarefa.getTarefa().getOrcamentos();
-        orcamentos.add(orcamentoTarefa);
+        orcamentoTarefa.getTarefa().addOrcamento(orcamentoTarefa);
 
-        recalculaSaldoOrcamento(orcamentos);
+        recalculaSaldoOrcamento(orcamentoTarefa.getTarefa().getOrcamentos());
 
         return orcamentoTarefa;
     }
@@ -542,16 +536,18 @@ public class CadastroTarefaModel {
             }
         }
 
+        if (categoriasPossiveis.isEmpty()) {
+            throw new IllegalStateException("Não encontradas categorias para o próximo nível: " + tarefaPai.getHierarquia().getCategoria() + "/ Nivel: " + proximoNivel);
+        }
         return categoriasPossiveis;
     }
 
     public List<HierarquiaProjetoDetalhe> getProximasCategorias(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe) {
-        
+
         List<HierarquiaProjetoDetalhe> categoriasPossiveis = new ArrayList<>();
 
         int proximoNivel = hierarquiaProjetoDetalhe.getNivel() + 1;
 
-        
         List<HierarquiaProjetoDetalhe> categorias = hierarquiaProjetoDetalhe.getHierarquia().getCategorias();
         for (HierarquiaProjetoDetalhe categoria : categorias) {
             if (categoria.getNivel() == proximoNivel) {

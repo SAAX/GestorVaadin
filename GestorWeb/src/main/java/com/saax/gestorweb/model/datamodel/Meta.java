@@ -3,13 +3,14 @@ package com.saax.gestorweb.model.datamodel;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,11 +40,24 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Meta.findByDatainicio", query = "SELECT m FROM Meta m WHERE m.dataInicio = :datainicio"),
     @NamedQuery(name = "Meta.findByDatafim", query = "SELECT m FROM Meta m WHERE m.dataFim = :datafim"),
     @NamedQuery(name = "Meta.findByDatatermino", query = "SELECT m FROM Meta m WHERE m.dataTermino = :datatermino"),
-    @NamedQuery(name = "Meta.findByHorasestimadas", query = "SELECT m FROM Meta m WHERE m.horasEstimadas = :horasestimadas"),
-    @NamedQuery(name = "Meta.findByHorasrealizadas", query = "SELECT m FROM Meta m WHERE m.horasRealizadas = :horasrealizadas")})
+})
 public class Meta implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static long serialVersionUID = 1L;
+
+    /**
+     * @return the serialVersionUID
+     */
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    /**
+     * @param aSerialVersionUID the serialVersionUID to set
+     */
+    public static void setSerialVersionUID(long aSerialVersionUID) {
+        serialVersionUID = aSerialVersionUID;
+    }
  
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,25 +65,27 @@ public class Meta implements Serializable {
     @Column(name = "idmeta")
     private Integer id;
     
+    @NotNull(message = "Informe a empresa")
+    @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
+    @ManyToOne(optional = false)
+    private Empresa empresa;
+    
+    @JoinColumn(name = "idfilialempresa", referencedColumnName = "idfilialempresa")
+    @ManyToOne()
+    private FilialEmpresa filialEmpresa;
+    
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 100)
+    @NotNull(message = "Informe o nome da meta")
+    @Size(min = 5, max = 100, message = "Nome deve ter de 5 a 100 letras.")
     @Column(name = "nome")
     private String nome;
-    
-    @NotNull
-    @Size(min = 1, max = 2147483647)
-    @Column(name = "descricao")
-    private String descricao;
-    
+
     @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "Informe a data de início")
     @Column(name = "datainicio")
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataInicio;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "datafim")
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataFim;
@@ -78,15 +94,25 @@ public class Meta implements Serializable {
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataTermino;
     
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "horasestimadas")
-    @Convert(converter = LocalTimePersistenceConverter.class)
-    private LocalTime horasEstimadas;
+    @NotNull(message = "Informe a descrição")
+    @Size(min = 1, max = 2147483647)
+    @Column(name = "descricao")
+    private String descricao;
     
-    @Column(name = "horasrealizadas")
-    @Convert(converter = LocalTimePersistenceConverter.class)
-    private LocalTime horasRealizadas;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Informe a prioridade da meta: Baixa, Normal ou Alta.")
+    private PrioridadeMeta prioridade;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull()
+    private StatusMeta status;
+    
+    @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
+    @ManyToOne()
+    private EmpresaCliente cliente;
+    
+    @Column(name = "template")
+    private boolean template;
     
     @JoinColumn(name = "idcentrocusto", referencedColumnName = "idcentrocusto")
     @ManyToOne
@@ -96,14 +122,14 @@ public class Meta implements Serializable {
     @ManyToOne
     private Departamento departamento;
     
-    @JoinColumn(name = "idempresa", referencedColumnName = "idempresa")
+    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario usuarioInclusao;
+
+    @JoinColumn(name = "idusuariosolicitante", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
-    private Empresa empresa;
-    
-    @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
-    @ManyToOne(optional = false)
-    private EmpresaCliente cliente;
-    
+    private Usuario usuarioSolicitante;
+
     @JoinColumn(name = "idusuarioresponsavel", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuarioResponsavel;
@@ -111,17 +137,14 @@ public class Meta implements Serializable {
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
-    
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meta")
-    private List<FavoritosTarefaMeta> favoritados;
-    
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meta")
-    private List<AvaliacaoMetaTarefa> avaliacoes;
-    
-    @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
-    @ManyToOne
-    private Usuario usuarioInclusao;
 
+    @JoinColumn(name = "idhierarquiaprojetodetalhe", referencedColumnName = "idhierarquiaprojetodetalhe")
+    @ManyToOne(optional = false)
+    private HierarquiaProjetoDetalhe hierarquia;
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meta")
+    private List<Tarefa> tarefas;
+    
     public Meta() {
     }
 
@@ -129,118 +152,6 @@ public class Meta implements Serializable {
         this.id = idmeta;
     }
 
-    public Meta(Integer idmeta, String nome, String descricao, LocalDate datainicio, LocalDate datafim, LocalTime horasestimadas) {
-        this.id = idmeta;
-        this.nome = nome;
-        this.descricao = descricao;
-        this.dataInicio = datainicio;
-        this.dataFim = datafim;
-        this.horasEstimadas = horasestimadas;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDate dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
-    }
-
-    public LocalDate getDataTermino() {
-        return dataTermino;
-    }
-
-    public void setDataTermino(LocalDate dataTermino) {
-        this.dataTermino = dataTermino;
-    }
-
-    public LocalTime getHorasEstimadas() {
-        return horasEstimadas;
-    }
-
-    public void setHorasEstimadas(LocalTime horasEstimadas) {
-        this.horasEstimadas = horasEstimadas;
-    }
-
-    public LocalTime getHorasRealizadas() {
-        return horasRealizadas;
-    }
-
-    public void setHorasRealizadas(LocalTime horasRealizadas) {
-        this.horasRealizadas = horasRealizadas;
-    }
-
-    public CentroCusto getCentroCusto() {
-        return centroCusto;
-    }
-
-    public void setCentroCusto(CentroCusto centroCusto) {
-        this.centroCusto = centroCusto;
-    }
-
-    public Departamento getDepartamento() {
-        return departamento;
-    }
-
-    public void setDepartamento(Departamento departamento) {
-        this.departamento = departamento;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    public EmpresaCliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(EmpresaCliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public Usuario getUsuarioResponsavel() {
-        return usuarioResponsavel;
-    }
-
-    public void setUsuarioResponsavel(Usuario usuarioResponsavel) {
-        this.usuarioResponsavel = usuarioResponsavel;
-    }
 
     @Override
     public int hashCode() {
@@ -274,36 +185,289 @@ public class Meta implements Serializable {
         return "com.saax.gestorweb.model.datamodel.Meta[ idmeta=" + id + " ]";
     }
 
-    public LocalDateTime getDataHoraInclusao() {
-        return dataHoraInclusao;
+    /**
+     * @return the id
+     */
+    public Integer getId() {
+        return id;
     }
 
-    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
-        this.dataHoraInclusao = dataHoraInclusao;
+    /**
+     * @param id the id to set
+     */
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public List<FavoritosTarefaMeta> getFavoritados() {
-        return favoritados;
+    /**
+     * @return the empresa
+     */
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setFavoritados(List<FavoritosTarefaMeta> favoritados) {
-        this.favoritados = favoritados;
+    /**
+     * @param empresa the empresa to set
+     */
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
-    public List<AvaliacaoMetaTarefa> getAvaliacoes() {
-        return avaliacoes;
+    /**
+     * @return the filialEmpresa
+     */
+    public FilialEmpresa getFilialEmpresa() {
+        return filialEmpresa;
     }
 
-    public void setAvaliacoes(List<AvaliacaoMetaTarefa> avaliacoes) {
-        this.avaliacoes = avaliacoes;
+    /**
+     * @param filialEmpresa the filialEmpresa to set
+     */
+    public void setFilialEmpresa(FilialEmpresa filialEmpresa) {
+        this.filialEmpresa = filialEmpresa;
     }
 
+    /**
+     * @return the nome
+     */
+    public String getNome() {
+        return nome;
+    }
+
+    /**
+     * @param nome the nome to set
+     */
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    /**
+     * @return the dataInicio
+     */
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    /**
+     * @param dataInicio the dataInicio to set
+     */
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
+    }
+
+    /**
+     * @return the dataFim
+     */
+    public LocalDate getDataFim() {
+        return dataFim;
+    }
+
+    /**
+     * @param dataFim the dataFim to set
+     */
+    public void setDataFim(LocalDate dataFim) {
+        this.dataFim = dataFim;
+    }
+
+    /**
+     * @return the dataTermino
+     */
+    public LocalDate getDataTermino() {
+        return dataTermino;
+    }
+
+    /**
+     * @param dataTermino the dataTermino to set
+     */
+    public void setDataTermino(LocalDate dataTermino) {
+        this.dataTermino = dataTermino;
+    }
+
+    /**
+     * @return the descricao
+     */
+    public String getDescricao() {
+        return descricao;
+    }
+
+    /**
+     * @param descricao the descricao to set
+     */
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    /**
+     * @return the prioridade
+     */
+    public PrioridadeMeta getPrioridade() {
+        return prioridade;
+    }
+
+    /**
+     * @param prioridade the prioridade to set
+     */
+    public void setPrioridade(PrioridadeMeta prioridade) {
+        this.prioridade = prioridade;
+    }
+
+    /**
+     * @return the status
+     */
+    public StatusMeta getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(StatusMeta status) {
+        this.status = status;
+    }
+
+    /**
+     * @return the cliente
+     */
+    public EmpresaCliente getCliente() {
+        return cliente;
+    }
+
+    /**
+     * @param cliente the cliente to set
+     */
+    public void setCliente(EmpresaCliente cliente) {
+        this.cliente = cliente;
+    }
+
+    /**
+     * @return the template
+     */
+    public boolean isTemplate() {
+        return template;
+    }
+
+    /**
+     * @param template the template to set
+     */
+    public void setTemplate(boolean template) {
+        this.template = template;
+    }
+
+    /**
+     * @return the centroCusto
+     */
+    public CentroCusto getCentroCusto() {
+        return centroCusto;
+    }
+
+    /**
+     * @param centroCusto the centroCusto to set
+     */
+    public void setCentroCusto(CentroCusto centroCusto) {
+        this.centroCusto = centroCusto;
+    }
+
+    /**
+     * @return the departamento
+     */
+    public Departamento getDepartamento() {
+        return departamento;
+    }
+
+    /**
+     * @param departamento the departamento to set
+     */
+    public void setDepartamento(Departamento departamento) {
+        this.departamento = departamento;
+    }
+
+    /**
+     * @return the usuarioInclusao
+     */
     public Usuario getUsuarioInclusao() {
         return usuarioInclusao;
     }
 
+    /**
+     * @param usuarioInclusao the usuarioInclusao to set
+     */
     public void setUsuarioInclusao(Usuario usuarioInclusao) {
         this.usuarioInclusao = usuarioInclusao;
     }
+
+    /**
+     * @return the usuarioSolicitante
+     */
+    public Usuario getUsuarioSolicitante() {
+        return usuarioSolicitante;
+    }
+
+    /**
+     * @param usuarioSolicitante the usuarioSolicitante to set
+     */
+    public void setUsuarioSolicitante(Usuario usuarioSolicitante) {
+        this.usuarioSolicitante = usuarioSolicitante;
+    }
+
+    /**
+     * @return the usuarioResponsavel
+     */
+    public Usuario getUsuarioResponsavel() {
+        return usuarioResponsavel;
+    }
+
+    /**
+     * @param usuarioResponsavel the usuarioResponsavel to set
+     */
+    public void setUsuarioResponsavel(Usuario usuarioResponsavel) {
+        this.usuarioResponsavel = usuarioResponsavel;
+    }
+
+    /**
+     * @return the dataHoraInclusao
+     */
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
+    }
+
+    /**
+     * @param dataHoraInclusao the dataHoraInclusao to set
+     */
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
+    }
+
+    /**
+     * @return the hierarquia
+     */
+    public HierarquiaProjetoDetalhe getHierarquia() {
+        return hierarquia;
+    }
+
+    /**
+     * @param hierarquia the hierarquia to set
+     */
+    public void setHierarquia(HierarquiaProjetoDetalhe hierarquia) {
+        this.hierarquia = hierarquia;
+    }
+
+    /**
+     * @return the tarefas
+     */
+    public List<Tarefa> getTarefas() {
+        return tarefas;
+    }
+
+    /**
+     * @param tarefas the tarefas to set
+     */
+    public void setTarefas(List<Tarefa> tarefas) {
+        this.tarefas = tarefas;
+    }
+
+    
+    
+    
+    
 
 }

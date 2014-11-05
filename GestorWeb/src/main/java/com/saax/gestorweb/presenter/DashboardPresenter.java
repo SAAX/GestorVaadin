@@ -68,6 +68,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final Usuario usuarioLogado;
 
     /**
      * Inicializa o presenter
@@ -267,6 +268,8 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         this.view = view;
 
         view.setListener(this);
+        
+        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
     }
 
@@ -310,7 +313,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
             }
 
             EmpresaModel empresaModel = new EmpresaModel();
-            List<Empresa> empresas = empresaModel.listarEmpresasRelacionadas();
+            List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(usuarioLogado);
             for (Empresa empresa : empresas) {
 
                 view.getFiltroEmpresaOptionGroup().addItem(empresa);

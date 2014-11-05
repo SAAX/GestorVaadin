@@ -70,7 +70,7 @@ INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idu
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 2, 'Procedimento',   1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 3, 'Rotina',         1, CURRENT_TIMESTAMP);
 
-INSERT INTO HierarquiaProjeto (nome, idusuarioinclusao, datahorainclusao) VALUES ('Norma c/Tarefa', 1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjeto (nome, idusuarioinclusao, datahorainclusao) VALUES ('Norma c/ Tarefa', 1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 1, 'Norma c/ Tarefa',1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 2, 'Procedimento',   1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 2, 'Tarefa',         1, CURRENT_TIMESTAMP);

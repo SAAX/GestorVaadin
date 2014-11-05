@@ -14,6 +14,7 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
+import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
@@ -33,6 +34,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,7 +62,6 @@ public class CadastroTarefaTest {
     private EntityManager em;
     private static List<Tarefa> tarefasCadastradas;
     private static ResourceBundle mensagens = null;
-    
 
     @BeforeClass
     public static void setUpClass() {
@@ -79,12 +80,10 @@ public class CadastroTarefaTest {
         GestorMDI gestor = new GestorMDI();
         UI.setCurrent(gestor);
         gestor.init(null);
-        
+
         mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
 
-        
         // se assegura que nao existem tarefas ja cadastradas
-        
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
         GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
         List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findAll")
@@ -165,8 +164,7 @@ public class CadastroTarefaTest {
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        presenter.gravarButtonClicked();        
-        
+        presenter.gravarButtonClicked();
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
@@ -203,22 +201,21 @@ public class CadastroTarefaTest {
         view.getDataInicioDateField().setValue(new Date());
         view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
 
-        File anexoTeste = new File(System.getProperty("user.dir")+"/anexoTeste.pdf");
+        File anexoTeste = new File(System.getProperty("user.dir") + "/anexoTeste.pdf");
         try {
             anexoTeste.createNewFile();
             presenter.anexoAdicionado(anexoTeste);
         } catch (IOException ex) {
             fail(ex.getMessage());
         }
-        
-        
+
         try {
             view.getTarefaFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        presenter.gravarButtonClicked();        
-        
+        presenter.gravarButtonClicked();
+
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
@@ -256,11 +253,11 @@ public class CadastroTarefaTest {
         //        private Integer id;
         //        private HierarquiaProjetoDetalhe hierarquia;
         HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
-                .setParameter("nome", "Norma e Procedimento")
+                .setParameter("nome", "Norma")
                 .getSingleResult();
- 
+
         for (HierarquiaProjetoDetalhe categoria : hierarquiaProjetoDefault.getCategorias()) {
-            if (categoria.getNivel()==2){
+            if (categoria.getNivel() == 2) {
                 view.getHierarquiaCombo().setValue(categoria);
             }
         }
@@ -361,8 +358,7 @@ public class CadastroTarefaTest {
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        presenter.gravarButtonClicked();        
-        
+        presenter.gravarButtonClicked();
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
@@ -455,8 +451,18 @@ public class CadastroTarefaTest {
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis
         // -------------------------------------------------------------------------------------
-        HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.criarNovaTarefa(categoriaDefaultMeta);
+        HierarquiaProjetoDetalhe categoriaDefaultTarefa = null;
+        HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
+                .setParameter("nome", "Norma c/ Tarefa")
+                .getSingleResult();
+
+        for (HierarquiaProjetoDetalhe categoria : hierarquiaProjetoDefault.getCategorias()) {
+            if (categoria.getNivel() == 2) {
+                categoriaDefaultTarefa = categoria;
+            }
+        }
+
+        presenter.criarNovaTarefa(categoriaDefaultTarefa);
 
         String nome_principal = "Teste Multiplos Niveis";
         view.getNomeTarefaTextField().setValue(nome_principal);
@@ -468,6 +474,11 @@ public class CadastroTarefaTest {
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis -> Sub 1
         // -------------------------------------------------------------------------------------
+        try {
+            view.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
         CadastroTarefaView view_sub1 = new CadastroTarefaView();
         CadastroTarefaModel model_sub1 = new CadastroTarefaModel();
 
@@ -481,10 +492,16 @@ public class CadastroTarefaTest {
         view_sub1.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
         view_sub1.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         view_sub1.getDataInicioDateField().setValue(new Date());
+        view_sub1.getHierarquiaCombo().setValue(view_sub1.getHierarquiaCombo().getItemIds().toArray()[0]);
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis -> Sub 1 -> Sub 2
         // -------------------------------------------------------------------------------------
+        try {
+            view_sub1.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
         CadastroTarefaView view_sub2 = new CadastroTarefaView();
         CadastroTarefaModel model_sub2 = new CadastroTarefaModel();
 
@@ -498,6 +515,7 @@ public class CadastroTarefaTest {
         view_sub2.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
         view_sub2.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         view_sub2.getDataInicioDateField().setValue(new Date());
+        view_sub2.getHierarquiaCombo().setValue(view_sub2.getHierarquiaCombo().getItemIds().toArray()[0]);
 
         // Grava a sub nivel 2
         try {
@@ -505,24 +523,23 @@ public class CadastroTarefaTest {
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        presenter_sub2.gravarButtonClicked();        
-        
+        presenter_sub2.gravarButtonClicked();
+
         // Grava a sub nivel 1
         try {
             view_sub1.getTarefaFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        presenter_sub1.gravarButtonClicked();        
-        
+        presenter_sub1.gravarButtonClicked();
+
         // Grava a principal
         try {
             view.getTarefaFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        presenter.gravarButtonClicked();        
-        
+        presenter.gravarButtonClicked();
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome_principal)
@@ -545,7 +562,6 @@ public class CadastroTarefaTest {
         Assert.assertEquals(nome_sub1, sub1.getNome());
         Assert.assertEquals(StatusTarefa.NAO_ACEITA, sub1.getStatus());
         Assert.assertNotNull(sub1.getDataHoraInclusao());
-        
 
         // Valida resultados da sub nivel 2
         Assert.assertEquals(sub2.getTarefaPai(), sub1);
@@ -554,11 +570,10 @@ public class CadastroTarefaTest {
         Assert.assertNotNull(sub2.getDataHoraInclusao());
 
     }
-    
-    
+
     /**
      * Testa a edição da tarefa completa
-     * 
+     *
      */
     @Test
     public void editarTarefaCompleta() {
@@ -571,14 +586,12 @@ public class CadastroTarefaTest {
         String nome = "Teste Cadastro Tarefa #2";
         String novonome = "Teste Cadastro Tarefa #2 - Alterada";
 
-
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", usuarioLogado.getEmpresaAtiva().getSubEmpresas().get(0))
                 .getSingleResult();
 
         presenter.editar(t);
-        
 
         // ---------------------------------------------------------------------
         // Alterando os campos
@@ -675,17 +688,13 @@ public class CadastroTarefaTest {
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        presenter.gravarButtonClicked();        
-        
-        
-        
+        view.getGravarButton().click();
+
         // obtem novamente a tarefa do banco
         t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", novonome)
                 .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
                 .getSingleResult();
-
-        
 
         // ---------------------------------------------------------------------
         // Conferindo resultado
@@ -758,8 +767,53 @@ public class CadastroTarefaTest {
 //        //        private List<HistoricoTarefa> historico;
 //        //        private LocalDateTime dataHoraInclusao;
 //        Assert.assertNotNull(t.getDataHoraInclusao());
+
+    }
+
+
+    
+    @Test
+    public void tarefaComHistorico() {
+
+        System.out.println("Testando cadastro simples de tarefa");
+
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+
+        HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
+        presenter.criarNovaTarefa(categoriaDefaultMeta);
+
+        String nome = "Teste Cadastro Tarefa Com Historico";
+        view.getNomeTarefaTextField().setValue(nome);
+        view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
+        view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
+        view.getDataInicioDateField().setValue(new Date());
+        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        try {
+            view.getTarefaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        presenter.gravarButtonClicked();
+
+        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+                .setParameter("nome", nome)
+                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .getSingleResult();
+
+        t.addHistorico(new HistoricoTarefa("teste", usuarioLogado, t, LocalDateTime.now()));
+
+        em.persist(t);
+        
+
+        t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+                .setParameter("nome", nome)
+                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .getSingleResult();
+
+        Assert.assertEquals(1,t.getHistorico().size());
+
+        em.remove(t);
         
     }
     
-
 }

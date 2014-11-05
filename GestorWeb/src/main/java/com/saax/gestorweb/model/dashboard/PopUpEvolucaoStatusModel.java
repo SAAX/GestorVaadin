@@ -64,11 +64,12 @@ public class PopUpEvolucaoStatusModel {
                 historico.append(comentarioAndamento);
             }
 
-            em.persist(new HistoricoTarefa(historico.toString(), usuarioLogado, tarefa, LocalDateTime.now()));
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), usuarioLogado, tarefa, LocalDateTime.now());
 
-            em.persist(andamentoTarefa);
+            tarefa.addHistorico(historicoTarefa);
+            
             em.merge(tarefa);
-
+            
             em.getTransaction().commit();
 
             return em.find(Tarefa.class, idTarefa);
@@ -93,14 +94,12 @@ public class PopUpEvolucaoStatusModel {
 
         try {
 
-            em.getTransaction().begin();
-
             Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.CONCLUIDA);
             tarefa.setDataTermino(LocalDate.now());
 
-            em.persist(tarefa);
+            em.merge(tarefa);
 
             return tarefa;
 
@@ -145,8 +144,9 @@ public class PopUpEvolucaoStatusModel {
             historico.append(" com motivo: ");
             historico.append(motivoBloqueio);
 
-            em.persist(new HistoricoTarefa(historico.toString(), usuarioLogado, tarefa, LocalDateTime.now()));
-            em.persist(bloqueioTarefa);
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), usuarioLogado, tarefa, LocalDateTime.now());
+
+            tarefa.addHistorico(historicoTarefa);
 
             em.merge(tarefa);
 
@@ -175,18 +175,18 @@ public class PopUpEvolucaoStatusModel {
 
         try {
 
-            em.getTransaction().begin();
 
             Tarefa tarefa = em.find(Tarefa.class, id);
 
             tarefa.setStatus(StatusTarefa.ADIADA);
             tarefa.setDataTermino(LocalDate.now());
 
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa("Tarefa ADIADA!", usuario, tarefa, LocalDateTime.now());
+
+            tarefa.addHistorico(historicoTarefa);
+            
             em.merge(tarefa);
 
-            em.persist(new HistoricoTarefa("Tarefa ADIADA!", usuario, tarefa, LocalDateTime.now()));
-
-            em.getTransaction().commit();
 
             return tarefa;
 
@@ -250,9 +250,9 @@ public class PopUpEvolucaoStatusModel {
             historico.append(" Tarefa voltou ao status: ");
             historico.append(tarefa.getStatus());
 
-            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now());
 
-            em.persist(bloqueioAtivo);
+            tarefa.addHistorico(historicoTarefa);
 
             em.merge(tarefa);
 
@@ -285,9 +285,11 @@ public class PopUpEvolucaoStatusModel {
             Tarefa tarefa = em.find(Tarefa.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.NAO_INICIADA);
+            
+            HistoricoTarefa historico = new HistoricoTarefa("Tarefa ACEITA!", usuario, tarefa, LocalDateTime.now());
 
-            em.persist(new HistoricoTarefa("Tarefa ACEITA!", usuario, tarefa, LocalDateTime.now()));
-
+            tarefa.addHistorico(historico);
+            
             em.merge(tarefa);
 
             em.getTransaction().commit();
@@ -328,7 +330,9 @@ public class PopUpEvolucaoStatusModel {
             historico.append(" Tarefa voltou ao status: ");
             historico.append(tarefa.getStatus());
 
-            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now());
+
+            tarefa.addHistorico(historicoTarefa);
 
             em.merge(tarefa);
 
@@ -370,7 +374,9 @@ public class PopUpEvolucaoStatusModel {
             historico.append(" Tarefa voltou ao status: ");
             historico.append(tarefa.getStatus());
 
-            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now());
+
+            tarefa.addHistorico(historicoTarefa);
 
             em.merge(tarefa);
 
@@ -436,13 +442,9 @@ public class PopUpEvolucaoStatusModel {
 
             }
 
-            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now());
 
-            if (reavaliacao) {
-                em.merge(avaliacaoTarefa);
-            } else {
-                em.persist(avaliacaoTarefa);
-            }
+            tarefa.addHistorico(historicoTarefa);
 
             em.merge(tarefa);
 
@@ -499,7 +501,9 @@ public class PopUpEvolucaoStatusModel {
                 historico.append(comentarioAndamento);
             }
 
-            em.persist(new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now()));
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), usuario, tarefa, LocalDateTime.now());
+
+            tarefa.addHistorico(historicoTarefa);
 
             em.merge(tarefa);
 
@@ -535,7 +539,9 @@ public class PopUpEvolucaoStatusModel {
             tarefa.setStatus(StatusTarefa.CANCELADA);
             tarefa.setDataTermino(LocalDate.now());
 
-            em.persist(new HistoricoTarefa("Tarefa CANCELADA!", usuario, tarefa, LocalDateTime.now()));
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa("Tarefa CANCELADA!", usuario, tarefa, LocalDateTime.now());
+
+            tarefa.addHistorico(historicoTarefa);
 
             em.merge(tarefa);
 

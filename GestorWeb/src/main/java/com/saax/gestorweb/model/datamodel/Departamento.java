@@ -33,6 +33,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Departamento.findAll", query = "SELECT d FROM Departamento d"),
     @NamedQuery(name = "Departamento.findById", query = "SELECT d FROM Departamento d WHERE d.id = :id"),
     @NamedQuery(name = "Departamento.findByEmpresa", query = "SELECT d FROM Departamento d WHERE d.empresa = :empresa"),
+    @NamedQuery(name = "Departamento.findByEmpresaAtivo", query = "SELECT d FROM Departamento d WHERE d.ativo = true AND d.empresa = :empresa"),
     @NamedQuery(name = "Departamento.findByDepartamento", query = "SELECT d FROM Departamento d WHERE d.departamento = :departamento"),
     @NamedQuery(name = "Departamento.findByAtivo", query = "SELECT d FROM Departamento d WHERE d.ativo = :ativo")})
 public class Departamento implements Serializable {

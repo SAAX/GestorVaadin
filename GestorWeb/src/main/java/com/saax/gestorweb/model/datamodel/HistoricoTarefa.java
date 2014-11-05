@@ -57,7 +57,7 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
     private Tarefa tarefa;
-        
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "datahora")

@@ -144,15 +144,16 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         tarefa.setUsuarioSolicitante(usuarioLogado);
         tarefa.setDataHoraInclusao(LocalDateTime.now());
         tarefa.setSubTarefas(new ArrayList<>());
+        tarefa.setHierarquia(categoria);
 
         // ajuste ate a projecao ser implementada
         tarefa.setProjecao(ProjecaoTarefa.NORMAL);
 
         // configura a categoria
-        tarefa.setHierarquia(categoria);
         ComboBox combo = view.getHierarquiaCombo();
         combo.addItem(tarefa.getHierarquia());
         combo.setItemCaption(tarefa.getHierarquia(), tarefa.getHierarquia().getCategoria());
+        tarefa.setHierarquia(categoria);
 
         view.ocultaPopUpEvolucaoStatusEAndamento();
         view.exibeTituloCadastro(null);
@@ -236,20 +237,16 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
      * ao usuário logado
      */
     private void carregaComboEmpresa() {
-        try {
-            ComboBox empresaCombo = view.getEmpresaCombo();
+        ComboBox empresaCombo = view.getEmpresaCombo();
 
-            EmpresaModel empresaModel = new EmpresaModel();
+        EmpresaModel empresaModel = new EmpresaModel();
 
-            List<Empresa> empresas = empresaModel.listarEmpresasRelacionadas();
-            for (Empresa empresa : empresas) {
+        List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(usuarioLogado);
+        for (Empresa empresa : empresas) {
 
-                empresaCombo.addItem(empresa);
-                empresaCombo.setItemCaption(empresa, empresa.getNome());
+            empresaCombo.addItem(empresa);
+            empresaCombo.setItemCaption(empresa, empresa.getNome());
 
-            }
-        } catch (GestorException ex) {
-            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -354,7 +351,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
      */
     private void carregaComboEmpresaCliente() {
         ComboBox empresaCliente = view.getEmpresaClienteCombo();
-        for (EmpresaCliente cliente : model.listarEmpresasCliente()) {
+        for (EmpresaCliente cliente : model.listarEmpresasCliente(usuarioLogado)) {
             empresaCliente.addItem(cliente);
             empresaCliente.setItemCaption(cliente, cliente.getNome());
         }
@@ -477,9 +474,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-            Logger
-                    .getLogger(CadastroTarefaPresenter.class
-                            .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -509,9 +504,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
-            Logger
-                    .getLogger(CadastroTarefaPresenter.class
-                            .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

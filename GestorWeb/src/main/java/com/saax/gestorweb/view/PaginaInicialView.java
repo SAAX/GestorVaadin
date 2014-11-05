@@ -1,11 +1,13 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.CadastroMetaModel;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.CadastroMetaPresenter;
 import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.server.Sizeable.Unit;

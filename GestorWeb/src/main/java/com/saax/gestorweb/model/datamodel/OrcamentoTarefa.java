@@ -44,7 +44,6 @@ public class OrcamentoTarefa implements Serializable {
     /** Valor imputado pelo usuário.
      * campo transiente, pois o valor será gravado em "credito" ou "debito"
      */
-    @NotNull(message = "Informe o valor à creditar / debitar")
     private transient String inputValor;
 
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation

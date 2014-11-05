@@ -3,47 +3,37 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.vaadin.data.Item;
-import com.vaadin.data.fieldgroup.DefaultFieldGroupFieldFactory;
+import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
+import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
 /**
  *
- * Cria a view do cadastro de Metas com a estrutura abaixo:
- *
- * containerPrincipal (V) + containerCabecalho - empresaCombo -
- * nomeMetaTextField + containerSuperior (V) + contaierCamposDeData (H) -
- * dataInicioTextField - dataFimTextField - dataTerminoTextField + accordion
- * (Abas) + container1aAbaAccordion (H) + containerDetalhes (V) width = 30% -
- * responsavelCombo - empresaClienteCombo - departamentoCombo - centroCustoCombo
- * - horasEstimadasTextField - horasRealizadasTextField + containerDescricaoMeta
- * (H) width = 70% - descricaoMeta + containerTabelaTarefas (Painel) -
- * tarefasTable
- *
+ * Cria a view do cadastro de Metas
+ * 
  * @author Rodrigo
  */
-public class CadastroMetasView extends Window {
+public class CadastroMetaView extends Window {
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -51,26 +41,49 @@ public class CadastroMetasView extends Window {
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
-    private CadastroMetasViewListener listener;
+    private CadastroMetaViewListener listener;
 
     // componentes visuais da view (redundancia = on)
+    @PropertyId("nome")
     private TextField nomeMetaTextField;
 
-    private TextField dataInicioTextField;
-    private TextField dataFimTextField;
-    private TextField dataTerminoTextField;
-    private RichTextArea descricaoMeta;
-    private ComboBox empresaCombo;
-    private ComboBox responsavelCombo;
-    private ComboBox empresaClienteCombo;
-    private ComboBox departamentoCombo;
-    private ComboBox centroCustoCombo;
-    private TextField horasEstimadasTextField;
-    private TextField horasRealizadasTextField;
-    private Panel containerTabelaTarefas;
-    private Table tarefasTable;
+    @PropertyId("dataInicio")
+    private PopupDateField dataInicioDateField;
 
-    public void setListener(CadastroMetasViewListener listener) {
+    @PropertyId("dataFim")
+    private PopupDateField dataFimDateField;
+    
+    @PropertyId("dataTermino")
+    private PopupDateField dataTerminoDateField;
+    
+    @PropertyId("descricao")
+    private RichTextArea descricaoMeta;
+    
+    @PropertyId("empresa")
+    private ComboBox empresaCombo;
+
+    @PropertyId("usuarioResponsavel")
+    private ComboBox responsavelCombo;
+    
+    @PropertyId("empresaCliente")
+    private ComboBox empresaClienteCombo;
+    
+    @PropertyId("departamento")
+    private ComboBox departamentoCombo;
+
+    @PropertyId("centroCusto")
+    private ComboBox centroCustoCombo;
+    
+    @PropertyId("hierarquia")
+    private ComboBox hierarquiaCombo;
+
+    private Panel containerTabelaTarefas;
+    
+    private TreeTable tarefasTable;
+    private BeanItem<Meta> metaBeanItem;
+    private FieldGroup metaFieldGroup;
+
+    public void setListener(CadastroMetaViewListener listener) {
         this.listener = listener;
     }
 
@@ -78,11 +91,11 @@ public class CadastroMetasView extends Window {
      * Cria o pop-up de login, com campos para usuário e senha
      *
      */
-    public CadastroMetasView() {
+    public CadastroMetaView() {
         super();
 
 
-        setCaption(mensagens.getString("CadastroMetasView.titulo"));
+        setCaption(mensagens.getString("CadastroMetaView.titulo"));
         setModal(true);
         setWidth(800, Unit.PIXELS);
         setHeight(500, Unit.PIXELS);
@@ -94,6 +107,22 @@ public class CadastroMetasView extends Window {
         center();
 
     }
+    
+    /**
+     * Bind (liga) a meta ao formulário
+     *
+     * @param meta
+     */
+    public void setMeta(Meta meta) {
+
+        metaBeanItem = new BeanItem<>(meta);
+        metaFieldGroup = new FieldGroup(metaBeanItem);
+
+        metaFieldGroup.bindMemberFields(this);
+
+        
+    }
+    
 
     /**
      * Constrói o container principal da view, que terá todos os outros
@@ -115,8 +144,12 @@ public class CadastroMetasView extends Window {
 
         // combo de seleção da empresa
         empresaCombo = new ComboBox("Empresa");
+        empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.empresaSelecionada((Empresa) event.getProperty().getValue());
+        });
         containerCabecalho.addComponent(empresaCombo);
         containerCabecalho.setExpandRatio(empresaCombo, 0);
+        
 
         // TextField: Nome da meta 
         nomeMetaTextField = new TextField("Nome da meta");
@@ -164,16 +197,26 @@ public class CadastroMetasView extends Window {
         containerSuperior.addComponent(contaierCamposDeData); // adiciona o container de datas no superior
 
         // TextField: Data de Inicio 
-        dataInicioTextField = new TextField("Data Inicio");
-        contaierCamposDeData.addComponent(dataInicioTextField);
-
+        dataInicioDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataInicioTextField.label"));
+        dataInicioDateField.setWidth("100%");
+        dataInicioDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
+        dataInicioDateField.setConverter(new DateToLocalDateConverter());
+        dataInicioDateField.addValidator(new BeanValidator(Meta.class, "dataInicio"));
+        contaierCamposDeData.addComponent(dataInicioDateField);
+        
         // TextField: Data Fim
-        dataFimTextField = new TextField("Data Fim (Previsto)");
-        contaierCamposDeData.addComponent(dataFimTextField);
+        dataFimDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataFimTextField.label"));
+        dataFimDateField.setWidth("100%");
+        dataFimDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
+        dataFimDateField.setConverter(new DateToLocalDateConverter());
+        dataFimDateField.addValidator(new BeanValidator(Meta.class, "dataFim"));
+        contaierCamposDeData.addComponent(dataFimDateField);
 
         // TextField: Data Termino
-        dataTerminoTextField = new TextField("Data Término (Real)");
-        contaierCamposDeData.addComponent(dataTerminoTextField);
+        dataTerminoDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataTerminoDateField.label"));
+        dataTerminoDateField.setWidth("100%");
+        dataTerminoDateField.setConverter(new DateToLocalDateConverter());
+        contaierCamposDeData.addComponent(dataFimDateField);
 
         return containerSuperior;
     }
@@ -230,15 +273,39 @@ public class CadastroMetasView extends Window {
         containerTabelaTarefas = new Panel();
         containerTabelaTarefas.setSizeFull();
 
-        tarefasTable = new Table();
+        tarefasTable = new TreeTable();
         containerTabelaTarefas.setContent(tarefasTable);
         tarefasTable.setSizeFull();
 
-        tarefasTable.addContainerProperty("Cod", Integer.class, null);
-        tarefasTable.addContainerProperty("Nome", String.class, null);
-        tarefasTable.addContainerProperty("Responsável", String.class, null);
-        tarefasTable.addContainerProperty("Status", String.class, null);
-        tarefasTable.addContainerProperty("Andamento", String.class, null);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod"), Button.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod"), 70);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo"), Button.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo"), 50);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome"), Button.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome"), 250);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), 200);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
+        tarefasTable.addContainerProperty("[E]", Button.class, "");
+        tarefasTable.setColumnWidth("[E]", 30);
+        tarefasTable.addContainerProperty("[C]", Button.class, "");
+        tarefasTable.setColumnWidth("[C]", 30);
+
+        tarefasTable.setPageLength(7);
+        tarefasTable.setSelectable(true);
+        tarefasTable.setImmediate(true);
+
 
         accordion.addTab(containerTabelaTarefas, "Tarefas / Sub", null);
 
@@ -282,14 +349,6 @@ public class CadastroMetasView extends Window {
         containerHorasEstimadasRealizadas.setWidth("100%");
         containerDetalhes.addComponent(containerHorasEstimadasRealizadas);
 
-        // campo de texto para as horas estimadas
-        horasEstimadasTextField = new TextField("H. Estimadas");
-        horasEstimadasTextField.setWidth("50%");
-        containerHorasEstimadasRealizadas.addComponent(horasEstimadasTextField);
-
-        horasRealizadasTextField = new TextField("H. Realizadas");
-        horasRealizadasTextField.setWidth("50%");
-        containerHorasEstimadasRealizadas.addComponent(horasRealizadasTextField);
 
         return containerDetalhes;
 
@@ -329,7 +388,8 @@ public class CadastroMetasView extends Window {
      */
     public void carregarComboDepartamentos(List<Departamento> departamentos) {
         for (Departamento departamento : departamentos) {
-            departamentoCombo.addItem(departamento.getDepartamento());
+            departamentoCombo.addItem(departamento);
+            departamentoCombo.setItemCaption(departamento, departamento.getDepartamento());
         }
     }
 
@@ -351,6 +411,16 @@ public class CadastroMetasView extends Window {
         departamentoCombo.setEnabled(false);
     }
 
-   
+    public ComboBox getEmpresaCombo() {
+        return empresaCombo;
+    }
+
+    public ComboBox getDepartamentoCombo() {
+        return departamentoCombo;
+    }
+
+    
+
+    
     
 }

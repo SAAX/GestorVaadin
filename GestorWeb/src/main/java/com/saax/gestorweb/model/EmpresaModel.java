@@ -13,16 +13,14 @@ import java.util.List;
  */
 public class EmpresaModel {
 
-    
     /**
-     * Listar as coligadas (se existirem)
+     * Obtem a lista de empresas possiveis de seleção para o usuário logado
      *
-     * @return
-     * @throws com.saax.gestorweb.util.GestorException
+     * @param usuarioLogado
+     * @return a empresa principal do usuário + as coligadas (se existirem)
      */
-    public List<Empresa> listarEmpresasRelacionadas() throws GestorException {
+    public List<Empresa> listarEmpresasParaSelecao(Usuario usuarioLogado) {
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
         Empresa empresa = usuarioLogado.getEmpresaAtiva();
 
         List<Empresa> empresas = new ArrayList<>();
@@ -39,5 +37,4 @@ public class EmpresaModel {
         return empresas;
     }
 
-    
 }

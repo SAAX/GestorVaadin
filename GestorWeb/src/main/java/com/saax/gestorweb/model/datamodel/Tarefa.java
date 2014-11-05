@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -61,59 +59,11 @@ import org.apache.commons.beanutils.BeanUtils;
     @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao")})
 public class Tarefa implements Serializable {
 
+    /**
+     * Apresentação tratada do ID
+     */
     @Transient
     private String globalID;
-
-    /**
-     * Cria uma nova tarefa usando esta como template Todos os campos da tarefa
-     * de template são copiados (inclusive das subs), exceto:
-     * <ul>
-     * <li>ID</li>
-     * <li>Usuario Inclusão = Usuario logado</li>
-     * <li>Usuario Solicitante = Usuario logado</li>
-     * <li>Data Hora Inclusão = Agora</li>
-     * <li>Andamentos</li>
-     * <li>Avaliações</li>
-     * <li>Bloqueios</li>
-     * <li>Histórico</li>
-     * </ul>
-     *
-     * @return o clone
-     */
-    @Override
-    public Tarefa clone() {
-
-        Tarefa clone = null;
-        try {
-            clone = (Tarefa) BeanUtils.cloneBean(this);
-            List<Tarefa> cloneSubs = new ArrayList<>();
-            for (Tarefa sub : clone.getSubTarefas()) {
-                cloneSubs.add(sub.clone());
-            }
-            clone.setSubTarefas(cloneSubs);
-
-            Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
-            
-            clone.setId(null);
-            clone.setUsuarioInclusao(usuarioLogado);
-            clone.setUsuarioSolicitante(usuarioLogado);
-            clone.setDataHoraInclusao(LocalDateTime.now());
-            clone.setAndamento(0);
-            clone.setAndamentos(new ArrayList<>());
-            clone.setApontamentos(new ArrayList<>());
-            clone.setAvaliacoes(new ArrayList<>());
-            clone.setBloqueios(new ArrayList<>());
-            clone.setFavoritados(new ArrayList<>());
-            clone.setHistorico(new ArrayList<>());
-            clone.setOrcamentos(new ArrayList<>());
-            clone.setStatus(StatusTarefa.NAO_ACEITA);
-            
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
-            throw new RuntimeException("Falha ao clonar tarefa");
-        }
-
-        return clone;
-    }
 
     public String getGlobalID() {
         globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
@@ -123,6 +73,10 @@ public class Tarefa implements Serializable {
 
     private static long serialVersionUID = 1L;
 
+    // ----------------------------------------------------------------------------------------------------------------
+    // ATRIBUTOS PERSISTIDOS
+    // ----------------------------------------------------------------------------------------------------------------
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -169,6 +123,10 @@ public class Tarefa implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<FavoritosTarefaMeta> favoritados;
+
+    @JoinColumn(name = "idmeta", referencedColumnName = "idmeta")
+    @ManyToOne
+    private Meta meta;
 
     @JoinColumn(name = "idcentrocusto", referencedColumnName = "idcentrocusto")
     @ManyToOne
@@ -261,14 +219,23 @@ public class Tarefa implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
 
+    @NotNull(message = "Informe a categoria")
     @JoinColumn(name = "idhierarquiaprojetodetalhe", referencedColumnName = "idhierarquiaprojetodetalhe")
-    @ManyToOne
+    @ManyToOne(optional = false)
     private HierarquiaProjetoDetalhe hierarquia;
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // ATRIBUTOS TRANSIENTES
+    // ----------------------------------------------------------------------------------------------------------------
 
     /**
      * Custo de hora para todos os apontamentos
      */
     transient BigDecimal custoHoraApontamento;
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // CONSTRUTORES
+    // ----------------------------------------------------------------------------------------------------------------
 
     public Tarefa() {
     }
@@ -277,6 +244,62 @@ public class Tarefa implements Serializable {
         this.id = idtarefa;
     }
 
+    /**
+     * Cria uma nova tarefa usando esta como template Todos os campos da tarefa
+     * de template são copiados (inclusive das subs), exceto:
+     * <ul>
+     * <li>ID</li>
+     * <li>Usuario Inclusão = Usuario logado</li>
+     * <li>Usuario Solicitante = Usuario logado</li>
+     * <li>Data Hora Inclusão = Agora</li>
+     * <li>Andamentos</li>
+     * <li>Avaliações</li>
+     * <li>Bloqueios</li>
+     * <li>Histórico</li>
+     * </ul>
+     *
+     * @return o clone
+     */
+    @Override
+    public Tarefa clone() {
+
+        Tarefa clone = null;
+        try {
+            clone = (Tarefa) BeanUtils.cloneBean(this);
+            List<Tarefa> cloneSubs = new ArrayList<>();
+            for (Tarefa sub : clone.getSubTarefas()) {
+                cloneSubs.add(sub.clone());
+            }
+            clone.setSubTarefas(cloneSubs);
+
+            Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+
+            clone.setId(null);
+            clone.setUsuarioInclusao(usuarioLogado);
+            clone.setUsuarioSolicitante(usuarioLogado);
+            clone.setDataHoraInclusao(LocalDateTime.now());
+            clone.setAndamento(0);
+            clone.setAndamentos(new ArrayList<>());
+            clone.setApontamentos(new ArrayList<>());
+            clone.setAvaliacoes(new ArrayList<>());
+            clone.setBloqueios(new ArrayList<>());
+            clone.setFavoritados(new ArrayList<>());
+            clone.setHistorico(new ArrayList<>());
+            clone.setOrcamentos(new ArrayList<>());
+            clone.setStatus(StatusTarefa.NAO_ACEITA);
+
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
+            throw new RuntimeException("Falha ao clonar tarefa");
+        }
+
+        return clone;
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // GETTERS AND SETTERS (com tratamento p/ NULL)
+    // ----------------------------------------------------------------------------------------------------------------
+    
+    
     public Integer getId() {
         return id;
     }
@@ -326,6 +349,9 @@ public class Tarefa implements Serializable {
     }
 
     public List<FavoritosTarefaMeta> getFavoritados() {
+        if (favoritados==null){
+            setFavoritados(new ArrayList<>());
+        }
         return favoritados;
     }
 
@@ -374,6 +400,9 @@ public class Tarefa implements Serializable {
     }
 
     public List<Tarefa> getSubTarefas() {
+        if (subTarefas==null) {
+            setSubTarefas(new ArrayList<>());
+        }
         return subTarefas;
     }
 
@@ -418,10 +447,16 @@ public class Tarefa implements Serializable {
     }
 
     public void setParticipantes(List<ParticipanteTarefa> participantes) {
+        if (participantes==null){
+            setParticipantes(new ArrayList<>());
+        }
         this.participantes = participantes;
     }
 
     public List<AvaliacaoMetaTarefa> getAvaliacoes() {
+        if (avaliacoes==null){
+            setAvaliacoes(new ArrayList<>());
+        }
         return avaliacoes;
     }
 
@@ -430,6 +465,9 @@ public class Tarefa implements Serializable {
     }
 
     public List<OrcamentoTarefa> getOrcamentos() {
+        if (orcamentos==null){
+            setOrcamentos(new ArrayList<>());
+        }
         return orcamentos;
     }
 
@@ -438,6 +476,9 @@ public class Tarefa implements Serializable {
     }
 
     public List<ApontamentoTarefa> getApontamentos() {
+        if (apontamentos==null){
+            setApontamentos(new ArrayList<>());
+        }
         return apontamentos;
     }
 
@@ -446,6 +487,9 @@ public class Tarefa implements Serializable {
     }
 
     public List<AnexoTarefa> getAnexos() {
+        if (anexos==null){
+            setAnexos(new ArrayList<>());
+        }
         return anexos;
     }
 
@@ -453,42 +497,7 @@ public class Tarefa implements Serializable {
         this.anexos = anexos;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (getId() != null ? getId().hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Tarefa)) {
-            return false;
-        }
-        Tarefa other = (Tarefa) object;
-        if (this == other) {
-            return true;
-        }
-
-        // se o ID estiver setado, compara por ele
-        if (this.getId() != null) {
-            return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
-
-        } else {
-            // senao compara por campos setados na criação da tarefa
-            return this.getEmpresa().equals(other.getEmpresa())
-                    && this.getUsuarioInclusao().equals(other.getUsuarioInclusao())
-                    && this.getUsuarioSolicitante().equals(other.getUsuarioSolicitante())
-                    && this.getDataHoraInclusao().equals(other.getDataHoraInclusao());
-
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "com.saax.gestorweb.Tarefa[ idtarefa=" + getId() + " ]";
-    }
-
+    
     public StatusTarefa getStatus() {
         return status;
     }
@@ -526,14 +535,10 @@ public class Tarefa implements Serializable {
     }
 
     public List<AndamentoTarefa> getAndamentos() {
-        return andamentos;
-    }
-
-    public void addAndamento(AndamentoTarefa andamentoTarefa) {
-        if (getAndamentos() == null) {
+        if (andamentos==null){
             setAndamentos(new ArrayList<>());
         }
-        getAndamentos().add(andamentoTarefa);
+        return andamentos;
     }
 
     public void setDataTermino(LocalDate dataTermino) {
@@ -541,6 +546,9 @@ public class Tarefa implements Serializable {
     }
 
     public List<BloqueioTarefa> getBloqueios() {
+        if (bloqueios==null){
+            setBloqueios(new ArrayList<>());
+        }
         return bloqueios;
     }
 
@@ -556,56 +564,38 @@ public class Tarefa implements Serializable {
         this.dataFim = dataFim;
     }
 
-    /**
-     * @return the apontamentoHoras
-     */
     public boolean isApontamentoHoras() {
         return apontamentoHoras;
     }
 
-    /**
-     * @return the orcamentoControlado
-     */
     public boolean isOrcamentoControlado() {
         return orcamentoControlado;
     }
 
-    /**
-     * @return the dataTermino
-     */
     public LocalDate getDataTermino() {
         return dataTermino;
     }
 
-    /**
-     * @return the dataInicio
-     */
     public LocalDate getDataInicio() {
         return dataInicio;
     }
 
-    /**
-     * @param dataInicio the dataInicio to set
-     */
     public void setDataInicio(LocalDate dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    /**
-     * @return the dataHoraInclusao
-     */
     public LocalDateTime getDataHoraInclusao() {
         return dataHoraInclusao;
     }
 
-    /**
-     * @param dataHoraInclusao the dataHoraInclusao to set
-     */
     public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
     public List<HistoricoTarefa> getHistorico() {
+        if (historico==null){
+            setHistorico(new ArrayList<>());
+        }
         return historico;
     }
 
@@ -613,6 +603,90 @@ public class Tarefa implements Serializable {
         this.historico = historico;
     }
 
+    public void setCustoHoraApontamento(BigDecimal custoHoraApontamento) {
+        this.custoHoraApontamento = custoHoraApontamento;
+    }
+
+    public BigDecimal getCustoHoraApontamento() {
+        return custoHoraApontamento;
+    }
+
+    public void setHierarquia(HierarquiaProjetoDetalhe hierarquia) {
+        this.hierarquia = hierarquia;
+    }
+
+    public HierarquiaProjetoDetalhe getHierarquia() {
+        return hierarquia;
+    }
+
+    public void setTemplate(boolean template) {
+        this.template = template;
+    }
+
+    public boolean isTemplate() {
+        return template;
+    }
+
+    public void setMeta(Meta meta) {
+        this.meta = meta;
+    }
+
+    public Meta getMeta() {
+        return meta;
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // EQUALS E HASCODE
+    // ----------------------------------------------------------------------------------------------------------------
+    
+    
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (getId() != null ? getId().hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Tarefa)) {
+            return false;
+        }
+        Tarefa other = (Tarefa) object;
+        if (this == other) {
+            return true;
+        }
+
+        // se o ID estiver setado, compara por ele
+        if (this.getId() != null) {
+            return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
+
+        } else {
+            // senao compara por campos setados na criação da tarefa
+            return this.getEmpresa().equals(other.getEmpresa())
+                    && this.getUsuarioInclusao().equals(other.getUsuarioInclusao())
+                    && this.getUsuarioSolicitante().equals(other.getUsuarioSolicitante())
+                    && this.getDataHoraInclusao().equals(other.getDataHoraInclusao());
+
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "com.saax.gestorweb.Tarefa[ idtarefa=" + getId() + " ]";
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    // METODO UTILITARIOS
+    // ----------------------------------------------------------------------------------------------------------------
+    
+    public void addAndamento(AndamentoTarefa andamentoTarefa) {
+        if (getAndamentos() == null) {
+            setAndamentos(new ArrayList<>());
+        }
+        getAndamentos().add(andamentoTarefa);
+    }
+    
     public void addBloqueio(BloqueioTarefa bloqueioTarefa) {
         if (getBloqueios() == null) {
             setBloqueios(new ArrayList<>());
@@ -634,22 +708,12 @@ public class Tarefa implements Serializable {
         getApontamentos().add(apontamento);
     }
 
-    public void setCustoHoraApontamento(BigDecimal custoHoraApontamento) {
-        this.custoHoraApontamento = custoHoraApontamento;
-    }
 
-    public BigDecimal getCustoHoraApontamento() {
-        return custoHoraApontamento;
+    public void addOrcamento(OrcamentoTarefa orcamentoTarefa) {
+        if (getOrcamentos() == null) {
+            setOrcamentos(new ArrayList<>());
+        }
+        getOrcamentos().add(orcamentoTarefa);
     }
-
-    public void setHierarquia(HierarquiaProjetoDetalhe hierarquia) {
-        this.hierarquia = hierarquia;
-    }
-
-    public HierarquiaProjetoDetalhe getHierarquia() {
-        return hierarquia;
-    }
-    
-    
 
 }

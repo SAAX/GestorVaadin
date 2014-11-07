@@ -201,6 +201,9 @@ public class Tarefa implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<HistoricoTarefa> historico;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
+    private List<ChatTarefa> chat;
 
     @Column(name = "datatermino")
     @Convert(converter = LocalDatePersistenceConverter.class)
@@ -286,6 +289,7 @@ public class Tarefa implements Serializable {
             clone.setFavoritados(new ArrayList<>());
             clone.setHistorico(new ArrayList<>());
             clone.setOrcamentos(new ArrayList<>());
+            clone.setChat(new ArrayList<>());
             clone.setStatus(StatusTarefa.NAO_ACEITA);
 
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
@@ -601,6 +605,17 @@ public class Tarefa implements Serializable {
 
     public void setHistorico(List<HistoricoTarefa> historico) {
         this.historico = historico;
+    }
+    
+        public List<ChatTarefa> getChat() {
+        if (chat==null){
+            setChat(new ArrayList<>());
+        }
+        return chat;
+    }
+
+    public void setChat(List<ChatTarefa> chat) {
+        this.chat = chat;
     }
 
     public void setCustoHoraApontamento(BigDecimal custoHoraApontamento) {

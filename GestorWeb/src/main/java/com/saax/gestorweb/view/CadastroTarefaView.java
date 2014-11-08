@@ -3,11 +3,13 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.vaadin.data.Item;
@@ -64,9 +66,8 @@ import java.util.logging.Logger;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
- * Pop-up Window do cadastro de tarefas
- * <p>
- * A visualização será em uma estrutura de accordion com tres abas:
+ * Pop-up Window do cadastro de tarefas A visualização será em uma estrutura de
+ * accordion com tres abas:
  * <br>
  * <ol>
  * <li>Dados inicias da tarefa</li>
@@ -111,18 +112,21 @@ public class CadastroTarefaView extends Window {
     private Button chatButton;
     private Button projecaoButton;
 
-    // -------------------------------------------------------------------------
-    // Componentes da Aba de dados basicos
-    // -------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------
+    // Bean Biding
+    // -----------------------------------------------------------------------------------
     private BeanItem<Tarefa> tarefaBeanItem;
     private FieldGroup tarefaFieldGroup;
 
+    // -------------------------------------------------------------------------
+    // Componentes da Aba de dados basicos
+    // -------------------------------------------------------------------------
     @PropertyId("empresa")
     private ComboBox empresaCombo;
 
     @PropertyId("hierarquia")
     private ComboBox hierarquiaCombo;
-    
+
     @PropertyId("nome")
     private TextField nomeTarefaTextField;
 
@@ -139,7 +143,6 @@ public class CadastroTarefaView extends Window {
     private ComboBox prioridadeCombo;
 
 //    private Button avisoButton;
-
     private PopupButton statusTarefaPopUpButton;
 
     // -------------------------------------------------------------------------
@@ -169,14 +172,10 @@ public class CadastroTarefaView extends Window {
 
     private Upload adicionarAnexoButton;
     private BeanItemContainer<AnexoTarefa> anexoTarefaContainer;
-    ;
-    
 
-    
     // -------------------------------------------------------------------------
     // Componentes da Aba Controle de Horas
     // -------------------------------------------------------------------------
-
     private VerticalLayout controleHorasAba;
 
     private TextField custoHoraTextField;
@@ -194,8 +193,6 @@ public class CadastroTarefaView extends Window {
     private TextField imputarOrcamentoTextField;
     private TextField observacaoOrcamentoTextField;
     private Button imputarOrcamentoButton;
-    private Button gravarButton;
-    private Button cancelarButton;
     private BeanItemContainer<OrcamentoTarefa> orcamentoContainer;
     private BeanItem<OrcamentoTarefa> orcamentoTarefaBeanItem;
     private FieldGroup orcamentoTarefaFieldGroup;
@@ -212,15 +209,11 @@ public class CadastroTarefaView extends Window {
     private HorizontalLayout uploadHorizontalLayout;
     private ProgressBar anexoProgressBar;
 
-
-    /**
-     * Configura o listener de eventos da view
-     *
-     * @param listener
-     */
-    public void setListener(CadastroTarefaViewListener listener) {
-        this.listener = listener;
-    }
+    // -------------------------------------------------------------------------
+    // Barra de botoes inferior
+    // -------------------------------------------------------------------------
+    private Button gravarButton;
+    private Button cancelarButton;
 
     /**
      * Cria a view e todos os componentes
@@ -244,6 +237,15 @@ public class CadastroTarefaView extends Window {
 
         setValidatorsVisible(false);
 
+    }
+
+    /**
+     * Configura o listener de eventos da view
+     *
+     * @param listener
+     */
+    public void setListener(CadastroTarefaViewListener listener) {
+        this.listener = listener;
     }
 
     /**
@@ -338,6 +340,9 @@ public class CadastroTarefaView extends Window {
 
         // Combo: Empresa
         empresaCombo = new ComboBox(mensagens.getString("CadastroTarefaView.empresaCombo.label"));
+        empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.empresaSelecionada((Empresa) event.getProperty().getValue());
+        });
         empresaCombo.setWidth("100%");
         empresaCombo.addValidator(new BeanValidator(Tarefa.class, "empresa"));
         camposObrigatorios.add(empresaCombo);
@@ -347,7 +352,7 @@ public class CadastroTarefaView extends Window {
         hierarquiaCombo.setWidth("140px");
         hierarquiaCombo.addValidator(new BeanValidator(Tarefa.class, "hierarquia"));
         hierarquiaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.hierarquiaSelecionada((HierarquiaProjetoDetalhe)event.getProperty().getValue());
+            listener.hierarquiaSelecionada((HierarquiaProjetoDetalhe) event.getProperty().getValue());
         });
         camposObrigatorios.add(hierarquiaCombo);
 
@@ -395,7 +400,6 @@ public class CadastroTarefaView extends Window {
 //            listener.avisoButtonClicked();
 //        });
 //        avisoButton.setWidth("100%");
-
         // configura o layout usando uma grid
         GridLayout grid = new GridLayout(3, 3);
         grid.setSpacing(true);
@@ -410,7 +414,7 @@ public class CadastroTarefaView extends Window {
         categoriaENomeContainer.addComponent(nomeTarefaTextField);
         categoriaENomeContainer.setExpandRatio(nomeTarefaTextField, 1);
         categoriaENomeContainer.setComponentAlignment(hierarquiaCombo, Alignment.BOTTOM_CENTER);
-        
+
         grid.addComponent(empresaCombo);
         grid.addComponent(categoriaENomeContainer, 1, 0, 2, 0);
         grid.addComponent(dataInicioDateField);
@@ -421,7 +425,6 @@ public class CadastroTarefaView extends Window {
         grid.setComponentAlignment(statusTarefaPopUpButton, Alignment.BOTTOM_CENTER);
 //        grid.addComponent(avisoButton);
 //        grid.setComponentAlignment(avisoButton, Alignment.BOTTOM_CENTER);
-        
 
         return grid;
     }
@@ -649,7 +652,7 @@ public class CadastroTarefaView extends Window {
         adicionarAnexoButton.addStartedListener((Upload.StartedEvent event) -> {
             uploadHorizontalLayout.addComponent(anexoProgressBar);
         });
-        
+
         uploadHorizontalLayout.addComponent(adicionarAnexoButton);
 
         anexoTarefaContainer = new BeanItemContainer<>(AnexoTarefa.class);
@@ -658,7 +661,7 @@ public class CadastroTarefaView extends Window {
         anexosAdicionadosTable.setContainerDataSource(anexoTarefaContainer);
 
         anexosAdicionadosTable.setColumnWidth("nome", 350);
-        
+
         anexosAdicionadosTable.setColumnHeader("nome", mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"));
 
         anexosAdicionadosTable.setVisibleColumns("nome");
@@ -666,7 +669,7 @@ public class CadastroTarefaView extends Window {
         // Adicionar coluna do botão "download"
         anexosAdicionadosTable.addGeneratedColumn(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
             Button downloadButton = new Button(mensagens.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"));
-            AnexoTarefa anexoTarefa =  (AnexoTarefa) itemId;
+            AnexoTarefa anexoTarefa = (AnexoTarefa) itemId;
             FileDownloader fd = new FileDownloader(new FileResource(anexoTarefa.getArquivo() == null ? anexoTarefa.getArquivoTemporario() : anexoTarefa.getArquivo()));
             fd.extend(downloadButton);
 
@@ -696,7 +699,6 @@ public class CadastroTarefaView extends Window {
         layout.setWidth("100%");
         layout.setHeight(null);
 
-        
         layout.addComponent(departamentoCombo, 0, 0);
         layout.addComponent(centroCustoCombo, 0, 1);
         layout.addComponent(uploadHorizontalLayout, 1, 0);
@@ -773,7 +775,7 @@ public class CadastroTarefaView extends Window {
                 // Format by property type
                 if (property.getType() == LocalDateTime.class) {
 
-                    return ((LocalDateTime) property.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+                    return FormatterUtil.formatDateTime((LocalDateTime) property.getValue());
 
                 } else if (property.getType() == Duration.class) {
 
@@ -1131,7 +1133,6 @@ public class CadastroTarefaView extends Window {
 //    public Button getAvisoButton() {
 //        return avisoButton;
 //    }
-
     /**
      * @return the usuarioResponsavelCombo
      */

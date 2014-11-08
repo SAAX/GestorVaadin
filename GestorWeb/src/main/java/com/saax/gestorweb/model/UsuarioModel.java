@@ -3,7 +3,6 @@ package com.saax.gestorweb.model;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
-import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorSession;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +18,8 @@ public class UsuarioModel {
      * Listar todos os usuários ativos da mesma empresa do usuário logado
      *
      * @return
-     * @throws com.saax.gestorweb.util.GestorException
      */
-    public List<Usuario> listarUsuariosEmpresa() throws GestorException {
+    public List<Usuario> listarUsuariosEmpresa() {
 
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
         Empresa empresa = usuarioLogado.getEmpresaAtiva();

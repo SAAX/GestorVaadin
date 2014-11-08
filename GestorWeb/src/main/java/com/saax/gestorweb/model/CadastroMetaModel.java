@@ -7,17 +7,14 @@ package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
+import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.StatusMeta;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.saax.gestorweb.util.GestorException;
-import com.saax.gestorweb.util.GestorSession;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -30,34 +27,101 @@ import javax.persistence.EntityManager;
  */
 public class CadastroMetaModel {
 
-    /**
-     * Obtém e retorna a lista de departamentos ativos de uma data empresa <br>
-     *
-     * @param empresa
-     * @return
-     */
-    public List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
+    
+    // Classes do modelo acessórias acessadas por este model
+    private final UsuarioModel usuarioModel;
+    private final EmpresaModel empresaModel;
 
-        // validação de parâmetros
-        if (empresa == null) {
-            throw new InvalidParameterException("Parâmetro inválido: Empresa is null");
-        }
-
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        List<Departamento> departamentos = em.createNamedQuery("Departamento.findByEmpresaAtivo")
-                .setParameter("empresa", empresa)
-                .getResultList();
-
-        if (departamentos.isEmpty()) {
-            Logger.getLogger(CadastroMetaModel.class.getName()).log(Level.WARNING, "Não foram encontrados departamentos para empresa: {0}", empresa.getId());
-            throw new IllegalStateException("Não foram encontrados departamentos para empresa");
-        }
-
-        return departamentos;
+    public CadastroMetaModel() {
+        usuarioModel = new UsuarioModel();
+        empresaModel = new EmpresaModel();
+        
     }
 
-    public void criarNovaMeta(HierarquiaProjetoDetalhe categoria) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    /**
+     * Cria uma nova meta na categoria informada, com valores default
+     * @param categoria 
+     * @param usuarioLogado 
+     * @return  a meta criada
+     */
+    public Meta criarNovaMeta(HierarquiaProjetoDetalhe categoria, Usuario usuarioLogado) {
+        Meta meta = new Meta();
+        meta.setHierarquia(categoria);
+        meta.setDataHoraInclusao(LocalDateTime.now());
+        meta.setUsuarioInclusao(usuarioLogado);
+        meta.setStatus(StatusMeta.NAO_INICIADA);
+        return meta;
+        
+    }
+    
+    /**
+     * Listar todos os usuários ativos da mesma empresa do usuário logado
+     * Delega chamada ao model responsavel (UsuarioModel)
+     *
+     * @return
+     */
+    public List<Usuario> listarUsuariosEmpresa() {
+        return usuarioModel.listarUsuariosEmpresa();
+    }
+
+    /**
+     * Delega chamada ao model responsavel (EmpresaModel)
+     *
+     * @param usuarioLogado
+     * @return lista de EmpresaCliente
+     */
+    public List<EmpresaCliente> listarEmpresasCliente(Usuario usuarioLogado) {
+        return empresaModel.listarEmpresasCliente(usuarioLogado);
+    }
+
+    /**
+     * Delega chamada ao model responsavel (EmpresaModel)
+     * @param empresa
+     * @return 
+     */
+    public List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
+        return empresaModel.obterListaDepartamentosAtivos(empresa);
+    }
+
+  /**
+     * Persiste (Grava) uma meta
+     *
+     * @param meta
+     * @return a meta gravada se sucesso, null caso contrario
+     *
+     */
+    public Meta gravarMeta(Meta meta) {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        if (meta == null) {
+            throw new IllegalArgumentException("Meta NULA para persistencia");
+        }
+
+        try {
+
+            // so abre transação na gravacao da tarefa pai
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
+
+            if (meta.getId() == null) {
+                em.persist(meta);
+            } else {
+                em.merge(meta);
+            }
+
+            em.getTransaction().commit();
+
+        } catch (RuntimeException ex) {
+            // Caso a persistencia falhe, efetua rollback no banco
+            if (GestorEntityManagerProvider.getEntityManager().getTransaction().isActive()) {
+                GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
+            }
+            // propaga a exceção pra cima
+            throw ex;
+        }
+
+        return meta;
     }
 
 

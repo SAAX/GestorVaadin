@@ -2,6 +2,7 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
+import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
@@ -58,5 +59,7 @@ public interface CadastroTarefaViewListener {
     public void anexoAdicionado(File anexo);
 
     public void hierarquiaSelecionada(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe);
+
+    public void empresaSelecionada(Empresa empresa);
 
 }

@@ -9,7 +9,6 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorSession;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -28,6 +27,18 @@ import org.apache.commons.beanutils.BeanUtils;
  * @author Rodrigo
  */
 public class DashboardModel {
+
+    
+        // Classes do modelo acessórias acessadas por este model
+    private final UsuarioModel usuarioModel;
+    private final EmpresaModel empresaModel;
+
+    public DashboardModel() {
+        usuarioModel = new UsuarioModel();
+        empresaModel = new EmpresaModel();
+        
+    }
+
 
     /**
      * Obtém as tarefas sob responsabilidade do usuário logado
@@ -52,10 +63,8 @@ public class DashboardModel {
      * Listar todos os usuários ativos da mesma empresa do usuário logado
      *
      * @return
-     * @throws com.saax.gestorweb.util.GestorException
      */
-    public List<Usuario> listarUsuariosEmpresa() throws GestorException {
-        UsuarioModel usuarioModel = new UsuarioModel();
+    public List<Usuario> listarUsuariosEmpresa() {
         return usuarioModel.listarUsuariosEmpresa();
     }
 

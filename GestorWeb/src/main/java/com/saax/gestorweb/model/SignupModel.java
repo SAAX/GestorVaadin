@@ -9,7 +9,6 @@ import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.Cipher;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.saax.gestorweb.util.GestorException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,9 +42,8 @@ public class SignupModel {
      * @param cpf_cnpj CPF ou CNPJ da empresa
      * @param tipoPessoa Tipo da pessoa: Fisica / Juridica
      * @return true se a empresa está cadastrada
-     * @throws com.saax.gestorweb.util.GestorException
      */
-    public boolean verificaEmpresaExistente(String cpf_cnpj, char tipoPessoa) throws GestorException {
+    public boolean verificaEmpresaExistente(String cpf_cnpj, char tipoPessoa) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -55,7 +53,7 @@ public class SignupModel {
 
         if (tipoPessoa == 'J') {
             if (!FormatterUtil.validarCNPJ(cpf_cnpj)) {
-                throw new GestorException("CNPJ fora do formato correto (##.###.###/####-##): " + cpf_cnpj);
+                throw new RuntimeException("CNPJ fora do formato correto (##.###.###/####-##): " + cpf_cnpj);
             }
             
              List<Empresa> empresas = null;
@@ -68,7 +66,7 @@ public class SignupModel {
 
         } else if (tipoPessoa == 'F') {
             if (!FormatterUtil.validarCPF(cpf_cnpj)) {
-                throw new GestorException("CPF fora do formato correto (###.###.###-##): " + cpf_cnpj);
+                throw new RuntimeException("CPF fora do formato correto (###.###.###-##): " + cpf_cnpj);
             }
             Empresa e = (Empresa) em.createNamedQuery("Empresa.findByCpf")
                     .setParameter("cpf", cpf_cnpj)
@@ -77,7 +75,7 @@ public class SignupModel {
             return (e != null);
         } else {
 
-            throw new GestorException("Tipo Pessoa fora do formato correto (F/J)");
+            throw new RuntimeException("Tipo Pessoa fora do formato correto (F/J)");
 
         }
 
@@ -89,15 +87,14 @@ public class SignupModel {
      *
      * @param cnpj CNPJ da filial
      * @return true se a filial está cadastrada
-     * @throws com.saax.gestorweb.util.GestorException
      */
-    public boolean verificaFilialExistente(String cnpj) throws GestorException {
+    public boolean verificaFilialExistente(String cnpj) {
         if (StringUtils.isBlank(cnpj)) {
             return false;
         }
 
         if (!FormatterUtil.validarCNPJ(cnpj)) {
-            throw new GestorException("CNPJ fora do formato correto (##.###.###/####-##): " + cnpj);
+            throw new RuntimeException("CNPJ fora do formato correto (##.###.###/####-##): " + cnpj);
         }
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();

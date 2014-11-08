@@ -3,18 +3,23 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.vaadin.data.Property;
+import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.RichTextArea;
@@ -23,15 +28,25 @@ import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
+ * Pop-up Window do cadastro de Metas
+ * A visualização será em uma estrutura com:
+ * <br>
+ * <ol>
+ * <li>Informações Básicas</li>
+ * <li>Informações Adicionais e Descrição</li>
+ * <li>Tabela de Tarefas</li>
+ * </ol>
  *
- * Cria a view do cadastro de Metas
- * 
- * @author Rodrigo
+ *
+ * @author rodrigo
  */
 public class CadastroMetaView extends Window {
 
@@ -43,9 +58,27 @@ public class CadastroMetaView extends Window {
     // Este acesso se dá por uma interface para manter a abstração das camadas
     private CadastroMetaViewListener listener;
 
-    // componentes visuais da view (redundancia = on)
+    // lista com todos os campos que possuem validação
+    private final List<AbstractField> camposObrigatorios;
+
+    // -----------------------------------------------------------------------------------
+    // Bean Biding
+    // -----------------------------------------------------------------------------------
+    private BeanItem<Meta> metaBeanItem;
+    private FieldGroup metaFieldGroup;
+
+    // -----------------------------------------------------------------------------------
+    // Informações Básicas
+    // -----------------------------------------------------------------------------------
+
+    @PropertyId("empresa")
+    private ComboBox empresaCombo;
+
     @PropertyId("nome")
     private TextField nomeMetaTextField;
+
+    @PropertyId("hierarquia")
+    private ComboBox hierarquiaCombo;
 
     @PropertyId("dataInicio")
     private PopupDateField dataInicioDateField;
@@ -56,15 +89,13 @@ public class CadastroMetaView extends Window {
     @PropertyId("dataTermino")
     private PopupDateField dataTerminoDateField;
     
-    @PropertyId("descricao")
-    private RichTextArea descricaoMeta;
+    // -----------------------------------------------------------------------------------
+    // Informações Adicionais e Descrição
+    // -----------------------------------------------------------------------------------
     
-    @PropertyId("empresa")
-    private ComboBox empresaCombo;
-
     @PropertyId("usuarioResponsavel")
     private ComboBox responsavelCombo;
-    
+
     @PropertyId("empresaCliente")
     private ComboBox empresaClienteCombo;
     
@@ -74,18 +105,22 @@ public class CadastroMetaView extends Window {
     @PropertyId("centroCusto")
     private ComboBox centroCustoCombo;
     
-    @PropertyId("hierarquia")
-    private ComboBox hierarquiaCombo;
+    @PropertyId("descricao")
+    private RichTextArea descricaoMeta;
+    
+    // -----------------------------------------------------------------------------------
+    // Tabela de Tarefas
+    // -----------------------------------------------------------------------------------
 
+    private TreeTable tarefasTable;
     private Panel containerTabelaTarefas;
     
-    private TreeTable tarefasTable;
-    private BeanItem<Meta> metaBeanItem;
-    private FieldGroup metaFieldGroup;
-
-    public void setListener(CadastroMetaViewListener listener) {
-        this.listener = listener;
-    }
+    // -------------------------------------------------------------------------
+    // Barra de botoes inferior
+    // -------------------------------------------------------------------------
+    private Button gravarButton;
+    private Button cancelarButton;
+    private VerticalLayout containerCabecalhoVisivel;
 
     /**
      * Cria o pop-up de login, com campos para usuário e senha
@@ -94,20 +129,33 @@ public class CadastroMetaView extends Window {
     public CadastroMetaView() {
         super();
 
+        camposObrigatorios = new ArrayList();
 
         setCaption(mensagens.getString("CadastroMetaView.titulo"));
         setModal(true);
-        setWidth(800, Unit.PIXELS);
-        setHeight(500, Unit.PIXELS);
+        setWidth(1000, Unit.PIXELS);
+        setHeight(600, Unit.PIXELS);
 
         // Container principal, que armazenará todos os demais containeres 
         VerticalLayout containerPrincipal = buildContainerPrincipal();
+        containerPrincipal.setSpacing(true);
         setContent(containerPrincipal);
 
         center();
 
+        setValidatorsVisible(false);
     }
     
+    /**
+     * Configura o listener de eventos da view
+     *
+     * @param listener
+     */
+    public void setListener(CadastroMetaViewListener listener) {
+        this.listener = listener;
+    }
+
+
     /**
      * Bind (liga) a meta ao formulário
      *
@@ -123,11 +171,19 @@ public class CadastroMetaView extends Window {
         
     }
     
+    /**
+     * Obtem a tarefa ligada (binding) ao form
+     *
+     * @return
+     */
+    public Meta getMeta() {
+        return metaBeanItem.getBean();
+    }
+    
 
     /**
      * Constrói o container principal da view, que terá todos os outros
-     * containers dentro Layout: + containerPrincipal (V) + containerCabecalho -
-     * empresaCombo - nomeMetaTextField + containerSuperior + accordion
+     * containers dentro 
      *
      * @return containerPrincipal
      */
@@ -138,97 +194,108 @@ public class CadastroMetaView extends Window {
         containerPrincipal.setSpacing(true);
         containerPrincipal.setSizeFull(); // ocupar todo espaço disponível
 
-        HorizontalLayout containerCabecalho = new HorizontalLayout();
-        containerCabecalho.setSpacing(true);
-        containerCabecalho.setWidth("100%");// ocupar todo espaço disponível na largura
-
-        // combo de seleção da empresa
-        empresaCombo = new ComboBox("Empresa");
-        empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.empresaSelecionada((Empresa) event.getProperty().getValue());
-        });
-        containerCabecalho.addComponent(empresaCombo);
-        containerCabecalho.setExpandRatio(empresaCombo, 0);
-        
-
-        // TextField: Nome da meta 
-        nomeMetaTextField = new TextField("Nome da meta");
-        nomeMetaTextField.setWidth("100%");// ocupar todo espaço disponível na largura
-        containerCabecalho.addComponent(nomeMetaTextField);
-        containerCabecalho.setExpandRatio(nomeMetaTextField, 1);
-
-        containerPrincipal.addComponent(containerCabecalho);
-
-        // O container principal terá uma parte fixa, sempre visivel
-        // e outra em abas (accordion)
-        // parte superior, sempre visivel do form
-        VerticalLayout containerSuperior = buildContainerSuperior();
-        containerPrincipal.addComponent(containerSuperior);
+        // adiciona o cabecalho sempre visivel com informações básicas
+        containerPrincipal.addComponent(buildContainerCabecalho());
 
         // container do accordion: o accordiion será colocado abaixo do painel superior
         Accordion accordion = buildAccordion();
         containerPrincipal.addComponent(accordion);
 
+        containerPrincipal.addComponent(buildBarraBotoesInferior());
+        
         // configuração para que apenas o accordion expanda verticalmente, deixando o painel superior travado
-        containerPrincipal.setExpandRatio(containerCabecalho, 0);
-        containerPrincipal.setExpandRatio(containerSuperior, 0);
+        containerPrincipal.setExpandRatio(containerCabecalhoVisivel, 0);
         containerPrincipal.setExpandRatio(accordion, 1);
 
+        
         return containerPrincipal;
     }
 
     /**
-     * Constrói o container superior com layout abaixo
-     *
-     * Layout: + containerSuperior (V) + contaierCamposDeData (H) -
-     * dataInicioTextField - dataFimTextField - dataTerminoTextField
-     *
-     * @return containerSuperior
+     * Constroi o layout do cabeçalho sempre visivel da view
+     * onde vão os campos de informações básicas
+     * @return 
      */
-    private VerticalLayout buildContainerSuperior() {
+    private VerticalLayout buildContainerCabecalho() {
 
-        VerticalLayout containerSuperior = new VerticalLayout();
-        containerSuperior.setSizeUndefined();
+        // layout principal que sera retornado:
+        containerCabecalhoVisivel = new VerticalLayout();
+        containerCabecalhoVisivel.setWidth("100%");
 
-        // Container para armazenar os dois campos de data (interno ao superior)
-        HorizontalLayout contaierCamposDeData = new HorizontalLayout();
-        contaierCamposDeData.setSizeFull();
-        contaierCamposDeData.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
-        containerSuperior.addComponent(contaierCamposDeData); // adiciona o container de datas no superior
+        // ----------------------------------------------------------------------------------------------------------
+        // Linha 1: Empresa e Nome
+        // ----------------------------------------------------------------------------------------------------------
+        HorizontalLayout containerCabecalhoLinha1 = new HorizontalLayout();
+        containerCabecalhoLinha1.setSpacing(true);
+        containerCabecalhoLinha1.setWidth("100%");// ocupar todo espaço disponível na largura
 
+        // combo de seleção da empresa
+        empresaCombo = new ComboBox(mensagens.getString("CadastroMetaView.empresaCombo.label"));
+        empresaCombo.setInputPrompt(mensagens.getString("CadastroMetaView.empresaCombo.inputPrompt"));
+        empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.empresaSelecionada((Empresa) event.getProperty().getValue());
+        });
+        empresaCombo.addValidator(new BeanValidator(Meta.class, "empresa"));
+        camposObrigatorios.add(empresaCombo);
+        
+        containerCabecalhoLinha1.addComponent(empresaCombo);
+        containerCabecalhoLinha1.setExpandRatio(empresaCombo, 0);
+        
+        // TextField: Nome da meta 
+        nomeMetaTextField = new TextField(mensagens.getString("CadastroMetaView.nomeMetaTextField.caption"));
+        nomeMetaTextField.setWidth("100%");// ocupar todo espaço disponível na largura
+        nomeMetaTextField.setInputPrompt(mensagens.getString("CadastroMetaView.nomeMetaTextField.inputPrompt"));
+        nomeMetaTextField.setNullRepresentation("");
+        nomeMetaTextField.addValidator(new BeanValidator(Meta.class, "nome"));
+        camposObrigatorios.add(nomeMetaTextField);
+
+        containerCabecalhoLinha1.addComponent(nomeMetaTextField);
+        containerCabecalhoLinha1.setExpandRatio(nomeMetaTextField, 1);
+
+        containerCabecalhoVisivel.addComponent(containerCabecalhoLinha1);
+
+        // ----------------------------------------------------------------------------------------------------------
+        // Linha 2: Categoria e Datas
+        // ----------------------------------------------------------------------------------------------------------
+
+        HorizontalLayout containerCabecalhoLinha2 = new HorizontalLayout();
+        containerCabecalhoLinha2.setSizeUndefined();
+        containerCabecalhoLinha2.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
+
+        // Combo: Categoria
+        hierarquiaCombo = new ComboBox(mensagens.getString("CadastroMetaView.hierarquiaCombo.label"));
+        hierarquiaCombo.addValidator(new BeanValidator(Meta.class, "hierarquia"));
+        camposObrigatorios.add(hierarquiaCombo);
+        containerCabecalhoLinha2.addComponent(hierarquiaCombo);
+
+        
         // TextField: Data de Inicio 
         dataInicioDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataInicioTextField.label"));
-        dataInicioDateField.setWidth("100%");
         dataInicioDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
         dataInicioDateField.setConverter(new DateToLocalDateConverter());
         dataInicioDateField.addValidator(new BeanValidator(Meta.class, "dataInicio"));
-        contaierCamposDeData.addComponent(dataInicioDateField);
+        camposObrigatorios.add(dataInicioDateField);
+        containerCabecalhoLinha2.addComponent(dataInicioDateField);
         
         // TextField: Data Fim
         dataFimDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataFimTextField.label"));
-        dataFimDateField.setWidth("100%");
         dataFimDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
         dataFimDateField.setConverter(new DateToLocalDateConverter());
-        dataFimDateField.addValidator(new BeanValidator(Meta.class, "dataFim"));
-        contaierCamposDeData.addComponent(dataFimDateField);
+        containerCabecalhoLinha2.addComponent(dataFimDateField);
 
         // TextField: Data Termino
         dataTerminoDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataTerminoDateField.label"));
         dataTerminoDateField.setWidth("100%");
         dataTerminoDateField.setConverter(new DateToLocalDateConverter());
-        contaierCamposDeData.addComponent(dataFimDateField);
+        containerCabecalhoLinha2.addComponent(dataFimDateField);
+        
+        containerCabecalhoVisivel.addComponent(containerCabecalhoLinha2);
 
-        return containerSuperior;
+        return containerCabecalhoVisivel;
     }
 
     /**
-     * Constrói o container do accordion Layout: + accordion (Abas)
-     *
-     * + container1aAbaAccordion (H) + containerDetalhes (V) width = 30% -
-     * responsavelCombo - empresaClienteCombo - departamentoCombo -
-     * centroCustoCombo - horasEstimadasTextField - horasRealizadasTextField +
-     * containerDescricaoMeta (H) width = 70% - descricaoMeta +
-     * containerTabelaTarefas (Painel) - tarefasTable
+     * Constrói o container do accordion Layout
      *
      * @return accordion
      */
@@ -261,7 +328,7 @@ public class CadastroMetaView extends Window {
 
         descricaoMeta = new RichTextArea("");
         descricaoMeta.setSizeFull();
-        descricaoMeta.setNullRepresentation("Informe a descrição da meta");
+        descricaoMeta.setNullRepresentation("");
 
         containerDescricaoMeta.addComponent(descricaoMeta);
         container1aAbaAccordion.addComponent(containerDescricaoMeta);
@@ -307,7 +374,7 @@ public class CadastroMetaView extends Window {
         tarefasTable.setImmediate(true);
 
 
-        accordion.addTab(containerTabelaTarefas, "Tarefas / Sub", null);
+        accordion.addTab(containerTabelaTarefas, "Tarefas", null);
 
         return accordion;
     }
@@ -352,6 +419,48 @@ public class CadastroMetaView extends Window {
 
         return containerDetalhes;
 
+    }
+
+    /**
+     * Constrói e retorna a barra de botões superior
+     *
+     * @return
+     */
+    private Component buildBarraBotoesInferior() {
+
+        HorizontalLayout barraBotoesInferior = new HorizontalLayout();
+        barraBotoesInferior.setSizeUndefined();
+        barraBotoesInferior.setSpacing(true);
+
+        gravarButton = new Button(mensagens.getString("CadastroMetaView.gravarButton.caption"), (Button.ClickEvent event) -> {
+            try {
+                setValidatorsVisible(true);
+                metaFieldGroup.commit();
+                listener.gravarButtonClicked();
+            } catch (Exception ex) {
+                String mensagem = "";
+                if (ex.getCause() instanceof Validator.InvalidValueException) {
+                    Validator.InvalidValueException validationException = (Validator.InvalidValueException) ex.getCause();
+                    for (Validator.InvalidValueException cause : validationException.getCauses()) {
+                        mensagem += cause.getMessage() + "\n";
+                    }
+
+                } else {
+                    mensagem = ex.getLocalizedMessage();
+                }
+                Notification.show(mensagem, Notification.Type.ERROR_MESSAGE);
+                Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
+        barraBotoesInferior.addComponent(gravarButton);
+
+        cancelarButton = new Button(mensagens.getString("CadastroMetaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
+            listener.cancelarButtonClicked();
+        });
+        barraBotoesInferior.addComponent(cancelarButton);
+
+        return barraBotoesInferior;
     }
 
     /**
@@ -419,6 +528,32 @@ public class CadastroMetaView extends Window {
         return departamentoCombo;
     }
 
+    public ComboBox getResponsavelCombo() {
+        return responsavelCombo;
+    }
+
+    public ComboBox getEmpresaClienteCombo() {
+        return empresaClienteCombo;
+    }
+
+    /**
+     * Ocultar ou exibir validações
+     *
+     * @param visible
+     */
+    public void setValidatorsVisible(boolean visible) {
+        camposObrigatorios.stream().forEach((campo) -> {
+            campo.setValidationVisible(visible);
+        });
+    }
+
+    public ComboBox getHierarquiaCombo() {
+        return hierarquiaCombo;
+    }
+
+    
+    
+    
     
 
     

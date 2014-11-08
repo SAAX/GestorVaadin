@@ -138,6 +138,7 @@ public class Meta implements Serializable {
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
 
+    @NotNull(message = "Informe a categoria")
     @JoinColumn(name = "idhierarquiaprojetodetalhe", referencedColumnName = "idhierarquiaprojetodetalhe")
     @ManyToOne(optional = false)
     private HierarquiaProjetoDetalhe hierarquia;

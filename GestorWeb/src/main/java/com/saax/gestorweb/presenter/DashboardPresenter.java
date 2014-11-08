@@ -1,6 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.CadastroMetaModel;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 
 import com.saax.gestorweb.model.DashboardModel;
@@ -10,13 +11,12 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
-import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
@@ -25,8 +25,8 @@ import com.saax.gestorweb.view.DashboardViewListenter;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.data.Item;
 import com.saax.gestorweb.util.GestorSession;
-import com.vaadin.data.Property;
-import com.vaadin.server.Sizeable.Unit;
+import com.saax.gestorweb.view.CadastroMetaCallBackListener;
+import com.saax.gestorweb.view.CadastroMetaView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
@@ -46,9 +46,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -59,7 +56,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class DashboardPresenter implements DashboardViewListenter, CadastroTarefaCallBackListener, Serializable {
+public class DashboardPresenter implements DashboardViewListenter, CadastroTarefaCallBackListener, CadastroMetaCallBackListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient DashBoardView view;
@@ -241,12 +238,26 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
 
     private void criarNova(HierarquiaProjetoDetalhe categoria) {
 
-        if (categoria.getNivel() == 2) {
+        if (categoria.getNivel() == 1) {
+            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new CadastroMetaModel(), new CadastroMetaView());
+            //presenter.setCallBackListener(this);
+            presenter.criarNovaMeta(categoria);
+        } else if (categoria.getNivel() == 2) {
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
             presenter.setCallBackListener(this);
             presenter.criarNovaTarefa(categoria);
         }
 
+    }
+
+    @Override
+    public void cadastroMetaConcluido(Meta metaCriada) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void edicaoMetaConcluida(Meta meta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     // enumeracao do tipo de pesquisa
@@ -268,7 +279,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         this.view = view;
 
         view.setListener(this);
-        
+
         usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
     }
@@ -297,48 +308,43 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
      */
     public void carregarFiltrosPesquisa() {
 
-        try {
+        List<Usuario> usuarios = model.listarUsuariosEmpresa();
+        for (Usuario usuario : usuarios) {
+            view.getFiltroUsuarioResponsavelOptionGroup().addItem(usuario);
+            view.getFiltroUsuarioResponsavelOptionGroup().setItemCaption(usuario, usuario.getNome());
 
-            List<Usuario> usuarios = model.listarUsuariosEmpresa();
-            for (Usuario usuario : usuarios) {
-                view.getFiltroUsuarioResponsavelOptionGroup().addItem(usuario);
-                view.getFiltroUsuarioResponsavelOptionGroup().setItemCaption(usuario, usuario.getNome());
+            view.getFiltroUsuarioSolicitanteOptionGroup().addItem(usuario);
+            view.getFiltroUsuarioSolicitanteOptionGroup().setItemCaption(usuario, usuario.getNome());
 
-                view.getFiltroUsuarioSolicitanteOptionGroup().addItem(usuario);
-                view.getFiltroUsuarioSolicitanteOptionGroup().setItemCaption(usuario, usuario.getNome());
+            view.getFiltroUsuarioParticipanteOptionGroup().addItem(usuario);
+            view.getFiltroUsuarioParticipanteOptionGroup().setItemCaption(usuario, usuario.getNome());
 
-                view.getFiltroUsuarioParticipanteOptionGroup().addItem(usuario);
-                view.getFiltroUsuarioParticipanteOptionGroup().setItemCaption(usuario, usuario.getNome());
-
-            }
-
-            EmpresaModel empresaModel = new EmpresaModel();
-            List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(usuarioLogado);
-            for (Empresa empresa : empresas) {
-
-                view.getFiltroEmpresaOptionGroup().addItem(empresa);
-                view.getFiltroEmpresaOptionGroup().setItemCaption(empresa, empresa.getNome());
-
-                for (FilialEmpresa filial : empresa.getFiliais()) {
-                    view.getFiltroEmpresaOptionGroup().addItem(filial);
-                    view.getFiltroEmpresaOptionGroup().setItemCaption(filial, "Filial: " + filial.getNome());
-
-                }
-            }
-
-            for (ProjecaoTarefa projecao : ProjecaoTarefa.values()) {
-                view.getFiltroProjecaoOptionGroup().addItem(projecao);
-                view.getFiltroProjecaoOptionGroup().setItemCaption(projecao, projecao.toString());
-            }
-
-            view.getPermutacaoPesquisaOptionGroup().addItem(TipoPesquisa.EXCLUSIVA_E);
-            view.getPermutacaoPesquisaOptionGroup().setItemCaption(TipoPesquisa.EXCLUSIVA_E, "Todos os filtros");
-            view.getPermutacaoPesquisaOptionGroup().addItem(TipoPesquisa.INCLUSIVA_OU);
-            view.getPermutacaoPesquisaOptionGroup().setItemCaption(TipoPesquisa.INCLUSIVA_OU, "Pelo menos um filtro");
-
-        } catch (GestorException ex) {
-            Logger.getLogger(DashboardPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        EmpresaModel empresaModel = new EmpresaModel();
+        List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(usuarioLogado);
+        for (Empresa empresa : empresas) {
+
+            view.getFiltroEmpresaOptionGroup().addItem(empresa);
+            view.getFiltroEmpresaOptionGroup().setItemCaption(empresa, empresa.getNome());
+
+            for (FilialEmpresa filial : empresa.getFiliais()) {
+                view.getFiltroEmpresaOptionGroup().addItem(filial);
+                view.getFiltroEmpresaOptionGroup().setItemCaption(filial, "Filial: " + filial.getNome());
+
+            }
+        }
+
+        for (ProjecaoTarefa projecao : ProjecaoTarefa.values()) {
+            view.getFiltroProjecaoOptionGroup().addItem(projecao);
+            view.getFiltroProjecaoOptionGroup().setItemCaption(projecao, projecao.toString());
+        }
+
+        view.getPermutacaoPesquisaOptionGroup().addItem(TipoPesquisa.EXCLUSIVA_E);
+        view.getPermutacaoPesquisaOptionGroup().setItemCaption(TipoPesquisa.EXCLUSIVA_E, "Todos os filtros");
+        view.getPermutacaoPesquisaOptionGroup().addItem(TipoPesquisa.INCLUSIVA_OU);
+        view.getPermutacaoPesquisaOptionGroup().setItemCaption(TipoPesquisa.INCLUSIVA_OU, "Pelo menos um filtro");
+
     }
 
     /**

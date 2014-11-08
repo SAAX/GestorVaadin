@@ -21,7 +21,6 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
@@ -36,8 +35,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -45,42 +42,37 @@ import javax.persistence.EntityManager;
  * @author rodrigo
  */
 public class CadastroTarefaModel {
+    
+    // Classes do modelo acessórias acessadas por este model
+    private final UsuarioModel usuarioModel;
+    private final EmpresaModel empresaModel;
 
+    public CadastroTarefaModel() {
+        usuarioModel = new UsuarioModel();
+        empresaModel = new EmpresaModel();
+        
+    }
+
+    
+    
+    
     /**
      * Listar todos os usuários ativos da mesma empresa do usuário logado
      *
      * @return
-     * @throws com.saax.gestorweb.util.GestorException
      */
-    public List<Usuario> listarUsuariosEmpresa() throws GestorException {
-        UsuarioModel usuarioModel = new UsuarioModel();
+    public List<Usuario> listarUsuariosEmpresa() {
         return usuarioModel.listarUsuariosEmpresa();
     }
 
     /**
      * Lista e retorna todos os clientes de todas as empresas de usuario logado
      *
+     * @param usuarioLogado
      * @return
      */
     public List<EmpresaCliente> listarEmpresasCliente(Usuario usuarioLogado) {
-
-        List<EmpresaCliente> clientes = new ArrayList<>();
-
-        EmpresaModel empresaModel = new EmpresaModel();
-
-        // obtem as coligadas a empresa do usuario logado
-        for (Empresa empresa : empresaModel.listarEmpresasParaSelecao(usuarioLogado)) {
-            // obtem os clientes destas empresas
-            for (EmpresaCliente cliente : empresa.getClientes()) {
-                // verifica se o cliente é ativo e adiciona na lista de retorno
-                if (cliente.getAtiva()) {
-                    clientes.add(cliente);
-                }
-            }
-        }
-
-        return clientes;
-
+        return empresaModel.listarEmpresasCliente(usuarioLogado);
     }
 
     /**
@@ -556,6 +548,10 @@ public class CadastroTarefaModel {
         }
 
         return categoriasPossiveis;
+    }
+
+    public List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
+        return empresaModel.obterListaDepartamentosAtivos(empresa);
     }
 
 }

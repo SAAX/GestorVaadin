@@ -9,33 +9,20 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.Tree;
-
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
 import org.vaadin.chatbox.ChatBox;
 import org.vaadin.chatbox.SharedChat;
+import org.vaadin.chatbox.client.ChatLine;
 import org.vaadin.chatbox.client.ChatUser;
 
-import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  *
@@ -59,7 +46,7 @@ public class ChatView extends Window{
     private TextArea textoEnviar;
     private TextArea historico;
     
-    private static SharedChat chat= new SharedChat();
+    public SharedChat chat;
     
     
 
@@ -70,12 +57,12 @@ public class ChatView extends Window{
     
     
     /**
-     * Cria o pop-up de login, com campos para usuÃƒÆ’Ã‚Â¡rio e senha
+     * Cria o pop-up do Chat
      *
      */
     public ChatView() {
         super();
-
+        
         setCaption(mensagens.getString("ChatView.titulo"));
         setModal(true);
         setWidth(800, Unit.PIXELS);
@@ -87,10 +74,7 @@ public class ChatView extends Window{
         container.setMargin(true);
         setContent(container);
         
-        
         HorizontalLayout hlayout = new HorizontalLayout();
-        
-        
         
         // Have a horizontal split panel as its content
         HorizontalSplitPanel hsplit = new HorizontalSplitPanel();
@@ -100,14 +84,15 @@ public class ChatView extends Window{
         hsplit.setFirstComponent(containerTabelaUsuarios());
         hsplit.getFirstComponent().setWidth("300px");
         // A static variable so that everybody gets the same instance.
+        
+        chat = new SharedChat();
         ChatBox cb = new ChatBox(chat);
-        
-        
+     
         usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
         ChatUser user = ChatUser.newUser(usuarioLogado.getNome());
         cb.setUser(user);
         cb.setWidth("500px");
-        
+                
         hsplit.setSecondComponent(cb);
         hsplit.getSecondComponent().setWidth("500px");
         
@@ -115,6 +100,7 @@ public class ChatView extends Window{
         hlayout.addComponent(panel);
         container.addComponent(hlayout);
         
+       
         
       
     }
@@ -138,11 +124,6 @@ public class ChatView extends Window{
         
         usuariosTable.setImmediate(true);
         usuariosTable.setSelectable(true);
-        
-
-        
-       
-         
         
         usuarios.addComponent(containerTabelaUsuarios);
         

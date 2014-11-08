@@ -28,6 +28,7 @@ import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.ChatView;
+import com.saax.gestorweb.view.ChatViewListener;
 import com.saax.gestorweb.view.dashboard.PopUpEvolucaoStatusView;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -406,10 +407,10 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         //o presenter liga model e view
         ChatPresenter chatPresenter;
         chatPresenter = new ChatPresenter(chatModel, chatView);
-        chatPresenter.carregarTabela(view.getTarefa());
+       
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(chatView);
-        chatPresenter.open();
+        chatPresenter.open(view.getTarefa());
     }
 
     @Override

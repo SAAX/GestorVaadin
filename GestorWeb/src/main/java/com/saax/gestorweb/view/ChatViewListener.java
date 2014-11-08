@@ -5,6 +5,8 @@
  */
 package com.saax.gestorweb.view;
 
+import org.vaadin.chatbox.client.ChatLine;
+
 /**
  *Interface com todos os eventos disparados pela janela de chat
  * @author Fernando
@@ -12,7 +14,6 @@ package com.saax.gestorweb.view;
 public interface ChatViewListener {
     
      public void cancelButtonClicked();
-     public void mensagemButtonClicked();
      
     
 }

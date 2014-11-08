@@ -72,10 +72,6 @@ public class PaginaInicialView extends HorizontalLayout {
             listener.signUpButtonClicked();
         });
         
-           // botão para Chat
-        final Button chatButton = new Button(mensagens.getString("PaginaInicialView.chatButton.label"), (Button.ClickEvent event) -> {
-            listener.chatButtonClicked();
-        });
 
         // botão para Login
         final Button loginButton = new Button(mensagens.getString("PaginaInicialView.loginButton.label"), (Button.ClickEvent event) -> {
@@ -98,7 +94,6 @@ public class PaginaInicialView extends HorizontalLayout {
         containerDireito.setComponentAlignment(barraBotoes, Alignment.MIDDLE_CENTER);
 
         barraBotoes.addComponent(signUpButton);
-        barraBotoes.addComponent(chatButton);
         barraBotoes.addComponent(loginButton);
         barraBotoes.addComponent(previewDashboardButton);
         

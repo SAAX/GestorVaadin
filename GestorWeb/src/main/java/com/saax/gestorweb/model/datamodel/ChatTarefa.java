@@ -35,8 +35,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ChatTarefa.findAll", query = "SELECT c FROM ChatTarefa c"),
     @NamedQuery(name = "ChatTarefa.findByIdchat", query = "SELECT c FROM ChatTarefa c WHERE c.idchat = :idchat"),
+    @NamedQuery(name = "ChatTarefa.findByTarefa", query = "SELECT c FROM ChatTarefa c WHERE c.tarefa = :tarefa"),
     @NamedQuery(name = "ChatTarefa.findByMensagem", query = "SELECT c FROM ChatTarefa c WHERE c.mensagem = :mensagem"),
     @NamedQuery(name = "ChatTarefa.findByDatahorainclusao", query = "SELECT c FROM ChatTarefa c WHERE c.datahorainclusao = :datahorainclusao")})
+ 
 public class ChatTarefa implements Serializable {
     
        

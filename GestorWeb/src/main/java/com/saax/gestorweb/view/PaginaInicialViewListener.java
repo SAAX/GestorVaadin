@@ -9,6 +9,5 @@ public interface PaginaInicialViewListener {
    
     void loginButtonClicked();
     void signUpButtonClicked();
-    void chatButtonClicked();
     
 }

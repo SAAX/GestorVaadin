@@ -22,7 +22,6 @@ import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
-import com.saax.gestorweb.util.GestorException;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
@@ -205,7 +204,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         carregaComboResponsavel();
         carregaComboParticipante();
         carregaComboEmpresaCliente();
-        carregaComboDepartamento();
         carregaComboCentroCusto();
         setPopUpEvolucaoStatusEAndamento(tarefa);
 
@@ -294,15 +292,10 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
      */
     private void carregaComboResponsavel() {
         ComboBox responsavel = view.getUsuarioResponsavelCombo();
-        try {
-            for (Usuario usuario : model.listarUsuariosEmpresa()) {
-                responsavel.addItem(usuario);
-                responsavel.setItemCaption(usuario, usuario.getNome());
+        for (Usuario usuario : model.listarUsuariosEmpresa()) {
+            responsavel.addItem(usuario);
+            responsavel.setItemCaption(usuario, usuario.getNome());
 
-            }
-        } catch (GestorException ex) {
-            Logger.getLogger(CadastroTarefaPresenter.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -312,15 +305,10 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
      */
     private void carregaComboParticipante() {
         ComboBox participante = view.getParticipantesCombo();
-        try {
-            for (Usuario usuario : model.listarUsuariosEmpresa()) {
-                participante.addItem(usuario);
-                participante.setItemCaption(usuario, usuario.getNome());
+        for (Usuario usuario : model.listarUsuariosEmpresa()) {
+            participante.addItem(usuario);
+            participante.setItemCaption(usuario, usuario.getNome());
 
-            }
-        } catch (GestorException ex) {
-            Logger.getLogger(CadastroTarefaPresenter.class
-                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -361,12 +349,13 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
     }
 
     /**
-     * Carrega o combo de departamentos
+     * Carrega o combo de departamentos com os departamentos ativos da empresa
+     * logada
      */
-    private void carregaComboDepartamento() {
+    private void carregaComboDepartamento(Empresa empresa) {
 
         ComboBox departamento = view.getDepartamentoCombo();
-        for (Departamento depto : model.listDepartamentos()) {
+        for (Departamento depto : model.obterListaDepartamentosAtivos(empresa)) {
             departamento.addItem(depto);
             departamento.setItemCaption(depto, depto.getDepartamento());
         }
@@ -413,8 +402,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         //Cria o pop up para registrar a conta (model e viw)
         ChatModel chatModel = new ChatModel();
         ChatView chatView = new ChatView();
-        
-       //o presenter liga model e view
+
+        //o presenter liga model e view
         ChatPresenter chatPresenter;
         chatPresenter = new ChatPresenter(chatModel, chatView);
         chatPresenter.carregarTabela(view.getTarefa());
@@ -728,6 +717,11 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
             }
 
         }
+    }
+
+    @Override
+    public void empresaSelecionada(Empresa empresa) {
+        carregaComboDepartamento(empresa);
     }
 
 }

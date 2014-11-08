@@ -3,6 +3,7 @@ package com.saax.gestorweb.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.text.MaskFormatter;
 import org.apache.commons.lang3.StringUtils;
@@ -85,6 +86,20 @@ public class FormatterUtil {
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         return date.format(formatter); 
+        
+    }
+    
+    /**
+     * Formata uma data e hora para o padrão da localidade do usuario logado
+     * @param dateTime
+     * @return 
+     */
+    public static String formatDateTime(LocalDateTime dateTime){
+        if (dateTime == null){
+            return "";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return dateTime.format(formatter); 
         
     }
     

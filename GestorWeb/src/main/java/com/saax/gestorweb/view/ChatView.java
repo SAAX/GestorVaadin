@@ -6,6 +6,8 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.ChatSingleton;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -20,7 +22,6 @@ import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
 import org.vaadin.chatbox.ChatBox;
 import org.vaadin.chatbox.SharedChat;
-import org.vaadin.chatbox.client.ChatLine;
 import org.vaadin.chatbox.client.ChatUser;
 
 
@@ -46,7 +47,7 @@ public class ChatView extends Window{
     private TextArea textoEnviar;
     private TextArea historico;
     
-    public SharedChat chat;
+    private final HorizontalSplitPanel hsplit;
     
     
 
@@ -74,10 +75,12 @@ public class ChatView extends Window{
         container.setMargin(true);
         setContent(container);
         
+        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        
         HorizontalLayout hlayout = new HorizontalLayout();
         
         // Have a horizontal split panel as its content
-        HorizontalSplitPanel hsplit = new HorizontalSplitPanel();
+        hsplit = new HorizontalSplitPanel();
         hsplit.setWidth("800px");
         
         // Put a component in the left panel
@@ -85,26 +88,24 @@ public class ChatView extends Window{
         hsplit.getFirstComponent().setWidth("300px");
         // A static variable so that everybody gets the same instance.
         
-        chat = new SharedChat();
+        panel.setContent(hsplit);
+        hlayout.addComponent(panel);
+        container.addComponent(hlayout);
+        
+    }
+
+    public void configurarChat(Tarefa tarefa, SharedChat chat){
+        
         ChatBox cb = new ChatBox(chat);
      
-        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
-        ChatUser user = ChatUser.newUser(usuarioLogado.getNome());
+        ChatUser user = new ChatUser(ChatSingleton.getInstance().buildID(usuarioLogado, tarefa, false), usuarioLogado.getNome(), "user1");
         cb.setUser(user);
         cb.setWidth("500px");
                 
         hsplit.setSecondComponent(cb);
         hsplit.getSecondComponent().setWidth("500px");
         
-        panel.setContent(hsplit);
-        hlayout.addComponent(panel);
-        container.addComponent(hlayout);
-        
-       
-        
-      
     }
-    
        
     
     

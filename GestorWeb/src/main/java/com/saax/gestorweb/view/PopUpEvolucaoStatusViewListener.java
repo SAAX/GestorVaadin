@@ -1,5 +1,5 @@
 
-package com.saax.gestorweb.view.dashboard;
+package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import org.vaadin.hene.popupbutton.PopupButton;

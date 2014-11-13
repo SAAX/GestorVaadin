@@ -7,24 +7,17 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatModel;
+import com.saax.gestorweb.model.ChatSingleton;
 import com.saax.gestorweb.model.datamodel.ChatTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.util.FormatterUtil;
-import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.ChatViewListener;
 import com.vaadin.ui.UI;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.EntityManager;
-import org.vaadin.chatbox.SharedChat;
-import org.vaadin.chatbox.SharedChat.ChatListener;
 import org.vaadin.chatbox.client.ChatLine;
-import org.vaadin.chatbox.client.ChatUser;
 
 /**
  * SignUP Presenter <br>
@@ -34,7 +27,7 @@ import org.vaadin.chatbox.client.ChatUser;
  *
  * @author Rodrigo
  */
-public class ChatPresenter implements ChatViewListener, ChatListener {
+public class ChatPresenter implements ChatViewListener {
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -62,8 +55,9 @@ public class ChatPresenter implements ChatViewListener, ChatListener {
 
     public void open(Tarefa tarefa) {
 
+        view.configurarChat(tarefa, ChatSingleton.getInstance().getChat(tarefa));
+        ChatSingleton.getInstance().getChat(tarefa).addListener(ChatSingleton.getInstance());
         carregarTabela(tarefa);
-        carregarHistorico(tarefa, view.chat);
         this.tarefa = tarefa;
 
     }
@@ -77,57 +71,9 @@ public class ChatPresenter implements ChatViewListener, ChatListener {
 
     }
 
-    /**
-     * Carrega as informações para preenchimento do histórico
-     */
-    public void carregarHistorico(Tarefa tarefa, SharedChat chat) {
-
-        view.chat.removeListener(this);
-
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        List<ChatTarefa> mensagens = em.createNamedQuery("ChatTarefa.findByTarefa")
-                .setParameter("tarefa", tarefa)
-                .getResultList();
-
-        for (ChatTarefa mensagem : mensagens) {
-
-            ChatLine line = new ChatLine(mensagem.getUsuario().getNome() + ": " + mensagem.getMensagem() + " - "
-                    + FormatterUtil.formatDateTime(mensagem.getDataHoraInclusao()));
-            chat.addLine(line);
-        }
-
-       view.chat.addListener(this);
-
-    }
-
     @Override
     public void cancelButtonClicked() {
         ((GestorMDI) UI.getCurrent()).logout();
-    }
-
-    @Override
-    public void lineAdded(ChatLine line) {
-        
-        // ignora linhas de historico
-        if (line.getUser()==null){
-            return ;
-        }
-        
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-
-        if (!em.getTransaction().isActive()) {
-            em.getTransaction().begin();
-        }
-
-        ChatTarefa novaMensagem = new ChatTarefa();
-        novaMensagem.setMensagem(line.getText());
-        novaMensagem.setUsuario(usuarioLogado);
-        novaMensagem.setTarefa(tarefa);
-        novaMensagem.setDataHoraInclusao(LocalDateTime.now());
-        em.persist(novaMensagem);
-
-        em.getTransaction().commit();
-
     }
 
 }

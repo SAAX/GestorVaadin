@@ -473,6 +473,7 @@ public class SignupPresenter implements SignupViewListener {
 
         String nomeColigada = view.getNomeColigadaTextField().getValue();
         view.getCnpjColigadaTextField().commit(); // Veja se dá certo
+        view.getCnpjColigadaTextField().setValue("teste");
         String cnpjColigada = view.getCnpjColigadaTextField().getValue();
 
         System.out.println("cnpj: " + cnpjColigada);

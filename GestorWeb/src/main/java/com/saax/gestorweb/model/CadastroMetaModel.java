@@ -5,11 +5,13 @@
  */
 package com.saax.gestorweb.model;
 
+import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.PrioridadeMeta;
 import com.saax.gestorweb.model.datamodel.StatusMeta;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -48,8 +50,10 @@ public class CadastroMetaModel {
         Meta meta = new Meta();
         meta.setHierarquia(categoria);
         meta.setDataHoraInclusao(LocalDateTime.now());
+        meta.setUsuarioSolicitante(usuarioLogado);
         meta.setUsuarioInclusao(usuarioLogado);
         meta.setStatus(StatusMeta.NAO_INICIADA);
+        meta.setPrioridade(PrioridadeMeta.ALTA);
         return meta;
         
     }
@@ -81,6 +85,15 @@ public class CadastroMetaModel {
      */
     public List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
         return empresaModel.obterListaDepartamentosAtivos(empresa);
+    }
+    
+    /**
+     * Delega chamada ao model responsavel (EmpresaModel)
+     * @param empresa
+     * @return 
+     */
+    public List<CentroCusto> obterListaCentroCustosAtivos(Empresa empresa) {
+        return empresaModel.obterListaCentroCustosAtivos(empresa);
     }
 
   /**

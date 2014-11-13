@@ -267,7 +267,7 @@ public class Meta implements Serializable {
      * @param dataFim the dataFim to set
      */
     public void setDataFim(LocalDate dataFim) {
-        this.dataFim = dataFim;
+       this.dataFim = dataFim;
     }
 
     /**

@@ -5,16 +5,11 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.data.validator.StringLengthValidator;
-import com.vaadin.event.FieldEvents;
-import com.vaadin.event.FieldEvents.TextChangeEvent;
-import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.server.UserError;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
@@ -22,15 +17,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import javax.swing.JFormattedTextField;
-import javax.swing.text.DefaultFormatter;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.MaskFormatter;
-import javax.swing.text.NumberFormatter;
 import org.vaadin.addons.maskedtextfield.MaskedTextField;
 
 /**
@@ -778,7 +765,7 @@ public class SignupView extends Window {
     /**
      * @return the cnpjTextField
      */
-    public TextField getCnpjCpfTextField() {
+    public MaskedTextField getCnpjCpfTextField() {
         return cnpjCpfTextField;
     }
 
@@ -933,7 +920,7 @@ public class SignupView extends Window {
      /**
      * @return the cnpjFilialTextField
      */
-    public TextField getCnpjFilialTextField() {
+    public MaskedTextField getCnpjFilialTextField() {
         return cnpjFilialTextField;
     }
 

@@ -1,5 +1,6 @@
 package com.saax.gestorweb.model;
 
+import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
@@ -94,6 +95,32 @@ public class EmpresaModel {
         }
 
         return departamentos;
+    }
+    
+    /**
+     * Obtém e retorna a lista de centro de custos ativos de uma data empresa <br>
+     *
+     * @param empresa
+     * @return
+     */
+    public List<CentroCusto> obterListaCentroCustosAtivos(Empresa empresa) {
+
+        // validação de parâmetros
+        if (empresa == null) {
+            throw new InvalidParameterException("Parâmetro inválido: Empresa is null");
+        }
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        List<CentroCusto> centroCustos = em.createNamedQuery("CentroCusto.findByEmpresaAtivo")
+                .setParameter("empresa", empresa)
+                .getResultList();
+
+        if (centroCustos.isEmpty()) {
+            Logger.getLogger(CadastroMetaModel.class.getName()).log(Level.WARNING, "Não foram encontrados centros de custos para empresa: {0}", empresa.getId());
+            throw new IllegalStateException("Não foram encontrados departamentos para empresa");
+        }
+
+        return centroCustos;
     }
 
 }

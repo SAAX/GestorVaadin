@@ -240,7 +240,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
 
         if (categoria.getNivel() == 1) {
             CadastroMetaPresenter presenter = new CadastroMetaPresenter(new CadastroMetaModel(), new CadastroMetaView());
-            //presenter.setCallBackListener(this);
+            presenter.setCallBackListener(this);
             presenter.criarNovaMeta(categoria);
         } else if (categoria.getNivel() == 2) {
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());

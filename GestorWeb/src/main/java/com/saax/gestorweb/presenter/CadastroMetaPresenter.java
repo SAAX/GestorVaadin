@@ -3,6 +3,7 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroMetaModel;
 import com.saax.gestorweb.model.EmpresaModel;
+import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
@@ -129,6 +130,24 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
         }
 
     }
+    
+    /**
+     * Carrega o combo de departamentos com os departamentos ativos da empresa
+     * logada
+     */
+    private void carregaComboCentroCusto(Empresa empresa) {
+
+        if (empresa != null) {
+            ComboBox centroCusto = view.getCentroCustoCombo();
+            for (CentroCusto cc : model.obterListaCentroCustosAtivos(empresa)) {
+                centroCusto.addItem(cc);
+                centroCusto.setItemCaption(cc, cc.getCentroCusto());
+            }
+        } else {
+            view.getCentroCustoCombo().setInputPrompt(mensagens.getString("CadastroMetaPresenter.departamentoCombo.avisoSelecionarEmpresa"));
+        }
+
+    }
 
     /**
      * Carrega o combo de responsáveis com todos os usuários ativos da mesma
@@ -163,6 +182,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
     @Override
     public void empresaSelecionada(Empresa empresa) {
         carregaComboDepartamento(empresa);
+        carregaComboCentroCusto(empresa);
     }
 
     /**

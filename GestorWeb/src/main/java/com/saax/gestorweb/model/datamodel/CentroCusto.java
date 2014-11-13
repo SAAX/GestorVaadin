@@ -32,6 +32,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "CentroCusto.findAll", query = "SELECT c FROM CentroCusto c"),
     @NamedQuery(name = "CentroCusto.findById", query = "SELECT c FROM CentroCusto c WHERE c.id = :id"),
     @NamedQuery(name = "CentroCusto.findByEmpresa", query = "SELECT c FROM CentroCusto c WHERE c.empresa = :empresa"),
+    @NamedQuery(name = "CentroCusto.findByEmpresaAtivo", query = "SELECT d FROM CentroCusto d WHERE d.ativo = true AND d.empresa = :empresa"),
     @NamedQuery(name = "CentroCusto.findByCentrocusto", query = "SELECT c FROM CentroCusto c WHERE c.centroCusto = :centrocusto"),
     @NamedQuery(name = "CentroCusto.findByAtivo", query = "SELECT c FROM CentroCusto c WHERE c.ativo = :ativo")})
 public class CentroCusto implements Serializable {

@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
@@ -501,6 +502,18 @@ public class CadastroMetaView extends Window {
             departamentoCombo.setItemCaption(departamento, departamento.getDepartamento());
         }
     }
+    
+    /**
+     * Carrega o combo de seleção de centro de Custo
+     *
+     * @param centro de Custos
+     */
+    public void carregarCentroCusto(List<CentroCusto> centroCustos) {
+        for (CentroCusto centroCusto : centroCustos) {
+            centroCustoCombo.addItem(centroCusto);
+            centroCustoCombo.setItemCaption(centroCusto, centroCusto.getCentroCusto());
+        }
+    }
 
     /**
      * Exibe uma mensagem no combo de departamentos
@@ -526,6 +539,10 @@ public class CadastroMetaView extends Window {
 
     public ComboBox getDepartamentoCombo() {
         return departamentoCombo;
+    }
+    
+    public ComboBox getCentroCustoCombo() {
+        return centroCustoCombo;
     }
 
     public ComboBox getResponsavelCombo() {

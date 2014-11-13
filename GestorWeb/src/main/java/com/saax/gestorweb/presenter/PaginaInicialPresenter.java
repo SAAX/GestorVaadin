@@ -1,11 +1,13 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.CadastroMetaModel;
 import com.saax.gestorweb.model.ChatModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.PaginaInicialModel;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.view.CadastroMetaView;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.PaginaInicialView;

@@ -124,6 +124,18 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         organizarHierarquiaTreeTable(lista);
 
     }
+    
+    /**
+     * Sobrecarga de organizarHierarquiaTreeTableMeta da meta(list)
+     *
+     * @param metaCriada
+     */
+    private void organizarHierarquiaTreeTableMeta(Meta metaCriada) {
+        List<Meta> lista = new ArrayList<>();
+        lista.add(metaCriada);
+       // organizarHierarquiaTreeTableMeta(lista);
+
+    }
 
     private Button buildButtonEditarTarefa(Tarefa tarefa, String caption) {
         Button link = new Button(caption);
@@ -134,6 +146,19 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
             presenter.setCallBackListener(callback);
             presenter.editar(tarefa);
+        });
+        return link;
+    }
+    
+    private Button buildButtonEditarMeta(Meta meta, String caption) {
+        Button link = new Button(caption);
+        link.setStyleName("link");
+        CadastroMetaCallBackListener callback = this;
+        link.addClickListener((Button.ClickEvent event) -> {
+            view.getMetasTable().setValue(meta);
+            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new CadastroMetaModel(), new CadastroMetaView());
+            presenter.setCallBackListener(callback);
+            presenter.editar(meta);
         });
         return link;
     }
@@ -252,7 +277,8 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
 
     @Override
     public void cadastroMetaConcluido(Meta metaCriada) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         adicionarMetaTable(metaCriada);
+        organizarHierarquiaTreeTableMeta(metaCriada);
     }
 
     @Override
@@ -435,7 +461,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
             }
         }
     }
-
+    
     /**
      * Adiciona a tarefa na tree table
      *
@@ -465,6 +491,40 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         for (Tarefa subTarefa : tarefa.getSubTarefas()) {
             adicionarTarefaTable(subTarefa);
         }
+
+    }
+    
+     /**
+     * Adiciona a meta na tree table
+     *
+     * @param meta
+     */
+    private void adicionarMetaTable(Meta meta) {
+
+        Object[] linha = new Object[]{
+            buildButtonEditarMeta(meta, meta.getGlobalID()),
+            buildButtonEditarMeta(meta, meta.getHierarquia().getCategoria()),
+            buildButtonEditarMeta(meta, meta.getNome()),
+            meta.getEmpresa().getNome()
+            + (meta.getFilialEmpresa() != null ? "/" + meta.getFilialEmpresa().getNome() : ""),
+            meta.getUsuarioSolicitante().getNome(),
+            meta.getUsuarioResponsavel().getNome(),
+            FormatterUtil.formatDate(meta.getDataInicio()),
+            FormatterUtil.formatDate(meta.getDataFim()),
+           
+           //buildPopUpEvolucaoStatusEAndamento(meta),
+           // meta.getProjecao().toString().charAt(0),
+            new Button("E"),
+            new Button("C")
+        };
+
+        view.getTarefasTable().addItem(linha, meta);
+
+        //Como a meta não possui sub... deixei comentado para posteriormente excluir
+        // se a tarefa possui subs, chama recursivamente
+        //for (Tarefa subTarefa : tarefa.getSubTarefas()) {
+        //    adicionarTarefaTable(subTarefa);
+        //}
 
     }
 

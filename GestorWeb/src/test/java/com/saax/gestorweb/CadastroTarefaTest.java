@@ -22,7 +22,7 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
-import com.saax.gestorweb.presenter.dashboard.PopUpEvolucaoStatusPresenter;
+import com.saax.gestorweb.presenter.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.DAOAleatorio;
 import com.saax.gestorweb.util.DateTimeConverters;

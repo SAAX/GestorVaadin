@@ -1,11 +1,11 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.CadastroTarefaModel;
-import com.saax.gestorweb.model.DashboardModel;
+import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
+import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -212,7 +212,6 @@ public class DashBoardView extends VerticalLayout {
                 listener.criarNovaTarefaViaTemplate();
             }
         });
-        
 
         MenuBar.MenuItem publicacoes = getMenuSuperior().addItem("<h3>Publicações</h3>", null, null);
 
@@ -688,8 +687,8 @@ public class DashBoardView extends VerticalLayout {
             public void valueChange(Property.ValueChangeEvent event) {
 
                 Usuario usuarioLogado = (Usuario) comboAlteraUsuarioLogado.getValue();
-                getSession().setAttribute("usuarioLogado", usuarioLogado);
-
+                GestorSession.setAttribute("usuarioLogado", usuarioLogado);
+                usuarioLogado.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
                 getListener().removerFiltrosPesquisa();
             }
         });
@@ -706,6 +705,4 @@ public class DashBoardView extends VerticalLayout {
         return criarViaTemplateMenuItem;
     }
 
-    
-    
 }

@@ -1,4 +1,4 @@
-package com.saax.gestorweb.view.dashboard;
+package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;

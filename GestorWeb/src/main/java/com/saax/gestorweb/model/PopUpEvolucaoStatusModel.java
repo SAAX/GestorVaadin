@@ -1,4 +1,4 @@
-package com.saax.gestorweb.model.dashboard;
+package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
 import com.saax.gestorweb.model.DashboardModel;

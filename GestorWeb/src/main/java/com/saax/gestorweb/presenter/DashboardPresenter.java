@@ -149,19 +149,6 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         return link;
     }
     
-    private Button buildButtonEditarMeta(Meta meta, String caption) {
-        Button link = new Button(caption);
-        link.setStyleName("link");
-        CadastroMetaCallBackListener callback = this;
-        link.addClickListener((Button.ClickEvent event) -> {
-            view.getMetasTable().setValue(meta);
-            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new CadastroMetaModel(), new CadastroMetaView());
-            presenter.setCallBackListener(callback);
-            presenter.editar(meta);
-        });
-        return link;
-    }
-
     private void atualizarTarefaTable(Tarefa tarefa) {
         Item it = view.getTarefasTable().getItem(tarefa);
 
@@ -501,9 +488,9 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     private void adicionarMetaTable(Meta meta) {
 
         Object[] linha = new Object[]{
-            buildButtonEditarMeta(meta, meta.getGlobalID()),
-            buildButtonEditarMeta(meta, meta.getHierarquia().getCategoria()),
-            buildButtonEditarMeta(meta, meta.getNome()),
+            meta.getGlobalID(),
+            meta.getHierarquia().getCategoria(),
+            meta.getNome(),
             meta.getEmpresa().getNome()
             + (meta.getFilialEmpresa() != null ? "/" + meta.getFilialEmpresa().getNome() : ""),
             meta.getUsuarioSolicitante().getNome(),

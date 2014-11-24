@@ -87,6 +87,7 @@ public class DashBoardView extends VerticalLayout {
     private HorizontalLayout abasContainer;
     private TabSheet painelAbas;
     private TreeTable tarefasTable;
+    private TreeTable metasTable;
 
     // rodapeContainer
     private HorizontalLayout rodapeContainer;
@@ -150,6 +151,43 @@ public class DashBoardView extends VerticalLayout {
         getTarefasTable().setImmediate(true);
 
         return getTarefasTable();
+
+    }
+    
+    private Table buildMetasTable() {
+
+        metasTable = new TreeTable();
+        getMetasTable().setWidth("100%");
+        getMetasTable().addContainerProperty("Cod", Button.class, "");
+        getMetasTable().setColumnWidth("Cod", 70);
+        getMetasTable().addContainerProperty("Título", Button.class, "");
+        getMetasTable().setColumnWidth("Título", 50);
+        getMetasTable().addContainerProperty("Nome", Button.class, "");
+        getMetasTable().setColumnWidth("Nome", 250);
+        getMetasTable().addContainerProperty("Empresa/Filial", String.class, "");
+        getMetasTable().setColumnWidth("Empresa/Filial", 200);
+        getMetasTable().addContainerProperty("Solicitante", String.class, "");
+        getMetasTable().setColumnWidth("Solicitante", 80);
+        getMetasTable().addContainerProperty("Responsável", String.class, "");
+        getMetasTable().setColumnWidth("Responsável", 80);
+        getMetasTable().addContainerProperty("Data Início", String.class, "");
+        getMetasTable().setColumnWidth("Data Início", 80);
+        getMetasTable().addContainerProperty("Data Fim", String.class, "");
+        getMetasTable().setColumnWidth("Data Fim", 80);
+        getMetasTable().addContainerProperty("Status", PopupButton.class, "");
+        getMetasTable().setColumnWidth("Status", 200);
+        getMetasTable().addContainerProperty("Projeção", Character.class, "");
+        getMetasTable().setColumnWidth("Proj.", 30);
+        getMetasTable().addContainerProperty("Email", Button.class, "");
+        getMetasTable().setColumnWidth("Email", 30);
+        getMetasTable().addContainerProperty("Chat", Button.class, "");
+        getMetasTable().setColumnWidth("Chat", 30);
+
+        getMetasTable().setPageLength(7);
+        getMetasTable().setSelectable(true);
+        getMetasTable().setImmediate(true);
+
+        return getMetasTable();
 
     }
 
@@ -347,7 +385,7 @@ public class DashBoardView extends VerticalLayout {
         getPainelAbas().setWidth("100%");
         getPainelAbas().setHeight("100%");
         getPainelAbas().addTab(buildTarefasTable(), "Tarefa");
-        getPainelAbas().addTab(new HorizontalLayout(), "Meta");
+        getPainelAbas().addTab(buildMetasTable(), "Meta");
         getPainelAbas().addTab(new HorizontalLayout(), "Publicações");
 
         getAbasContainer().addComponent(getPainelAbas());
@@ -475,6 +513,13 @@ public class DashBoardView extends VerticalLayout {
      */
     public TreeTable getTarefasTable() {
         return tarefasTable;
+    }
+    
+      /**
+     * @return the metasTable
+     */
+    public TreeTable getMetasTable() {
+        return metasTable;
     }
 
     public OptionGroup getFiltroProjecaoOptionGroup() {

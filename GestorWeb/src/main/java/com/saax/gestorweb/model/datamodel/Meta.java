@@ -20,6 +20,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -42,7 +43,18 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Meta.findByDatatermino", query = "SELECT m FROM Meta m WHERE m.dataTermino = :datatermino"),
 })
 public class Meta implements Serializable {
+/**
+     * Apresentação tratada do ID
+     */
+    @Transient
+    private String globalID;
 
+    public String getGlobalID() {
+        globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
+
+        return globalID;
+    }
+    
     private static long serialVersionUID = 1L;
 
     /**

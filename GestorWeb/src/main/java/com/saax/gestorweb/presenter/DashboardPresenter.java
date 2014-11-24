@@ -352,9 +352,6 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     @Override
     public void carregarListaTarefasUsuarioLogado() {
 
-        // Usuario logado
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
-
         List<Tarefa> listaTarefas = model.listarTarefas(usuarioLogado);
 
         exibirListaTarefas(listaTarefas);
@@ -366,11 +363,15 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
      */
     private void carregarListaTarefasPrincipais() {
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
-
         List<Tarefa> tarefasPrincipais = model.listarTarefasPrincipais(usuarioLogado);
 
-        view.setListaTarefasPrincipais(tarefasPrincipais);
+        view.getPrincipaisTarefasContainer().removeAllComponents();
+        for (Tarefa tarefa : tarefasPrincipais) {
+            Button tarefaButton = new Button(tarefa.getDescricao());
+            tarefaButton.setStyleName("v-button-link");
+            view.getPrincipaisTarefasContainer().addComponent(tarefaButton);
+        }
+
     }
 
     /**

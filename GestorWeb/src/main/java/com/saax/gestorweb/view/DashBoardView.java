@@ -355,15 +355,6 @@ public class DashBoardView extends VerticalLayout {
         return getAbasContainer();
     }
 
-    public void setListaTarefasPrincipais(List<Tarefa> tarefasPrincipais) {
-        getPrincipaisTarefasContainer().removeAllComponents();
-        for (Tarefa tarefa : tarefasPrincipais) {
-            Button tarefaButton = new Button(tarefa.getDescricao());
-            tarefaButton.setStyleName("v-button-link");
-            getPrincipaisTarefasContainer().addComponent(tarefaButton);
-        }
-    }
-
     private Component buildPaineisRodape() {
 
         rodapeContainer = new HorizontalLayout();

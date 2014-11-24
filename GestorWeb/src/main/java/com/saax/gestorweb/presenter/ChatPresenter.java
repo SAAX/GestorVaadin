@@ -6,9 +6,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.ChatModel;
-import com.saax.gestorweb.model.ChatSingleton;
-import com.saax.gestorweb.model.datamodel.ChatTarefa;
+import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
@@ -17,7 +15,6 @@ import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.ChatViewListener;
 import com.vaadin.ui.UI;
 import java.util.ResourceBundle;
-import org.vaadin.chatbox.client.ChatLine;
 
 /**
  * SignUP Presenter <br>
@@ -36,7 +33,7 @@ public class ChatPresenter implements ChatViewListener {
 
     // Todo presenter mantem acesso à view e ao model
     private final ChatView view;
-    private final ChatModel model;
+    private final ChatSingletonModel model;
     private Tarefa tarefa;
 
     /**
@@ -45,7 +42,7 @@ public class ChatPresenter implements ChatViewListener {
      * @param model
      * @param view
      */
-    public ChatPresenter(ChatModel model, ChatView view) {
+    public ChatPresenter(ChatSingletonModel model, ChatView view) {
 
         this.model = model;
         this.view = view;
@@ -55,8 +52,8 @@ public class ChatPresenter implements ChatViewListener {
 
     public void open(Tarefa tarefa) {
 
-        view.configurarChat(tarefa, ChatSingleton.getInstance().getChat(tarefa));
-        ChatSingleton.getInstance().getChat(tarefa).addListener(ChatSingleton.getInstance());
+        view.configurarChat(tarefa, ChatSingletonModel.getInstance().getChat(tarefa));
+        ChatSingletonModel.getInstance().getChat(tarefa).addListener(ChatSingletonModel.getInstance());
         carregarTabela(tarefa);
         this.tarefa = tarefa;
 

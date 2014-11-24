@@ -18,31 +18,27 @@ import org.vaadin.chatbox.client.ChatUser;
  *
  * @author Rodrigo
  */
-public class ChatSingleton implements SharedChat.ChatListener {
+public class ChatSingletonModel implements SharedChat.ChatListener {
 
-    private static ChatSingleton instance;
+    private static ChatSingletonModel instance;
     private final Map<Integer, SharedChat> chats;
-    private final Map<Integer, Usuario> usuarios;
-    private final Map<Integer, Tarefa> tarefas;
 
     /**
      * Construtor privado para garantir singularidade
      */
-    private ChatSingleton() {
+    private ChatSingletonModel() {
         chats = new HashMap<>();
-        usuarios = new HashMap<>();
-        tarefas = new HashMap<>();
     }
 
     /**
      * Cria a instancia do singleton, caso não exista, e retorna
      *
-     * @return a única instancia de ChatSingleton
+     * @return a única instancia de ChatSingletonModel
      */
-    public static ChatSingleton getInstance() {
+    public static ChatSingletonModel getInstance() {
 
         if (instance == null) {
-            instance = new ChatSingleton();
+            instance = new ChatSingletonModel();
         }
 
         return instance;
@@ -80,26 +76,16 @@ public class ChatSingleton implements SharedChat.ChatListener {
 
     private Tarefa getTarefa(String chatID) {
         Integer idTarefa = Integer.parseInt(chatID.split(":")[0]);
-        if (tarefas.containsKey(idTarefa)) {
-            return tarefas.get(idTarefa);
-        } else {
             EntityManager em = GestorEntityManagerProvider.getEntityManager();
             Tarefa tarefa = em.find(Tarefa.class, idTarefa);
-            tarefas.put(idTarefa, tarefa);
             return tarefa;
-        }
     }
 
     private Usuario getUsuario(String chatID) {
         Integer idUsuario = Integer.parseInt(chatID.split(":")[1]);
-        if (usuarios.containsKey(idUsuario)) {
-            return usuarios.get(idUsuario);
-        } else {
             EntityManager em = GestorEntityManagerProvider.getEntityManager();
             Usuario usuario = em.find(Usuario.class, idUsuario);
-            usuarios.put(idUsuario, usuario);
             return usuario;
-        }
     }
 
     private boolean getFlagHistorico(String chatID) {

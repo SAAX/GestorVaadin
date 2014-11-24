@@ -6,7 +6,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.ChatSingleton;
+import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
@@ -98,7 +98,7 @@ public class ChatView extends Window{
         
         ChatBox cb = new ChatBox(chat);
      
-        ChatUser user = new ChatUser(ChatSingleton.getInstance().buildID(usuarioLogado, tarefa, false), usuarioLogado.getNome(), "user1");
+        ChatUser user = new ChatUser(ChatSingletonModel.getInstance().buildID(usuarioLogado, tarefa, false), usuarioLogado.getNome(), "user1");
         cb.setUser(user);
         cb.setWidth("500px");
                 

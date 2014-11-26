@@ -568,7 +568,9 @@ public class CadastroMetaView extends Window {
         return hierarquiaCombo;
     }
 
-    
+    public void exibeTituloEdicao(Meta metapai) {
+        setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao"));
+    }
     
     
     

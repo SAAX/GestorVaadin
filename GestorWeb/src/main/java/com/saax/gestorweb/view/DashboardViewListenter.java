@@ -10,6 +10,7 @@ public interface DashboardViewListenter {
     void logout();
     void removerFiltrosPesquisa();
     void carregarListaTarefasUsuarioLogado();
+    void carregarListaMetasUsuarioLogado();
     void aplicarFiltroPesquisa();
     void criarNovaTarefaViaTemplate();
     void init();

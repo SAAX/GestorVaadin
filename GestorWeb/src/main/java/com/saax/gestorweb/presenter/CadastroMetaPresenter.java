@@ -228,5 +228,23 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    /**
+     * Abre o pop window do cadastro de metas para edição da meta informada
+     *
+     * @param tarefaToEdit
+     */
+    @Override
+    public void editar(Meta metaToEdit) {
+
+        view.exibeTituloEdicao(metaToEdit);
+
+        init(metaToEdit);
+
+        //view.getParticipantesContainer().addAll(metaToEdit.getParticipantes());
+        //view.getAnexoTarefaContainer().addAll(metaToEdit.getAnexos());
+        //view.getControleHorasContainer().addAll(metaToEdit.getApontamentos());
+        //view.getOrcamentoContainer().addAll(metaToEdit.getOrcamentos());
+
+    }
 
 }

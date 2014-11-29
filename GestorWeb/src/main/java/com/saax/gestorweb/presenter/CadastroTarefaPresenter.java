@@ -694,7 +694,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
     public void adicionarParticipante(Usuario usuario) {
         
         if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || usuarioLogado.equals(view.getUsuarioResponsavelCombo().getValue())  ){
-        Notification.show("Usuário Responsável/Solicitante não poderá ser adicionado como participante");
+        Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
         } else{
         ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
         view.getParticipantesContainer().addBean(participanteTarefa);

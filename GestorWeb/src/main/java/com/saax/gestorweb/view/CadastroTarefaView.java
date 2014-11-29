@@ -394,6 +394,9 @@ public class CadastroTarefaView extends Window {
         dataFimDateField = new PopupDateField(mensagens.getString("CadastroTarefaView.dataFimTextField.label"));
         dataFimDateField.setWidth("100%");
         dataFimDateField.setConverter(new DateToLocalDateConverter());
+        dataFimDateField.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.verificaDataFim(event);
+        });
 
         // Componente de aviso
 //        avisoButton = new Button(mensagens.getString("CadastroTarefaView.avisoButton.caption"), (Button.ClickEvent event) -> {
@@ -1112,7 +1115,7 @@ public class CadastroTarefaView extends Window {
     public PopupDateField getDataFimDateField() {
         return dataFimDateField;
     }
-
+    
     /**
      * @return the tipoRecorrenciaCombo
      */

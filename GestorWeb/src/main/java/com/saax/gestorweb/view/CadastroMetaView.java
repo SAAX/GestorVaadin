@@ -283,6 +283,9 @@ public class CadastroMetaView extends Window {
         dataFimDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
         dataFimDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
+        dataFimDateField.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.verificaDataFim(event);
+        });
 
         // TextField: Data Termino
         dataTerminoDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataTerminoDateField.label"));
@@ -572,7 +575,19 @@ public class CadastroMetaView extends Window {
         setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao"));
     }
     
-    
+    /**
+     * @return the dataInicioDateField
+     */
+    public PopupDateField getDataInicioDateField() {
+        return dataInicioDateField;
+    }
+
+    /**
+     * @return the dataFimDateField
+     */
+    public PopupDateField getDataFimDateField() {
+        return dataFimDateField;
+    }
     
 
     

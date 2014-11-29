@@ -35,12 +35,14 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -559,6 +561,17 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
     public void controleOrcamentoSwitched(Property.ValueChangeEvent event) {
         view.setAbaControleOrcamentoVisible((boolean) event.getProperty().getValue());
     }
+    
+     @Override
+    public void verificaDataFim(Property.ValueChangeEvent event) {
+        Date dtIni = view.getDataInicioDateField().getValue();
+        Date dtFim = view.getDataFimDateField().getValue();
+        if(dtFim.before(dtIni)){
+            Notification.show(mensagens.getString("Notificacao.DataFimPosteriorDataInicio"));
+            view.getDataFimDateField().setValue(dtIni);
+        }
+        
+    }
 
     /**
      * Configura um listener para ser chamado quando o cadastro for concluido
@@ -681,7 +694,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
         view.getParticipantesContainer().addBean(participanteTarefa);
         Tarefa tarefa = view.getTarefa();
-
+        
         if (tarefa.getParticipantes() == null) {
             tarefa.setParticipantes(new ArrayList<>());
         }

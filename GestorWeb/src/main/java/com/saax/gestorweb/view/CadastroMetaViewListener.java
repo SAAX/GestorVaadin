@@ -24,6 +24,5 @@ public interface CadastroMetaViewListener {
 
     public void hierarquiaSelecionada(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe);
     
-     public void verificaDataFim(Property.ValueChangeEvent event);
     
 }

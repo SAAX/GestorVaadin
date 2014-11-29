@@ -2,6 +2,7 @@ package com.saax.gestorweb.util;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -23,4 +24,20 @@ public class DateTimeConverters {
         Date res = Date.from(instant);
         return res;
     }
+    
+    
+    /**
+     * Converte Date para LocalDate
+     * @param date
+     * @return LocalDate ou null
+     */
+    public static LocalDate toLocalDate(Date date) {
+        if (date==null) return null;
+        
+        Instant instant = Instant.ofEpochMilli(date.getTime());
+        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();
+
+    }
+    
+    
 }

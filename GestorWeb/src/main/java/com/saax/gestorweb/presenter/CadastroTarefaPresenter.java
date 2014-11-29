@@ -562,16 +562,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         view.setAbaControleOrcamentoVisible((boolean) event.getProperty().getValue());
     }
     
-     @Override
-    public void verificaDataFim(Property.ValueChangeEvent event) {
-        Date dtIni = view.getDataInicioDateField().getValue();
-        Date dtFim = view.getDataFimDateField().getValue();
-        if(dtFim.before(dtIni)){
-            Notification.show(mensagens.getString("Notificacao.DataFimPosteriorDataInicio"));
-            view.getDataFimDateField().setValue(dtIni);
-        }
-        
-    }
+  
 
     /**
      * Configura um listener para ser chamado quando o cadastro for concluido

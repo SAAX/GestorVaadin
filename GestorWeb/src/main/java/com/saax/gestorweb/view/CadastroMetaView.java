@@ -4,12 +4,13 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
-import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
+import com.saax.gestorweb.view.validator.DataFimValidator;
+import com.saax.gestorweb.view.validator.DataInicioValidator;
 import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
@@ -283,9 +284,9 @@ public class CadastroMetaView extends Window {
         dataFimDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
         dataFimDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
-        dataFimDateField.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.verificaDataFim(event);
-        });
+
+        dataInicioDateField.addValidator(new DataInicioValidator(dataFimDateField, "Data Inicio"));
+        dataFimDateField.addValidator(new DataFimValidator(dataInicioDateField, "Data Fim"));
 
         // TextField: Data Termino
         dataTerminoDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataTerminoDateField.label"));
@@ -442,16 +443,9 @@ public class CadastroMetaView extends Window {
                 metaFieldGroup.commit();
                 listener.gravarButtonClicked();
             } catch (Exception ex) {
-                String mensagem = "";
-                if (ex.getCause() instanceof Validator.InvalidValueException) {
-                    Validator.InvalidValueException validationException = (Validator.InvalidValueException) ex.getCause();
-                    for (Validator.InvalidValueException cause : validationException.getCauses()) {
-                        mensagem += cause.getMessage() + "\n";
-                    }
-
-                } else {
-                    mensagem = ex.getLocalizedMessage();
-                }
+                
+                String mensagem = FormatterUtil.extrairMensagemValidacao(ex);
+                
                 Notification.show(mensagem, Notification.Type.ERROR_MESSAGE);
                 Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
             }

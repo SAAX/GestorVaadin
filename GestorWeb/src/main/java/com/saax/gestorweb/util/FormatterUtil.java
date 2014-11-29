@@ -1,10 +1,15 @@
 package com.saax.gestorweb.util;
 
+import com.saax.gestorweb.view.CadastroTarefaView;
+import com.vaadin.data.Validator;
+import com.vaadin.ui.Notification;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.text.MaskFormatter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,15 +47,16 @@ public class FormatterUtil {
 
     /**
      * Verifica se um CPF está no formato: ###.###.###-##
+     *
      * @param cpf
      * @return true se o CPF é válido
      */
     public static boolean validarCPF(String cpf) {
 
-        if (StringUtils.isBlank(cpf)){
+        if (StringUtils.isBlank(cpf)) {
             return false;
         }
-        
+
         String cpfRegExp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}";
 
         return cpf.matches(cpfRegExp);
@@ -59,51 +65,70 @@ public class FormatterUtil {
 
     /**
      * Verifica se um CNPJ está no formato: ##.###.###/####-##
+     *
      * @param cnpj
      * @return true se o CNPJ é válido
      */
     public static boolean validarCNPJ(String cnpj) {
 
-        if (StringUtils.isBlank(cnpj)){
+        if (StringUtils.isBlank(cnpj)) {
             return false;
         }
-        
+
         String cnpjRegExp = "\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}";
 
         return cnpj.matches(cnpjRegExp);
 
     }
-    
-    
+
     /**
      * Formata uma data para o padrão da localidade do usuario logado
+     *
      * @param date
-     * @return 
+     * @return
      */
-    public static String formatDate(LocalDate date){
-        if (date == null){
+    public static String formatDate(LocalDate date) {
+        if (date == null) {
             return "";
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return date.format(formatter); 
-        
+        return date.format(formatter);
+
     }
-    
+
     /**
      * Formata uma data e hora para o padrão da localidade do usuario logado
+     *
      * @param dateTime
-     * @return 
+     * @return
      */
-    public static String formatDateTime(LocalDateTime dateTime){
-        if (dateTime == null){
+    public static String formatDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) {
             return "";
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        return dateTime.format(formatter); 
+        return dateTime.format(formatter);
+
+    }
+
+    public static String extrairMensagemValidacao(Exception ex) {
+        String mensagem = "";
+        if (ex.getCause() instanceof Validator.InvalidValueException) {
+            Validator.InvalidValueException validationException = (Validator.InvalidValueException) ex.getCause();
+            for (Validator.InvalidValueException cause : validationException.getCauses()) {
+                mensagem += cause.getMessage() + "\n";
+            }
+        } else {
+            mensagem = ex.getLocalizedMessage();
+        }
+
+        if (mensagem == null || mensagem.equals("")) {
+            mensagem = "Verifique os campos obrigatórios";
+        }
+
+        return mensagem;
+        
         
     }
-    
-   
-
 
 }

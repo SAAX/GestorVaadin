@@ -12,6 +12,8 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
+import com.saax.gestorweb.view.validator.DataFimValidator;
+import com.saax.gestorweb.view.validator.DataInicioValidator;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
@@ -394,9 +396,9 @@ public class CadastroTarefaView extends Window {
         dataFimDateField = new PopupDateField(mensagens.getString("CadastroTarefaView.dataFimTextField.label"));
         dataFimDateField.setWidth("100%");
         dataFimDateField.setConverter(new DateToLocalDateConverter());
-        dataFimDateField.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.verificaDataFim(event);
-        });
+
+        dataInicioDateField.addValidator(new DataInicioValidator(dataFimDateField, "Data Inicio"));
+        dataFimDateField.addValidator(new DataFimValidator(dataInicioDateField, "Data Fim"));
 
         // Componente de aviso
 //        avisoButton = new Button(mensagens.getString("CadastroTarefaView.avisoButton.caption"), (Button.ClickEvent event) -> {
@@ -496,16 +498,9 @@ public class CadastroTarefaView extends Window {
                 tarefaFieldGroup.commit();
                 listener.gravarButtonClicked();
             } catch (Exception ex) {
-                String mensagem = "";
-                if (ex.getCause() instanceof Validator.InvalidValueException) {
-                    Validator.InvalidValueException validationException = (Validator.InvalidValueException) ex.getCause();
-                    for (Validator.InvalidValueException cause : validationException.getCauses()) {
-                        mensagem += cause.getMessage() + "\n";
-                    }
 
-                } else {
-                    mensagem = ex.getLocalizedMessage();
-                }
+                String mensagem = FormatterUtil.extrairMensagemValidacao(ex);
+                
                 Notification.show(mensagem, Notification.Type.ERROR_MESSAGE);
                 Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1115,7 +1110,7 @@ public class CadastroTarefaView extends Window {
     public PopupDateField getDataFimDateField() {
         return dataFimDateField;
     }
-    
+
     /**
      * @return the tipoRecorrenciaCombo
      */

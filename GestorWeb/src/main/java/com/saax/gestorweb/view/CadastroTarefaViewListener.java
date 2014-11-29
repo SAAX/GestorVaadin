@@ -62,6 +62,5 @@ public interface CadastroTarefaViewListener {
 
     public void empresaSelecionada(Empresa empresa);
     
-    public void verificaDataFim(Property.ValueChangeEvent event);
 
 }

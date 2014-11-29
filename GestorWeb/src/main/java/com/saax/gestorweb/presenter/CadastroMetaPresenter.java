@@ -9,18 +9,15 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
 import com.saax.gestorweb.view.CadastroMetaView;
 import com.saax.gestorweb.view.CadastroMetaViewListener;
-import com.vaadin.data.Property;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -249,14 +246,5 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
 
     }
     
-     @Override
-    public void verificaDataFim(Property.ValueChangeEvent event) {
-        Date dtIni = view.getDataInicioDateField().getValue();
-        Date dtFim = view.getDataFimDateField().getValue();
-        if(dtFim.before(dtIni)){
-            Notification.show(mensagens.getString("Notificacao.DataFimPosteriorDataInicio"));
-            view.getDataFimDateField().setValue(dtIni);
-        }
-    }
 
 }

@@ -310,6 +310,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         for (Usuario usuario : model.listarUsuariosEmpresa()) {
             participante.addItem(usuario);
             participante.setItemCaption(usuario, usuario.getNome());
+            
 
         }
     }
@@ -691,6 +692,10 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
 
     @Override
     public void adicionarParticipante(Usuario usuario) {
+        
+        if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || usuarioLogado.equals(view.getUsuarioResponsavelCombo().getValue())  ){
+        Notification.show("Usuário Responsável/Solicitante não poderá ser adicionado como participante");
+        } else{
         ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
         view.getParticipantesContainer().addBean(participanteTarefa);
         Tarefa tarefa = view.getTarefa();
@@ -700,6 +705,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         }
 
         tarefa.getParticipantes().add(participanteTarefa);
+        }
 
     }
 

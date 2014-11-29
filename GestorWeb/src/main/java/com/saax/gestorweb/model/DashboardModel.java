@@ -4,6 +4,7 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -56,6 +57,25 @@ public class DashboardModel {
                 .getResultList();
 
         return tarefas;
+
+    }
+    
+    /**
+     * Obtém as metas sob responsabilidade do usuário logado
+     *
+     * @param usuarioLogado
+     * @return
+     */
+    public List<Meta> listarMetas(Usuario usuarioLogado) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        List<Meta> metas = em.createNamedQuery("Meta.findByUsuarioResponsavel")
+                .setParameter("usuarioResponsavel", usuarioLogado)
+                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .getResultList();
+
+        return metas;
 
     }
 

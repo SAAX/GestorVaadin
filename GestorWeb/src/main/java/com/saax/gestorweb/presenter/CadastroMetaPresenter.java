@@ -16,9 +16,11 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
 import com.saax.gestorweb.view.CadastroMetaView;
 import com.saax.gestorweb.view.CadastroMetaViewListener;
+import com.vaadin.data.Property;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -228,5 +230,33 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    /**
+     * Abre o pop window do cadastro de metas para edição da meta informada
+     *
+     * @param tarefaToEdit
+     */
+    @Override
+    public void editar(Meta metaToEdit) {
+
+        view.exibeTituloEdicao(metaToEdit);
+
+        init(metaToEdit);
+
+        //view.getParticipantesContainer().addAll(metaToEdit.getParticipantes());
+        //view.getAnexoTarefaContainer().addAll(metaToEdit.getAnexos());
+        //view.getControleHorasContainer().addAll(metaToEdit.getApontamentos());
+        //view.getOrcamentoContainer().addAll(metaToEdit.getOrcamentos());
+
+    }
+    
+     @Override
+    public void verificaDataFim(Property.ValueChangeEvent event) {
+        Date dtIni = view.getDataInicioDateField().getValue();
+        Date dtFim = view.getDataFimDateField().getValue();
+        if(dtFim.before(dtIni)){
+            Notification.show(mensagens.getString("Notificacao.DataFimPosteriorDataInicio"));
+            view.getDataFimDateField().setValue(dtIni);
+        }
+    }
 
 }

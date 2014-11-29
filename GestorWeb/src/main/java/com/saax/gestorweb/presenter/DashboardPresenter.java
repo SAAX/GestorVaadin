@@ -311,6 +311,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     private void carregaVisualizacaoInicial() {
 
         carregarListaTarefasUsuarioLogado();
+        carregarListaMetasUsuarioLogado();
         carregarFiltrosPesquisa();
         carregarListaTarefasPrincipais();
     }
@@ -489,9 +490,9 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     private void adicionarMetaTable(Meta meta) {
 
         Object[] linha = new Object[]{
-            meta.getGlobalID(),
-            meta.getHierarquia().getCategoria(),
-            meta.getNome(),
+            buildButtonEditarMeta(meta, meta.getGlobalID()),
+            //meta.getHierarquia().getCategoria(),
+            buildButtonEditarMeta(meta, meta.getNome()),
             meta.getEmpresa().getNome()
             + (meta.getFilialEmpresa() != null ? "/" + meta.getFilialEmpresa().getNome() : ""),
             meta.getUsuarioSolicitante().getNome(),
@@ -502,10 +503,10 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
            //buildPopUpEvolucaoStatusEAndamento(meta),
            // meta.getProjecao().toString().charAt(0),
             new Button("E"),
-            new Button("C")
+           // new Button("C")
         };
 
-        view.getTarefasTable().addItem(linha, meta);
+        view.getMetasTable().addItem(linha, meta);
 
         //Como a meta não possui sub... deixei comentado para posteriormente excluir
         // se a tarefa possui subs, chama recursivamente
@@ -604,5 +605,50 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         view.getPermutacaoPesquisaOptionGroup().setValue(null);
 
     }
+    
+    private Button buildButtonEditarMeta(Meta meta, String caption) {
+        Button link = new Button(caption);
+        link.setStyleName("link");
+        CadastroMetaCallBackListener callback = this;
+        link.addClickListener((Button.ClickEvent event) -> {
+            view.getMetasTable().setValue(meta);
+            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new CadastroMetaModel(), new CadastroMetaView());
+            presenter.setCallBackListener(callback);
+            presenter.editar(meta);
+        });
+        return link;
+    }
 
+    /**
+     * Carrega a lista de metas sob responsabilidade do usuario logado
+     */
+    @Override
+    public void carregarListaMetasUsuarioLogado() {
+
+        // Usuario logado
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+
+        List<Meta> listaMetas = model.listarMetas(usuarioLogado);
+
+        exibirListaMetas(listaMetas);
+
+    }
+    
+    /**
+     * Carrega a lista de metas na tabela
+     *
+     * @param listaMetas
+     */
+    public void exibirListaMetas(List<Meta> listaMetas) {
+
+        view.getMetasTable().removeAllItems();
+
+        Object[] linha;
+        listaMetas.stream().forEach((meta) -> {
+            adicionarMetaTable(meta);
+        });
+
+        //organizarHierarquiaTreeTable(listaMetas);
+
+    }
 }

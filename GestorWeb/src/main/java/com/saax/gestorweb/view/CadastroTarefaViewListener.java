@@ -61,5 +61,7 @@ public interface CadastroTarefaViewListener {
     public void hierarquiaSelecionada(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe);
 
     public void empresaSelecionada(Empresa empresa);
+    
+    public void verificaDataFim(Property.ValueChangeEvent event);
 
 }

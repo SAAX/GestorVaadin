@@ -379,14 +379,14 @@ public class CadastroTarefaView extends Window {
         tipoRecorrenciaCombo = new ComboBox(mensagens.getString("CadastroTarefaView.tipoRecorrenciaCombo.label"));
         tipoRecorrenciaCombo.setWidth("100%");
         tipoRecorrenciaCombo.setInputPrompt(mensagens.getString("CadastroTarefaView.tipoRecorrenciaCombo.inputPrompt"));
-        tipoRecorrenciaCombo.addValidator(new BeanValidator(Tarefa.class, "tipoRecorrencia"));
-        camposObrigatorios.add(tipoRecorrenciaCombo);
+        //tipoRecorrenciaCombo.addValidator(new BeanValidator(Tarefa.class, "tipoRecorrencia"));
+        //camposObrigatorios.add(tipoRecorrenciaCombo);
 
         // Combo Prioridade
         prioridadeCombo = new ComboBox(mensagens.getString("CadastroTarefaView.prioridadeCombo.label"));
         prioridadeCombo.setWidth("100%");
-        prioridadeCombo.addValidator(new BeanValidator(Tarefa.class, "prioridade"));
-        camposObrigatorios.add(prioridadeCombo);
+        //prioridadeCombo.addValidator(new BeanValidator(Tarefa.class, "prioridade"));
+        //camposObrigatorios.add(prioridadeCombo);
 
         // Pop-up de status
         statusTarefaPopUpButton = new PopupButton();
@@ -500,7 +500,7 @@ public class CadastroTarefaView extends Window {
             } catch (Exception ex) {
 
                 String mensagem = FormatterUtil.extrairMensagemValidacao(ex);
-                
+
                 Notification.show(mensagem, Notification.Type.ERROR_MESSAGE);
                 Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -426,6 +426,14 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         if (tarefa.getUsuarioResponsavel() == null) {
             tarefa.setUsuarioResponsavel(tarefa.getUsuarioInclusao());
         }
+        
+        if(tarefa.getPrioridade() == null){
+            tarefa.setPrioridade(PrioridadeTarefa.BAIXA);
+        }
+        
+        if(tarefa.getTipoRecorrencia() == null){
+            tarefa.setTipoRecorrencia(TipoTarefa.UNICA);
+        }
 
         // tarefa própria: solicitante = responsavel
         if (tarefa.getUsuarioResponsavel().equals(tarefa.getUsuarioSolicitante())) {

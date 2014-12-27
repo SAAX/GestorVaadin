@@ -501,8 +501,8 @@ public class CadastroTarefaView extends Window {
 
                 String mensagem = FormatterUtil.extrairMensagemValidacao(ex);
 
-                Notification.show(mensagem, Notification.Type.ERROR_MESSAGE);
-                Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
+                Notification.show(mensagem, Notification.Type.WARNING_MESSAGE);
+                Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.WARNING, null, ex);
             }
         });
 
@@ -627,7 +627,7 @@ public class CadastroTarefaView extends Window {
                 adicionarAnexoButton.setData(file);
 
             } catch (FileNotFoundException e) {
-                Notification.show(e.getMessage(), Notification.Type.ERROR_MESSAGE);
+                Notification.show(e.getMessage(), Notification.Type.WARNING_MESSAGE);
                 return null;
             }
             return fos;
@@ -1288,14 +1288,6 @@ public class CadastroTarefaView extends Window {
         } else {
             return tarefa.getNome() == null ? "[NOVA]" : tarefa.getNome();
         }
-    }
-
-    public void exibeTituloCadastro(Tarefa tarefapai) {
-        setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro"));
-    }
-
-    public void exibeTituloEdicao(Tarefa tarefapai) {
-        setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao"));
     }
 
     public BeanItemContainer<ApontamentoTarefa> getControleHorasContainer() {

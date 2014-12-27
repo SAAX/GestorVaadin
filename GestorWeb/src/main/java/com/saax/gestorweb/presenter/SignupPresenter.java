@@ -89,7 +89,7 @@ public class SignupPresenter implements SignupViewListener {
 
             // Exibe uma mensagem de erro indicando que este login (email) já 
             //existe no sistema e pergunta ao usuário se ele não quer recuperar sua senha
-            Notification.show(mensagens.getString("SignupPresenter.mensagem.loginPreExistente"), Notification.Type.ERROR_MESSAGE);
+            Notification.show(mensagens.getString("SignupPresenter.mensagem.loginPreExistente"), Notification.Type.WARNING_MESSAGE);
 
             return false;
         }
@@ -120,7 +120,7 @@ public class SignupPresenter implements SignupViewListener {
         if (model.verificaEmpresaExistente(cpf_cnpj, tipoPessoa)) {
 
             // Exibe uma mensagem de erro indicando que esta empresa (pelo cnpj/cpf) já existe no sistema
-            Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.ERROR_MESSAGE);
+            Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
 
             return false;
         }
@@ -149,7 +149,7 @@ public class SignupPresenter implements SignupViewListener {
                 if (model.verificaEmpresaExistente(cpfCnpjSubEmpresa, tipoPessoaSubEmpresa)) {
 
                     // Exibe uma mensagem de erro indicando que esta empresa (pelo cnpj/cpf) já existe no sistema
-                    Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.ERROR_MESSAGE);
+                    Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
 
                     return false;
                 }
@@ -158,7 +158,7 @@ public class SignupPresenter implements SignupViewListener {
             if (identificadoresEmpresasColigadas.contains(nomeSubEmpresa)) {
                 // Exibe uma mensagem de erro indicando que esta sub empresa (pelo cnpj/cpf) 
                 // foi cadastrada em duplicidade
-                Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaColigadaDuplicada"), Notification.Type.ERROR_MESSAGE);
+                Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaColigadaDuplicada"), Notification.Type.WARNING_MESSAGE);
 
                 return false;
 
@@ -194,7 +194,7 @@ public class SignupPresenter implements SignupViewListener {
                 if (model.verificaFilialExistente(cnpjFilial)) {
 
                     // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj) já existe no sistema
-                    Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.ERROR_MESSAGE);
+                    Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
 
                     return false;
                 }
@@ -203,7 +203,7 @@ public class SignupPresenter implements SignupViewListener {
                 if (identificadoresFiliais.contains(cnpjFilial)) {
                     // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj/cpf) 
                     // foi cadastrada em duplicidade
-                    Notification.show(mensagens.getString("SignupPresenter.mensagem.filialDuplicada"), Notification.Type.ERROR_MESSAGE);
+                    Notification.show(mensagens.getString("SignupPresenter.mensagem.filialDuplicada"), Notification.Type.WARNING_MESSAGE);
 
                     return false;
 
@@ -214,7 +214,7 @@ public class SignupPresenter implements SignupViewListener {
                 if (nomesFiliais.contains(nomeFilial)) {
                     // Exibe uma mensagem de erro indicando que esta filial (pelo nome) 
                     // foi cadastrada em duplicidade
-                    Notification.show(mensagens.getString("SignupPresenter.mensagem.filialDuplicada"), Notification.Type.ERROR_MESSAGE);
+                    Notification.show(mensagens.getString("SignupPresenter.mensagem.filialDuplicada"), Notification.Type.WARNING_MESSAGE);
 
                     return false;
 
@@ -247,7 +247,7 @@ public class SignupPresenter implements SignupViewListener {
             if (model.verificaLoginExistente(emailUsuario)) {
 
                 // Exibe uma mensagem de erro indicando que este usuario ja existe no sistema
-                Notification.show(mensagens.getString("SignupPresenter.mensagem.usuarioExistente"), Notification.Type.ERROR_MESSAGE);
+                Notification.show(mensagens.getString("SignupPresenter.mensagem.usuarioExistente"), Notification.Type.WARNING_MESSAGE);
 
                 return false;
             }
@@ -255,7 +255,7 @@ public class SignupPresenter implements SignupViewListener {
             // Valida se o usuário já não está relacionado a esta mesma empresa
             if (identificadoresUsuarios.contains(emailUsuario)) {
                 // Exibe uma mensagem de erro indicando que este usuario esta duplicado
-                Notification.show(mensagens.getString("SignupPresenter.mensagem.usuarioDuplicado"), Notification.Type.ERROR_MESSAGE);
+                Notification.show(mensagens.getString("SignupPresenter.mensagem.usuarioDuplicado"), Notification.Type.WARNING_MESSAGE);
 
                 return false;
 
@@ -415,7 +415,7 @@ public class SignupPresenter implements SignupViewListener {
         } catch (RuntimeException ex) {
             // Este é o topo da pilha de chamada ( o try catch mais alto) portante este deve logar a exceção:
             Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
-            Notification.show(mensagens.getString("Gestor.mensagemErroGenerica"), Notification.Type.ERROR_MESSAGE);
+            Notification.show(mensagens.getString("Gestor.mensagemErroGenerica"), Notification.Type.WARNING_MESSAGE);
 
         }
 

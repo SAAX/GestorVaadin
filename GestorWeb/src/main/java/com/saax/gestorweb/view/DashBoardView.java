@@ -680,6 +680,8 @@ public class DashBoardView extends VerticalLayout {
                 Usuario usuarioLogado = (Usuario) comboAlteraUsuarioLogado.getValue();
                 GestorSession.setAttribute("usuarioLogado", usuarioLogado);
                 usuarioLogado.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
+                // notifica o listener que o usuário logado foi alterado
+                getListener().usuarioLogadoAlteradoAPENASTESTE();
                 getListener().removerFiltrosPesquisa();
             }
         });

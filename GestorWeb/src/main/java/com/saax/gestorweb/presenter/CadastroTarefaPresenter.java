@@ -34,14 +34,12 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -118,10 +116,13 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
 
         // configura a categoria da sub-tarefa
         List<HierarquiaProjetoDetalhe> proximasCategorias = model.getProximasCategorias(tarefaPai);
+        StringBuilder nomesProximasCategorias = new StringBuilder();
         for (HierarquiaProjetoDetalhe proximaCategoria : proximasCategorias) {
             ComboBox combo = view.getHierarquiaCombo();
             combo.addItem(proximaCategoria);
             combo.setItemCaption(proximaCategoria, proximaCategoria.getCategoria());
+            nomesProximasCategorias.append( proximasCategorias.indexOf(proximaCategoria)==0 ? "": "/" );
+            nomesProximasCategorias.append(proximaCategoria.getCategoria());
         }
         // caso seja apenas uma, já seta para facilitar ao usuario
         if (proximasCategorias.size() == 1) {
@@ -129,7 +130,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         }
 
         view.ocultaPopUpEvolucaoStatusEAndamento();
-        view.exibeTituloCadastro(tarefaPai);
+
+        view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + nomesProximasCategorias);
 
         init(tarefa);
 
@@ -158,7 +160,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         tarefa.setHierarquia(categoria);
 
         view.ocultaPopUpEvolucaoStatusEAndamento();
-        view.exibeTituloCadastro(null);
+        
+        view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + categoria.getCategoria());
+
 
         init(tarefa);
 
@@ -173,8 +177,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
      */
     @Override
     public void editar(Tarefa tarefaToEdit) {
-
-        view.exibeTituloEdicao(tarefaToEdit.getTarefaPai());
 
         init(tarefaToEdit);
 
@@ -192,6 +194,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         view.getControleHorasContainer().addAll(tarefaToEdit.getApontamentos());
         view.getOrcamentoContainer().addAll(tarefaToEdit.getOrcamentos());
 
+        view.setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao") + tarefaToEdit.getHierarquia().getCategoria());
     }
 
     /**
@@ -484,7 +487,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
             view.setApontamentoTarefa(new ApontamentoTarefa(view.getTarefa(), usuarioLogado));
 
         } catch (Exception ex) {
-            Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+            Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
             Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -514,7 +517,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
             view.setOrcamentoTarefa(new OrcamentoTarefa(view.getTarefa(), usuarioLogado));
 
         } catch (Exception ex) {
-            Notification.show(ex.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+            Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
             Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -555,7 +558,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
             Logger.getLogger(CadastroTarefaPresenter.class
                     .getName()).log(Level.SEVERE, null, ex);
             // e exibe ao usuario:
-            Notification.show(ex.getMessage(), Notification.Type.ERROR_MESSAGE);
+            Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
         }
 
     }
@@ -733,6 +736,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
                 view.getAddSubButton().setEnabled(false);
             }
 
+            view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + hierarquiaProjetoDetalhe.getCategoria());
         }
     }
 

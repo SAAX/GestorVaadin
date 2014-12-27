@@ -64,14 +64,16 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    private final Usuario usuarioLogado;
+    private Usuario usuarioLogado;
 
     /**
      * Inicializa o presenter
      */
     @Override
     public void init() {
-
+        
+        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        
         adicionarHierarquiasProjeto();
         carregaVisualizacaoInicial();
     }
@@ -151,18 +153,18 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     
     private void atualizarTarefaTable(Tarefa tarefa) {
         Item it = view.getTarefasTable().getItem(tarefa);
-
-        it.getItemProperty("Cod").setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
-        it.getItemProperty("Categoria").setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
-        it.getItemProperty("Nome").setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
-        it.getItemProperty("Empresa/Filial").setValue(tarefa.getEmpresa().getNome()
+        
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaCod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaTitulo")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaNome")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaEmpresaFilial")).setValue(tarefa.getEmpresa().getNome()
                 + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
-        it.getItemProperty("Solicitante").setValue(tarefa.getUsuarioSolicitante().getNome());
-        it.getItemProperty("Responsável").setValue(tarefa.getUsuarioResponsavel().getNome());
-        it.getItemProperty("Data Início").setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty("Data Fim").setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty("Status").setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
-        it.getItemProperty("Projeção").setValue(tarefa.getProjecao().toString().charAt(0));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaSolicitante")).setValue(tarefa.getUsuarioSolicitante().getNome());
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaStatus")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
         it.getItemProperty("Email").setValue(new Button("E"));
         it.getItemProperty("Chat").setValue(new Button("C"));
 
@@ -272,6 +274,14 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Opção disponível apenas para testes, onde é possível alterar o usuário logado
+     */
+    @Override
+    public void usuarioLogadoAlteradoAPENASTESTE() {
+        this.usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+    }
+
     // enumeracao do tipo de pesquisa
     public enum TipoPesquisa {
 
@@ -292,7 +302,6 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
 
         view.setListener(this);
 
-        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
     }
 

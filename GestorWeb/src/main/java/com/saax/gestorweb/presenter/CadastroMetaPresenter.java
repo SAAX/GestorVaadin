@@ -74,7 +74,8 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
         init(meta);
 
         view.getHierarquiaCombo().setEnabled(false);
-
+        view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + categoria.getCategoria());
+        
     }
 
     /**
@@ -238,6 +239,8 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
         view.exibeTituloEdicao(metaToEdit);
 
         init(metaToEdit);
+        
+        view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + metaToEdit.getHierarquia().getCategoria());
 
         //view.getParticipantesContainer().addAll(metaToEdit.getParticipantes());
         //view.getAnexoTarefaContainer().addAll(metaToEdit.getAnexos());

@@ -133,7 +133,7 @@ public class CadastroMetaView extends Window {
 
         camposObrigatorios = new ArrayList();
 
-        setCaption(mensagens.getString("CadastroMetaView.titulo"));
+        setCaption(mensagens.getString("CadastroMetaView.tituloBase"));
         setModal(true);
         setWidth(1000, Unit.PIXELS);
         setHeight(600, Unit.PIXELS);
@@ -446,7 +446,7 @@ public class CadastroMetaView extends Window {
                 
                 String mensagem = FormatterUtil.extrairMensagemValidacao(ex);
                 
-                Notification.show(mensagem, Notification.Type.ERROR_MESSAGE);
+                Notification.show(mensagem, Notification.Type.WARNING_MESSAGE);
                 Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
             }
         });

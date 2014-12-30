@@ -399,7 +399,7 @@ public class CadastroTarefaView extends Window {
 
         dataInicioDateField.addValidator(new DataInicioValidator(dataFimDateField, "Data Inicio"));
         dataFimDateField.addValidator(new DataFimValidator(dataInicioDateField, "Data Fim"));
-
+        
         // Componente de aviso
 //        avisoButton = new Button(mensagens.getString("CadastroTarefaView.avisoButton.caption"), (Button.ClickEvent event) -> {
 //            listener.avisoButtonClicked();

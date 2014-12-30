@@ -110,6 +110,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
             tarefaPai.setSubTarefas(new ArrayList<>());
         }
         tarefaPai.getSubTarefas().add(tarefa);
+        
 
         // ajuste ate a projecao ser implementada
         tarefa.setProjecao(ProjecaoTarefa.NORMAL);
@@ -443,11 +444,24 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
             tarefa.setOrcamentoControlado(false);
             tarefa.setApontamentoHoras(false);
         }
+        
+        
+        if(tarefa.getDataInicio().isBefore(tarefa.getTarefaPai().getDataInicio())){
+            Notification.show("Data Início da Sub Tarefa deverá ser mais do que a Data Início da Tarefa", Notification.Type.ERROR_MESSAGE);
+        }
+        
+        if(tarefa.getDataFim().isAfter(tarefa.getTarefaPai().getDataFim())){
+            Notification.show("Data Final da Sub Tarefa deverá ser menor do que a Data Final da Tarefa", Notification.Type.ERROR_MESSAGE);
+        }
+        
+        
 
         boolean novaTarefa = tarefa.getId() == null;
         if (tarefa.getTarefaPai() == null) {
             tarefa = model.gravarTarefa(tarefa);
         }
+        
+        
 
         //tarefa.setApontamentos(view.getControleHorasContainer().getItemIds());
         //tarefa.setOrcamentos(view.getOrcamentoContainer().getItemIds());

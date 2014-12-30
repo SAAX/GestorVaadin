@@ -447,11 +447,11 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         
         
         if(tarefa.getDataInicio().isBefore(tarefa.getTarefaPai().getDataInicio())){
-            Notification.show("Data Início da Sub Tarefa deverá ser mais do que a Data Início da Tarefa", Notification.Type.ERROR_MESSAGE);
+            throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataInicio"));
         }
         
         if(tarefa.getDataFim().isAfter(tarefa.getTarefaPai().getDataFim())){
-            Notification.show("Data Final da Sub Tarefa deverá ser menor do que a Data Final da Tarefa", Notification.Type.ERROR_MESSAGE);
+            throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataFim"));
         }
         
         

@@ -102,7 +102,7 @@ public class CadastroTarefaModel {
 
             // TODO: Colocar projecao calculada
             tarefa.setProjecao(ProjecaoTarefa.NORMAL);
-
+            
             if (tarefa.getId() == null) {
                 em.persist(tarefa);
             } else {

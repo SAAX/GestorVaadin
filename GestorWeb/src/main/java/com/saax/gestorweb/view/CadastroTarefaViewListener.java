@@ -39,7 +39,7 @@ public interface CadastroTarefaViewListener {
     public void solicitacaoParaAdicionarAnexo(Upload.StartedEvent event);
 
     public void apontamentoHorasSwitched(Property.ValueChangeEvent event);
-
+    
     public void controleOrcamentoSwitched(Property.ValueChangeEvent event);
     
     public void setCallBackListener(CadastroTarefaCallBackListener presenter);
@@ -62,5 +62,6 @@ public interface CadastroTarefaViewListener {
 
     public void empresaSelecionada(Empresa empresa);
     
+    public void tipoRecorrenciaClicked();   
 
 }

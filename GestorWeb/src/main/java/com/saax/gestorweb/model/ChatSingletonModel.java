@@ -3,6 +3,7 @@ package com.saax.gestorweb.model;
 import com.saax.gestorweb.model.datamodel.ChatTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -67,7 +68,7 @@ public class ChatSingletonModel implements SharedChat.ChatListener {
         for (ChatTarefa mensagem : historico) {
 
             ChatUser user = new ChatUser(buildID(mensagem.getUsuario(), tarefa, true), mensagem.getUsuario().getNome(), "user1");
-            ChatLine line = new ChatLine(mensagem.getMensagem(), user);
+            ChatLine line = new ChatLine(mensagem.getMensagem()+"   às "+FormatterUtil.formatDateTime(mensagem.getDataHoraInclusao()).toString(), user);
 
             chat.addLine(line);
         }

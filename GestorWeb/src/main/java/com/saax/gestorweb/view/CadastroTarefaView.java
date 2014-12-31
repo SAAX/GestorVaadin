@@ -428,9 +428,7 @@ public class CadastroTarefaView extends Window {
         grid.addComponent(dataFimDateField);
         grid.addComponent(statusTarefaPopUpButton);
         grid.setComponentAlignment(statusTarefaPopUpButton, Alignment.BOTTOM_CENTER);
-//        grid.addComponent(avisoButton);
-//        grid.setComponentAlignment(avisoButton, Alignment.BOTTOM_CENTER);
-
+       
         return grid;
     }
 
@@ -1344,6 +1342,14 @@ public class CadastroTarefaView extends Window {
 
     public ComboBox getHierarquiaCombo() {
         return hierarquiaCombo;
+    }
+
+    /**
+     * Oculta/Exibe o status da tarefa
+     * @param visible 
+     */
+    public void setStatusVisible(boolean visible) {
+        statusTarefaPopUpButton.setVisible(visible);
     }
 
 }

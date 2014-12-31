@@ -234,7 +234,7 @@ public class Tarefa implements Serializable {
     /**
      * Custo de hora para todos os apontamentos
      */
-    transient BigDecimal custoHoraApontamento;
+    private transient BigDecimal custoHoraApontamento;
 
     // ----------------------------------------------------------------------------------------------------------------
     // CONSTRUTORES

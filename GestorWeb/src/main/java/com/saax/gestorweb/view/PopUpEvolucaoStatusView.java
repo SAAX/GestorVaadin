@@ -1,28 +1,37 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -54,6 +63,9 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     private Button reativarTarefaButton;
     private ComboBox avaliarTarefaCombo;
     private TextField comentarioAvaliacaoTextField;
+    private Table historicoTable;
+    private BeanItemContainer<HistoricoTarefa> historicoContainer;
+    private TextArea comentarioTextArea;
 
     public void setListener(PopUpEvolucaoStatusViewListener listener) {
         this.listener = listener;
@@ -300,32 +312,71 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         andamentoTarefaCombo.select(andamento);
     }
 
-    public void apresentaHistorico(List<HistoricoTarefa> historico) {
+    public void apresentaHistorico() {
 
         Window subWindow = new Window("Histórico");
-        subWindow.setWidth("400px");
-        subWindow.setHeight("200px");
+        subWindow.setWidth("800px");
+        subWindow.setHeight("300px");
 
         VerticalLayout subContent = new VerticalLayout();
         subContent.setMargin(true);
         subWindow.setContent(subContent);
 
-        // Put some components in it
-        ListSelect historicoList = new ListSelect();
+        historicoContainer = new BeanItemContainer<>(HistoricoTarefa.class);
+        
+        
+        historicoTable = new Table() {
+            @Override
+            protected String formatPropertyValue(Object rowId,
+                    Object colId, Property property) {
+                // Format by property type
+                if (property.getType() == LocalDateTime.class) {
 
-        for (HistoricoTarefa historicoEl : historico) {
+                    return FormatterUtil.formatDateTime((LocalDateTime) property.getValue());
+                } else if (property.getType() == Usuario.class) {
 
-            historicoList.addItem(historicoEl);
-            historicoList.setItemCaption(historicoEl,
-                    historicoEl.getDatahora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
-                    + " [" + historicoEl.getUsuario().getNome() + "]"
-                    + " :: " + historicoEl.getEvento());
-        }
+                    return ((Usuario) property.getValue()).getNome() + " " + ((Usuario) property.getValue()).getSobrenome();
+                }
 
-        historicoList.setNullSelectionAllowed(true);
-        historicoList.setSizeFull();
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+        
+        historicoTable.setContainerDataSource(historicoContainer);
 
-        subContent.addComponent(historicoList);
+        historicoTable.setColumnWidth("dataHora", 150);
+        historicoTable.setColumnHeader("dataHora", mensagens.getString("PopUpEvolucaoStatusView.historicoTable.colunaData"));
+        
+        historicoTable.setColumnWidth("usuario", 100);
+        historicoTable.setColumnHeader("usuario", mensagens.getString("PopUpEvolucaoStatusView.historicoTable.colunaUsuario"));
+        
+        historicoTable.setColumnWidth("evento", 200);
+        historicoTable.setColumnHeader("evento", mensagens.getString("PopUpEvolucaoStatusView.historicoTable.colunaEvento"));
+        
+        historicoTable.setColumnWidth("comentario", 100);
+        historicoTable.setColumnHeader("comentario", mensagens.getString("PopUpEvolucaoStatusView.historicoTable.colunaComentario"));
+        
+        historicoTable.setVisibleColumns("dataHora", "usuario", "evento", "comentario");
+        
+        historicoTable.addGeneratedColumn("Editar", (Table source, final Object itemId, Object columnId) -> {
+            Button editarButton = new Button("...");
+            editarButton.addClickListener((ClickEvent event) -> {
+                
+                listener.editarHistorico((HistoricoTarefa) itemId);
+
+            });
+            
+            editarButton.setEnabled(listener.historicoEditavel((HistoricoTarefa) itemId));
+            
+            return editarButton;
+        });
+        
+        historicoTable.setSelectable(true);
+        historicoTable.setImmediate(true);
+        historicoTable.setPageLength(10);
+        historicoTable.setWidth("100%");
+        
+        subContent.addComponent(historicoTable);
 
         // Center it in the browser window
         subWindow.center();
@@ -670,6 +721,60 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
     }
 
+    public BeanItemContainer<HistoricoTarefa> getHistoricoContainer() {
+        return historicoContainer;
+    }
+
+    public void apresentaPopUpAlteracaoComentario(HistoricoTarefa historicoTarefa) {
+
+        Window subWindow = new Window("Informe o novo comentário");
+        subWindow.setModal(true);
+        subWindow.setWidth("300px");
+        subWindow.setHeight("100px");
+
+        VerticalLayout subContent = new VerticalLayout();
+        subContent.setMargin(true);
+        subContent.setSizeFull();
+        subWindow.setContent(subContent);
+
+        comentarioTextArea = new TextArea();
+        comentarioTextArea.setValue(historicoTarefa.getComentario());
+
+        subContent.addComponent(comentarioTextArea);
+        comentarioTextArea.setWidth("100%");
+
+        HorizontalLayout barraDeBotoesContainer = new HorizontalLayout();
+        barraDeBotoesContainer.setWidth("100%");
+        barraDeBotoesContainer.setSpacing(true);
+
+        cancelarBloqueio = new Button("Cancelar", (Button.ClickEvent event) -> {
+            subWindow.close();
+        });
+        barraDeBotoesContainer.addComponent(cancelarBloqueio);
+        barraDeBotoesContainer.setComponentAlignment(cancelarBloqueio, Alignment.BOTTOM_LEFT);
+
+        confirmarBloqueio = new Button("Confirmar", (Button.ClickEvent event) -> {
+            listener.confirmarAlteracaoHistoricoClicked(historicoTarefa);
+            subWindow.close();
+        });
+        barraDeBotoesContainer.addComponent(confirmarBloqueio);
+        barraDeBotoesContainer.setComponentAlignment(confirmarBloqueio, Alignment.BOTTOM_RIGHT);
+
+        subContent.addComponent(barraDeBotoesContainer);
         
+        // Center it in the browser window
+        subWindow.center();
+
+        // Open it in the UI
+        UI.getCurrent().addWindow(subWindow);
+
+    }
+
+    public TextArea getComentarioTextArea() {
+        return comentarioTextArea;
+    }
+
+
+    
     
 }

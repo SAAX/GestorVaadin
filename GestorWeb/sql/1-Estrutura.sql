@@ -484,7 +484,8 @@ DROP TABLE IF EXISTS HistoricoTarefa CASCADE;
 CREATE TABLE HistoricoTarefa (
     idHistoricoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
-    evento CHARACTER VARYING (100),
+    evento CHARACTER VARYING (200) NOT NULL,
+    comentario CHARACTER VARYING (100),
     idUsuario BIGINT NOT NULL,
     dataHora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),

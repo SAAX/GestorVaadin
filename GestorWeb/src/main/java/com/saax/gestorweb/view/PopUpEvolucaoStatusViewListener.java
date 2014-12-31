@@ -1,6 +1,7 @@
 
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -35,5 +36,11 @@ public interface PopUpEvolucaoStatusViewListener {
     public void reativarTarefaClicked();
 
     public void processarAvaliacao();
+
+    public void editarHistorico(HistoricoTarefa historicoTarefa);
+
+    public boolean historicoEditavel(HistoricoTarefa historicoTarefa);
+
+    public void confirmarAlteracaoHistoricoClicked(HistoricoTarefa historicoTarefa);
     
 }

@@ -39,8 +39,9 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     /**
      * Cria o pop-up ligando view e presenter
+     *
      * @param view
-     * @param model 
+     * @param model
      */
     public PopUpEvolucaoStatusPresenter(PopUpEvolucaoStatusView view, PopUpEvolucaoStatusModel model) {
         this.view = view;
@@ -51,9 +52,10 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     }
 
     /**
-     * Carrega o pop-up configurando a visualização de acordo com o 
+     * Carrega o pop-up configurando a visualização de acordo com o
      * relacionamento entre o usuario e a tarefa, e o status da mesma
-     * @param tarefa 
+     *
+     * @param tarefa
      */
     @Override
     public void load(Tarefa tarefa) {
@@ -73,11 +75,12 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     }
 
     /**
-     * Carrega o pop-up configurando a visualização de acordo com o 
-     * relacionamento entre o usuario e a tarefa, e o status da mesma
-     * Sobrecarga com opçao de ja definir o status button
-     * @param tarefa 
-     * @param statusButton 
+     * Carrega o pop-up configurando a visualização de acordo com o
+     * relacionamento entre o usuario e a tarefa, e o status da mesma Sobrecarga
+     * com opçao de ja definir o status button
+     *
+     * @param tarefa
+     * @param statusButton
      */
     @Override
     public void load(Tarefa tarefa, PopupButton statusButton) {
@@ -85,7 +88,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
         this.tarefa = tarefa;
 
         this.statusButton = statusButton;
-        
+
         this.statusButton.setCaption(getStatusTarefaDescription(tarefa));
 
         // vincula o botão a tarefa
@@ -112,7 +115,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     /**
      * Configura a view de acordo com o perfil do usário e o status da tarefa
-     * <br> 
+     * <br>
      * Ao clicar no status da tarefa vai abrir um pop-up para evolução do status
      * / andamento da tarefa. <br>
      * <br>
@@ -291,7 +294,8 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     }
 
     /**
-     * Trata o evento disparado quando o usuario informa o andamento da tarefa <br>
+     * Trata o evento disparado quando o usuario informa o andamento da tarefa
+     * <br>
      * Obtém os dados e passao ao model para atualização
      */
     @Override
@@ -304,7 +308,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
             Integer andamento = (Integer) view.getAndamentoTarefaCombo().getValue();
             String comentarioAndamento = view.getComentarioAndamento().getValue();
 
-            if (tarefa.getStatus()==StatusTarefa.NAO_INICIADA){
+            if (tarefa.getStatus() == StatusTarefa.NAO_INICIADA) {
                 tarefa = model.iniciarTarefa(usuario, idTarefa, andamento, comentarioAndamento);
             } else {
                 tarefa = model.atualizarAndamentoTarefa(usuario, idTarefa, andamento, comentarioAndamento);
@@ -322,8 +326,9 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     /**
      * Obtém a descrição internacionalizada do status da tarefa
+     *
      * @param tarefa
-     * @return 
+     * @return
      */
     private String getStatusTarefaDescription(Tarefa tarefa) {
 
@@ -366,15 +371,13 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
 
     }
 
-    
     /**
      * Evento disparado ao ser solicitado o histórico da tarefa
      */
     @Override
     public void historicoTarefaClicked() {
-        List<HistoricoTarefa> historico = tarefa.getHistorico();
-
-        view.apresentaHistorico(historico);
+        view.apresentaHistorico();
+        view.getHistoricoContainer().addAll(tarefa.getHistorico());
 
     }
 
@@ -430,7 +433,8 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     }
 
     /**
-     * Evento disparado ao ser solicitado para reabrir uma tarefa concluida que ainda não foi avaliada
+     * Evento disparado ao ser solicitado para reabrir uma tarefa concluida que
+     * ainda não foi avaliada
      */
     @Override
     public void reabrirTarefaClicked() {
@@ -440,7 +444,8 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     }
 
     /**
-     * Evento disparado ao ser solicitado para reativar uma tarefa cancelada ou adiada
+     * Evento disparado ao ser solicitado para reativar uma tarefa cancelada ou
+     * adiada
      */
     @Override
     public void reativarTarefaClicked() {
@@ -458,6 +463,34 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
         tarefa = model.avaliarTarefa(tarefa.getId(), avaliacao, observacaoAvaliacao, usuario);
         closePopUpButton();
 
+    }
+
+    @Override
+    public void editarHistorico(HistoricoTarefa historicoTarefa) {
+        view.apresentaPopUpAlteracaoComentario(historicoTarefa);
+    }
+
+    /**
+     * Verifica se o historico pode ser editado. Regra: O histórico pode ser
+     * editado se for gerado pelo próprio usuário logado
+     *
+     * @param historicoTarefa
+     * @return true se o histórico puder ser editado e false caso contrário.
+     */
+    @Override
+    public boolean historicoEditavel(HistoricoTarefa historicoTarefa) {
+        return historicoTarefa.getUsuario().equals(usuario);
+    }
+
+    @Override
+    public void confirmarAlteracaoHistoricoClicked(HistoricoTarefa historicoTarefa) {
+        String novoComentario = view.getComentarioTextArea().getValue();
+        historicoTarefa.setComentario(novoComentario);
+        model.atualizarHistorico(historicoTarefa.getId(), novoComentario);
+        view.getHistoricoContainer().removeAllItems();
+        view.getHistoricoContainer().addAll(historicoTarefa.getTarefa().getHistorico());
+        
+        
     }
 
 }

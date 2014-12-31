@@ -33,7 +33,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "HistoricoTarefa.findAll", query = "SELECT h FROM HistoricoTarefa h"),
     @NamedQuery(name = "HistoricoTarefa.findByIdhistoricotarefa", query = "SELECT h FROM HistoricoTarefa h WHERE h.id = :idhistoricotarefa"),
     @NamedQuery(name = "HistoricoTarefa.findByEvento", query = "SELECT h FROM HistoricoTarefa h WHERE h.evento = :evento"),
-    @NamedQuery(name = "HistoricoTarefa.findByDatahora", query = "SELECT h FROM HistoricoTarefa h WHERE h.datahora = :datahora")})
+    @NamedQuery(name = "HistoricoTarefa.findByDatahora", query = "SELECT h FROM HistoricoTarefa h WHERE h.dataHora = :datahora")})
 public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa> {
     
     private static final long serialVersionUID = 1L;
@@ -46,9 +46,13 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
     
     @Basic(optional = false)
     @NotNull
-    @Size(max = 100)
+    @Size(max = 200)
     @Column(name = "evento")
     private String evento;
+    
+    @Size(max = 100)
+    @Column(name = "comentario")
+    private String comentario;
     
     @JoinColumn(name = "idusuario", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -62,7 +66,7 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
     @NotNull
     @Column(name = "datahora")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime datahora;
+    private LocalDateTime dataHora;
 
     
     public HistoricoTarefa() {
@@ -72,11 +76,12 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
         this.id = idhistoricotarefa;
     }
 
-    public HistoricoTarefa(String evento, Usuario usuario, Tarefa tarefa, LocalDateTime datahora) {
+    public HistoricoTarefa(String evento, String comentario, Usuario usuario, Tarefa tarefa, LocalDateTime datahora) {
         this.evento = evento;
+        this.comentario = comentario;
         this.usuario = usuario;
         this.tarefa = tarefa;
-        this.datahora = datahora;
+        this.dataHora = datahora;
     }
 
     
@@ -96,12 +101,12 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
         this.evento = evento;
     }
 
-    public LocalDateTime getDatahora() {
-        return datahora;
+    public LocalDateTime getDataHora() {
+        return dataHora;
     }
 
-    public void setDatahora(LocalDateTime datahora) {
-        this.datahora = datahora;
+    public void setDataHora(LocalDateTime dataHora) {
+        this.dataHora = dataHora;
     }
 
     public Usuario getUsuario() {
@@ -119,12 +124,15 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
     public Tarefa getTarefa() {
         return tarefa;
     }
-    
-    
- 
-    
-    
 
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -147,7 +155,7 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
         } else {
             // senao compara por campos setados na criação da tarefa
             return this.getUsuario().equals(other.getUsuario())
-                   && this.getDatahora().equals(other.getDatahora());
+                   && this.getDataHora().equals(other.getDataHora());
 
         }
     }
@@ -161,7 +169,7 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
 
       @Override
     public int compareTo(HistoricoTarefa o) {
-        return getDatahora().compareTo(o.getDatahora());
+        return getDataHora().compareTo(o.getDataHora());
     }
     
 }

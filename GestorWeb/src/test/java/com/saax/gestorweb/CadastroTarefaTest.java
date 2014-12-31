@@ -800,7 +800,7 @@ public class CadastroTarefaTest {
                 .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
                 .getSingleResult();
 
-        t.addHistorico(new HistoricoTarefa("teste", usuarioLogado, t, LocalDateTime.now()));
+        t.addHistorico(new HistoricoTarefa("teste", "comentario", usuarioLogado, t, LocalDateTime.now()));
 
         em.persist(t);
         

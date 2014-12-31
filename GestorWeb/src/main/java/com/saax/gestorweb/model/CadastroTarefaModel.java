@@ -17,6 +17,7 @@ import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
+import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
@@ -42,7 +43,7 @@ import javax.persistence.EntityManager;
  * @author rodrigo
  */
 public class CadastroTarefaModel {
-    
+
     // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
     private final EmpresaModel empresaModel;
@@ -50,12 +51,9 @@ public class CadastroTarefaModel {
     public CadastroTarefaModel() {
         usuarioModel = new UsuarioModel();
         empresaModel = new EmpresaModel();
-        
+
     }
 
-    
-    
-    
     /**
      * Listar todos os usuários ativos da mesma empresa do usuário logado
      *
@@ -553,5 +551,6 @@ public class CadastroTarefaModel {
     public List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
         return empresaModel.obterListaDepartamentosAtivos(empresa);
     }
+
 
 }

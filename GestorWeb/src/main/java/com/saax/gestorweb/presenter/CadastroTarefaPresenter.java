@@ -224,6 +224,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         UI.getCurrent().addWindow(view);
 
         view.setTarefa(tarefa);
+        
+        // caso a tarefa seja apenas um lembre, verifica pelo status da tarefa se este pode ser exibido ou se deve ser ocultado
+        view.setStatusVisible(verificaStatusVisivel(tarefa));
 
     }
 
@@ -776,4 +779,44 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         recorrenciaPresenter.open();
     }
 
+    /**
+     * Verifica se o status da tarefa deverá ser exibido ao usuario ou nao.
+     * Regra:
+     * Se a tarefa for uma tarefa de lembrete, onde o usuário responsavel é o mesmo que o solicitante o sistema verifica o status e trata de acordo.
+     * Se a tarefa não for de lembrete o status é sempre exibido.
+     *
+     * @param tarefa
+     * @return
+     */
+    public boolean verificaStatusVisivel(Tarefa tarefa) {
+
+        final StatusTarefa status = tarefa.getStatus();
+
+        if (tarefa.getUsuarioResponsavel().equals(tarefa.getUsuarioSolicitante())) {
+
+            switch (status) {
+                case NAO_ACEITA:
+                    return (false);
+                case NAO_INICIADA:
+                    return (true);
+                case EM_ANDAMENTO:
+                    return (true);
+                case ADIADA:
+                    return (true);
+                case BLOQUEADA:
+                    return (true);
+                case CONCLUIDA:
+                    return (true);
+                case AVALIADA:
+                    return (false);
+                case CANCELADA:
+                    return (true);
+                default :
+                    return (true);                    
+            }
+        } else {
+            return true;
+        }
+
+    }
 }

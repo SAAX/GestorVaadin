@@ -5,6 +5,7 @@ import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.RecorrenciaModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
@@ -28,6 +29,7 @@ import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
+import com.saax.gestorweb.view.RecorrenciaView;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -760,6 +762,21 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
     @Override
     public void empresaSelecionada(Empresa empresa) {
         carregaComboDepartamento(empresa);
+    }
+    
+    @Override
+    public void tipoRecorrenciaClicked() {
+        
+        //Cria o pop up para registrar a conta (model e view)
+        RecorrenciaModel recorrenciaModel = new RecorrenciaModel();
+        RecorrenciaView recorrenciaView = new RecorrenciaView();
+        
+       //o presenter liga model e view
+        RecorrenciaPresenter recorrenciaPresenter;
+        recorrenciaPresenter = new RecorrenciaPresenter(recorrenciaModel, recorrenciaView);
+        //adiciona a visualização à UI
+        UI.getCurrent().addWindow(recorrenciaView);
+        recorrenciaPresenter.open();
     }
 
     /**

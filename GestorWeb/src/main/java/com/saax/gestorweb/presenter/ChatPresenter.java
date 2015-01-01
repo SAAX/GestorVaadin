@@ -7,6 +7,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatSingletonModel;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
@@ -14,6 +15,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.ChatViewListener;
 import com.vaadin.ui.UI;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -65,6 +67,13 @@ public class ChatPresenter implements ChatViewListener {
     public void carregarTabela(Tarefa tarefa) {
         view.getUsuariosTable().addItem(new Object[]{tarefa.getUsuarioSolicitante().getNome(), "Solicitante"}, "Solicitante");
         view.getUsuariosTable().addItem(new Object[]{tarefa.getUsuarioResponsavel().getNome(), "Responsável"}, "Responsável");
+        
+        List<ParticipanteTarefa> participantes = tarefa.getParticipantes();
+        
+        for (int i = 0; i < participantes.size(); i++) {
+            view.getUsuariosTable().addItem(new Object[]{participantes.get(i).getUsuarioParticipante().getNome(), "Participante"}, "Participante");
+        }
+        
 
     }
 

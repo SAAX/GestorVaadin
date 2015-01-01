@@ -66,8 +66,8 @@ public class ChatView extends Window{
         
         setCaption(mensagens.getString("ChatView.titulo"));
         setModal(true);
-        setWidth(800, Unit.PIXELS);
-        setHeight(400, Unit.PIXELS);
+        setWidth("90%");
+        setHeight("60%");
         
         Panel panel = new Panel("Chat");
         
@@ -81,11 +81,12 @@ public class ChatView extends Window{
         
         // Have a horizontal split panel as its content
         hsplit = new HorizontalSplitPanel();
-        hsplit.setWidth("800px");
-        
+        //hsplit.setWidth("700px");
+        //hsplit.setHeight("700px");
+        hsplit.setSizeFull();
         // Put a component in the left panel
         hsplit.setFirstComponent(containerTabelaUsuarios());
-        hsplit.getFirstComponent().setWidth("300px");
+        hsplit.getFirstComponent().setWidth("200px");
         // A static variable so that everybody gets the same instance.
         
         panel.setContent(hsplit);
@@ -100,10 +101,10 @@ public class ChatView extends Window{
      
         ChatUser user = new ChatUser(ChatSingletonModel.getInstance().buildID(usuarioLogado, tarefa, false), usuarioLogado.getNome(), "user1");
         cb.setUser(user);
-        cb.setWidth("500px");
+        cb.setWidth("100%");
                 
         hsplit.setSecondComponent(cb);
-        hsplit.getSecondComponent().setWidth("500px");
+        hsplit.getSecondComponent().setWidth("700px");
         
     }
        

@@ -24,7 +24,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
+import com.saax.gestorweb.view.TaskCreationCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.ChatView;
@@ -55,7 +55,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author rodrigo
  */
-public class CadastroTarefaPresenter implements CadastroTarefaViewListener, CadastroTarefaCallBackListener {
+public class CadastroTarefaPresenter implements CadastroTarefaViewListener, TaskCreationCallBackListener {
 
     // Todo presenterPopUpStatus mantem acesso à view e ao model
     private final transient CadastroTarefaView view;
@@ -64,7 +64,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    private CadastroTarefaCallBackListener callbackListener;
+    private TaskCreationCallBackListener callbackListener;
     private final Usuario usuarioLogado;
     private PopUpEvolucaoStatusPresenter presenterPopUpStatus;
 
@@ -140,7 +140,25 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
 
     }
 
-    public void criarNovaTarefa(HierarquiaProjetoDetalhe categoria) {
+    /**
+     * Creates a new default Task, with a specific category
+     * Just overloaded: createTask(List) <br>
+     * 
+     * @param category in wich the task'll be created
+     */
+    public void createTask(HierarquiaProjetoDetalhe category) {
+        // builds a list to use the main method: createTask
+        List<HierarquiaProjetoDetalhe> categories = new ArrayList<>();
+        categories.add(category);
+        // call the mais method to create a task
+        createTask(categories);
+    }
+
+    /**
+     * Creates a new default Task, with given possible categories
+     * @param possibleCategories 
+     */
+    public void createTask(List<HierarquiaProjetoDetalhe> possibleCategories) {
 
         Tarefa tarefa;
         // Cria uma nova tarefa com valores default
@@ -151,21 +169,25 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         tarefa.setUsuarioSolicitante(usuarioLogado);
         tarefa.setDataHoraInclusao(LocalDateTime.now());
         tarefa.setSubTarefas(new ArrayList<>());
-        tarefa.setHierarquia(categoria);
+        if (possibleCategories.size()==1){
+            tarefa.setHierarquia(possibleCategories.get(0));
+        }
 
         // ajuste ate a projecao ser implementada
         tarefa.setProjecao(ProjecaoTarefa.NORMAL);
 
         // configura a categoria
         ComboBox combo = view.getHierarquiaCombo();
-        combo.addItem(tarefa.getHierarquia());
-        combo.setItemCaption(tarefa.getHierarquia(), tarefa.getHierarquia().getCategoria());
-        tarefa.setHierarquia(categoria);
+        for (HierarquiaProjetoDetalhe categoria : possibleCategories) {
+            combo.addItem(categoria);
+            combo.setItemCaption(categoria, categoria.getCategoria());
+        }
 
         view.ocultaPopUpEvolucaoStatusEAndamento();
         
-        view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + categoria.getCategoria());
-
+        if (possibleCategories.size()==1){
+            view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
+        }
 
         init(tarefa);
 
@@ -473,9 +495,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         // notica (se existir) algum listener interessado em saber que o cadastro foi finalizado.
         if (callbackListener != null) {
             if (novaTarefa) {
-                callbackListener.cadastroNovaTarefaConcluido(tarefa);
+                callbackListener.taskCreationDone(tarefa);
             } else {
-                callbackListener.edicaoTarefaConcluida(tarefa);
+                callbackListener.taskUpdateDone(tarefa);
             }
         }
         view.close();
@@ -600,14 +622,14 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
      * @param callback
      */
     @Override
-    public void setCallBackListener(CadastroTarefaCallBackListener callback) {
+    public void setCallBackListener(TaskCreationCallBackListener callback) {
         this.callbackListener = callback;
     }
 
     private Button buildButtonEditarTarefa(Tarefa subTarefa, String caption) {
         Button link = new Button(caption);
         link.setStyleName("link");
-        CadastroTarefaCallBackListener callback = this;
+        TaskCreationCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getSubTarefasTable().setValue(subTarefa);
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
@@ -630,7 +652,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
             sub.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(sub.getDataInicio()),
             FormatterUtil.formatDate(sub.getDataFim()),
-            buildPopUpEvolucaoStatusEAndamento(sub),
+            CadastroTarefaView.buildPopUpStatusProgressTask(view.getSubTarefasTable(), sub),
             sub.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -645,14 +667,14 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
      * @param tarefa
      */
     @Override
-    public void cadastroNovaTarefaConcluido(Tarefa tarefa) {
+    public void taskCreationDone(Tarefa tarefa) {
 
         adicionarSubTarefa(tarefa);
 
     }
 
     @Override
-    public void edicaoTarefaConcluida(Tarefa tarefa) {
+    public void taskUpdateDone(Tarefa tarefa) {
 
         Item it = view.getSubTarefasTable().getItem(tarefa);
 
@@ -665,42 +687,11 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaStatus")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaStatus")).setValue(CadastroTarefaView.buildPopUpStatusProgressTask(view.getSubTarefasTable(), tarefa));
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
 
-    }
-
-    /**
-     * Constrói o pop up de alteração de status e/ou andamento de tarefas neste
-     * PopUP o usuario poderá alterar (evoluir ou regredir) um status de tarefa
-     * ou indicar seu andamento.
-     *
-     * @param tarefa
-     * @return
-     */
-    private PopupButton buildPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
-
-        // comportmento e regras:
-        PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
-        PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
-
-        PopUpEvolucaoStatusPresenter presenter = new PopUpEvolucaoStatusPresenter(viewPopUP, modelPopUP);
-
-        presenter.load(tarefa);
-
-        // evento disparado quando o pop-up se torna visivel:
-        // seleciona a linha correta na tabela
-        presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
-            if (event.isPopupVisible()) {
-                // selecionar a linha clicada:
-                Tarefa tarefaEditada = (Tarefa) event.getPopupButton().getData();
-                this.view.getSubTarefasTable().setValue(tarefaEditada);
-            }
-        });
-
-        return presenter.getStatusButton();
     }
 
     @Override
@@ -819,4 +810,5 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Cada
         }
 
     }
+
 }

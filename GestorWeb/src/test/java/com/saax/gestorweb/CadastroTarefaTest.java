@@ -151,7 +151,7 @@ public class CadastroTarefaTest {
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.criarNovaTarefa(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa #1";
         view.getNomeTarefaTextField().setValue(nome);
@@ -192,7 +192,7 @@ public class CadastroTarefaTest {
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.criarNovaTarefa(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa com Anexo";
         view.getNomeTarefaTextField().setValue(nome);
@@ -244,7 +244,7 @@ public class CadastroTarefaTest {
         Usuario usuarioResponsavel = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.criarNovaTarefa(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa #2";
 
@@ -462,7 +462,7 @@ public class CadastroTarefaTest {
             }
         }
 
-        presenter.criarNovaTarefa(categoriaDefaultTarefa);
+        presenter.createTask(categoriaDefaultTarefa);
 
         String nome_principal = "Teste Multiplos Niveis";
         view.getNomeTarefaTextField().setValue(nome_principal);
@@ -780,7 +780,7 @@ public class CadastroTarefaTest {
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.criarNovaTarefa(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa Com Historico";
         view.getNomeTarefaTextField().setValue(nome);

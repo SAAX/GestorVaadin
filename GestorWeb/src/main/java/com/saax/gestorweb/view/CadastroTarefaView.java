@@ -1,6 +1,8 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -9,14 +11,14 @@ import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
+import com.saax.gestorweb.presenter.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.saax.gestorweb.view.validator.DataFimValidator;
 import com.saax.gestorweb.view.validator.DataInicioValidator;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Validator;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
@@ -25,7 +27,7 @@ import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
-import com.vaadin.server.Resource;
+import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Accordion;
@@ -53,7 +55,6 @@ import com.vaadin.ui.Window;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -66,6 +67,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.vaadin.hene.popupbutton.PopupButton;
+
 
 /**
  * Pop-up Window do cadastro de tarefas A visualização será em uma estrutura de
@@ -1349,6 +1351,57 @@ public class CadastroTarefaView extends Window {
      */
     public void setStatusVisible(boolean visible) {
         statusTarefaPopUpButton.setVisible(visible);
+    }
+    
+
+    /**
+     * Static method that builds a link button, that when clicked open a window with the given task to edit
+     * @param callback the callback listener that must be called when the update were done
+     * @param table the view table (used to auto select the row)
+     * @param task the task that will be openned
+     * @param caption the button caption
+     * @return 
+     */
+    public static Button buildButtonOpenTask(TaskCreationCallBackListener callback, Table table, Tarefa task, String caption) {
+        Button link = new Button(caption);
+        link.setStyleName("link");
+        link.addClickListener((Button.ClickEvent event) -> {
+            table.setValue(task);
+            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            presenter.setCallBackListener(callback);
+            presenter.editar(task);
+        });
+        return link;
+    }    
+
+    /**
+     * Builds a pop up painel to in which the user can set the status and/or the progress of the task
+     *
+     * @param task the task tha will have the status/progress updated
+     * @param table the view table (used to auto select the row)
+     * @return a popup button
+     */
+    public static PopupButton buildPopUpStatusProgressTask(Table table, Tarefa task) {
+
+        // comportmento e regras:
+        PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
+        PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
+
+        PopUpEvolucaoStatusPresenter presenter = new PopUpEvolucaoStatusPresenter(viewPopUP, modelPopUP);
+
+        presenter.load(task);
+
+        // evento disparado quando o pop-up se torna visivel:
+        // seleciona a linha correta na tabela
+        presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
+            if (event.isPopupVisible()) {
+                // selecionar a linha clicada:
+                Tarefa tarefaEditada = (Tarefa) event.getPopupButton().getData();
+                table.setValue(tarefaEditada);
+            }
+        });
+
+        return presenter.getStatusButton();
     }
 
 }

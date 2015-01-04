@@ -154,7 +154,7 @@ public class Meta implements Serializable {
     @NotNull(message = "Informe a categoria")
     @JoinColumn(name = "idhierarquiaprojetodetalhe", referencedColumnName = "idhierarquiaprojetodetalhe")
     @ManyToOne(optional = false)
-    private HierarquiaProjetoDetalhe hierarquia;
+    private HierarquiaProjetoDetalhe categoria;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meta")
     private List<Tarefa> tarefas;
@@ -452,17 +452,17 @@ public class Meta implements Serializable {
     }
 
     /**
-     * @return the hierarquia
+     * @return the categoria
      */
-    public HierarquiaProjetoDetalhe getHierarquia() {
-        return hierarquia;
+    public HierarquiaProjetoDetalhe getCategoria() {
+        return categoria;
     }
 
     /**
-     * @param hierarquia the hierarquia to set
+     * @param categoria the categoria to set
      */
-    public void setHierarquia(HierarquiaProjetoDetalhe hierarquia) {
-        this.hierarquia = hierarquia;
+    public void setCategoria(HierarquiaProjetoDetalhe categoria) {
+        this.categoria = categoria;
     }
 
     /**

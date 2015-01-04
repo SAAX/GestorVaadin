@@ -2,30 +2,40 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroMetaModel;
+import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.EmpresaModel;
+import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
 import com.saax.gestorweb.view.CadastroMetaView;
 import com.saax.gestorweb.view.CadastroMetaViewListener;
+import com.saax.gestorweb.view.TaskCreationCallBackListener;
+import com.saax.gestorweb.view.CadastroTarefaView;
+import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
+import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import java.util.List;
 import java.util.ResourceBundle;
+import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  *
  * @author Rodrigo
  */
-public class CadastroMetaPresenter implements CadastroMetaViewListener {
+public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCreationCallBackListener {
 
     // Todo presenter mantem acesso à view e ao model
     private final CadastroMetaView view;
@@ -68,8 +78,8 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
 
         // configura a categoria
         ComboBox combo = view.getHierarquiaCombo();
-        combo.addItem(meta.getHierarquia());
-        combo.setItemCaption(meta.getHierarquia(), meta.getHierarquia().getCategoria());
+        combo.addItem(meta.getCategoria());
+        combo.setItemCaption(meta.getCategoria(), meta.getCategoria().getCategoria());
 
         init(meta);
 
@@ -215,7 +225,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
             }
         }
         view.close();
-        Notification.show(meta.getHierarquia().getCategoria() + mensagens.getString("CadastroMetaPresenter.mensagem.gravadoComSucesso"), Notification.Type.HUMANIZED_MESSAGE);
+        Notification.show(meta.getCategoria().getCategoria() + mensagens.getString("CadastroMetaPresenter.mensagem.gravadoComSucesso"), Notification.Type.HUMANIZED_MESSAGE);
     }
 
     @Override
@@ -240,13 +250,95 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener {
 
         init(metaToEdit);
         
-        view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + metaToEdit.getHierarquia().getCategoria());
+        view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + metaToEdit.getCategoria().getCategoria());
 
         //view.getParticipantesContainer().addAll(metaToEdit.getParticipantes());
         //view.getAnexoTarefaContainer().addAll(metaToEdit.getAnexos());
         //view.getControleHorasContainer().addAll(metaToEdit.getApontamentos());
         //view.getOrcamentoContainer().addAll(metaToEdit.getOrcamentos());
 
+    }
+
+    /**
+     * Event thrown when the "addTask" button is clicked, indicating that the user wants a new task to the goal
+     */
+    @Override
+    public void addTaskButtonClicked() {
+            
+        try {
+            // commit to run validators
+            view.getMetaFieldGroup().commit();
+            
+            // Creates the presenter that will handle the new task creation
+            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            
+            // Configure this as the object to be called when the task creation was done
+            presenter.setCallBackListener(this);
+            
+            // Gets the tasks categories from the goal category
+            List<HierarquiaProjetoDetalhe> tasksCategories = model.getFirstsTaskCategories(view.getMeta().getCategoria());
+            
+            // Tells the presenter which is gonna be the Task's category
+            presenter.createTask(tasksCategories);
+            
+        } catch (FieldGroup.CommitException ex) {
+            Notification.show(mensagens.getString("CadastroMetaPresenter.addTaskButtonClicked.commitException"), Notification.Type.HUMANIZED_MESSAGE);
+        }
+    }
+
+    /**
+     * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the goal
+     */
+    @Override
+    public void chatButtonClicked() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the goal
+     */
+    @Override
+    public void trendButtonClicked() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    /**
+     * Handles the event thrown when the sub window is done with a Task creation 
+     * @param createdTask 
+     * @see TaskCreationCallBackListener
+     */
+    @Override
+    public void taskCreationDone(Tarefa createdTask) {
+        
+        // monta os dados para adicionar na grid
+        Object[] gridRow = new Object[]{
+            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), createdTask, createdTask.getGlobalID()),
+            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), createdTask, createdTask.getHierarquia().getCategoria()),
+            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), createdTask, createdTask.getNome()),
+            createdTask.getEmpresa().getNome()
+            + (createdTask.getFilialEmpresa() != null ? "/" + createdTask.getFilialEmpresa().getNome() : ""),
+            createdTask.getUsuarioSolicitante().getNome(),
+            createdTask.getUsuarioResponsavel().getNome(),
+            FormatterUtil.formatDate(createdTask.getDataInicio()),
+            FormatterUtil.formatDate(createdTask.getDataFim()),
+            CadastroTarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), createdTask),
+            createdTask.getProjecao().toString().charAt(0),
+            new Button("E"),
+            new Button("C")
+
+        };
+        view.getTarefasTable().addItem(gridRow, createdTask);
+
+    }
+
+    
+
+    /**
+     * @see TaskCreationCallBackListener
+     */
+    @Override
+    public void taskUpdateDone(Tarefa updatedTask) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 

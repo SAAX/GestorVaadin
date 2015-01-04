@@ -3,8 +3,6 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.Tarefa;
-import com.vaadin.data.Property;
 
 /**
  * Interface com todos os eventos disparados pelo painel administrativo
@@ -14,6 +12,7 @@ import com.vaadin.data.Property;
 public interface CadastroMetaViewListener {
 
     public void empresaSelecionada(Empresa empresa);
+    
     public void setCallBackListener(CadastroMetaCallBackListener callback);
 
     public void gravarButtonClicked();
@@ -23,6 +22,12 @@ public interface CadastroMetaViewListener {
     public void editar(Meta metaToEdit);   
 
     public void hierarquiaSelecionada(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe);
+
+    public void addTaskButtonClicked();
+
+    public void chatButtonClicked();
+
+    public void trendButtonClicked();
     
     
 }

@@ -17,7 +17,7 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.view.CadastroTarefaCallBackListener;
+import com.saax.gestorweb.view.TaskCreationCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.DashBoardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
@@ -55,7 +55,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class DashboardPresenter implements DashboardViewListenter, CadastroTarefaCallBackListener, CadastroMetaCallBackListener, Serializable {
+public class DashboardPresenter implements DashboardViewListenter, TaskCreationCallBackListener, CadastroMetaCallBackListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient DashBoardView view;
@@ -108,7 +108,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
      * @param tarefaCriada
      */
     @Override
-    public void cadastroNovaTarefaConcluido(Tarefa tarefaCriada) {
+    public void taskCreationDone(Tarefa tarefaCriada) {
 
         adicionarTarefaTable(tarefaCriada);
         organizarHierarquiaTreeTable(tarefaCriada);
@@ -141,7 +141,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     private Button buildButtonEditarTarefa(Tarefa tarefa, String caption) {
         Button link = new Button(caption);
         link.setStyleName("link");
-        CadastroTarefaCallBackListener callback = this;
+        TaskCreationCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTarefasTable().setValue(tarefa);
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
@@ -180,7 +180,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
     }
 
     @Override
-    public void edicaoTarefaConcluida(Tarefa tarefa) {
+    public void taskUpdateDone(Tarefa tarefa) {
         atualizarTarefaTable(tarefa);
         organizarHierarquiaTreeTable(tarefa);
     }
@@ -258,7 +258,7 @@ public class DashboardPresenter implements DashboardViewListenter, CadastroTaref
         } else if (categoria.getNivel() == 2) {
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
             presenter.setCallBackListener(this);
-            presenter.criarNovaTarefa(categoria);
+            presenter.createTask(categoria);
         }
 
     }

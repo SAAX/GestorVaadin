@@ -344,7 +344,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         
         historicoTable.setContainerDataSource(historicoContainer);
 
-        historicoTable.setColumnWidth("dataHora", 150);
+        historicoTable.setColumnWidth("dataHora", 120);
         historicoTable.setColumnHeader("dataHora", mensagens.getString("PopUpEvolucaoStatusView.historicoTable.colunaData"));
         
         historicoTable.setColumnWidth("usuario", 100);
@@ -370,6 +370,8 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
             
             return editarButton;
         });
+
+        historicoTable.setColumnWidth("Editar", 30);
         
         historicoTable.setSelectable(true);
         historicoTable.setImmediate(true);

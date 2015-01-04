@@ -42,7 +42,7 @@ public interface CadastroTarefaViewListener {
     
     public void controleOrcamentoSwitched(Property.ValueChangeEvent event);
     
-    public void setCallBackListener(CadastroTarefaCallBackListener presenter);
+    public void setCallBackListener(TaskCreationCallBackListener presenter);
     
     public void criarNovaSubTarefa(Tarefa tarefaPai);
 

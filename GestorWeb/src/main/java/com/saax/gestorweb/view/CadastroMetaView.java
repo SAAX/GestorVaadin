@@ -17,7 +17,9 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -53,7 +55,7 @@ import java.util.logging.Logger;
 public class CadastroMetaView extends Window {
 
     // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final transient ResourceBundle message = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
@@ -123,6 +125,11 @@ public class CadastroMetaView extends Window {
     private Button gravarButton;
     private Button cancelarButton;
     private VerticalLayout containerCabecalhoVisivel;
+    private HorizontalLayout topButtonsBar;
+    private CheckBox templateCheckBox;
+    private Button addTaskButton;
+    private Button chatButton;
+    private Button trendButton;
 
     /**
      * Cria o pop-up de login, com campos para usuário e senha
@@ -133,7 +140,7 @@ public class CadastroMetaView extends Window {
 
         camposObrigatorios = new ArrayList();
 
-        setCaption(mensagens.getString("CadastroMetaView.tituloBase"));
+        setCaption(message.getString("CadastroMetaView.tituloBase"));
         setModal(true);
         setWidth(1000, Unit.PIXELS);
         setHeight(600, Unit.PIXELS);
@@ -196,7 +203,10 @@ public class CadastroMetaView extends Window {
         containerPrincipal.setSpacing(true);
         containerPrincipal.setSizeFull(); // ocupar todo espaço disponível
 
-        // adiciona o cabecalho sempre visivel com informações básicas
+        // build and add the "Top Button's Bar" right justifying
+        containerPrincipal.addComponent(buildTopButtonsBar());
+        containerPrincipal.setComponentAlignment(topButtonsBar, Alignment.MIDDLE_RIGHT);
+
         containerPrincipal.addComponent(buildContainerCabecalho());
 
         // container do accordion: o accordiion será colocado abaixo do painel superior
@@ -213,6 +223,44 @@ public class CadastroMetaView extends Window {
         return containerPrincipal;
     }
 
+    /**
+     * Build and return the top button's bar with options: <br>
+     * <ul>
+     *  <li>Templatebox </li>
+     *  <li>Add Task </li>
+     *  <li>Chat </li>
+     *  <li>Trend </li>
+     * </ul>
+     * @return
+     */
+    private Component buildTopButtonsBar() {
+
+        topButtonsBar = new HorizontalLayout();
+        topButtonsBar.setSpacing(true);
+        topButtonsBar.setSizeUndefined();
+
+        templateCheckBox = new CheckBox(message.getString("CadastroMetaView.templateCheckBox.caption"));
+
+        topButtonsBar.addComponent(templateCheckBox);
+
+        addTaskButton = new Button("[Add Task]", (Button.ClickEvent event) -> {
+            listener.addTaskButtonClicked();
+        });
+        topButtonsBar.addComponent(addTaskButton);
+
+        chatButton = new Button("[Chat]", (Button.ClickEvent event) -> {
+            listener.chatButtonClicked();
+        });
+        topButtonsBar.addComponent(chatButton);
+
+        trendButton = new Button("[Projeção]", (Button.ClickEvent event) -> {
+            listener.trendButtonClicked();
+        });
+        topButtonsBar.addComponent(trendButton);
+
+        return topButtonsBar;
+    }
+    
     /**
      * Constroi o layout do cabeçalho sempre visivel da view
      * onde vão os campos de informações básicas
@@ -232,8 +280,8 @@ public class CadastroMetaView extends Window {
         containerCabecalhoLinha1.setWidth("100%");// ocupar todo espaço disponível na largura
 
         // combo de seleção da empresa
-        empresaCombo = new ComboBox(mensagens.getString("CadastroMetaView.empresaCombo.label"));
-        empresaCombo.setInputPrompt(mensagens.getString("CadastroMetaView.empresaCombo.inputPrompt"));
+        empresaCombo = new ComboBox(message.getString("CadastroMetaView.empresaCombo.label"));
+        empresaCombo.setInputPrompt(message.getString("CadastroMetaView.empresaCombo.inputPrompt"));
         empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.empresaSelecionada((Empresa) event.getProperty().getValue());
         });
@@ -244,9 +292,9 @@ public class CadastroMetaView extends Window {
         containerCabecalhoLinha1.setExpandRatio(empresaCombo, 0);
         
         // TextField: Nome da meta 
-        nomeMetaTextField = new TextField(mensagens.getString("CadastroMetaView.nomeMetaTextField.caption"));
+        nomeMetaTextField = new TextField(message.getString("CadastroMetaView.nomeMetaTextField.caption"));
         nomeMetaTextField.setWidth("100%");// ocupar todo espaço disponível na largura
-        nomeMetaTextField.setInputPrompt(mensagens.getString("CadastroMetaView.nomeMetaTextField.inputPrompt"));
+        nomeMetaTextField.setInputPrompt(message.getString("CadastroMetaView.nomeMetaTextField.inputPrompt"));
         nomeMetaTextField.setNullRepresentation("");
         nomeMetaTextField.addValidator(new BeanValidator(Meta.class, "nome"));
         camposObrigatorios.add(nomeMetaTextField);
@@ -265,23 +313,23 @@ public class CadastroMetaView extends Window {
         containerCabecalhoLinha2.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
 
         // Combo: Categoria
-        hierarquiaCombo = new ComboBox(mensagens.getString("CadastroMetaView.hierarquiaCombo.label"));
+        hierarquiaCombo = new ComboBox(message.getString("CadastroMetaView.hierarquiaCombo.label"));
         hierarquiaCombo.addValidator(new BeanValidator(Meta.class, "hierarquia"));
         camposObrigatorios.add(hierarquiaCombo);
         containerCabecalhoLinha2.addComponent(hierarquiaCombo);
 
         
         // TextField: Data de Inicio 
-        dataInicioDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataInicioTextField.label"));
-        dataInicioDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
+        dataInicioDateField = new PopupDateField(message.getString("CadastroMetaView.dataInicioTextField.label"));
+        dataInicioDateField.setInputPrompt(message.getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
         dataInicioDateField.setConverter(new DateToLocalDateConverter());
         dataInicioDateField.addValidator(new BeanValidator(Meta.class, "dataInicio"));
         camposObrigatorios.add(dataInicioDateField);
         containerCabecalhoLinha2.addComponent(dataInicioDateField);
         
         // TextField: Data Fim
-        dataFimDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataFimTextField.label"));
-        dataFimDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
+        dataFimDateField = new PopupDateField(message.getString("CadastroMetaView.dataFimTextField.label"));
+        dataFimDateField.setInputPrompt(message.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
         dataFimDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
 
@@ -289,7 +337,7 @@ public class CadastroMetaView extends Window {
         dataFimDateField.addValidator(new DataFimValidator(dataInicioDateField, "Data Fim"));
 
         // TextField: Data Termino
-        dataTerminoDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataTerminoDateField.label"));
+        dataTerminoDateField = new PopupDateField(message.getString("CadastroMetaView.dataTerminoDateField.label"));
         dataTerminoDateField.setWidth("100%");
         dataTerminoDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
@@ -349,26 +397,26 @@ public class CadastroMetaView extends Window {
         containerTabelaTarefas.setContent(tarefasTable);
         tarefasTable.setSizeFull();
 
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod"), Button.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod"), 70);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo"), Button.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo"), 50);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome"), Button.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome"), 250);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), String.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), 200);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), String.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), 80);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), String.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), 80);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), String.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus"), String.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
-        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
-        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaCod"), Button.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaCod"), 70);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaTitulo"), Button.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaTitulo"), 50);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaNome"), Button.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaNome"), 250);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), String.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), 200);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), String.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), 80);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), String.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), 80);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), String.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaStatus"), String.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
+        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
         tarefasTable.addContainerProperty("[E]", Button.class, "");
         tarefasTable.setColumnWidth("[E]", 30);
         tarefasTable.addContainerProperty("[C]", Button.class, "");
@@ -437,7 +485,7 @@ public class CadastroMetaView extends Window {
         barraBotoesInferior.setSizeUndefined();
         barraBotoesInferior.setSpacing(true);
 
-        gravarButton = new Button(mensagens.getString("CadastroMetaView.gravarButton.caption"), (Button.ClickEvent event) -> {
+        gravarButton = new Button(message.getString("CadastroMetaView.gravarButton.caption"), (Button.ClickEvent event) -> {
             try {
                 setValidatorsVisible(true);
                 metaFieldGroup.commit();
@@ -453,7 +501,7 @@ public class CadastroMetaView extends Window {
 
         barraBotoesInferior.addComponent(gravarButton);
 
-        cancelarButton = new Button(mensagens.getString("CadastroMetaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
+        cancelarButton = new Button(message.getString("CadastroMetaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
             listener.cancelarButtonClicked();
         });
         barraBotoesInferior.addComponent(cancelarButton);
@@ -566,7 +614,7 @@ public class CadastroMetaView extends Window {
     }
 
     public void exibeTituloEdicao(Meta metapai) {
-        setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao"));
+        setCaption(message.getString("CadastroTarefaView.titulo.edicao"));
     }
     
     /**
@@ -582,8 +630,16 @@ public class CadastroMetaView extends Window {
     public PopupDateField getDataFimDateField() {
         return dataFimDateField;
     }
-    
 
+    public FieldGroup getMetaFieldGroup() {
+        return metaFieldGroup;
+    }
+
+    public TreeTable getTarefasTable() {
+        return tarefasTable;
+    }
+
+    
     
     
 }

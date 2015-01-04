@@ -15,7 +15,7 @@ import org.vaadin.chatbox.client.ChatLine;
 import org.vaadin.chatbox.client.ChatUser;
 
 /**
- * Singleton responsável por coordenar os chats em grupo
+ * Singleton responsible for coordinating the group chats
  *
  * @author Rodrigo
  */
@@ -25,16 +25,16 @@ public class ChatSingletonModel implements SharedChat.ChatListener {
     private final Map<Integer, SharedChat> chats;
 
     /**
-     * Construtor privado para garantir singularidade
+     * Private builder to ensure uniqueness
      */
     private ChatSingletonModel() {
         chats = new HashMap<>();
     }
 
     /**
-     * Cria a instancia do singleton, caso não exista, e retorna
+     * Creates the singleton instance, if none, and returns
      *
-     * @return a única instancia de ChatSingletonModel
+     * @return the only instance of ChatSingletonModel
      */
     public static ChatSingletonModel getInstance() {
 
@@ -45,51 +45,51 @@ public class ChatSingletonModel implements SharedChat.ChatListener {
         return instance;
     }
 
-    public SharedChat getChat(Tarefa tarefa) {
-        if (!chats.containsKey(tarefa.getId())) {
+    public SharedChat getChat(Tarefa task) {
+        if (!chats.containsKey(task.getId())) {
             SharedChat chat = new SharedChat();
-            loadHistorico(chat, tarefa);
-            chats.put(tarefa.getId(), chat);
+            loadHistory(chat, task);
+            chats.put(task.getId(), chat);
         }
-        return chats.get(tarefa.getId());
+        return chats.get(task.getId());
     }
 
-    public String buildID(Usuario usuario, Tarefa tarefa, boolean historico) {
-        return tarefa.getId() + ":" + usuario.getId() + ":" + historico;
+    public String buildID(Usuario user, Tarefa task, boolean history) {
+        return task.getId() + ":" + user.getId() + ":" + history;
     }
 
-    private void loadHistorico(SharedChat chat, Tarefa tarefa) {
+    private void loadHistory(SharedChat chat, Tarefa task) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        List<ChatTarefa> historico = em.createNamedQuery("ChatTarefa.findByTarefa")
-                .setParameter("tarefa", tarefa)
+        List<ChatTarefa> history = em.createNamedQuery("ChatTarefa.findByTarefa")
+                .setParameter("tarefa", task)
                 .getResultList();
 
-        for (ChatTarefa mensagem : historico) {
+        for (ChatTarefa message : history) {
 
-            ChatUser user = new ChatUser(buildID(mensagem.getUsuario(), tarefa, true), mensagem.getUsuario().getNome(), "user1");
-            ChatLine line = new ChatLine(mensagem.getMensagem()+"   às "+FormatterUtil.formatDateTime(mensagem.getDataHoraInclusao()).toString(), user);
+            ChatUser user = new ChatUser(buildID(message.getUsuario(), task, true), message.getUsuario().getNome(), "user1");
+            ChatLine line = new ChatLine(message.getMensagem()+"   às "+FormatterUtil.formatDateTime(message.getDataHoraInclusao()).toString(), user);
 
             chat.addLine(line);
         }
 
     }
 
-    private Tarefa getTarefa(String chatID) {
-        Integer idTarefa = Integer.parseInt(chatID.split(":")[0]);
+    private Tarefa getTask(String chatID) {
+        Integer idTask = Integer.parseInt(chatID.split(":")[0]);
             EntityManager em = GestorEntityManagerProvider.getEntityManager();
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
-            return tarefa;
+            Tarefa task = em.find(Tarefa.class, idTask);
+            return task;
     }
 
-    private Usuario getUsuario(String chatID) {
-        Integer idUsuario = Integer.parseInt(chatID.split(":")[1]);
+    private Usuario getUser(String chatID) {
+        Integer idUser = Integer.parseInt(chatID.split(":")[1]);
             EntityManager em = GestorEntityManagerProvider.getEntityManager();
-            Usuario usuario = em.find(Usuario.class, idUsuario);
-            return usuario;
+            Usuario user = em.find(Usuario.class, idUser);
+            return user;
     }
 
-    private boolean getFlagHistorico(String chatID) {
+    private boolean getHistoryFlag(String chatID) {
         boolean flag = Boolean.parseBoolean(chatID.split(":")[2]);
         return flag;
     }
@@ -97,21 +97,21 @@ public class ChatSingletonModel implements SharedChat.ChatListener {
     @Override
     public void lineAdded(ChatLine line) {
 
-        boolean historico = getFlagHistorico(line.getUser().getId());
+        boolean history = getHistoryFlag(line.getUser().getId());
 
-        if (!historico) {
-            ChatTarefa novaMensagem = new ChatTarefa();
-            novaMensagem.setMensagem(line.getText());
-            novaMensagem.setUsuario(getUsuario(line.getUser().getId()));
-            novaMensagem.setTarefa(getTarefa(line.getUser().getId()));
-            novaMensagem.setDataHoraInclusao(LocalDateTime.now());
+        if (!history) {
+            ChatTarefa newMessage = new ChatTarefa();
+            newMessage.setMensagem(line.getText());
+            newMessage.setUsuario(getUser(line.getUser().getId()));
+            newMessage.setTarefa(getTask(line.getUser().getId()));
+            newMessage.setDataHoraInclusao(LocalDateTime.now());
 
             EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
             if (!em.getTransaction().isActive()) {
                 em.getTransaction().begin();
             }
-            em.persist(novaMensagem);
+            em.persist(newMessage);
 
             em.getTransaction().commit();
         }

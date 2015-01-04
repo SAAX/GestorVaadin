@@ -15,7 +15,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -31,26 +30,20 @@ import org.vaadin.chatbox.client.ChatUser;
  */
 public class ChatView extends Window{
     
-    // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    private final Usuario usuarioLogado;
+    // Reference to feature messages
+    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
     
-    // A view mantem acesso ao listener (Presenter) para notificar os eventos
-    // Este acesso se dÃƒÆ’Ã‚Â¡ por uma interface para manter a abstraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o das camadas
+    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final Usuario userLogged;
+    
+    // The view maintains access to the listener (Presenter) to notify events
     private ChatViewListener listener;
     
     // Create the selection component
-    private Panel containerTabelaUsuarios;
-    private Table usuariosTable;
-    
-    private TextArea textoEnviar;
-    private TextArea historico;
+    private Panel containerUserTable;
+    private Table userTable;
     
     private final HorizontalSplitPanel hsplit;
-    
-    
-
     
     public void setListener(ChatViewListener listener) {
         this.listener = listener;
@@ -58,102 +51,100 @@ public class ChatView extends Window{
     
     
     /**
-     * Cria o pop-up do Chat
+     * Chat Pop-Up
      *
      */
     public ChatView() {
         super();
         
-        setCaption(mensagens.getString("ChatView.titulo"));
+        setCaption(messages.getString("ChatView.titulo"));
         setModal(true);
-        setWidth("90%");
+        setWidth("70%");
         setHeight("60%");
-        
-        Panel panel = new Panel("Chat");
+        setResizable(false);
         
         VerticalLayout container = new VerticalLayout();
         container.setMargin(true);
+        container.setWidth("100%");
+        container.setHeight("100%");
         setContent(container);
         
-        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        userLogged = (Usuario) GestorSession.getAttribute("usuarioLogado");
         
         HorizontalLayout hlayout = new HorizontalLayout();
         
         // Have a horizontal split panel as its content
         hsplit = new HorizontalSplitPanel();
-        //hsplit.setWidth("700px");
-        //hsplit.setHeight("700px");
         hsplit.setSizeFull();
         // Put a component in the left panel
-        hsplit.setFirstComponent(containerTabelaUsuarios());
-        hsplit.getFirstComponent().setWidth("200px");
+        hsplit.setFirstComponent(containerUserTable());
+        hsplit.getFirstComponent().setWidth("100%");
         // A static variable so that everybody gets the same instance.
         
-        panel.setContent(hsplit);
-        hlayout.addComponent(panel);
-        container.addComponent(hlayout);
+        container.addComponent(hsplit);
         
     }
 
-    public void configurarChat(Tarefa tarefa, SharedChat chat){
+    public void chatConfigure(Tarefa task, SharedChat chat){
         
         ChatBox cb = new ChatBox(chat);
      
-        ChatUser user = new ChatUser(ChatSingletonModel.getInstance().buildID(usuarioLogado, tarefa, false), usuarioLogado.getNome(), "user1");
+        ChatUser user = new ChatUser(ChatSingletonModel.getInstance().buildID(userLogged, task, false), userLogged.getNome(), "user1");
         cb.setUser(user);
-        cb.setWidth("100%");
+        cb.setSizeFull();
                 
         hsplit.setSecondComponent(cb);
-        hsplit.getSecondComponent().setWidth("700px");
+        hsplit.getSecondComponent().setWidth("100%");
         
     }
        
     
     
-    private VerticalLayout containerTabelaUsuarios(){
+    private VerticalLayout containerUserTable(){
         
-        VerticalLayout usuarios = new VerticalLayout();
+        VerticalLayout users = new VerticalLayout();
         
-        containerTabelaUsuarios = new Panel();
-        containerTabelaUsuarios.setWidth("300px");
+        containerUserTable = new Panel();
+        containerUserTable.setWidth("100%");
 
-        usuariosTable = new Table();
-        containerTabelaUsuarios.setContent(usuariosTable);
+        userTable = new Table();
+        containerUserTable.setContent(userTable);
         
 
-        usuariosTable.addContainerProperty("Usuario", String.class, null);
-        usuariosTable.addContainerProperty("Função na Tarefa", String.class, null);
+        userTable.addContainerProperty(messages.getString("ChatView.usuario"), String.class, null);
+        userTable.addContainerProperty(messages.getString("ChatView.funcao"), String.class, null);
         
-        usuariosTable.setImmediate(true);
-        usuariosTable.setSelectable(true);
+        userTable.setImmediate(true);
+        userTable.setSelectable(true);
         
-        usuarios.addComponent(containerTabelaUsuarios);
+        users.addComponent(containerUserTable);
         
-        return usuarios;
+        return users;
     }
     
-       
-
     /**
      * @return the listener
      */
     public ChatViewListener getListener() {
         return listener;
     }
-    
-     /**
-     * @return the usuariosTable
-     */
-    public Table getUsuariosTable() {
-        return usuariosTable;
+
+    public Panel getContainerUserTable() {
+        return containerUserTable;
     }
 
-    /**
-     * @param usuariosTable the UsuariosTable to set
-     */
-    public void setUsuariosTable(Table usuariosTable) {
-        this.usuariosTable = usuariosTable;
+    public void setContainerUserTable(Panel containerUserTable) {
+        this.containerUserTable = containerUserTable;
     }
+
+    public Table getUserTable() {
+        return userTable;
+    }
+
+    public void setUserTable(Table userTable) {
+        this.userTable = userTable;
+    }
+    
     
 }
 

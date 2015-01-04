@@ -20,26 +20,26 @@ import java.util.ResourceBundle;
 
 /**
  * SignUP Presenter <br>
- * Esta classe é responsável captar todos os eventos que ocorrem na View <br>
- * e dar o devido tratamento, utilizando para isto o modelo
+ * This class is responsible capture all events that occur in View <br>
+ * and provide appropriate treatment, using the model
  *
  *
  * @author Rodrigo
  */
 public class ChatPresenter implements ChatViewListener {
 
-    // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    private final Usuario usuarioLogado;
+    // Reference to the use of the messages:
+    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final Usuario userLogged;
 
-    // Todo presenter mantem acesso à view e ao model
+    // Every presenter keeps access to view and model
     private final ChatView view;
     private final ChatSingletonModel model;
-    private Tarefa tarefa;
+    private Tarefa task;
 
     /**
-     * Cria o presenter ligando o Model ao View
+     * Creates the presenter linking the Model View
      *
      * @param model
      * @param view
@@ -49,29 +49,29 @@ public class ChatPresenter implements ChatViewListener {
         this.model = model;
         this.view = view;
         view.setListener(this);
-        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        userLogged = (Usuario) GestorSession.getAttribute("usuarioLogado");
     }
 
-    public void open(Tarefa tarefa) {
+    public void open(Tarefa task) {
 
-        view.configurarChat(tarefa, ChatSingletonModel.getInstance().getChat(tarefa));
-        ChatSingletonModel.getInstance().getChat(tarefa).addListener(ChatSingletonModel.getInstance());
-        carregarTabela(tarefa);
-        this.tarefa = tarefa;
+        view.chatConfigure(task, ChatSingletonModel.getInstance().getChat(task));
+        ChatSingletonModel.getInstance().getChat(task).addListener(ChatSingletonModel.getInstance());
+        loadingTable(task);
+        this.task = task;
 
     }
 
     /**
-     * Carrega as informações para preenchimento da tabela de Usuários
+     * Carries the information to fill the Users table
      */
-    public void carregarTabela(Tarefa tarefa) {
-        view.getUsuariosTable().addItem(new Object[]{tarefa.getUsuarioSolicitante().getNome(), "Solicitante"}, "Solicitante");
-        view.getUsuariosTable().addItem(new Object[]{tarefa.getUsuarioResponsavel().getNome(), "Responsável"}, "Responsável");
+    public void loadingTable(Tarefa task) {                                              
+        view.getUserTable().addItem(new Object[]{task.getUsuarioSolicitante().getNome(), messages.getString("ChatPresenter.solicitante")}, messages.getString("ChatPresenter.solicitante"));
+        view.getUserTable().addItem(new Object[]{task.getUsuarioResponsavel().getNome(), messages.getString("ChatPresenter.responsavel")}, messages.getString("ChatPresenter.responsavel"));
         
-        List<ParticipanteTarefa> participantes = tarefa.getParticipantes();
+        List<ParticipanteTarefa> participants = task.getParticipantes();
         
-        for (int i = 0; i < participantes.size(); i++) {
-            view.getUsuariosTable().addItem(new Object[]{participantes.get(i).getUsuarioParticipante().getNome(), "Participante"}, "Participante");
+        for (int i = 0; i < participants.size(); i++) {
+            view.getUserTable().addItem(new Object[]{participants.get(i).getUsuarioParticipante().getNome(), messages.getString("ChatPresenter.participante")}, messages.getString("ChatPresenter.participante"));
         }
         
 

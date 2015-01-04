@@ -17,6 +17,7 @@ public interface DashboardViewListenter {
     void criarNovaTarefaViaTemplate();
     void init();
     void usuarioLogadoAlteradoAPENASTESTE();
+    
 
     
 }

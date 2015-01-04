@@ -3,6 +3,7 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroMetaModel;
 import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.ChatSingletonModel;
 
 import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.EmpresaModel;
@@ -25,6 +26,7 @@ import com.vaadin.data.Item;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
 import com.saax.gestorweb.view.CadastroMetaView;
+import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -479,7 +481,9 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
             buildPopUpEvolucaoStatusEAndamento(tarefa),
             tarefa.getProjecao().toString().charAt(0),
             new Button("E"),
-            new Button("C")
+            new Button("Chat", (Button.ClickEvent event) -> {
+            chatButtonClicked(tarefa);
+        })
         };
 
         view.getTarefasTable().addItem(linha, tarefa);
@@ -660,4 +664,19 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         //organizarHierarquiaTreeTable(listaMetas);
 
     }
+    
+    public void chatButtonClicked(Tarefa tarefa) {
+        //Cria o pop up para registrar a conta (model e viw)
+        ChatSingletonModel chatModel = ChatSingletonModel.getInstance();
+        ChatView chatView = new ChatView();
+
+        //o presenter liga model e view
+        ChatPresenter chatPresenter;
+        chatPresenter = new ChatPresenter(chatModel, chatView);
+       
+        //adiciona a visualização à UI
+        UI.getCurrent().addWindow(chatView);
+        chatPresenter.open(tarefa);
+    }
+    
 }

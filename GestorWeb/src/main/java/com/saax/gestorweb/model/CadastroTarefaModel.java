@@ -466,23 +466,6 @@ public class CadastroTarefaModel {
         return participanteTarefa;
     }
 
-    public List<Departamento> listDepartamentos() {
-
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        return em.createNamedQuery("Departamento.findAll").getResultList();
-
-    }
-
-    public List<CentroCusto> listCentroCusto() {
-
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        return em.createNamedQuery("CentroCusto.findByEmpresa")
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
-                .getResultList();
-
-    }
-
     public List<HierarquiaProjetoDetalhe> listaCategorias() {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
         return em.createNamedQuery("HierarquiaProjetoDetalhe.findAll")
@@ -552,5 +535,15 @@ public class CadastroTarefaModel {
         return empresaModel.obterListaDepartamentosAtivos(empresa);
     }
 
+    
+    /**
+     * Delega chamada ao model responsavel (EmpresaModel)
+     *
+     * @param empresa
+     * @return
+     */
+    public List<CentroCusto> obterListaCentroCustosAtivos(Empresa empresa) {
+        return empresaModel.obterListaCentroCustosAtivos(empresa);
+    }
 
 }

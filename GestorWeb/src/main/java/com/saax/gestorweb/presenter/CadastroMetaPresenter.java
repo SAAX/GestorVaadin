@@ -125,37 +125,81 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     }
 
     /**
-     * Carrega o combo de departamentos com os departamentos ativos da empresa
-     * logada
+     * Loads the department's combobox with all active company's department or 
+     * disable the combo if there is not any active department for this company.
      */
-    private void carregaComboDepartamento(Empresa empresa) {
+    private void loadDepartmentCombo(Empresa company) {
+            
+        // Retrieves the combo reference
+        ComboBox department = view.getDepartamentoCombo();
+            
 
-        if (empresa != null) {
-            ComboBox departamento = view.getDepartamentoCombo();
-            for (Departamento depto : model.obterListaDepartamentosAtivos(empresa)) {
-                departamento.addItem(depto);
-                departamento.setItemCaption(depto, depto.getDepartamento());
+        // Verify if the company is already set
+        if (company != null) {
+            
+            // Retrieves the list of active departments for this company
+            List<Departamento> departmentList = model.obterListaDepartamentosAtivos(company);
+
+            if (departmentList.isEmpty()) {
+                
+                // if there is not any department: disable and empty the combo
+                department.removeAllItems();
+                department.setEnabled(false);
+
+            } else {
+
+                // loads the department's list into the combo
+                for (Departamento depto : departmentList) {
+                    department.addItem(depto);
+                    department.setItemCaption(depto, depto.getDepartamento());
+                }
             }
         } else {
-            view.getDepartamentoCombo().setInputPrompt(mensagens.getString("CadastroMetaPresenter.departamentoCombo.avisoSelecionarEmpresa"));
+            
+            // if there conmpany has not been setted: disable and empty the combo
+            department.removeAllItems();
+            department.setEnabled(false);
+
         }
 
     }
     
     /**
-     * Carrega o combo de departamentos com os departamentos ativos da empresa
-     * logada
+     * Loads the cost center's combobox with all active company's cc or 
+     * disable the combo if there is not any active cost-center for this company.
      */
-    private void carregaComboCentroCusto(Empresa empresa) {
+    private void loadCostCenterCombo(Empresa company) {
+            
+        // Retrieves the combo reference
+        ComboBox costCenterCombo = view.getCentroCustoCombo();
+            
 
-        if (empresa != null) {
-            ComboBox centroCusto = view.getCentroCustoCombo();
-            for (CentroCusto cc : model.obterListaCentroCustosAtivos(empresa)) {
-                centroCusto.addItem(cc);
-                centroCusto.setItemCaption(cc, cc.getCentroCusto());
+        // Verify if the company is already set
+        if (company != null) {
+            
+            // Retrieves the list of active departments for this company
+            List<CentroCusto> costCenterList = model.obterListaCentroCustosAtivos(company);
+
+            if (costCenterList.isEmpty()) {
+                
+                // if there is not any cost center: disable and empty the combo
+                costCenterCombo.removeAllItems();
+                costCenterCombo.setEnabled(false);
+
+            } else {
+
+                // loads the cost center list into the combo
+                for (CentroCusto cc : costCenterList) {
+                    costCenterCombo.addItem(cc);
+                    costCenterCombo.setItemCaption(cc, cc.getCentroCusto());
+                }
             }
         } else {
-            view.getCentroCustoCombo().setInputPrompt(mensagens.getString("CadastroMetaPresenter.departamentoCombo.avisoSelecionarEmpresa"));
+            
+            // if there conmpany has not been setted: disable and empty the combo
+            costCenterCombo.removeAllItems();
+            costCenterCombo.setEnabled(false);
+
         }
 
     }
@@ -192,8 +236,8 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
      */
     @Override
     public void empresaSelecionada(Empresa empresa) {
-        carregaComboDepartamento(empresa);
-        carregaComboCentroCusto(empresa);
+        loadDepartmentCombo(empresa);
+        loadCostCenterCombo(empresa);
     }
 
     /**
@@ -260,13 +304,14 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     }
 
     /**
-     * Event thrown when the "addTask" button is clicked, indicating that the user wants a new task to the goal
+     * Event thrown when the "addTask" button is clicked, indicating that the user wants a new task to the Target
      */
     @Override
     public void addTaskButtonClicked() {
             
         try {
-            // commit to run validators
+            // commit and run validators
+            view.setValidatorsVisible(true);
             view.getMetaFieldGroup().commit();
             
             // Creates the presenter that will handle the new task creation
@@ -275,7 +320,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
             // Configure this as the object to be called when the task creation was done
             presenter.setCallBackListener(this);
             
-            // Gets the tasks categories from the goal category
+            // Gets the tasks categories from the Target category
             List<HierarquiaProjetoDetalhe> tasksCategories = model.getFirstsTaskCategories(view.getMeta().getCategoria());
             
             // Tells the presenter which is gonna be the Task's category
@@ -287,7 +332,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     }
 
     /**
-     * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the goal
+     * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the Target
      */
     @Override
     public void chatButtonClicked() {
@@ -295,10 +340,10 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     }
 
     /**
-     * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the goal
+     * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the Target
      */
     @Override
-    public void trendButtonClicked() {
+    public void forecastButtonClickedd() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

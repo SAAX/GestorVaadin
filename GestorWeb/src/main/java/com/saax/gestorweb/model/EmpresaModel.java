@@ -89,11 +89,6 @@ public class EmpresaModel {
                 .setParameter("empresa", empresa)
                 .getResultList();
 
-        if (departamentos.isEmpty()) {
-            Logger.getLogger(CadastroMetaModel.class.getName()).log(Level.WARNING, "Não foram encontrados departamentos para empresa: {0}", empresa.getId());
-            throw new IllegalStateException("Não foram encontrados departamentos para empresa");
-        }
-
         return departamentos;
     }
     
@@ -114,11 +109,6 @@ public class EmpresaModel {
         List<CentroCusto> centroCustos = em.createNamedQuery("CentroCusto.findByEmpresaAtivo")
                 .setParameter("empresa", empresa)
                 .getResultList();
-
-        if (centroCustos.isEmpty()) {
-            Logger.getLogger(CadastroMetaModel.class.getName()).log(Level.WARNING, "Não foram encontrados centros de custos para empresa: {0}", empresa.getId());
-            throw new IllegalStateException("Não foram encontrados departamentos para empresa");
-        }
 
         return centroCustos;
     }

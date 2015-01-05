@@ -233,7 +233,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         carregaComboResponsavel();
         carregaComboParticipante();
         carregaComboEmpresaCliente();
-        carregaComboCentroCusto();
         setPopUpEvolucaoStatusEAndamento(tarefa);
 
         // Configuras os beans de 1-N
@@ -381,29 +380,83 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     }
 
+    
     /**
-     * Carrega o combo de departamentos com os departamentos ativos da empresa
-     * logada
+     * Loads the department's combobox with all active company's department or 
+     * disable the combo if there is not any active department for this company.
      */
-    private void carregaComboDepartamento(Empresa empresa) {
+    private void loadDepartmentCombo(Empresa company) {
+            
+        // Retrieves the combo reference
+        ComboBox department = view.getDepartamentoCombo();
+            
 
-        ComboBox departamento = view.getDepartamentoCombo();
-        for (Departamento depto : model.obterListaDepartamentosAtivos(empresa)) {
-            departamento.addItem(depto);
-            departamento.setItemCaption(depto, depto.getDepartamento());
+        // Verify if the company is already set
+        if (company != null) {
+            
+            // Retrieves the list of active departments for this company
+            List<Departamento> departmentList = model.obterListaDepartamentosAtivos(company);
+
+            if (departmentList.isEmpty()) {
+                
+                // if there is not any department: disable and empty the combo
+                department.removeAllItems();
+                department.setEnabled(false);
+
+            } else {
+
+                // loads the department's list into the combo
+                for (Departamento depto : departmentList) {
+                    department.addItem(depto);
+                    department.setItemCaption(depto, depto.getDepartamento());
+                }
+            }
+        } else {
+            
+            // if there conmpany has not been setted: disable and empty the combo
+            department.removeAllItems();
+            department.setEnabled(false);
+
         }
 
-    }
+    }    
 
-    /**
-     * Carrega o combo de centros de custo
+        /**
+     * Loads the cost center's combobox with all active company's cc or 
+     * disable the combo if there is not any active cost-center for this company.
      */
-    private void carregaComboCentroCusto() {
+    private void loadCostCenterCombo(Empresa company) {
+            
+        // Retrieves the combo reference
+        ComboBox costCenterCombo = view.getCentroCustoCombo();
+            
 
-        ComboBox centrocusto = view.getCentroCustoCombo();
-        for (CentroCusto cc : model.listCentroCusto()) {
-            centrocusto.addItem(cc);
-            centrocusto.setItemCaption(cc, cc.getCentroCusto());
+        // Verify if the company is already set
+        if (company != null) {
+            
+            // Retrieves the list of active departments for this company
+            List<CentroCusto> costCenterList = model.obterListaCentroCustosAtivos(company);
+
+            if (costCenterList.isEmpty()) {
+                
+                // if there is not any cost center: disable and empty the combo
+                costCenterCombo.removeAllItems();
+                costCenterCombo.setEnabled(false);
+
+            } else {
+
+                // loads the cost center list into the combo
+                for (CentroCusto cc : costCenterList) {
+                    costCenterCombo.addItem(cc);
+                    costCenterCombo.setItemCaption(cc, cc.getCentroCusto());
+                }
+            }
+        } else {
+            
+            // if there conmpany has not been setted: disable and empty the combo
+            costCenterCombo.removeAllItems();
+            costCenterCombo.setEnabled(false);
+
         }
 
     }
@@ -752,7 +805,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     @Override
     public void empresaSelecionada(Empresa empresa) {
-        carregaComboDepartamento(empresa);
+        loadDepartmentCombo(empresa);
+        loadCostCenterCombo(empresa);
     }
     
     @Override

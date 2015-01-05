@@ -142,11 +142,11 @@ public class CadastroMetaModel {
     }
 
     /**
-     * Given a Goal category, searches and returns its firsts tasks categories.
+     * Given a Target category, searches and returns its firsts tasks categories.
      * <br>
      * For example, given the structure below, its'll returns Task Type 1 and 2: <br>
      * <dl>
-     *      <dt>Goal</dt>
+     *      <dt>Target</dt>
      *      <dd>
      *          <dl>
      *              <dt>Task Type 1</dt>
@@ -167,16 +167,16 @@ public class CadastroMetaModel {
      *      </dd>
      * </dl>
      *
-     * @param goalCategory of the Goal
-     * @return a list of categories with every task category child of the give goalCategory
+     * @param TargetCategory of the Target
+     * @return a list of categories with every task category child of the give TargetCategory
      */
-    public List<HierarquiaProjetoDetalhe> getFirstsTaskCategories(HierarquiaProjetoDetalhe goalCategory) {
+    public List<HierarquiaProjetoDetalhe> getFirstsTaskCategories(HierarquiaProjetoDetalhe TargetCategory) {
         
         // the task's categories
         List<HierarquiaProjetoDetalhe> tasksCategories = new ArrayList<>();
         
-        // retrieves the category set of the goal category
-        HierarquiaProjeto categorySet = goalCategory.getHierarquia();
+        // retrieves the category set of the Target category
+        HierarquiaProjeto categorySet = TargetCategory.getHierarquia();
         
         // the task level into the category set
         final int TASK_LEVEL = 2;

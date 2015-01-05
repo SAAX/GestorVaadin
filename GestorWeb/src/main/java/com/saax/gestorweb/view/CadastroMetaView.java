@@ -129,7 +129,7 @@ public class CadastroMetaView extends Window {
     private CheckBox templateCheckBox;
     private Button addTaskButton;
     private Button chatButton;
-    private Button trendButton;
+    private Button forecast​Button;
 
     /**
      * Cria o pop-up de login, com campos para usuário e senha
@@ -229,7 +229,7 @@ public class CadastroMetaView extends Window {
      *  <li>Templatebox </li>
      *  <li>Add Task </li>
      *  <li>Chat </li>
-     *  <li>Trend </li>
+     *  <li>Forecast​ </li>
      * </ul>
      * @return
      */
@@ -253,10 +253,10 @@ public class CadastroMetaView extends Window {
         });
         topButtonsBar.addComponent(chatButton);
 
-        trendButton = new Button("[Projeção]", (Button.ClickEvent event) -> {
-            listener.trendButtonClicked();
+        forecast​Button = new Button("[Projeção]", (Button.ClickEvent event) -> {
+            listener.forecastButtonClickedd();
         });
-        topButtonsBar.addComponent(trendButton);
+        topButtonsBar.addComponent(forecast​Button);
 
         return topButtonsBar;
     }

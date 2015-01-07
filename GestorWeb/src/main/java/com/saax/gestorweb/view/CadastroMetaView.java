@@ -54,16 +54,25 @@ import java.util.logging.Logger;
  */
 public class CadastroMetaView extends Window {
 
-    // Referencia ao recurso das mensagens:
+    // Message resource bunlde
     private final transient ResourceBundle message = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    // Images resource
+    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
-    // A view mantem acesso ao listener (Presenter) para notificar os eventos
-    // Este acesso se dá por uma interface para manter a abstração das camadas
+    // Presenter (listener)
     private CadastroMetaViewListener listener;
 
-    // lista com todos os campos que possuem validação
-    private final List<AbstractField> camposObrigatorios;
+    // List of required fields
+    private final List<AbstractField> requiredFields;
+
+    // -------------------------------------------------------------------------
+    // Top button's bar
+    // -------------------------------------------------------------------------
+    private HorizontalLayout topButtonsBar;
+    private CheckBox templateCheckBox;
+    private Button addTaskButton;
+    private Button chatButton;
+    private Button forecast​Button;
 
     // -----------------------------------------------------------------------------------
     // Bean Biding
@@ -72,7 +81,7 @@ public class CadastroMetaView extends Window {
     private FieldGroup metaFieldGroup;
 
     // -----------------------------------------------------------------------------------
-    // Informações Básicas
+    // Basic fields
     // -----------------------------------------------------------------------------------
 
     @PropertyId("empresa")
@@ -125,11 +134,8 @@ public class CadastroMetaView extends Window {
     private Button gravarButton;
     private Button cancelarButton;
     private VerticalLayout containerCabecalhoVisivel;
-    private HorizontalLayout topButtonsBar;
-    private CheckBox templateCheckBox;
-    private Button addTaskButton;
-    private Button chatButton;
-    private Button forecast​Button;
+    
+    
 
     /**
      * Cria o pop-up de login, com campos para usuário e senha
@@ -138,7 +144,7 @@ public class CadastroMetaView extends Window {
     public CadastroMetaView() {
         super();
 
-        camposObrigatorios = new ArrayList();
+        requiredFields = new ArrayList();
 
         setCaption(message.getString("CadastroMetaView.tituloBase"));
         setModal(true);
@@ -188,7 +194,6 @@ public class CadastroMetaView extends Window {
     public Meta getMeta() {
         return metaBeanItem.getBean();
     }
-    
 
     /**
      * Constrói o container principal da view, que terá todos os outros
@@ -286,7 +291,7 @@ public class CadastroMetaView extends Window {
             listener.empresaSelecionada((Empresa) event.getProperty().getValue());
         });
         empresaCombo.addValidator(new BeanValidator(Meta.class, "empresa"));
-        camposObrigatorios.add(empresaCombo);
+        requiredFields.add(empresaCombo);
         
         containerCabecalhoLinha1.addComponent(empresaCombo);
         containerCabecalhoLinha1.setExpandRatio(empresaCombo, 0);
@@ -297,7 +302,7 @@ public class CadastroMetaView extends Window {
         nomeMetaTextField.setInputPrompt(message.getString("CadastroMetaView.nomeMetaTextField.inputPrompt"));
         nomeMetaTextField.setNullRepresentation("");
         nomeMetaTextField.addValidator(new BeanValidator(Meta.class, "nome"));
-        camposObrigatorios.add(nomeMetaTextField);
+        requiredFields.add(nomeMetaTextField);
 
         containerCabecalhoLinha1.addComponent(nomeMetaTextField);
         containerCabecalhoLinha1.setExpandRatio(nomeMetaTextField, 1);
@@ -315,7 +320,7 @@ public class CadastroMetaView extends Window {
         // Combo: Categoria
         hierarquiaCombo = new ComboBox(message.getString("CadastroMetaView.hierarquiaCombo.label"));
         hierarquiaCombo.addValidator(new BeanValidator(Meta.class, "hierarquia"));
-        camposObrigatorios.add(hierarquiaCombo);
+        requiredFields.add(hierarquiaCombo);
         containerCabecalhoLinha2.addComponent(hierarquiaCombo);
 
         
@@ -324,7 +329,7 @@ public class CadastroMetaView extends Window {
         dataInicioDateField.setInputPrompt(message.getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
         dataInicioDateField.setConverter(new DateToLocalDateConverter());
         dataInicioDateField.addValidator(new BeanValidator(Meta.class, "dataInicio"));
-        camposObrigatorios.add(dataInicioDateField);
+        requiredFields.add(dataInicioDateField);
         containerCabecalhoLinha2.addComponent(dataInicioDateField);
         
         // TextField: Data Fim
@@ -413,7 +418,7 @@ public class CadastroMetaView extends Window {
         tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
         tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
         tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaStatus"), String.class, "");
+        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaStatus"), Button.class, "");
         tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
         tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
         tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
@@ -578,6 +583,53 @@ public class CadastroMetaView extends Window {
         departamentoCombo.setEnabled(false);
     }
 
+    /**
+     * Ocultar ou exibir validações
+     *
+     * @param visible
+     */
+    public void setValidatorsVisible(boolean visible) {
+        requiredFields.stream().forEach((campo) -> {
+            campo.setValidationVisible(visible);
+        });
+    }
+
+    public void exibeTituloEdicao(Meta metapai) {
+        setCaption(message.getString("CadastroTarefaView.titulo.edicao"));
+    }
+    
+
+    // -------------------------------------------------------------------------
+    // GETTERS AND SETTERS
+    // -------------------------------------------------------------------------
+    public ComboBox getHierarquiaCombo() {
+        return hierarquiaCombo;
+    }
+
+    public PopupDateField getDataInicioDateField() {
+        return dataInicioDateField;
+    }
+
+    public PopupDateField getDataFimDateField() {
+        return dataFimDateField;
+    }
+
+    public FieldGroup getMetaFieldGroup() {
+        return metaFieldGroup;
+    }
+
+    public TreeTable getTarefasTable() {
+        return tarefasTable;
+    }
+
+    public Button getAddTaskButton() {
+        return addTaskButton;
+    }
+
+    public TextField getNomeMetaTextField() {
+        return nomeMetaTextField;
+    }
+
     public ComboBox getEmpresaCombo() {
         return empresaCombo;
     }
@@ -598,46 +650,7 @@ public class CadastroMetaView extends Window {
         return empresaClienteCombo;
     }
 
-    /**
-     * Ocultar ou exibir validações
-     *
-     * @param visible
-     */
-    public void setValidatorsVisible(boolean visible) {
-        camposObrigatorios.stream().forEach((campo) -> {
-            campo.setValidationVisible(visible);
-        });
-    }
-
-    public ComboBox getHierarquiaCombo() {
-        return hierarquiaCombo;
-    }
-
-    public void exibeTituloEdicao(Meta metapai) {
-        setCaption(message.getString("CadastroTarefaView.titulo.edicao"));
-    }
     
-    /**
-     * @return the dataInicioDateField
-     */
-    public PopupDateField getDataInicioDateField() {
-        return dataInicioDateField;
-    }
-
-    /**
-     * @return the dataFimDateField
-     */
-    public PopupDateField getDataFimDateField() {
-        return dataFimDateField;
-    }
-
-    public FieldGroup getMetaFieldGroup() {
-        return metaFieldGroup;
-    }
-
-    public TreeTable getTarefasTable() {
-        return tarefasTable;
-    }
 
     
     

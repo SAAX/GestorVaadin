@@ -18,14 +18,11 @@ public class GestorEntityManagerProvider {
     private static final ThreadLocal<EntityManager> entityManagerThreadLocal = new ThreadLocal<>();
 
     public static EntityManager getEntityManager() {
-        if (entityManagerThreadLocal.get() == null) {
+        if (entityManagerThreadLocal.get() == null || !entityManagerThreadLocal.get().isOpen()) {
 
             EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
             setCurrentEntityManager(em);
             Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.INFO, "Criando EM por demanda...");
-        }
-        if (!entityManagerThreadLocal.get().isOpen()) {
-            throw new RuntimeException("Entity Manager está FECHADO!");
         }
         return entityManagerThreadLocal.get();
     }

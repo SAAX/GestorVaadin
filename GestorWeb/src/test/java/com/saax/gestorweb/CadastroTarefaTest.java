@@ -261,6 +261,8 @@ public class CadastroTarefaTest {
                 view.getHierarquiaCombo().setValue(categoria);
             }
         }
+        //        private Empresa empresa;
+        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
         //        private String nome;
         view.getNomeTarefaTextField().setValue(nome);
         //        private PrioridadeTarefa prioridade;
@@ -280,8 +282,6 @@ public class CadastroTarefaTest {
         //        private Departamento departamento;
         Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, usuarioLogado.getEmpresaAtiva());
         view.getDepartamentoCombo().setValue(departamento);
-        //        private Empresa empresa;
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva().getSubEmpresas().get(0));
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, usuarioLogado.getEmpresaAtiva());
@@ -362,7 +362,7 @@ public class CadastroTarefaTest {
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva().getSubEmpresas().get(0))
+                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
                 .getSingleResult();
 
         tarefasCadastradas.add(t);
@@ -395,7 +395,7 @@ public class CadastroTarefaTest {
         //        private Departamento departamento;
         Assert.assertEquals(departamento, t.getDepartamento());
         //        private Empresa empresa;
-        Assert.assertEquals(usuarioLogado.getEmpresaAtiva().getSubEmpresas().get(0), t.getEmpresa());
+        Assert.assertEquals(usuarioLogado.getEmpresaAtiva(), t.getEmpresa());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
@@ -588,7 +588,7 @@ public class CadastroTarefaTest {
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva().getSubEmpresas().get(0))
+                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
                 .getSingleResult();
 
         presenter.editar(t);

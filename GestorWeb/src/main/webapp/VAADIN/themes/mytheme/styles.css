@@ -903,7 +903,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.3.5";
+	content: "7.3.7";
 }
 
 .v-widget {
@@ -2332,6 +2332,11 @@ div.v-layout.v-horizontal.v-widget {
 	color: #75a2f0;
 }
 
+.mytheme a.v-disabled {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .mytheme .v-disabled {
 	cursor: default !important;
 }
@@ -2894,6 +2899,11 @@ div.v-layout.v-horizontal.v-widget {
 	color: #75a2f0;
 }
 
+.mytheme .v-button-link.v-disabled {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .mytheme .v-button-tiny {
 	height: 28px;
 	padding: 0 13px;
@@ -3098,28 +3108,6 @@ div.v-layout.v-horizontal.v-widget {
 	height: 13px;
 }
 
-:root .mytheme .v-checkbox > input ~ label:before:after {
-	border: inherit;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-}
-
-:root .mytheme .v-checkbox > input ~ label:before:hover:after {
-	background-color: rgba(190, 190, 190, 0.1);
-}
-
-:root .mytheme .v-checkbox > input ~ label:before:focus:after {
-	border-color: #4783eb;
-	-webkit-box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-	box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-}
-
-:root .mytheme .v-checkbox > input ~ label:before:active:after {
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
 :root .mytheme .v-checkbox > input ~ label:after {
 	content: "\f00c";
 	font-family: FontAwesome;
@@ -3137,23 +3125,24 @@ div.v-layout.v-horizontal.v-widget {
 	color: #4783eb;
 }
 
-:root .mytheme .v-checkbox > input[disabled]  ~ label, :root .mytheme .v-checkbox > input[disabled]  ~ label .v-icon, :root .mytheme .v-checkbox > input[disabled]  ~ .v-icon {
-	cursor: default;
-}
-
-:root .mytheme .v-checkbox > input[disabled]  ~ label:before, :root .mytheme .v-checkbox > input[disabled]  ~ label:after {
-	opacity: 0.5;
-	filter: alpha(opacity=50) ;
-}
-
-:root .mytheme .v-checkbox > input[disabled]:active ~ label:after {
-	background: transparent;
-}
-
 .mytheme .v-checkbox > .v-icon, .mytheme .v-checkbox > label .v-icon {
 	margin: 0 4px 0 2px;
 	min-width: 1em;
 	cursor: pointer;
+}
+
+.mytheme .v-checkbox.v-disabled  > label, .mytheme .v-checkbox.v-disabled  > .v-icon {
+	cursor: default;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
+.mytheme .v-checkbox.v-disabled  > label > .v-icon {
+	cursor: default;
+}
+
+:root .mytheme .v-checkbox.v-disabled > input:active ~ label:after {
+	background: transparent;
 }
 
 .mytheme .v-checkbox-small {
@@ -3232,28 +3221,6 @@ div.v-layout.v-horizontal.v-widget {
 	height: 16px;
 }
 
-:root .mytheme .v-checkbox-small > input ~ label:before:after {
-	border: inherit;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-}
-
-:root .mytheme .v-checkbox-small > input ~ label:before:hover:after {
-	background-color: rgba(190, 190, 190, 0.1);
-}
-
-:root .mytheme .v-checkbox-small > input ~ label:before:focus:after {
-	border-color: #4783eb;
-	-webkit-box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-	box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-}
-
-:root .mytheme .v-checkbox-small > input ~ label:before:active:after {
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
 :root .mytheme .v-checkbox-small > input ~ label:after {
 	content: "\f00c";
 	font-family: FontAwesome;
@@ -3271,23 +3238,24 @@ div.v-layout.v-horizontal.v-widget {
 	color: #4783eb;
 }
 
-:root .mytheme .v-checkbox-small > input[disabled]  ~ label, :root .mytheme .v-checkbox-small > input[disabled]  ~ label .v-icon, :root .mytheme .v-checkbox-small > input[disabled]  ~ .v-icon {
-	cursor: default;
-}
-
-:root .mytheme .v-checkbox-small > input[disabled]  ~ label:before, :root .mytheme .v-checkbox-small > input[disabled]  ~ label:after {
-	opacity: 0.5;
-	filter: alpha(opacity=50) ;
-}
-
-:root .mytheme .v-checkbox-small > input[disabled]:active ~ label:after {
-	background: transparent;
-}
-
 .mytheme .v-checkbox-small > .v-icon, .mytheme .v-checkbox-small > label .v-icon {
 	margin: 0 5px 0 3px;
 	min-width: 1em;
 	cursor: pointer;
+}
+
+.mytheme .v-checkbox-small.v-disabled  > label, .mytheme .v-checkbox-small.v-disabled  > .v-icon {
+	cursor: default;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
+.mytheme .v-checkbox-small.v-disabled  > label > .v-icon {
+	cursor: default;
+}
+
+:root .mytheme .v-checkbox-small.v-disabled > input:active ~ label:after {
+	background: transparent;
 }
 
 .mytheme .v-checkbox-large {
@@ -3366,28 +3334,6 @@ div.v-layout.v-horizontal.v-widget {
 	height: 22px;
 }
 
-:root .mytheme .v-checkbox-large > input ~ label:before:after {
-	border: inherit;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-}
-
-:root .mytheme .v-checkbox-large > input ~ label:before:hover:after {
-	background-color: rgba(190, 190, 190, 0.1);
-}
-
-:root .mytheme .v-checkbox-large > input ~ label:before:focus:after {
-	border-color: #4783eb;
-	-webkit-box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-	box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-}
-
-:root .mytheme .v-checkbox-large > input ~ label:before:active:after {
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
 :root .mytheme .v-checkbox-large > input ~ label:after {
 	content: "\f00c";
 	font-family: FontAwesome;
@@ -3405,23 +3351,24 @@ div.v-layout.v-horizontal.v-widget {
 	color: #4783eb;
 }
 
-:root .mytheme .v-checkbox-large > input[disabled]  ~ label, :root .mytheme .v-checkbox-large > input[disabled]  ~ label .v-icon, :root .mytheme .v-checkbox-large > input[disabled]  ~ .v-icon {
-	cursor: default;
-}
-
-:root .mytheme .v-checkbox-large > input[disabled]  ~ label:before, :root .mytheme .v-checkbox-large > input[disabled]  ~ label:after {
-	opacity: 0.5;
-	filter: alpha(opacity=50) ;
-}
-
-:root .mytheme .v-checkbox-large > input[disabled]:active ~ label:after {
-	background: transparent;
-}
-
 .mytheme .v-checkbox-large > .v-icon, .mytheme .v-checkbox-large > label .v-icon {
 	margin: 0 7px 0 4px;
 	min-width: 1em;
 	cursor: pointer;
+}
+
+.mytheme .v-checkbox-large.v-disabled  > label, .mytheme .v-checkbox-large.v-disabled  > .v-icon {
+	cursor: default;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
+.mytheme .v-checkbox-large.v-disabled  > label > .v-icon {
+	cursor: default;
+}
+
+:root .mytheme .v-checkbox-large.v-disabled > input:active ~ label:after {
+	background: transparent;
 }
 
 .mytheme .v-filterselect {
@@ -5761,6 +5708,8 @@ div.v-layout.v-horizontal.v-widget {
 	-ms-backface-visibility: hidden;
 	backface-visibility: hidden;
 	margin-top: 4px !important;
+	margin-bottom: 4px !important;
+	margin-right: 4px !important;
 	cursor: default;
 	width: auto;
 }
@@ -7250,12 +7199,6 @@ div.v-layout.v-horizontal.v-widget {
 	cursor: default;
 }
 
-.mytheme .v-menubar-popup.v-menubar-popup-animate-out {
-	-webkit-animation: none;
-	-moz-animation: none;
-	animation: none;
-}
-
 .mytheme .v-menubar-small {
 	height: 31px;
 	padding: 0 14px;
@@ -7428,28 +7371,6 @@ div.v-layout.v-horizontal.v-widget {
 	height: 13px;
 }
 
-:root .mytheme .v-radiobutton > input ~ label:before:after {
-	border: inherit;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-}
-
-:root .mytheme .v-radiobutton > input ~ label:before:hover:after {
-	background-color: rgba(190, 190, 190, 0.1);
-}
-
-:root .mytheme .v-radiobutton > input ~ label:before:focus:after {
-	border-color: #4783eb;
-	-webkit-box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-	box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-}
-
-:root .mytheme .v-radiobutton > input ~ label:before:active:after {
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
 :root .mytheme .v-radiobutton > input ~ label:after {
 	content: "\f00c";
 	font-family: FontAwesome;
@@ -7467,23 +7388,24 @@ div.v-layout.v-horizontal.v-widget {
 	color: #4783eb;
 }
 
-:root .mytheme .v-radiobutton > input[disabled]  ~ label, :root .mytheme .v-radiobutton > input[disabled]  ~ label .v-icon, :root .mytheme .v-radiobutton > input[disabled]  ~ .v-icon {
-	cursor: default;
-}
-
-:root .mytheme .v-radiobutton > input[disabled]  ~ label:before, :root .mytheme .v-radiobutton > input[disabled]  ~ label:after {
-	opacity: 0.5;
-	filter: alpha(opacity=50) ;
-}
-
-:root .mytheme .v-radiobutton > input[disabled]:active ~ label:after {
-	background: transparent;
-}
-
 .mytheme .v-radiobutton > .v-icon, .mytheme .v-radiobutton > label .v-icon {
 	margin: 0 4px 0 2px;
 	min-width: 1em;
 	cursor: pointer;
+}
+
+.mytheme .v-radiobutton.v-disabled  > label, .mytheme .v-radiobutton.v-disabled  > .v-icon {
+	cursor: default;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
+.mytheme .v-radiobutton.v-disabled  > label > .v-icon {
+	cursor: default;
+}
+
+:root .mytheme .v-radiobutton.v-disabled > input:active ~ label:after {
+	background: transparent;
 }
 
 :root .mytheme .v-radiobutton > input:checked ~ label:after {
@@ -7595,28 +7517,6 @@ div.v-layout.v-horizontal.v-widget {
 	height: 16px;
 }
 
-:root .mytheme .v-select-optiongroup-small .v-checkbox > input ~ label:before:after {
-	border: inherit;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-}
-
-:root .mytheme .v-select-optiongroup-small .v-checkbox > input ~ label:before:hover:after {
-	background-color: rgba(190, 190, 190, 0.1);
-}
-
-:root .mytheme .v-select-optiongroup-small .v-checkbox > input ~ label:before:focus:after {
-	border-color: #4783eb;
-	-webkit-box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-	box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-}
-
-:root .mytheme .v-select-optiongroup-small .v-checkbox > input ~ label:before:active:after {
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
 :root .mytheme .v-select-optiongroup-small .v-checkbox > input ~ label:after {
 	content: "\f00c";
 	font-family: FontAwesome;
@@ -7634,23 +7534,24 @@ div.v-layout.v-horizontal.v-widget {
 	color: #4783eb;
 }
 
-:root .mytheme .v-select-optiongroup-small .v-checkbox > input[disabled]  ~ label, :root .mytheme .v-select-optiongroup-small .v-checkbox > input[disabled]  ~ label .v-icon, :root .mytheme .v-select-optiongroup-small .v-checkbox > input[disabled]  ~ .v-icon {
-	cursor: default;
-}
-
-:root .mytheme .v-select-optiongroup-small .v-checkbox > input[disabled]  ~ label:before, :root .mytheme .v-select-optiongroup-small .v-checkbox > input[disabled]  ~ label:after {
-	opacity: 0.5;
-	filter: alpha(opacity=50) ;
-}
-
-:root .mytheme .v-select-optiongroup-small .v-checkbox > input[disabled]:active ~ label:after {
-	background: transparent;
-}
-
 .mytheme .v-select-optiongroup-small .v-checkbox > .v-icon, .mytheme .v-select-optiongroup-small .v-checkbox > label .v-icon {
 	margin: 0 5px 0 3px;
 	min-width: 1em;
 	cursor: pointer;
+}
+
+.mytheme .v-select-optiongroup-small .v-checkbox.v-disabled  > label, .mytheme .v-select-optiongroup-small .v-checkbox.v-disabled  > .v-icon {
+	cursor: default;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
+.mytheme .v-select-optiongroup-small .v-checkbox.v-disabled  > label > .v-icon {
+	cursor: default;
+}
+
+:root .mytheme .v-select-optiongroup-small .v-checkbox.v-disabled > input:active ~ label:after {
+	background: transparent;
 }
 
 .mytheme .v-select-optiongroup-small .v-radiobutton {
@@ -7728,28 +7629,6 @@ div.v-layout.v-horizontal.v-widget {
 	height: 16px;
 }
 
-:root .mytheme .v-select-optiongroup-small .v-radiobutton > input ~ label:before:after {
-	border: inherit;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-}
-
-:root .mytheme .v-select-optiongroup-small .v-radiobutton > input ~ label:before:hover:after {
-	background-color: rgba(190, 190, 190, 0.1);
-}
-
-:root .mytheme .v-select-optiongroup-small .v-radiobutton > input ~ label:before:focus:after {
-	border-color: #4783eb;
-	-webkit-box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-	box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-}
-
-:root .mytheme .v-select-optiongroup-small .v-radiobutton > input ~ label:before:active:after {
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
 :root .mytheme .v-select-optiongroup-small .v-radiobutton > input ~ label:after {
 	content: "\f00c";
 	font-family: FontAwesome;
@@ -7767,23 +7646,24 @@ div.v-layout.v-horizontal.v-widget {
 	color: #4783eb;
 }
 
-:root .mytheme .v-select-optiongroup-small .v-radiobutton > input[disabled]  ~ label, :root .mytheme .v-select-optiongroup-small .v-radiobutton > input[disabled]  ~ label .v-icon, :root .mytheme .v-select-optiongroup-small .v-radiobutton > input[disabled]  ~ .v-icon {
-	cursor: default;
-}
-
-:root .mytheme .v-select-optiongroup-small .v-radiobutton > input[disabled]  ~ label:before, :root .mytheme .v-select-optiongroup-small .v-radiobutton > input[disabled]  ~ label:after {
-	opacity: 0.5;
-	filter: alpha(opacity=50) ;
-}
-
-:root .mytheme .v-select-optiongroup-small .v-radiobutton > input[disabled]:active ~ label:after {
-	background: transparent;
-}
-
 .mytheme .v-select-optiongroup-small .v-radiobutton > .v-icon, .mytheme .v-select-optiongroup-small .v-radiobutton > label .v-icon {
 	margin: 0 5px 0 3px;
 	min-width: 1em;
 	cursor: pointer;
+}
+
+.mytheme .v-select-optiongroup-small .v-radiobutton.v-disabled  > label, .mytheme .v-select-optiongroup-small .v-radiobutton.v-disabled  > .v-icon {
+	cursor: default;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
+.mytheme .v-select-optiongroup-small .v-radiobutton.v-disabled  > label > .v-icon {
+	cursor: default;
+}
+
+:root .mytheme .v-select-optiongroup-small .v-radiobutton.v-disabled > input:active ~ label:after {
+	background: transparent;
 }
 
 :root .mytheme .v-select-optiongroup-small .v-radiobutton > input:checked ~ label:after {
@@ -7895,28 +7775,6 @@ div.v-layout.v-horizontal.v-widget {
 	height: 22px;
 }
 
-:root .mytheme .v-select-optiongroup-large .v-checkbox > input ~ label:before:after {
-	border: inherit;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-}
-
-:root .mytheme .v-select-optiongroup-large .v-checkbox > input ~ label:before:hover:after {
-	background-color: rgba(190, 190, 190, 0.1);
-}
-
-:root .mytheme .v-select-optiongroup-large .v-checkbox > input ~ label:before:focus:after {
-	border-color: #4783eb;
-	-webkit-box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-	box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-}
-
-:root .mytheme .v-select-optiongroup-large .v-checkbox > input ~ label:before:active:after {
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
 :root .mytheme .v-select-optiongroup-large .v-checkbox > input ~ label:after {
 	content: "\f00c";
 	font-family: FontAwesome;
@@ -7934,23 +7792,24 @@ div.v-layout.v-horizontal.v-widget {
 	color: #4783eb;
 }
 
-:root .mytheme .v-select-optiongroup-large .v-checkbox > input[disabled]  ~ label, :root .mytheme .v-select-optiongroup-large .v-checkbox > input[disabled]  ~ label .v-icon, :root .mytheme .v-select-optiongroup-large .v-checkbox > input[disabled]  ~ .v-icon {
-	cursor: default;
-}
-
-:root .mytheme .v-select-optiongroup-large .v-checkbox > input[disabled]  ~ label:before, :root .mytheme .v-select-optiongroup-large .v-checkbox > input[disabled]  ~ label:after {
-	opacity: 0.5;
-	filter: alpha(opacity=50) ;
-}
-
-:root .mytheme .v-select-optiongroup-large .v-checkbox > input[disabled]:active ~ label:after {
-	background: transparent;
-}
-
 .mytheme .v-select-optiongroup-large .v-checkbox > .v-icon, .mytheme .v-select-optiongroup-large .v-checkbox > label .v-icon {
 	margin: 0 7px 0 4px;
 	min-width: 1em;
 	cursor: pointer;
+}
+
+.mytheme .v-select-optiongroup-large .v-checkbox.v-disabled  > label, .mytheme .v-select-optiongroup-large .v-checkbox.v-disabled  > .v-icon {
+	cursor: default;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
+.mytheme .v-select-optiongroup-large .v-checkbox.v-disabled  > label > .v-icon {
+	cursor: default;
+}
+
+:root .mytheme .v-select-optiongroup-large .v-checkbox.v-disabled > input:active ~ label:after {
+	background: transparent;
 }
 
 .mytheme .v-select-optiongroup-large .v-radiobutton {
@@ -8028,28 +7887,6 @@ div.v-layout.v-horizontal.v-widget {
 	height: 22px;
 }
 
-:root .mytheme .v-select-optiongroup-large .v-radiobutton > input ~ label:before:after {
-	border: inherit;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-}
-
-:root .mytheme .v-select-optiongroup-large .v-radiobutton > input ~ label:before:hover:after {
-	background-color: rgba(190, 190, 190, 0.1);
-}
-
-:root .mytheme .v-select-optiongroup-large .v-radiobutton > input ~ label:before:focus:after {
-	border-color: #4783eb;
-	-webkit-box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-	box-shadow: 0 0 0 2px rgba(71, 131, 235, 0.5);
-}
-
-:root .mytheme .v-select-optiongroup-large .v-radiobutton > input ~ label:before:active:after {
-	background-color: rgba(127, 127, 127, 0.2);
-}
-
 :root .mytheme .v-select-optiongroup-large .v-radiobutton > input ~ label:after {
 	content: "\f00c";
 	font-family: FontAwesome;
@@ -8067,23 +7904,24 @@ div.v-layout.v-horizontal.v-widget {
 	color: #4783eb;
 }
 
-:root .mytheme .v-select-optiongroup-large .v-radiobutton > input[disabled]  ~ label, :root .mytheme .v-select-optiongroup-large .v-radiobutton > input[disabled]  ~ label .v-icon, :root .mytheme .v-select-optiongroup-large .v-radiobutton > input[disabled]  ~ .v-icon {
-	cursor: default;
-}
-
-:root .mytheme .v-select-optiongroup-large .v-radiobutton > input[disabled]  ~ label:before, :root .mytheme .v-select-optiongroup-large .v-radiobutton > input[disabled]  ~ label:after {
-	opacity: 0.5;
-	filter: alpha(opacity=50) ;
-}
-
-:root .mytheme .v-select-optiongroup-large .v-radiobutton > input[disabled]:active ~ label:after {
-	background: transparent;
-}
-
 .mytheme .v-select-optiongroup-large .v-radiobutton > .v-icon, .mytheme .v-select-optiongroup-large .v-radiobutton > label .v-icon {
 	margin: 0 7px 0 4px;
 	min-width: 1em;
 	cursor: pointer;
+}
+
+.mytheme .v-select-optiongroup-large .v-radiobutton.v-disabled  > label, .mytheme .v-select-optiongroup-large .v-radiobutton.v-disabled  > .v-icon {
+	cursor: default;
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
+.mytheme .v-select-optiongroup-large .v-radiobutton.v-disabled  > label > .v-icon {
+	cursor: default;
+}
+
+:root .mytheme .v-select-optiongroup-large .v-radiobutton.v-disabled > input:active ~ label:after {
+	background: transparent;
 }
 
 :root .mytheme .v-select-optiongroup-large .v-radiobutton > input:checked ~ label:after {
@@ -8144,6 +7982,11 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-link:hover {
 	color: #75a2f0;
+}
+
+.mytheme .v-link.v-disabled {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 .mytheme .v-link a {
@@ -8808,6 +8651,7 @@ div.v-layout.v-horizontal.v-widget {
 	border-left: 1px solid #dadada;
 	overflow: hidden;
 	height: 37px;
+	vertical-align: middle;
 }
 
 .mytheme .v-table-cell-content:first-child {
@@ -9121,44 +8965,27 @@ div.v-layout.v-horizontal.v-widget {
 	outline: none;
 }
 
-.mytheme .v-table-row-drag-middle td:first-child:before {
-	content: "";
-	display: block;
-	position: absolute;
-	z-index: 1;
-	height: 38px;
-	left: 0;
-	right: 0;
-	background: #4783eb;
-	opacity: 0.2;
-	filter: alpha(opacity=20) ;
+.mytheme .v-table-row-drag-middle .v-table-cell-content {
+	background-color: #dae6fb;
+	color: #203863;
 }
 
-.mytheme .v-table-row-drag-top td:first-child:before, .mytheme .v-table-row-drag-bottom td:first-child:after {
-	content: "\2022";
-	display: block;
-	position: absolute;
-	height: 2px;
-	left: 0;
-	right: 0;
-	background: #4783eb;
-	font-size: 28px;
-	line-height: 2px;
-	color: #4783eb;
-	text-indent: -4px;
-	text-shadow: 0 0 1px white, 0 0 1px white;
+.mytheme .v-table-row-drag-bottom td.v-table-cell-content {
+	border-bottom: 2px solid #4783eb;
+	height: 35px;
 }
 
-.mytheme .v-table-row-drag-top td:first-child:before {
+.mytheme .v-table-row-drag-bottom .v-table-cell-wrapper {
+	margin-bottom: -2px;
+}
+
+.mytheme .v-table-row-drag-top td.v-table-cell-content {
+	border-top: 2px solid #4783eb;
+	height: 36px;
+}
+
+.mytheme .v-table-row-drag-top .v-table-cell-wrapper {
 	margin-top: -1px;
-}
-
-.v-ff .mytheme .v-table-row-drag-top td:first-child:before, .v-ff .mytheme .v-table-row-drag-bottom td:first-child:after {
-	line-height: 1px;
-}
-
-.v-ie .mytheme .v-table-row-drag-top td:first-child:before, .v-ie .mytheme .v-table-row-drag-bottom td:first-child:after {
-	line-height: 0;
 }
 
 .mytheme .v-table-no-stripes .v-table-row, .mytheme .v-table-no-stripes .v-table-row-odd {
@@ -9177,6 +9004,10 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-table-no-horizontal-lines .v-table-cell-content {
 	border-top: none;
 	border-bottom: none;
+}
+
+.mytheme .v-table-no-horizontal-lines .v-table-row-drag-top .v-table-cell-content, .mytheme .v-table-no-horizontal-lines .v-table-row-drag-bottom .v-table-cell-content {
+	height: 36px;
 }
 
 .mytheme .v-table-no-header .v-table-header-wrap {
@@ -9249,10 +9080,6 @@ div.v-layout.v-horizontal.v-widget {
 	margin-top: -16px;
 }
 
-.mytheme .v-table-compact .v-table-row-drag-middle td:first-child:before, .mytheme .v-table-small .v-table-row-drag-middle td:first-child:before {
-	height: 32px;
-}
-
 .mytheme .v-table-compact.v-treetable .v-table-cell-wrapper, .mytheme .v-table-small.v-treetable .v-table-cell-wrapper {
 	padding-left: 0;
 	padding-right: 0;
@@ -9271,6 +9098,10 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-table-compact.v-treetable .v-table-footer-container, .mytheme .v-table-small.v-treetable .v-table-footer-container {
 	padding-left: 6px;
 	padding-right: 6px;
+}
+
+.mytheme .v-table-compact .v-table-row-drag-top .v-table-cell-content, .mytheme .v-table-compact .v-table-row-drag-bottom .v-table-cell-content, .mytheme .v-table-small .v-table-row-drag-top .v-table-cell-content, .mytheme .v-table-small .v-table-row-drag-bottom .v-table-cell-content {
+	height: 30px;
 }
 
 .mytheme .v-table-small {
@@ -11549,6 +11380,11 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-popupview:hover {
 	color: #75a2f0;
+}
+
+.mytheme .v-popupview.v-disabled {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 .mytheme .v-popupview-popup {

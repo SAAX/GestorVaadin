@@ -3,6 +3,7 @@ package com.saax.gestorweb.model.datamodel;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -34,14 +35,14 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "meta")
 @NamedQueries({
-    @NamedQuery(name = "Meta.findAll", query = "SELECT m FROM Meta m"),
+    @NamedQuery(name = "Meta.findAll", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa"),
     @NamedQuery(name = "Meta.findById", query = "SELECT m FROM Meta m WHERE m.id= :id"),
-    @NamedQuery(name = "Meta.findByNome", query = "SELECT m FROM Meta m WHERE m.nome = :nome"),
-    @NamedQuery(name = "Meta.findByDescricao", query = "SELECT m FROM Meta m WHERE m.descricao = :descricao"),
-    @NamedQuery(name = "Meta.findByDatainicio", query = "SELECT m FROM Meta m WHERE m.dataInicio = :datainicio"),
+    @NamedQuery(name = "Meta.findByNome", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.nome = :nome"),
+    @NamedQuery(name = "Meta.findByDescricao", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.descricao = :descricao"),
+    @NamedQuery(name = "Meta.findByDatainicio", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataInicio = :datainicio"),
     @NamedQuery(name = "Meta.findByUsuarioResponsavel", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND  m.usuarioResponsavel = :usuarioResponsavel"),
-    @NamedQuery(name = "Meta.findByDatafim", query = "SELECT m FROM Meta m WHERE m.dataFim = :datafim"),
-    @NamedQuery(name = "Meta.findByDatatermino", query = "SELECT m FROM Meta m WHERE m.dataTermino = :datatermino"),
+    @NamedQuery(name = "Meta.findByDatafim", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataFim = :datafim"),
+    @NamedQuery(name = "Meta.findByDatatermino", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataTermino = :datatermino"),
 })
 public class Meta implements Serializable {
 /**
@@ -107,8 +108,6 @@ public class Meta implements Serializable {
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate dataTermino;
     
-    @NotNull(message = "Informe a descrição")
-    @Size(min = 1, max = 2147483647)
     @Column(name = "descricao")
     private String descricao;
     
@@ -477,6 +476,17 @@ public class Meta implements Serializable {
      */
     public void setTarefas(List<Tarefa> tarefas) {
         this.tarefas = tarefas;
+    }
+
+    /**
+     * Adds a task to the task list
+     * @param task to be added
+     */
+    public void addTask(Tarefa task) {
+        if(tarefas==null){
+            tarefas = new ArrayList<>();
+        }
+        tarefas.add(task);
     }
 
     

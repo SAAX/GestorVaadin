@@ -59,17 +59,5 @@ public class GestorMDITest {
 
     }
 
-    /**
-     * Test of init method, of class GestorMDI.
-     */
-    @Test
-    public void testInit() {
-        System.out.println("init");
-        VaadinRequest request = null;
-        GestorMDI instance = new GestorMDI();
-        instance.init(request);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    
+  
 }

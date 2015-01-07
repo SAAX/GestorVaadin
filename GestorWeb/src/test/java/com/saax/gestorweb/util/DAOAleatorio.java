@@ -50,6 +50,10 @@ public class DAOAleatorio {
 
         for (int i = 0; i < offsetDataAtual; i++) {
             gc.roll(GregorianCalendar.DAY_OF_MONTH, up); 
+            if (gc.getActualMaximum(GregorianCalendar.DAY_OF_MONTH)==gc.get(GregorianCalendar.DAY_OF_MONTH)){
+                gc.roll(GregorianCalendar.MONTH, up); 
+                
+            }
         }
         return DateUtils.truncate(new Date(gc.getTimeInMillis()), Calendar.DATE);
         

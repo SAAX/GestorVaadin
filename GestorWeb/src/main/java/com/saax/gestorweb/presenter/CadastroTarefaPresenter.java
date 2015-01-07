@@ -112,7 +112,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
             tarefaPai.setSubTarefas(new ArrayList<>());
         }
         tarefaPai.getSubTarefas().add(tarefa);
-        
 
         // ajuste ate a projecao ser implementada
         tarefa.setProjecao(ProjecaoTarefa.NORMAL);
@@ -124,7 +123,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
             ComboBox combo = view.getHierarquiaCombo();
             combo.addItem(proximaCategoria);
             combo.setItemCaption(proximaCategoria, proximaCategoria.getCategoria());
-            nomesProximasCategorias.append( proximasCategorias.indexOf(proximaCategoria)==0 ? "": "/" );
+            nomesProximasCategorias.append(proximasCategorias.indexOf(proximaCategoria) == 0 ? "" : "/");
             nomesProximasCategorias.append(proximaCategoria.getCategoria());
         }
         // caso seja apenas uma, já seta para facilitar ao usuario
@@ -141,9 +140,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     }
 
     /**
-     * Creates a new default Task, with a specific category
-     * Just overloaded: createTask(List) <br>
-     * 
+     * Creates a new default Task, with a specific category Just overloaded:
+     * createTask(List) <br>
+     *
      * @param category in wich the task'll be created
      */
     public void createTask(HierarquiaProjetoDetalhe category) {
@@ -156,7 +155,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     /**
      * Creates a new default Task, with given possible categories
-     * @param possibleCategories 
+     *
+     * @param possibleCategories
      */
     public void createTask(List<HierarquiaProjetoDetalhe> possibleCategories) {
 
@@ -169,7 +169,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         tarefa.setUsuarioSolicitante(usuarioLogado);
         tarefa.setDataHoraInclusao(LocalDateTime.now());
         tarefa.setSubTarefas(new ArrayList<>());
-        if (possibleCategories.size()==1){
+        if (possibleCategories.size() == 1) {
             tarefa.setHierarquia(possibleCategories.get(0));
         }
 
@@ -184,8 +184,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         }
 
         view.ocultaPopUpEvolucaoStatusEAndamento();
-        
-        if (possibleCategories.size()==1){
+
+        if (possibleCategories.size() == 1) {
             view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
         }
 
@@ -245,7 +245,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         UI.getCurrent().addWindow(view);
 
         view.setTarefa(tarefa);
-        
+
         // caso a tarefa seja apenas um lembre, verifica pelo status da tarefa se este pode ser exibido ou se deve ser ocultado
         view.setStatusVisible(verificaStatusVisivel(tarefa));
 
@@ -339,7 +339,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         for (Usuario usuario : model.listarUsuariosEmpresa()) {
             participante.addItem(usuario);
             participante.setItemCaption(usuario, usuario.getNome());
-            
 
         }
     }
@@ -380,25 +379,23 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     }
 
-    
     /**
-     * Loads the department's combobox with all active company's department or 
+     * Loads the department's combobox with all active company's department or
      * disable the combo if there is not any active department for this company.
      */
     private void loadDepartmentCombo(Empresa company) {
-            
+
         // Retrieves the combo reference
         ComboBox department = view.getDepartamentoCombo();
-            
 
         // Verify if the company is already set
         if (company != null) {
-            
+
             // Retrieves the list of active departments for this company
             List<Departamento> departmentList = model.obterListaDepartamentosAtivos(company);
 
             if (departmentList.isEmpty()) {
-                
+
                 // if there is not any department: disable and empty the combo
                 department.removeAllItems();
                 department.setEnabled(false);
@@ -412,33 +409,32 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
                 }
             }
         } else {
-            
+
             // if there conmpany has not been setted: disable and empty the combo
             department.removeAllItems();
             department.setEnabled(false);
 
         }
 
-    }    
+    }
 
-        /**
-     * Loads the cost center's combobox with all active company's cc or 
-     * disable the combo if there is not any active cost-center for this company.
+    /**
+     * Loads the cost center's combobox with all active company's cc or disable
+     * the combo if there is not any active cost-center for this company.
      */
     private void loadCostCenterCombo(Empresa company) {
-            
+
         // Retrieves the combo reference
         ComboBox costCenterCombo = view.getCentroCustoCombo();
-            
 
         // Verify if the company is already set
         if (company != null) {
-            
+
             // Retrieves the list of active departments for this company
             List<CentroCusto> costCenterList = model.obterListaCentroCustosAtivos(company);
 
             if (costCenterList.isEmpty()) {
-                
+
                 // if there is not any cost center: disable and empty the combo
                 costCenterCombo.removeAllItems();
                 costCenterCombo.setEnabled(false);
@@ -452,7 +448,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
                 }
             }
         } else {
-            
+
             // if there conmpany has not been setted: disable and empty the combo
             costCenterCombo.removeAllItems();
             costCenterCombo.setEnabled(false);
@@ -492,7 +488,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         //o presenter liga model e view
         ChatPresenter chatPresenter;
         chatPresenter = new ChatPresenter(chatModel, chatView);
-       
+
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(chatView);
         chatPresenter.open(view.getTarefa());
@@ -510,12 +506,12 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         if (tarefa.getUsuarioResponsavel() == null) {
             tarefa.setUsuarioResponsavel(tarefa.getUsuarioInclusao());
         }
-        
-        if(tarefa.getPrioridade() == null){
+
+        if (tarefa.getPrioridade() == null) {
             tarefa.setPrioridade(PrioridadeTarefa.BAIXA);
         }
-        
-        if(tarefa.getTipoRecorrencia() == null){
+
+        if (tarefa.getTipoRecorrencia() == null) {
             tarefa.setTipoRecorrencia(TipoTarefa.UNICA);
         }
 
@@ -524,24 +520,22 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
             tarefa.setOrcamentoControlado(false);
             tarefa.setApontamentoHoras(false);
         }
-        
-        
-        if(tarefa.getDataInicio().isBefore(tarefa.getTarefaPai().getDataInicio())){
-            throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataInicio"));
+
+        // compare the Task's initial and final dates with its parent Task (only if there is a parent Task)
+        if (tarefa.getTarefaPai() != null) {
+            if (tarefa.getDataInicio().isBefore(tarefa.getTarefaPai().getDataInicio())) {
+                throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataInicio"));
+            }
+            if (tarefa.getDataFim() != null && tarefa.getTarefaPai().getDataFim()!=null && tarefa.getDataFim().isAfter(tarefa.getTarefaPai().getDataFim())) {
+                throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataFim"));
+            }
         }
-        
-        if(tarefa.getDataFim().isAfter(tarefa.getTarefaPai().getDataFim())){
-            throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataFim"));
-        }
-        
-        
+
 
         boolean novaTarefa = tarefa.getId() == null;
         if (tarefa.getTarefaPai() == null) {
             tarefa = model.gravarTarefa(tarefa);
         }
-        
-        
 
         //tarefa.setApontamentos(view.getControleHorasContainer().getItemIds());
         //tarefa.setOrcamentos(view.getOrcamentoContainer().getItemIds());
@@ -666,8 +660,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     public void controleOrcamentoSwitched(Property.ValueChangeEvent event) {
         view.setAbaControleOrcamentoVisible((boolean) event.getProperty().getValue());
     }
-    
-  
 
     /**
      * Configura um listener para ser chamado quando o cadastro for concluido
@@ -756,19 +748,19 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     @Override
     public void adicionarParticipante(Usuario usuario) {
-        
-        if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || usuarioLogado.equals(view.getUsuarioResponsavelCombo().getValue())  ){
-        Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
-        } else{
-        ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
-        view.getParticipantesContainer().addBean(participanteTarefa);
-        Tarefa tarefa = view.getTarefa();
-        
-        if (tarefa.getParticipantes() == null) {
-            tarefa.setParticipantes(new ArrayList<>());
-        }
 
-        tarefa.getParticipantes().add(participanteTarefa);
+        if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || usuarioLogado.equals(view.getUsuarioResponsavelCombo().getValue())) {
+            Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
+        } else {
+            ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
+            view.getParticipantesContainer().addBean(participanteTarefa);
+            Tarefa tarefa = view.getTarefa();
+
+            if (tarefa.getParticipantes() == null) {
+                tarefa.setParticipantes(new ArrayList<>());
+            }
+
+            tarefa.getParticipantes().add(participanteTarefa);
         }
 
     }
@@ -808,15 +800,15 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         loadDepartmentCombo(empresa);
         loadCostCenterCombo(empresa);
     }
-    
+
     @Override
     public void tipoRecorrenciaClicked() {
-        
+
         //Cria o pop up para registrar a conta (model e view)
         RecorrenciaModel recorrenciaModel = new RecorrenciaModel();
         RecorrenciaView recorrenciaView = new RecorrenciaView();
-        
-       //o presenter liga model e view
+
+        //o presenter liga model e view
         RecorrenciaPresenter recorrenciaPresenter;
         recorrenciaPresenter = new RecorrenciaPresenter(recorrenciaModel, recorrenciaView);
         //adiciona a visualização à UI
@@ -826,9 +818,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     /**
      * Verifica se o status da tarefa deverá ser exibido ao usuario ou nao.
-     * Regra:
-     * Se a tarefa for uma tarefa de lembrete, onde o usuário responsavel é o mesmo que o solicitante o sistema verifica o status e trata de acordo.
-     * Se a tarefa não for de lembrete o status é sempre exibido.
+     * Regra: Se a tarefa for uma tarefa de lembrete, onde o usuário responsavel
+     * é o mesmo que o solicitante o sistema verifica o status e trata de
+     * acordo. Se a tarefa não for de lembrete o status é sempre exibido.
      *
      * @param tarefa
      * @return
@@ -837,7 +829,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         final StatusTarefa status = tarefa.getStatus();
 
-        if (tarefa.getUsuarioResponsavel().equals(tarefa.getUsuarioSolicitante())) {
+        if (tarefa.getUsuarioResponsavel() != null && tarefa.getUsuarioResponsavel().equals(tarefa.getUsuarioSolicitante())) {
 
             switch (status) {
                 case NAO_ACEITA:
@@ -856,8 +848,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
                     return (false);
                 case CANCELADA:
                     return (true);
-                default :
-                    return (true);                    
+                default:
+                    return (true);
             }
         } else {
             return true;

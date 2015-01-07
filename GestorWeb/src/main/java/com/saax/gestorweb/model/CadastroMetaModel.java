@@ -182,9 +182,11 @@ public class CadastroMetaModel {
         final int TASK_LEVEL = 2;
         
         // gets every level 2 category an puts into tasksCategories
-        categorySet.getCategorias().stream().filter((category) -> (category.getNivel() == TASK_LEVEL)).forEach((category) -> {
+        for (HierarquiaProjetoDetalhe category : categorySet.getCategorias()) {
+            if (category.getNivel() == TASK_LEVEL){
             tasksCategories.add(category);
-        });
+            }
+        }
         
         return tasksCategories;
     }

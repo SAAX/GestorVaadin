@@ -304,7 +304,8 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     }
 
     /**
-     * Event thrown when the "addTask" button is clicked, indicating that the user wants a new task to the Target
+     * Handle the event thrown when the "addTask" button is clicked, indicating that the user wants a new task to the Target.
+     * Creates and presents a new form (presenter) to create a new Task under this Target
      */
     @Override
     public void addTaskButtonClicked() {
@@ -347,6 +348,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
     /**
      * Handles the event thrown when the sub window is done with a Task creation 
      * @param createdTask 
@@ -354,6 +356,10 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
      */
     @Override
     public void taskCreationDone(Tarefa createdTask) {
+        
+        // adds the created task to the target
+        createdTask.setMeta(view.getMeta());
+        view.getMeta().addTask(createdTask);
         
         // monta os dados para adicionar na grid
         Object[] gridRow = new Object[]{

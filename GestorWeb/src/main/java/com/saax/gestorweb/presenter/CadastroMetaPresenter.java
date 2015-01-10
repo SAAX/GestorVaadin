@@ -48,6 +48,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     // usuario logado
     private final Usuario usuarioLogado;
     private CadastroMetaCallBackListener callbackListener;
+    private Meta target;
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -74,14 +75,15 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
      */
     public void criarNovaMeta(HierarquiaProjetoDetalhe categoria) {
 
-        Meta meta = model.criarNovaMeta(categoria, usuarioLogado);
+        target = model.criarNovaMeta(categoria, usuarioLogado);
+        
 
         // configura a categoria
         ComboBox combo = view.getHierarquiaCombo();
-        combo.addItem(meta.getCategoria());
-        combo.setItemCaption(meta.getCategoria(), meta.getCategoria().getCategoria());
+        combo.addItem(target.getCategoria());
+        combo.setItemCaption(target.getCategoria(), target.getCategoria().getCategoria());
 
-        init(meta);
+        init(target);
 
         view.getHierarquiaCombo().setEnabled(false);
         view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + categoria.getCategoria());
@@ -102,6 +104,8 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
 
         // liga (bind) o form com a meta
         view.setMeta(meta);
+        
+        this.target = meta;
 
     }
 
@@ -283,23 +287,25 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     }
     
     /**
-     * Abre o pop window do cadastro de metas para edição da meta informada
+     * Opens the presenter in editing mode with the target to edit
      *
-     * @param tarefaToEdit
+     * @param targetToEdit
      */
     @Override
-    public void editar(Meta metaToEdit) {
+    public void edit(Meta targetToEdit) {
 
-        view.exibeTituloEdicao(metaToEdit);
+        // sets the title
+        view.exibeTituloEdicao(targetToEdit);
 
-        init(metaToEdit);
+        // inits the UI
+        init(targetToEdit);
         
-        view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + metaToEdit.getCategoria().getCategoria());
+        for (Tarefa task : targetToEdit.getTarefas()) {
+            addTaskInTable(task);
+        }
+        
+        view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + targetToEdit.getCategoria().getCategoria());
 
-        //view.getParticipantesContainer().addAll(metaToEdit.getParticipantes());
-        //view.getAnexoTarefaContainer().addAll(metaToEdit.getAnexos());
-        //view.getControleHorasContainer().addAll(metaToEdit.getApontamentos());
-        //view.getOrcamentoContainer().addAll(metaToEdit.getOrcamentos());
 
     }
 
@@ -325,7 +331,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
             List<HierarquiaProjetoDetalhe> tasksCategories = model.getFirstsTaskCategories(view.getMeta().getCategoria());
             
             // Tells the presenter which is gonna be the Task's category
-            presenter.createTask(tasksCategories);
+            presenter.createTask(target, tasksCategories);
             
         } catch (FieldGroup.CommitException ex) {
             Notification.show(mensagens.getString("CadastroMetaPresenter.addTaskButtonClicked.commitException"), Notification.Type.HUMANIZED_MESSAGE);
@@ -356,32 +362,32 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
      */
     @Override
     public void taskCreationDone(Tarefa createdTask) {
-        
-        // adds the created task to the target
-        createdTask.setMeta(view.getMeta());
-        view.getMeta().addTask(createdTask);
-        
-        // monta os dados para adicionar na grid
+
+        addTaskInTable(createdTask);
+
+    }
+
+    
+    private void addTaskInTable(Tarefa task){
         Object[] gridRow = new Object[]{
-            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), createdTask, createdTask.getGlobalID()),
-            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), createdTask, createdTask.getHierarquia().getCategoria()),
-            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), createdTask, createdTask.getNome()),
-            createdTask.getEmpresa().getNome()
-            + (createdTask.getFilialEmpresa() != null ? "/" + createdTask.getFilialEmpresa().getNome() : ""),
-            createdTask.getUsuarioSolicitante().getNome(),
-            createdTask.getUsuarioResponsavel().getNome(),
-            FormatterUtil.formatDate(createdTask.getDataInicio()),
-            FormatterUtil.formatDate(createdTask.getDataFim()),
-            CadastroTarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), createdTask),
-            createdTask.getProjecao().toString().charAt(0),
+            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
+            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
+            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()),
+            task.getEmpresa().getNome()
+            + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""),
+            task.getUsuarioSolicitante().getNome(),
+            task.getUsuarioResponsavel().getNome(),
+            FormatterUtil.formatDate(task.getDataInicio()),
+            FormatterUtil.formatDate(task.getDataFim()),
+            CadastroTarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), task),
+            task.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
 
         };
-        view.getTarefasTable().addItem(gridRow, createdTask);
-
+        view.getTarefasTable().addItem(gridRow, task);
+        
     }
-
     
 
     /**

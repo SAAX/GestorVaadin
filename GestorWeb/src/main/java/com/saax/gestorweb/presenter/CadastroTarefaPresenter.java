@@ -13,6 +13,7 @@ import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
@@ -46,7 +47,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  * Presenter:
@@ -143,24 +143,27 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
      * Creates a new default Task, with a specific category Just overloaded:
      * createTask(List) <br>
      *
+     *
      * @param category in wich the task'll be created
      */
     public void createTask(HierarquiaProjetoDetalhe category) {
         // builds a list to use the main method: createTask
         List<HierarquiaProjetoDetalhe> categories = new ArrayList<>();
         categories.add(category);
-        // call the mais method to create a task
-        createTask(categories);
+        // call the main method to create a task
+        createTask(null, categories);
     }
 
     /**
      * Creates a new default Task, with given possible categories
      *
+     * @param target the main target to be attached with the new task
      * @param possibleCategories
      */
-    public void createTask(List<HierarquiaProjetoDetalhe> possibleCategories) {
+    public void createTask(Meta target, List<HierarquiaProjetoDetalhe> possibleCategories) {
 
         Tarefa tarefa;
+
         // Cria uma nova tarefa com valores default
         tarefa = new Tarefa();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
@@ -172,6 +175,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         if (possibleCategories.size() == 1) {
             tarefa.setHierarquia(possibleCategories.get(0));
         }
+
+        model.attachTaskToTarget(tarefa, target);
 
         // ajuste ate a projecao ser implementada
         tarefa.setProjecao(ProjecaoTarefa.NORMAL);
@@ -187,11 +192,10 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         if (possibleCategories.size() == 1) {
             view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
+            view.getHierarquiaCombo().setEnabled(false);
         }
 
         init(tarefa);
-
-        view.getHierarquiaCombo().setEnabled(false);
 
     }
 
@@ -245,9 +249,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         UI.getCurrent().addWindow(view);
 
         view.setTarefa(tarefa);
-
-        // caso a tarefa seja apenas um lembre, verifica pelo status da tarefa se este pode ser exibido ou se deve ser ocultado
-        view.setStatusVisible(verificaStatusVisivel(tarefa));
 
     }
 
@@ -499,56 +500,70 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Properly handles the event triggered by the user: Save the task
+     *
+     */
     @Override
     public void gravarButtonClicked() {
-        Tarefa tarefa = (Tarefa) view.getTarefa();
 
-        if (tarefa.getUsuarioResponsavel() == null) {
-            tarefa.setUsuarioResponsavel(tarefa.getUsuarioInclusao());
+        Tarefa task = (Tarefa) view.getTarefa();
+
+        boolean novaTarefa = task.getId() == null;
+
+        // if there is not an specified responsible user, the logged user will be the responsible
+        if (task.getUsuarioResponsavel() == null) {
+            task.setUsuarioResponsavel(task.getUsuarioInclusao());
         }
 
-        if (tarefa.getPrioridade() == null) {
-            tarefa.setPrioridade(PrioridadeTarefa.BAIXA);
+        // if the user has not selected a task's priority, the system do select the LOW priority
+        if (task.getPrioridade() == null) {
+            task.setPrioridade(PrioridadeTarefa.BAIXA);
         }
 
-        if (tarefa.getTipoRecorrencia() == null) {
-            tarefa.setTipoRecorrencia(TipoTarefa.UNICA);
-        }
-
-        // tarefa própria: solicitante = responsavel
-        if (tarefa.getUsuarioResponsavel().equals(tarefa.getUsuarioSolicitante())) {
-            tarefa.setOrcamentoControlado(false);
-            tarefa.setApontamentoHoras(false);
+        // if the user has not selected a task's type, the system do select UNIQUE
+        if (task.getTipoRecorrencia() == null) {
+            task.setTipoRecorrencia(TipoTarefa.UNICA);
         }
 
         // compare the Task's initial and final dates with its parent Task (only if there is a parent Task)
-        if (tarefa.getTarefaPai() != null) {
-            if (tarefa.getDataInicio().isBefore(tarefa.getTarefaPai().getDataInicio())) {
+        if (task.getTarefaPai() != null) {
+            if (task.getDataInicio().isBefore(task.getTarefaPai().getDataInicio())) {
                 throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataInicio"));
             }
-            if (tarefa.getDataFim() != null && tarefa.getTarefaPai().getDataFim()!=null && tarefa.getDataFim().isAfter(tarefa.getTarefaPai().getDataFim())) {
+            if (task.getDataFim() != null && task.getTarefaPai().getDataFim() != null && task.getDataFim().isAfter(task.getTarefaPai().getDataFim())) {
                 throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataFim"));
             }
         }
 
-
-        boolean novaTarefa = tarefa.getId() == null;
-        if (tarefa.getTarefaPai() == null) {
-            tarefa = model.gravarTarefa(tarefa);
+        // if it is an own task, disable the budget and apponting control
+        if (task.getUsuarioResponsavel().equals(task.getUsuarioSolicitante())) {
+            task.setOrcamentoControlado(false);
+            task.setApontamentoHoras(false);
+        
+            // if it is an own task auto accept the task (switches from NOT ACCEPTED to NOT STARTED)
+            if (task.getStatus() == StatusTarefa.NAO_ACEITA) {
+                task.setStatus(StatusTarefa.NAO_INICIADA);
+            }
         }
 
-        //tarefa.setApontamentos(view.getControleHorasContainer().getItemIds());
-        //tarefa.setOrcamentos(view.getOrcamentoContainer().getItemIds());
-        // notica (se existir) algum listener interessado em saber que o cadastro foi finalizado.
+        /**
+         * only persist if this is the parent task if it is a child, the
+         * persistence will occour on the parent if it is a task attached to a
+         * target, the persistence will occour on the target
+         */
+        if (task.getMeta() == null && task.getTarefaPai() == null) {
+            task = model.saveTask(task);
+        }
+        // Notifies the call back listener that the create/update is done
         if (callbackListener != null) {
             if (novaTarefa) {
-                callbackListener.taskCreationDone(tarefa);
+                callbackListener.taskCreationDone(task);
             } else {
-                callbackListener.taskUpdateDone(tarefa);
+                callbackListener.taskUpdateDone(task);
             }
         }
         view.close();
-        Notification.show("Tarefa criada!", Notification.Type.HUMANIZED_MESSAGE);
     }
 
     @Override
@@ -814,47 +829,6 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(recorrenciaView);
         recorrenciaPresenter.open();
-    }
-
-    /**
-     * Verifica se o status da tarefa deverá ser exibido ao usuario ou nao.
-     * Regra: Se a tarefa for uma tarefa de lembrete, onde o usuário responsavel
-     * é o mesmo que o solicitante o sistema verifica o status e trata de
-     * acordo. Se a tarefa não for de lembrete o status é sempre exibido.
-     *
-     * @param tarefa
-     * @return
-     */
-    public boolean verificaStatusVisivel(Tarefa tarefa) {
-
-        final StatusTarefa status = tarefa.getStatus();
-
-        if (tarefa.getUsuarioResponsavel() != null && tarefa.getUsuarioResponsavel().equals(tarefa.getUsuarioSolicitante())) {
-
-            switch (status) {
-                case NAO_ACEITA:
-                    return (false);
-                case NAO_INICIADA:
-                    return (true);
-                case EM_ANDAMENTO:
-                    return (true);
-                case ADIADA:
-                    return (true);
-                case BLOQUEADA:
-                    return (true);
-                case CONCLUIDA:
-                    return (true);
-                case AVALIADA:
-                    return (false);
-                case CANCELADA:
-                    return (true);
-                default:
-                    return (true);
-            }
-        } else {
-            return true;
-        }
-
     }
 
 }

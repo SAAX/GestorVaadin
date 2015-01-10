@@ -195,7 +195,7 @@ public class CadastroMetaTest {
         List<HierarquiaProjetoDetalhe> tasksCategories = model.getFirstsTaskCategories(view.getMeta().getCategoria());
             
         // Tells the presenter which is gonna be the Task's category
-        taskPresenter.createTask(tasksCategories);
+        taskPresenter.createTask(view.getMeta(), tasksCategories);
             
         // fills the required fields of Task
         taskView.getNomeTarefaTextField().setValue("Task under a target");

@@ -19,7 +19,7 @@ public interface CadastroMetaViewListener {
 
     public void cancelarButtonClicked();
     
-    public void editar(Meta metaToEdit);   
+    public void edit(Meta metaToEdit);   
 
     public void hierarquiaSelecionada(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe);
 

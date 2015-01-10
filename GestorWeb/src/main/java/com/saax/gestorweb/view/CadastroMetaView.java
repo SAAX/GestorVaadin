@@ -90,7 +90,7 @@ public class CadastroMetaView extends Window {
     @PropertyId("nome")
     private TextField nomeMetaTextField;
 
-    @PropertyId("hierarquia")
+    @PropertyId("categoria")
     private ComboBox hierarquiaCombo;
 
     @PropertyId("dataInicio")
@@ -319,7 +319,7 @@ public class CadastroMetaView extends Window {
 
         // Combo: Categoria
         hierarquiaCombo = new ComboBox(message.getString("CadastroMetaView.hierarquiaCombo.label"));
-        hierarquiaCombo.addValidator(new BeanValidator(Meta.class, "hierarquia"));
+        hierarquiaCombo.addValidator(new BeanValidator(Meta.class, "categoria"));
         requiredFields.add(hierarquiaCombo);
         containerCabecalhoLinha2.addComponent(hierarquiaCombo);
 

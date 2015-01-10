@@ -627,7 +627,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
             view.getMetasTable().setValue(meta);
             CadastroMetaPresenter presenter = new CadastroMetaPresenter(new CadastroMetaModel(), new CadastroMetaView());
             presenter.setCallBackListener(callback);
-            presenter.editar(meta);
+            presenter.edit(meta);
         });
         return link;
     }

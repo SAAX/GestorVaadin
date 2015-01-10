@@ -14,11 +14,14 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -74,16 +77,17 @@ public class CadastroTarefaModel {
     }
 
     /**
-     * Persiste (Grava) uma tarefa
+     * Save (persist) a Task
      *
-     * @param tarefa
-     * @return a tarefa grava se sucesso, null caso contrario
+     * @param task
+     * @return the saved task if success, null otherwise
      *
      */
-    public Tarefa gravarTarefa(Tarefa tarefa) {
+    public Tarefa saveTask(Tarefa task) {
+
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        if (tarefa == null) {
+        if (task == null) {
             throw new IllegalArgumentException("Tarefa NULA para persistencia");
         }
 
@@ -94,26 +98,26 @@ public class CadastroTarefaModel {
                 em.getTransaction().begin();
             }
 
-            for (Tarefa sub : tarefa.getSubTarefas()) {
-                gravarTarefa(sub);
+            for (Tarefa sub : task.getSubTarefas()) {
+                saveTask(sub);
             }
 
             // TODO: Colocar projecao calculada
-            tarefa.setProjecao(ProjecaoTarefa.NORMAL);
-            
-            if (tarefa.getId() == null) {
-                em.persist(tarefa);
+            task.setProjecao(ProjecaoTarefa.NORMAL);
+
+            if (task.getId() == null) {
+                em.persist(task);
             } else {
-                em.merge(tarefa);
+                em.merge(task);
             }
 
             // so comita na gravação da tarefa pai
-            if (tarefa.getTarefaPai() == null) {
+            if (task.getTarefaPai() == null) {
                 em.getTransaction().commit();
             }
 
             // mover anexos das pastas temporarias para as oficiais
-            tarefa.getAnexos().stream().filter((anexo) -> (anexo.getArquivoTemporario() != null)).forEach((anexo) -> {
+            task.getAnexos().stream().filter((anexo) -> (anexo.getArquivoTemporario() != null)).forEach((anexo) -> {
                 moverAnexoTemporario(anexo);
             });
 
@@ -126,7 +130,7 @@ public class CadastroTarefaModel {
             throw ex;
         }
 
-        return tarefa;
+        return task;
     }
 
     /**
@@ -535,7 +539,6 @@ public class CadastroTarefaModel {
         return empresaModel.obterListaDepartamentosAtivos(empresa);
     }
 
-    
     /**
      * Delega chamada ao model responsavel (EmpresaModel)
      *
@@ -544,6 +547,19 @@ public class CadastroTarefaModel {
      */
     public List<CentroCusto> obterListaCentroCustosAtivos(Empresa empresa) {
         return empresaModel.obterListaCentroCustosAtivos(empresa);
+    }
+
+    /**
+     * Attachs (binds) a task under a target
+     *
+     * @param task
+     * @param target
+     */
+    public void attachTaskToTarget(Tarefa task, Meta target) {
+        if (task != null && target != null) {
+            task.setMeta(target);
+            target.addTask(task);
+        }
     }
 
 }

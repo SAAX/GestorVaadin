@@ -141,7 +141,7 @@ public class CadastroTarefaView extends Window {
     private PopupDateField dataFimDateField;
 
     @PropertyId("tipoRecorrencia")
-    private ComboBox tipoRecorrenciaCombo;
+    private Button tipoRecorrenciaButton;
 
     @PropertyId("prioridade")
     private ComboBox prioridadeCombo;
@@ -377,13 +377,11 @@ public class CadastroTarefaView extends Window {
         //dataInicioDateField.addValidator(new DataFuturaValidator(true, "Data de Início"));
         camposObrigatorios.add(dataInicioDateField);
 
-        // Combo Recorrencia
-        tipoRecorrenciaCombo = new ComboBox(mensagens.getString("CadastroTarefaView.tipoRecorrenciaCombo.label"));
-        tipoRecorrenciaCombo.setWidth("100%");
-        tipoRecorrenciaCombo.setInputPrompt(mensagens.getString("CadastroTarefaView.tipoRecorrenciaCombo.inputPrompt"));
-        tipoRecorrenciaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+        // Button Recorrencia
+        tipoRecorrenciaButton = new Button(mensagens.getString("CadastroTarefaView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
           listener.tipoRecorrenciaClicked();
         });
+        tipoRecorrenciaButton.setWidth("100%");
          
         // Combo Prioridade
         prioridadeCombo = new ComboBox(mensagens.getString("CadastroTarefaView.prioridadeCombo.label"));
@@ -424,7 +422,8 @@ public class CadastroTarefaView extends Window {
         grid.addComponent(empresaCombo);
         grid.addComponent(categoriaENomeContainer, 1, 0, 2, 0);
         grid.addComponent(dataInicioDateField);
-        grid.addComponent(tipoRecorrenciaCombo);
+        grid.addComponent(tipoRecorrenciaButton);
+        grid.setComponentAlignment(tipoRecorrenciaButton, Alignment.BOTTOM_CENTER);
         grid.addComponent(prioridadeCombo);
         grid.addComponent(dataFimDateField);
         grid.addComponent(statusTarefaPopUpButton);
@@ -1110,12 +1109,14 @@ public class CadastroTarefaView extends Window {
         return dataFimDateField;
     }
 
-    /**
-     * @return the tipoRecorrenciaCombo
-     */
-    public ComboBox getTipoRecorrenciaCombo() {
-        return tipoRecorrenciaCombo;
+    public Button getTipoRecorrenciaButton() {
+        return tipoRecorrenciaButton;
     }
+
+    public void setTipoRecorrenciaButton(Button tipoRecorrenciaButton) {
+        this.tipoRecorrenciaButton = tipoRecorrenciaButton;
+    }
+
 
     /**
      * @return the prioridadeCombo

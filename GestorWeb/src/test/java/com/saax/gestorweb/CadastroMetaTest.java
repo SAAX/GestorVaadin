@@ -199,7 +199,8 @@ public class CadastroMetaTest {
             
         // fills the required fields of Task
         taskView.getNomeTarefaTextField().setValue("Task under a target");
-        taskView.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
+        //taskView.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
+        taskView.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
         taskView.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         taskView.getDataInicioDateField().setValue(new Date());
         taskView.getHierarquiaCombo().setValue(taskView.getHierarquiaCombo().getItemIds().toArray()[0]);

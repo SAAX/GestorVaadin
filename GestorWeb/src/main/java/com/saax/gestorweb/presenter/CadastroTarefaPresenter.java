@@ -232,7 +232,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     private void init(Tarefa tarefa) {
         // Carrega os combos de seleção
         carregaComboEmpresa();
-        carregaComboTipoRecorrenciaTarefa();
+//        carregaComboTipoRecorrenciaTarefa();
         carregaComboPrioridade();
         carregaComboResponsavel();
         carregaComboParticipante();
@@ -255,14 +255,14 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     /**
      * Carrega o combo de seleçao com os status possiveis para a tarefa
      */
-    private void carregaComboTipoRecorrenciaTarefa() {
-
-        ComboBox tipo = view.getTipoRecorrenciaCombo();
-        for (TipoTarefa tipoTarefaValue : TipoTarefa.values()) {
-            tipo.addItem(tipoTarefaValue);
-            tipo.setItemCaption(tipoTarefaValue, tipoTarefaValue.getLocalizedString());
-        }
-    }
+//    private void carregaComboTipoRecorrenciaTarefa() {
+//
+//        ComboBox tipo = view.getTipoRecorrenciaCombo();
+//        for (TipoTarefa tipoTarefaValue : TipoTarefa.values()) {
+//            tipo.addItem(tipoTarefaValue);
+//            tipo.setItemCaption(tipoTarefaValue, tipoTarefaValue.getLocalizedString());
+//        }
+//    }
 
     /**
      * Carrega o combo de seleção da empresa com todas as empresas relacionadas

@@ -259,8 +259,8 @@ private Button cancelButton;
     private Component buildAbaMensal() {
 
         daysMonthlyCombo = new ComboBox(messages.getString("RecorrenciaView.diaMesCombo.label"));
-        daysMonthlyCombo.addItem("Primeiro Dia Útil");
-        daysMonthlyCombo.addItem("Último Dia do Mês");
+        daysMonthlyCombo.addItem(messages.getString("RecorrenciaView.primeiroDiaUtil"));
+        daysMonthlyCombo.addItem(messages.getString("RecorrenciaView.ultimoDiaMes"));
         daysMonthlyCombo.addItem("01");
         daysMonthlyCombo.addItem("02");
         daysMonthlyCombo.addItem("03");
@@ -308,9 +308,9 @@ private Button cancelButton;
         numberMonthsCombo.addItem("12");
         
         kindDayMonthlyCombo = new ComboBox(messages.getString("RecorrenciaView.tipoDiaMensalCombo.label"));
-        kindDayMonthlyCombo.addItem("Corrido");
-        kindDayMonthlyCombo.addItem("Útil");        
-        kindDayMonthlyCombo.addItem("Útil c/ Sábado");        
+        kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaCorrido"));
+        kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
+        kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
         
         startDateMonthlyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
         endDateMonthlyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataFimSemanalDateField.label"));
@@ -348,8 +348,8 @@ private Button cancelButton;
     private Component buildAbaAnual() {
 
         dayAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.diaAnualCombo.label"));
-        dayAnnualCombo.addItem("Primeiro Dia Útil");
-        dayAnnualCombo.addItem("Último Dia do Mês");
+        dayAnnualCombo.addItem(messages.getString("RecorrenciaView.primeiroDiaUtil"));
+        dayAnnualCombo.addItem(messages.getString("RecorrenciaView.ultimoDiaMes"));
         dayAnnualCombo.addItem("01");
         dayAnnualCombo.addItem("02");
         dayAnnualCombo.addItem("03");
@@ -384,11 +384,11 @@ private Button cancelButton;
         
         
         kindDayAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.tipoDiaAnualCombo.label"));
-        kindDayAnnualCombo.addItem("Corrido");
-        kindDayAnnualCombo.addItem("Útil");        
-        kindDayAnnualCombo.addItem("Útil c/ Sábado");     
+        kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaCorrido"));
+        kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
+        kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
         
-        
+        //Fernando: Preciso fazer a internacionalização dos meses
         monthAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.mesAnualCombo.label"));
         monthAnnualCombo.addItem("Janeiro");
         monthAnnualCombo.addItem("Fevereiro");

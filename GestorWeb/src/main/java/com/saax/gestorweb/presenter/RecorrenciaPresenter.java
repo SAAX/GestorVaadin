@@ -10,6 +10,7 @@ import com.saax.gestorweb.model.RecorrenciaModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.RecorrenciaView;
 import com.saax.gestorweb.view.RecorrenciaViewListener;
 import com.vaadin.data.Property;

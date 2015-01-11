@@ -81,7 +81,7 @@ public class SignupPresenter implements SignupViewListener {
     private boolean validaDadosUsuarioPrincipal() {
 
         //String login = ""; // @TODO: obter email do usuário principal
-        String login = (String) view.getEmailUsuarioTextField().getValue(); // @TODO: Obter da view
+        String login = (String) view.getUserEmailTextField().getValue(); // @TODO: Obter da view
         //System.out.println("usuario " + login);
 
         // verifica se o usuário informado existe (login)
@@ -107,15 +107,15 @@ public class SignupPresenter implements SignupViewListener {
         // verifica se a empresa (conta) informada já não existe no cadastro
         char tipoPessoa = '\0';
 
-        if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Física") {
+        if (view.getPersonTypeOptionGroup().getValue() == "Pessoa Física") {
             tipoPessoa = 'F';
-        } else if (view.getTipoPessoaOptionGroup().getValue() == "Pessoa Jurídica") {
+        } else if (view.getPersonTypeOptionGroup().getValue() == "Pessoa Jurídica") {
             tipoPessoa = 'J';
         } else {
             return false;
         }
 
-        String cpf_cnpj = view.getCnpjCpfTextField().getValue();
+        String cpf_cnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
 
         if (model.verificaEmpresaExistente(cpf_cnpj, tipoPessoa)) {
 
@@ -135,7 +135,7 @@ public class SignupPresenter implements SignupViewListener {
      */
     private boolean validaDadosEmpresasColigadas() {
 
-        final Table empresasColigadasTable = view.getColigadasTable();
+        final Table empresasColigadasTable = view.getAssociatedTable();
         Set<String> identificadoresEmpresasColigadas = new HashSet<>();
 
         for (Object itemID : empresasColigadasTable.getItemIds()) {
@@ -178,7 +178,7 @@ public class SignupPresenter implements SignupViewListener {
      */
     private boolean validaDadosFiliais() {
 
-        final Table filiaisTable = view.getFiliaisTable(); // @TODO: Obter a tabela de sub empresas
+        final Table filiaisTable = view.getSubsidiariesTable(); // @TODO: Obter a tabela de sub empresas
         Set<String> identificadoresFiliais = new HashSet<>();
         Set<String> nomesFiliais = new HashSet<>();
 
@@ -234,7 +234,7 @@ public class SignupPresenter implements SignupViewListener {
      */
     private boolean validaDadosDemaisUsuarios() {
 
-        Table usuariosTable = view.getUsuariosTable();
+        Table usuariosTable = view.getUsersTable();
         Set<String> identificadoresUsuarios = new HashSet<>();
 
         for (Object itemID : usuariosTable.getItemIds()) {
@@ -280,23 +280,23 @@ public class SignupPresenter implements SignupViewListener {
         // cria o usuario principal
         // ---------------------------------------------------------------------
         Usuario usuarioADM = model.criarNovoUsuario(
-                view.getNomeTextField().getValue(),
-                view.getSobrenomeTextField().getValue(),
-                view.getEmailUsuarioTextField().getValue(),
-                view.getSenhaTextField().getValue(),
+                view.getNameTextField().getValue(),
+                view.getSurnameTextField().getValue(),
+                view.getUserEmailTextField().getValue(),
+                view.getPasswordTextField().getValue(),
                 null
         );
 
         // ---------------------------------------------------------------------
         // cria a empresa principal
         // ---------------------------------------------------------------------
-        String nomeFantasia = view.getNomeFantasiaTextField().getValue();
-        String razaosocial = view.getRazaoSocialTextField().getValue();
-        String cpfCnpj = view.getCnpjCpfTextField().getValue();
+        String nomeFantasia = view.getFancyNameTextField().getValue();
+        String razaosocial = view.getCompanyNameTextField().getValue();
+        String cpfCnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
         char tipoPessoa = '\0';
-        if (view.getTipoPessoaOptionGroup().getValue() == mensagens.getString("SignupView.pessoaFisicaCheckBox.label")) { // @ATENCAO
+        if (view.getPersonTypeOptionGroup().getValue() == mensagens.getString("SignupView.pessoaFisicaCheckBox.label")) { // @ATENCAO
             tipoPessoa = 'F';
-        } else if (view.getTipoPessoaOptionGroup().getValue() == mensagens.getString("SignupView.pessoaJuridicaCheckBox.label")) { // @ATENCAO
+        } else if (view.getPersonTypeOptionGroup().getValue() == mensagens.getString("SignupView.pessoaJuridicaCheckBox.label")) { // @ATENCAO
             tipoPessoa = 'J';
         } else {
             return null;
@@ -305,11 +305,11 @@ public class SignupPresenter implements SignupViewListener {
         empresaPrincipal = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
 
         // cria o endereco
-        String logradouro = view.getLogradouroTextField().getValue();
-        String numero = view.getNumeroTextField().getValue();
-        String complemento = view.getComplementoTextField().getValue();
-        String cep = view.getCepTextField().getValue();
-        Cidade cidade = (Cidade) view.getCidadeComboBox().getValue();
+        String logradouro = view.getAdressTextField().getValue();
+        String numero = view.getNumberTextField().getValue();
+        String complemento = view.getComplementTextField().getValue();
+        String cep = view.getZipCodeTextField().getValue();
+        Cidade cidade = (Cidade) view.getCityComboBox().getValue();
         if (StringUtils.isNotBlank(logradouro)) {
             Endereco endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade, usuarioADM);
             model.relacionarEmpresaEndereco(empresaPrincipal, endereco);
@@ -320,7 +320,7 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de sub empresas 
         // ---------------------------------------------------------------------
-        Table empresasColigadasTable = view.getColigadasTable();
+        Table empresasColigadasTable = view.getAssociatedTable();
 
         empresasColigadasTable.getItemIds().stream().forEach((itemID) -> {
 
@@ -339,7 +339,7 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de filiais
         // ---------------------------------------------------------------------
-        Table filiaisTable = view.getFiliaisTable();
+        Table filiaisTable = view.getSubsidiariesTable();
         filiaisTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = filiaisTable.getItem(itemID);
@@ -355,7 +355,7 @@ public class SignupPresenter implements SignupViewListener {
         // ---------------------------------------------------------------------
         // cria a lista de usuarios
         // ---------------------------------------------------------------------
-        Table usuariosTable = view.getUsuariosTable();
+        Table usuariosTable = view.getUsersTable();
         usuariosTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = usuariosTable.getItem(itemID);
@@ -430,12 +430,12 @@ public class SignupPresenter implements SignupViewListener {
     @Override
     public void incluirUsuario() {
 
-        String nomeUsuario = view.getNomeUsuarioTextField().getValue();
-        String sobrenomeUsuario = view.getSobrenomeUsuarioTextField().getValue();
+        String nomeUsuario = view.getUserNameTextField().getValue();
+        String sobrenomeUsuario = view.getUserSurnameTextField().getValue();
         String email = view.getEmailTextField().getValue();
 
         //Verifica se Usuário é Administrador ou não
-        Boolean usuarioAdm = view.getUsuarioAdmCheckBox().getValue();
+        Boolean usuarioAdm = view.getUserAdmCheckBox().getValue();
         String adm = "";
         if (usuarioAdm == true) {
             adm = "SIM";
@@ -448,19 +448,19 @@ public class SignupPresenter implements SignupViewListener {
         removerUsuarioButton.addClickListener((Button.ClickEvent event) -> {
             String nomeUsuarioBotao = event.getButton().getId();
 
-            view.getUsuariosTable().removeItem(nomeUsuarioBotao);
-            view.getUsuariosTable().refreshRowCache();
+            view.getUsersTable().removeItem(nomeUsuarioBotao);
+            view.getUsersTable().refreshRowCache();
             Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
-        view.getUsuariosTable().addItem(new Object[]{nomeUsuario, sobrenomeUsuario, email, adm, removerUsuarioButton}, nomeUsuario);
+        view.getUsersTable().addItem(new Object[]{nomeUsuario, sobrenomeUsuario, email, adm, removerUsuarioButton}, nomeUsuario);
 
-        view.getNomeUsuarioTextField().setValue("");
-        view.getSobrenomeUsuarioTextField().setValue("");
+        view.getUserNameTextField().setValue("");
+        view.getUserSurnameTextField().setValue("");
         view.getEmailTextField().setValue("");
-        view.getConfirmaEmailTextField().setValue("");
-        view.getUsuarioAdmCheckBox().setValue(false);
+        view.getEmailConfirmTextField().setValue("");
+        view.getUserAdmCheckBox().setValue(false);
 
     }
 
@@ -471,10 +471,10 @@ public class SignupPresenter implements SignupViewListener {
     @Override
     public void incluirColigadas() {
 
-        String nomeColigada = view.getNomeColigadaTextField().getValue();
-        view.getCnpjColigadaTextField().commit(); // Veja se dá certo
-        view.getCnpjColigadaTextField().setValue("teste");
-        String cnpjColigada = view.getCnpjColigadaTextField().getValue();
+        String nomeColigada = view.getAssociatedNameTextField().getValue();
+        view.getNationalEntityRegistrationAssociatedTextField().commit(); // Veja se dá certo
+        view.getNationalEntityRegistrationAssociatedTextField().setValue("teste");
+        String cnpjColigada = view.getNationalEntityRegistrationAssociatedTextField().getValue();
 
         System.out.println("cnpj: " + cnpjColigada);
 
@@ -483,16 +483,16 @@ public class SignupPresenter implements SignupViewListener {
         removerColigadasButton.addClickListener((Button.ClickEvent event) -> {
             String nomeColigadaBotao = event.getButton().getId();
 
-            view.getColigadasTable().removeItem(nomeColigadaBotao);
-            view.getColigadasTable().refreshRowCache();
+            view.getAssociatedTable().removeItem(nomeColigadaBotao);
+            view.getAssociatedTable().refreshRowCache();
             Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE); // @ATENCAO
 
         });
 
-        view.getColigadasTable().addItem(new Object[]{nomeColigada, cnpjColigada, removerColigadasButton}, nomeColigada);
+        view.getAssociatedTable().addItem(new Object[]{nomeColigada, cnpjColigada, removerColigadasButton}, nomeColigada);
 
-        view.getNomeColigadaTextField().setValue("");
-        view.getCnpjColigadaTextField().setValue("");
+        view.getAssociatedNameTextField().setValue("");
+        view.getNationalEntityRegistrationAssociatedTextField().setValue("");
 
     }
 
@@ -503,24 +503,24 @@ public class SignupPresenter implements SignupViewListener {
     @Override
     public void incluirFiliais() {
 
-        String nomeFilial = view.getNomeFilialTextField().getValue();
-        String cnpjFilial = view.getCnpjFilialTextField().getValue();
+        String nomeFilial = view.getSubsidiaryNameTextField().getValue();
+        String cnpjFilial = view.getNationalEntityRegistrationSubsidiaryTextField().getValue();
 
         Button removerFiliaisButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
         removerFiliaisButton.setId(nomeFilial);
         removerFiliaisButton.addClickListener((Button.ClickEvent event) -> {
             String nomeFilialBotao = event.getButton().getId();
 
-            view.getFiliaisTable().removeItem(nomeFilialBotao);
-            view.getFiliaisTable().refreshRowCache();
+            view.getSubsidiariesTable().removeItem(nomeFilialBotao);
+            view.getSubsidiariesTable().refreshRowCache();
             Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
-        view.getFiliaisTable().addItem(new Object[]{nomeFilial, cnpjFilial, removerFiliaisButton}, nomeFilial);
+        view.getSubsidiariesTable().addItem(new Object[]{nomeFilial, cnpjFilial, removerFiliaisButton}, nomeFilial);
 
-        view.getNomeFilialTextField().setValue("");
-        view.getCnpjFilialTextField().setValue("");
+        view.getSubsidiaryNameTextField().setValue("");
+        view.getNationalEntityRegistrationSubsidiaryTextField().setValue("");
 
     }
 
@@ -531,7 +531,7 @@ public class SignupPresenter implements SignupViewListener {
      */
     private void carregaComboEstado() {
 
-        ComboBox estadoCombo = view.getEstadoComboBox();
+        ComboBox estadoCombo = view.getStateComboBox();
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -554,12 +554,12 @@ public class SignupPresenter implements SignupViewListener {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        ComboBox cidadeCombo = view.getCidadeComboBox();
+        ComboBox cidadeCombo = view.getCityComboBox();
 
         cidadeCombo.removeAllItems();
 
         List<Cidade> cidades = em.createNamedQuery("Cidade.findByEstado")
-                .setParameter("estado", view.getEstadoComboBox().getValue())
+                .setParameter("estado", view.getStateComboBox().getValue())
                 .getResultList();
 
         for (Cidade cidade : cidades) {

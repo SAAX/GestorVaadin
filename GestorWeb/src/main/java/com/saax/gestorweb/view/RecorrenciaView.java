@@ -24,13 +24,13 @@ import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
 
 /**
- * Pop-up Window para recorrência A visualização será com três check-box para escolha do tipo
- * de recorrência:
+ * Pop-up Window for recurrence Viewing will be three check-box to choose the type
+ * of recurrence:
  * <br>
  * <ol>
- * <li>Semanal</li>
- * <li>Mensal</li>
- * <li>Anual</li>
+ * <li>weekly</li>
+ * <li>monthly</li>
+ * <li>annual</li>
  * </ol>
  *
  *
@@ -38,69 +38,69 @@ import java.util.ResourceBundle;
  */
 public class RecorrenciaView extends Window {
 
-// Referencia ao recurso das mensagens:
-private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+// Reference to the use of messages:
+private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
+private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     
-// A view mantem acesso ao listener (Presenter) para notificar os eventos
-// Este acesso se dá por uma interface para manter a abstração das camadas
+// The view maintains access to the listener (Presenter) to notify events
+// This access is through an interface to maintain the abstraction layers
 private RecorrenciaViewListener listener;
 
 private Accordion accordion;
 
-private Label tituloLabel;
-private HorizontalLayout barraSuperior;
+private Label titleLabel;
+private HorizontalLayout superiorBar;
     
 // -------------------------------------------------------------------------
-// Componentes ref. as opções de recorrência
+// Components ref. The recurrence options
 // -------------------------------------------------------------------------     
 
-private CheckBox semanalCheckBox;
-private CheckBox mensalCheckBox;
-private CheckBox anualCheckBox;
+private CheckBox weeklyCheckBox;
+private CheckBox monthlyCheckBox;
+private CheckBox annualCheckBox;
     
 // -------------------------------------------------------------------------
-// Componentes ref. a recorrencia semanal 
+// Components ref. the weekly recurrence 
 // -------------------------------------------------------------------------   
-private VerticalLayout semanalAba;        
-private CheckBox segundaCheckBox;
-private CheckBox tercaCheckBox;
-private CheckBox quartaCheckBox;
-private CheckBox quintaCheckBox;
-private CheckBox sextaCheckBox;
-private CheckBox sabadoCheckBox;
-private CheckBox domingoCheckBox;
-private ComboBox qtdeSemanasCombo;
-private PopupDateField dataInicioSemanalDateField;
-private PopupDateField dataFimSemanalDateField;
+private VerticalLayout weeklyTab;        
+private CheckBox mondayCheckBox;
+private CheckBox tuesdayCheckBox;
+private CheckBox wednesdayCheckBox;
+private CheckBox thursdayCheckBox;
+private CheckBox fridayCheckBox;
+private CheckBox saturdayCheckBox;
+private CheckBox sundayCheckBox;
+private ComboBox numberWeeksCombo;
+private PopupDateField startDateWeeklyDateField;
+private PopupDateField endDateWeeklyDateField;
  
 // -------------------------------------------------------------------------
-// Componentes ref. a recorrencia mensal 
+// Components ref. the monthly recurrence
 // -------------------------------------------------------------------------  
-private VerticalLayout mensalAba;    
-private ComboBox diaMesCombo;    
-private ComboBox qtdeMesesCombo;
-private ComboBox tipoDiaMensalCombo;
-private PopupDateField dataInicioMensalDateField;
-private PopupDateField dataFimMensalDateField;
+private VerticalLayout monthlyTab;    
+private ComboBox daysMonthlyCombo;    
+private ComboBox numberMonthsCombo;
+private ComboBox kindDayMonthlyCombo;
+private PopupDateField startDateMonthlyDateField;
+private PopupDateField endDateMonthlyDateField;
 
 // -------------------------------------------------------------------------
-// Componentes ref. a recorrencia Anual 
+// Components ref. Annual recurrence
 // -------------------------------------------------------------------------  
-private VerticalLayout anualAba;        
-private ComboBox diaAnualCombo;
-private ComboBox tipoDiaAnualCombo;
-private ComboBox mesAnualCombo;
-private ComboBox anoAnualCombo;
+private VerticalLayout annualTab;        
+private ComboBox dayAnnualCombo;
+private ComboBox kindDayAnnualCombo;
+private ComboBox monthAnnualCombo;
+private ComboBox yearAnnualCombo;
     
 // -------------------------------------------------------------------------
-// Barra de botoes inferior
+// Buttons bar below
 // -------------------------------------------------------------------------
 private Button okButton;
-private Button cancelarButton;
+private Button cancelButton;
 
 /**
-     * Cria a view e todos os componentes
+     * Create a view and all components
      *
      */
     public RecorrenciaView() {
@@ -110,7 +110,7 @@ private Button cancelarButton;
         setWidth("70%");
         setHeight("50%");
 
-        // Container principal, que armazenará todos os demais containeres 
+        // Container main, which will store all other containers
         VerticalLayout containerPrincipal = buildContainerPrincipal();
         containerPrincipal.setSpacing(true);
         setContent(containerPrincipal);
@@ -120,7 +120,7 @@ private Button cancelarButton;
     }
     
     /**
-     * Constroi o container principal que armazenará todos os demais
+     * Builds the main container that will hold all other
      *
      * @return
      */
@@ -131,28 +131,23 @@ private Button cancelarButton;
         containerPrincipal.setSpacing(true);
         containerPrincipal.setSizeFull();
 
-        // label com caminho da tarefa
-        tituloLabel = new Label("Escolha o tipo de Recorrência");
-        containerPrincipal.addComponent(tituloLabel);
+        titleLabel = new Label("Escolha o tipo de Recorrência");
+        containerPrincipal.addComponent(titleLabel);
                 
-        // adiciona a barra de botoes superior (botões de chat, adicionar sub, etc)
         containerPrincipal.addComponent(buildBarraSuperior());
-        containerPrincipal.setComponentAlignment(barraSuperior, Alignment.MIDDLE_RIGHT);
+        containerPrincipal.setComponentAlignment(superiorBar, Alignment.MIDDLE_RIGHT);
 
-        // cria o acordeon de abas e adiciona as abas
+        // creates the accordion tabs and add tabs
         accordion = new Accordion();
         accordion.setWidth("100%");
-        // adiciona a aba de dados iniciais
-        accordion.addTab(buildAbaSemanal(), mensagens.getString("RecorrenciaView.AbaRecorrenciaSemanal.titulo"), null);
-        // adiciona a aba de descrição e responsáveis
-        accordion.addTab(buildAbaMensal(), mensagens.getString("RecorrenciaView.AbaRecorrenciaMensal.titulo"), null);
-        // adiciona a aba de detalhes da tarefa
-        accordion.addTab(buildAbaAnual(), mensagens.getString("RecorrenciaView.AbaRecorrenciaAnual.titulo"), null);
+        accordion.addTab(buildAbaSemanal(), messages.getString("RecorrenciaView.AbaRecorrenciaSemanal.titulo"), null);
+        accordion.addTab(buildAbaMensal(), messages.getString("RecorrenciaView.AbaRecorrenciaMensal.titulo"), null);
+        accordion.addTab(buildAbaAnual(), messages.getString("RecorrenciaView.AbaRecorrenciaAnual.titulo"), null);
 
         containerPrincipal.addComponent(accordion);
         containerPrincipal.setExpandRatio(accordion, 1);
 
-        // adiciona a barra de botoes inferior, com os botões de salvar e cancelas
+        // adds the lower buttons bar with buttons to save and cancel
         Component barraInferior = buildBarraBotoesInferior();
         containerPrincipal.addComponent(barraInferior);
         containerPrincipal.setComponentAlignment(barraInferior, Alignment.MIDDLE_CENTER);
@@ -164,287 +159,286 @@ private Button cancelarButton;
     
     
     /**
-     * Constrói e retorna a barra de botões superior
+     * Constructs and returns to the top button bar
      *
      * @return
      */
     private Component buildBarraSuperior() {
-        barraSuperior = new HorizontalLayout();
-        barraSuperior.setSpacing(true);
-        barraSuperior.setSizeUndefined();
+        superiorBar = new HorizontalLayout();
+        superiorBar.setSpacing(true);
+        superiorBar.setSizeUndefined();
         
-        semanalCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.semanalCheckBox.caption"));
-        mensalCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.mensalCheckBox.caption"));
-        anualCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.anualCheckBox.caption"));
+        weeklyCheckBox = new CheckBox(messages.getString("RecorrenciaView.semanalCheckBox.caption"));
+        monthlyCheckBox = new CheckBox(messages.getString("RecorrenciaView.mensalCheckBox.caption"));
+        annualCheckBox = new CheckBox(messages.getString("RecorrenciaView.anualCheckBox.caption"));
         
-        barraSuperior.addComponent(semanalCheckBox);
+        superiorBar.addComponent(weeklyCheckBox);
 
-        semanalCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
+        weeklyCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.recorrenciaSemanal(event);
         });
         
-        barraSuperior.addComponent(mensalCheckBox);
+        superiorBar.addComponent(monthlyCheckBox);
 
-        mensalCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
+        monthlyCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.recorrenciaMensal(event);
         });
         
-        barraSuperior.addComponent(anualCheckBox);
+        superiorBar.addComponent(annualCheckBox);
 
-        anualCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
+        annualCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.recorrenciaAnual(event);
         });
         
-        return barraSuperior;
+        return superiorBar;
     }
     
     /**
-     * Constroi a aba de recorrencia Semanal:
+     * Constructs tab of recurrence Weekly:
      *
      * @return
      */
     private Component buildAbaSemanal() {
 
-        segundaCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.segundaCheckBox.caption"));
-        tercaCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.tercaCheckBox.caption"));
-        quartaCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.quartaCheckBox.caption"));
-        quintaCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.quintaCheckBox.caption"));
-        sextaCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.sextaCheckBox.caption"));
-        sabadoCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.sabadoCheckBox.caption"));
-        domingoCheckBox = new CheckBox(mensagens.getString("RecorrenciaView.domingoCheckBox.caption"));
+        mondayCheckBox = new CheckBox(messages.getString("RecorrenciaView.segundaCheckBox.caption"));
+        tuesdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.tercaCheckBox.caption"));
+        wednesdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.quartaCheckBox.caption"));
+        thursdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.quintaCheckBox.caption"));
+        fridayCheckBox = new CheckBox(messages.getString("RecorrenciaView.sextaCheckBox.caption"));
+        saturdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.sabadoCheckBox.caption"));
+        sundayCheckBox = new CheckBox(messages.getString("RecorrenciaView.domingoCheckBox.caption"));
         
-        qtdeSemanasCombo = new ComboBox(mensagens.getString("RecorrenciaView.qtdeSemanasCombo.label"));
-        qtdeSemanasCombo.addItem("1");
-        qtdeSemanasCombo.addItem("2");
-        qtdeSemanasCombo.addItem("3");
-        qtdeSemanasCombo.addItem("4");
+        numberWeeksCombo = new ComboBox(messages.getString("RecorrenciaView.qtdeSemanasCombo.label"));
+        numberWeeksCombo.addItem("1");
+        numberWeeksCombo.addItem("2");
+        numberWeeksCombo.addItem("3");
+        numberWeeksCombo.addItem("4");
         
-        dataInicioSemanalDateField = new PopupDateField(mensagens.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
-        dataFimSemanalDateField = new PopupDateField(mensagens.getString("RecorrenciaView.dataFimSemanalDateField.label"));
+        startDateWeeklyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
+        endDateWeeklyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataFimSemanalDateField.label"));
         
         HorizontalLayout diasContainer = new HorizontalLayout();
         diasContainer.setSpacing(true);
         diasContainer.setSizeFull();
         
-        diasContainer.addComponent(segundaCheckBox);
-        diasContainer.addComponent(tercaCheckBox);
-        diasContainer.addComponent(quartaCheckBox);
-        diasContainer.addComponent(quintaCheckBox);
-        diasContainer.addComponent(sextaCheckBox);
-        diasContainer.addComponent(sabadoCheckBox);
-        diasContainer.addComponent(domingoCheckBox);
+        diasContainer.addComponent(mondayCheckBox);
+        diasContainer.addComponent(tuesdayCheckBox);
+        diasContainer.addComponent(wednesdayCheckBox);
+        diasContainer.addComponent(thursdayCheckBox);
+        diasContainer.addComponent(fridayCheckBox);
+        diasContainer.addComponent(saturdayCheckBox);
+        diasContainer.addComponent(sundayCheckBox);
         
         
         HorizontalLayout datasContainer = new HorizontalLayout();
         datasContainer.setSpacing(true);
         datasContainer.setSizeFull();
         
-        datasContainer.addComponent(qtdeSemanasCombo);
-        datasContainer.addComponent(dataInicioSemanalDateField);
-        datasContainer.addComponent(dataFimSemanalDateField);
+        datasContainer.addComponent(numberWeeksCombo);
+        datasContainer.addComponent(startDateWeeklyDateField);
+        datasContainer.addComponent(endDateWeeklyDateField);
         
 
-        semanalAba = new VerticalLayout();
-        semanalAba.setSpacing(true);
-        semanalAba.setMargin(true);
-        semanalAba.setWidth("100%");
-        semanalAba.setHeight(null);
+        weeklyTab = new VerticalLayout();
+        weeklyTab.setSpacing(true);
+        weeklyTab.setMargin(true);
+        weeklyTab.setWidth("100%");
+        weeklyTab.setHeight(null);
 
-        semanalAba.addComponent(diasContainer);
-        semanalAba.addComponent(datasContainer);
+        weeklyTab.addComponent(diasContainer);
+        weeklyTab.addComponent(datasContainer);
 
-        return semanalAba;
+        return weeklyTab;
     }
     
     /**
-     * Constroi a aba de recorrencia Mensal:
+     * Constructs tab of recurrence Monthly:
      *
      * @return
      */
     private Component buildAbaMensal() {
 
-        diaMesCombo = new ComboBox(mensagens.getString("RecorrenciaView.diaMesCombo.label"));
-        diaMesCombo.addItem("Primeiro Dia Útil");
-        diaMesCombo.addItem("Último Dia do Mês");
-        diaMesCombo.addItem("01");
-        diaMesCombo.addItem("02");
-        diaMesCombo.addItem("03");
-        diaMesCombo.addItem("04");
-        diaMesCombo.addItem("05");
-        diaMesCombo.addItem("06");
-        diaMesCombo.addItem("07");
-        diaMesCombo.addItem("08");
-        diaMesCombo.addItem("09");
-        diaMesCombo.addItem("10");
-        diaMesCombo.addItem("11");
-        diaMesCombo.addItem("12");
-        diaMesCombo.addItem("13");
-        diaMesCombo.addItem("14");
-        diaMesCombo.addItem("15");
-        diaMesCombo.addItem("16");
-        diaMesCombo.addItem("17");
-        diaMesCombo.addItem("18");
-        diaMesCombo.addItem("19");
-        diaMesCombo.addItem("20");
-        diaMesCombo.addItem("21");
-        diaMesCombo.addItem("22");
-        diaMesCombo.addItem("23");
-        diaMesCombo.addItem("24");
-        diaMesCombo.addItem("25");
-        diaMesCombo.addItem("26");
-        diaMesCombo.addItem("27");
-        diaMesCombo.addItem("28");
-        diaMesCombo.addItem("29");
-        diaMesCombo.addItem("30");
-        diaMesCombo.addItem("31");
+        daysMonthlyCombo = new ComboBox(messages.getString("RecorrenciaView.diaMesCombo.label"));
+        daysMonthlyCombo.addItem(messages.getString("RecorrenciaView.primeiroDiaUtil"));
+        daysMonthlyCombo.addItem(messages.getString("RecorrenciaView.ultimoDiaMes"));
+        daysMonthlyCombo.addItem("01");
+        daysMonthlyCombo.addItem("02");
+        daysMonthlyCombo.addItem("03");
+        daysMonthlyCombo.addItem("04");
+        daysMonthlyCombo.addItem("05");
+        daysMonthlyCombo.addItem("06");
+        daysMonthlyCombo.addItem("07");
+        daysMonthlyCombo.addItem("08");
+        daysMonthlyCombo.addItem("09");
+        daysMonthlyCombo.addItem("10");
+        daysMonthlyCombo.addItem("11");
+        daysMonthlyCombo.addItem("12");
+        daysMonthlyCombo.addItem("13");
+        daysMonthlyCombo.addItem("14");
+        daysMonthlyCombo.addItem("15");
+        daysMonthlyCombo.addItem("16");
+        daysMonthlyCombo.addItem("17");
+        daysMonthlyCombo.addItem("18");
+        daysMonthlyCombo.addItem("19");
+        daysMonthlyCombo.addItem("20");
+        daysMonthlyCombo.addItem("21");
+        daysMonthlyCombo.addItem("22");
+        daysMonthlyCombo.addItem("23");
+        daysMonthlyCombo.addItem("24");
+        daysMonthlyCombo.addItem("25");
+        daysMonthlyCombo.addItem("26");
+        daysMonthlyCombo.addItem("27");
+        daysMonthlyCombo.addItem("28");
+        daysMonthlyCombo.addItem("29");
+        daysMonthlyCombo.addItem("30");
+        daysMonthlyCombo.addItem("31");
         
-        qtdeMesesCombo = new ComboBox(mensagens.getString("RecorrenciaView.qtdeMesesCombo.label"));
-        qtdeMesesCombo.addItem("01");
-        qtdeMesesCombo.addItem("02");
-        qtdeMesesCombo.addItem("03");
-        qtdeMesesCombo.addItem("04");
-        qtdeMesesCombo.addItem("05");
-        qtdeMesesCombo.addItem("06");
-        qtdeMesesCombo.addItem("07");
-        qtdeMesesCombo.addItem("08");
-        qtdeMesesCombo.addItem("09");
-        qtdeMesesCombo.addItem("10");
-        qtdeMesesCombo.addItem("11");
-        qtdeMesesCombo.addItem("12");
+        numberMonthsCombo = new ComboBox(messages.getString("RecorrenciaView.qtdeMesesCombo.label"));
+        numberMonthsCombo.addItem("01");
+        numberMonthsCombo.addItem("02");
+        numberMonthsCombo.addItem("03");
+        numberMonthsCombo.addItem("04");
+        numberMonthsCombo.addItem("05");
+        numberMonthsCombo.addItem("06");
+        numberMonthsCombo.addItem("07");
+        numberMonthsCombo.addItem("08");
+        numberMonthsCombo.addItem("09");
+        numberMonthsCombo.addItem("10");
+        numberMonthsCombo.addItem("11");
+        numberMonthsCombo.addItem("12");
         
-        tipoDiaMensalCombo = new ComboBox(mensagens.getString("RecorrenciaView.tipoDiaMensalCombo.label"));
-        tipoDiaMensalCombo.addItem("Corrido");
-        tipoDiaMensalCombo.addItem("Útil");        
-        tipoDiaMensalCombo.addItem("Útil c/ Sábado");        
+        kindDayMonthlyCombo = new ComboBox(messages.getString("RecorrenciaView.tipoDiaMensalCombo.label"));
+        kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaCorrido"));
+        kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
+        kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
         
-        dataInicioMensalDateField = new PopupDateField(mensagens.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
-        dataFimMensalDateField = new PopupDateField(mensagens.getString("RecorrenciaView.dataFimSemanalDateField.label"));
+        startDateMonthlyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
+        endDateMonthlyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataFimSemanalDateField.label"));
         
         HorizontalLayout mesContainer = new HorizontalLayout();
         mesContainer.setSpacing(true);
         mesContainer.setSizeFull();
         
-        mesContainer.addComponent(diaMesCombo);
-        mesContainer.addComponent(qtdeMesesCombo);
-        mesContainer.addComponent(tipoDiaMensalCombo);
+        mesContainer.addComponent(daysMonthlyCombo);
+        mesContainer.addComponent(numberMonthsCombo);
+        mesContainer.addComponent(kindDayMonthlyCombo);
         
         HorizontalLayout datasMensalContainer = new HorizontalLayout();
         datasMensalContainer.setSpacing(true);
         datasMensalContainer.setSizeFull();
         
 
-        mensalAba = new VerticalLayout();
-        mensalAba.setSpacing(true);
-        mensalAba.setMargin(true);
-        mensalAba.setWidth("100%");
-        mensalAba.setHeight(null);
+        monthlyTab = new VerticalLayout();
+        monthlyTab.setSpacing(true);
+        monthlyTab.setMargin(true);
+        monthlyTab.setWidth("100%");
+        monthlyTab.setHeight(null);
 
-        mensalAba.addComponent(mesContainer);
-        mensalAba.addComponent(datasMensalContainer);
+        monthlyTab.addComponent(mesContainer);
+        monthlyTab.addComponent(datasMensalContainer);
 
-        return mensalAba;
+        return monthlyTab;
     }
     
     /**
-     * Constroi a aba de recorrencia Anual:
+     * Builds the tab Annual recurrence:
      *
      * @return
      */
     private Component buildAbaAnual() {
 
-        diaAnualCombo = new ComboBox(mensagens.getString("RecorrenciaView.diaAnualCombo.label"));
-        diaAnualCombo.addItem("Primeiro Dia Útil");
-        diaAnualCombo.addItem("Último Dia do Mês");
-        diaAnualCombo.addItem("01");
-        diaAnualCombo.addItem("02");
-        diaAnualCombo.addItem("03");
-        diaAnualCombo.addItem("04");
-        diaAnualCombo.addItem("05");
-        diaAnualCombo.addItem("06");
-        diaAnualCombo.addItem("07");
-        diaAnualCombo.addItem("08");
-        diaAnualCombo.addItem("09");
-        diaAnualCombo.addItem("10");
-        diaAnualCombo.addItem("11");
-        diaAnualCombo.addItem("12");
-        diaAnualCombo.addItem("13");
-        diaAnualCombo.addItem("14");
-        diaAnualCombo.addItem("15");
-        diaAnualCombo.addItem("16");
-        diaAnualCombo.addItem("17");
-        diaAnualCombo.addItem("18");
-        diaAnualCombo.addItem("19");
-        diaAnualCombo.addItem("20");
-        diaAnualCombo.addItem("21");
-        diaAnualCombo.addItem("22");
-        diaAnualCombo.addItem("23");
-        diaAnualCombo.addItem("24");
-        diaAnualCombo.addItem("25");
-        diaAnualCombo.addItem("26");
-        diaAnualCombo.addItem("27");
-        diaAnualCombo.addItem("28");
-        diaAnualCombo.addItem("29");
-        diaAnualCombo.addItem("30");
-        diaAnualCombo.addItem("31");
+        dayAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.diaAnualCombo.label"));
+        dayAnnualCombo.addItem(messages.getString("RecorrenciaView.primeiroDiaUtil"));
+        dayAnnualCombo.addItem(messages.getString("RecorrenciaView.ultimoDiaMes"));
+        dayAnnualCombo.addItem("01");
+        dayAnnualCombo.addItem("02");
+        dayAnnualCombo.addItem("03");
+        dayAnnualCombo.addItem("04");
+        dayAnnualCombo.addItem("05");
+        dayAnnualCombo.addItem("06");
+        dayAnnualCombo.addItem("07");
+        dayAnnualCombo.addItem("08");
+        dayAnnualCombo.addItem("09");
+        dayAnnualCombo.addItem("10");
+        dayAnnualCombo.addItem("11");
+        dayAnnualCombo.addItem("12");
+        dayAnnualCombo.addItem("13");
+        dayAnnualCombo.addItem("14");
+        dayAnnualCombo.addItem("15");
+        dayAnnualCombo.addItem("16");
+        dayAnnualCombo.addItem("17");
+        dayAnnualCombo.addItem("18");
+        dayAnnualCombo.addItem("19");
+        dayAnnualCombo.addItem("20");
+        dayAnnualCombo.addItem("21");
+        dayAnnualCombo.addItem("22");
+        dayAnnualCombo.addItem("23");
+        dayAnnualCombo.addItem("24");
+        dayAnnualCombo.addItem("25");
+        dayAnnualCombo.addItem("26");
+        dayAnnualCombo.addItem("27");
+        dayAnnualCombo.addItem("28");
+        dayAnnualCombo.addItem("29");
+        dayAnnualCombo.addItem("30");
+        dayAnnualCombo.addItem("31");
         
         
-        tipoDiaAnualCombo = new ComboBox(mensagens.getString("RecorrenciaView.tipoDiaAnualCombo.label"));
-        tipoDiaAnualCombo.addItem("Corrido");
-        tipoDiaAnualCombo.addItem("Útil");        
-        tipoDiaAnualCombo.addItem("Útil c/ Sábado");     
+        kindDayAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.tipoDiaAnualCombo.label"));
+        kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaCorrido"));
+        kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
+        kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
         
-        
-        mesAnualCombo = new ComboBox(mensagens.getString("RecorrenciaView.mesAnualCombo.label"));
-        mesAnualCombo.addItem("Janeiro");
-        mesAnualCombo.addItem("Fevereiro");
-        mesAnualCombo.addItem("Março");
-        mesAnualCombo.addItem("Abril");
-        mesAnualCombo.addItem("Maio");
-        mesAnualCombo.addItem("Junho");
-        mesAnualCombo.addItem("Julho");
-        mesAnualCombo.addItem("Agosto");
-        mesAnualCombo.addItem("Setembro");
-        mesAnualCombo.addItem("Outubro");
-        mesAnualCombo.addItem("Novembro");
-        mesAnualCombo.addItem("Dezembro");
+        monthAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.mesAnualCombo.label"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.janeiro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.fevereiro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.marco"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.abril"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.maio"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.junho"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.julho"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.agosto"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.setembro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.outubro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.novembro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.dezembro"));
 
-        anoAnualCombo = new ComboBox(mensagens.getString("RecorrenciaView.anoAnualCombo.label"));
-        anoAnualCombo.addItem("2015");
-        anoAnualCombo.addItem("2016");
-        anoAnualCombo.addItem("2017");
-        anoAnualCombo.addItem("2018");
-        anoAnualCombo.addItem("2019");
-        anoAnualCombo.addItem("2020");
+        yearAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.anoAnualCombo.label"));
+        yearAnnualCombo.addItem("2015");
+        yearAnnualCombo.addItem("2016");
+        yearAnnualCombo.addItem("2017");
+        yearAnnualCombo.addItem("2018");
+        yearAnnualCombo.addItem("2019");
+        yearAnnualCombo.addItem("2020");
         
         HorizontalLayout anoContainer = new HorizontalLayout();
         anoContainer.setSpacing(true);
         anoContainer.setSizeFull();
         
-        anoContainer.addComponent(diaAnualCombo);
-        anoContainer.addComponent(tipoDiaAnualCombo);
+        anoContainer.addComponent(dayAnnualCombo);
+        anoContainer.addComponent(kindDayAnnualCombo);
         
         HorizontalLayout anoContainer2 = new HorizontalLayout();
         anoContainer2.setSpacing(true);
         anoContainer2.setSizeFull();
         
-        anoContainer2.addComponent(mesAnualCombo);
-        anoContainer2.addComponent(anoAnualCombo);
+        anoContainer2.addComponent(monthAnnualCombo);
+        anoContainer2.addComponent(yearAnnualCombo);
         
 
-        anualAba = new VerticalLayout();
-        anualAba.setSpacing(true);
-        anualAba.setMargin(true);
-        anualAba.setWidth("100%");
-        anualAba.setHeight(null);
+        annualTab = new VerticalLayout();
+        annualTab.setSpacing(true);
+        annualTab.setMargin(true);
+        annualTab.setWidth("100%");
+        annualTab.setHeight(null);
 
-        anualAba.addComponent(anoContainer);
-        anualAba.addComponent(anoContainer2);
+        annualTab.addComponent(anoContainer);
+        annualTab.addComponent(anoContainer2);
 
-        return anualAba;
+        return annualTab;
     }
     
     /**
-     * Constrói e retorna a barra de botões inferiores
+     * Constructs and returns the lower button bar
      *
      * @return
      */
@@ -454,19 +448,19 @@ private Button cancelarButton;
         barraBotoesInferior.setSizeUndefined();
         barraBotoesInferior.setSpacing(true);
 
-        okButton = new Button(mensagens.getString("RecorrenciaView.okButton.caption"));
+        okButton = new Button(messages.getString("RecorrenciaView.okButton.caption"));
 
         barraBotoesInferior.addComponent(okButton);
 
-        cancelarButton = new Button(mensagens.getString("RecorrenciaView.cancelarButton.caption"));
+        cancelButton = new Button(messages.getString("RecorrenciaView.cancelarButton.caption"));
         
-        barraBotoesInferior.addComponent(cancelarButton);
+        barraBotoesInferior.addComponent(cancelButton);
 
         return barraBotoesInferior;
     }
     
     /**
-     * Configura o listener de eventos da view
+     * Sets the listener's view events
      *
      * @param listener
      */
@@ -475,183 +469,183 @@ private Button cancelarButton;
     }
     
     /**
-     * Oculta / revela a aba de recorrencia semanal
+     * Hides / shows the weekly recurrence tab
      *
      * @param visible
      */
     public void setAbaSemanalVisible(boolean visible) {
 
-        TabSheet.Tab tab = accordion.getTab(semanalAba);
+        TabSheet.Tab tab = accordion.getTab(weeklyTab);
         tab.setVisible(visible);
 
     }
     
     /**
-     * Oculta / revela a aba de recorrencia mensal
+     * Hides / shows the monthly recurrence tab
      *
      * @param visible
      */
     public void setAbaMensalVisible(boolean visible) {
 
-        TabSheet.Tab tab = accordion.getTab(mensalAba);
+        TabSheet.Tab tab = accordion.getTab(monthlyTab);
         tab.setVisible(visible);
 
     }
     
      /**
-     * Oculta / revela a aba de recorrencia anual
+     * Hides / shows the annual recurrence tab
      *
      * @param visible
      */
     public void setAbaAnualVisible(boolean visible) {
 
-        TabSheet.Tab tab = accordion.getTab(anualAba);
+        TabSheet.Tab tab = accordion.getTab(annualTab);
         tab.setVisible(visible);
 
     }
 
     public CheckBox getSemanalCheckBox() {
-        return semanalCheckBox;
+        return weeklyCheckBox;
     }
 
     public void setSemanalCheckBox(CheckBox semanalCheckBox) {
-        this.semanalCheckBox = semanalCheckBox;
+        this.weeklyCheckBox = semanalCheckBox;
     }
 
     public CheckBox getMensalCheckBox() {
-        return mensalCheckBox;
+        return monthlyCheckBox;
     }
 
     public void setMensalCheckBox(CheckBox mensalCheckBox) {
-        this.mensalCheckBox = mensalCheckBox;
+        this.monthlyCheckBox = mensalCheckBox;
     }
 
     public CheckBox getAnualCheckBox() {
-        return anualCheckBox;
+        return annualCheckBox;
     }
 
     public void setAnualCheckBox(CheckBox anualCheckBox) {
-        this.anualCheckBox = anualCheckBox;
+        this.annualCheckBox = anualCheckBox;
     }
 
     public CheckBox getSegundaCheckBox() {
-        return segundaCheckBox;
+        return mondayCheckBox;
     }
 
     public void setSegundaCheckBox(CheckBox segundaCheckBox) {
-        this.segundaCheckBox = segundaCheckBox;
+        this.mondayCheckBox = segundaCheckBox;
     }
 
     public CheckBox getTercaCheckBox() {
-        return tercaCheckBox;
+        return tuesdayCheckBox;
     }
 
     public void setTercaCheckBox(CheckBox tercaCheckBox) {
-        this.tercaCheckBox = tercaCheckBox;
+        this.tuesdayCheckBox = tercaCheckBox;
     }
 
     public CheckBox getQuartaCheckBox() {
-        return quartaCheckBox;
+        return wednesdayCheckBox;
     }
 
     public void setQuartaCheckBox(CheckBox quartaCheckBox) {
-        this.quartaCheckBox = quartaCheckBox;
+        this.wednesdayCheckBox = quartaCheckBox;
     }
 
     public CheckBox getQuintaCheckBox() {
-        return quintaCheckBox;
+        return thursdayCheckBox;
     }
 
     public void setQuintaCheckBox(CheckBox quintaCheckBox) {
-        this.quintaCheckBox = quintaCheckBox;
+        this.thursdayCheckBox = quintaCheckBox;
     }
 
     public CheckBox getSextaCheckBox() {
-        return sextaCheckBox;
+        return fridayCheckBox;
     }
 
     public void setSextaCheckBox(CheckBox sextaCheckBox) {
-        this.sextaCheckBox = sextaCheckBox;
+        this.fridayCheckBox = sextaCheckBox;
     }
 
     public CheckBox getSabadoCheckBox() {
-        return sabadoCheckBox;
+        return saturdayCheckBox;
     }
 
     public void setSabadoCheckBox(CheckBox sabadoCheckBox) {
-        this.sabadoCheckBox = sabadoCheckBox;
+        this.saturdayCheckBox = sabadoCheckBox;
     }
 
     public CheckBox getDomingoCheckBox() {
-        return domingoCheckBox;
+        return sundayCheckBox;
     }
 
     public void setDomingoCheckBox(CheckBox domingoCheckBox) {
-        this.domingoCheckBox = domingoCheckBox;
+        this.sundayCheckBox = domingoCheckBox;
     }
 
     public ComboBox getQtdeSemanasCombo() {
-        return qtdeSemanasCombo;
+        return numberWeeksCombo;
     }
 
     public void setQtdeSemanasCombo(ComboBox qtdeSemanasCombo) {
-        this.qtdeSemanasCombo = qtdeSemanasCombo;
+        this.numberWeeksCombo = qtdeSemanasCombo;
     }
 
     public ComboBox getDiaMesCombo() {
-        return diaMesCombo;
+        return daysMonthlyCombo;
     }
 
     public void setDiaMesCombo(ComboBox diaMesCombo) {
-        this.diaMesCombo = diaMesCombo;
+        this.daysMonthlyCombo = diaMesCombo;
     }
 
-    public ComboBox getQtdeMesesCombo() {
-        return qtdeMesesCombo;
+    public ComboBox getNumberMonthsCombo() {
+        return numberMonthsCombo;
     }
 
-    public void setQtdeMesesCombo(ComboBox qtdeMesesCombo) {
-        this.qtdeMesesCombo = qtdeMesesCombo;
+    public void setNumberMonthsCombo(ComboBox numberMonthsCombo) {
+        this.numberMonthsCombo = numberMonthsCombo;
     }
 
-    public ComboBox getTipoDiaMensalCombo() {
-        return tipoDiaMensalCombo;
+    public ComboBox getKindDayMonthlyCombo() {
+        return kindDayMonthlyCombo;
     }
 
-    public void setTipoDiaMensalCombo(ComboBox tipoDiaMensalCombo) {
-        this.tipoDiaMensalCombo = tipoDiaMensalCombo;
+    public void setKindDayMonthlyCombo(ComboBox kindDayMonthlyCombo) {
+        this.kindDayMonthlyCombo = kindDayMonthlyCombo;
     }
 
     public ComboBox getDiaAnualCombo() {
-        return diaAnualCombo;
+        return dayAnnualCombo;
     }
 
     public void setDiaAnualCombo(ComboBox diaAnualCombo) {
-        this.diaAnualCombo = diaAnualCombo;
+        this.dayAnnualCombo = diaAnualCombo;
     }
 
-    public ComboBox getTipoDiaAnualCombo() {
-        return tipoDiaAnualCombo;
+    public ComboBox getKindDayAnnualCombo() {
+        return kindDayAnnualCombo;
     }
 
-    public void setTipoDiaAnualCombo(ComboBox tipoDiaAnualCombo) {
-        this.tipoDiaAnualCombo = tipoDiaAnualCombo;
+    public void setKindDayAnnualCombo(ComboBox kindDayAnnualCombo) {
+        this.kindDayAnnualCombo = kindDayAnnualCombo;
     }
 
-    public ComboBox getMesAnualCombo() {
-        return mesAnualCombo;
+    public ComboBox getMonthAnnualCombo() {
+        return monthAnnualCombo;
     }
 
-    public void setMesAnualCombo(ComboBox mesAnualCombo) {
-        this.mesAnualCombo = mesAnualCombo;
+    public void setMonthAnnualCombo(ComboBox monthAnnualCombo) {
+        this.monthAnnualCombo = monthAnnualCombo;
     }
 
-    public ComboBox getAnoAnualCombo() {
-        return anoAnualCombo;
+    public ComboBox getYearAnnualCombo() {
+        return yearAnnualCombo;
     }
 
-    public void setAnoAnualCombo(ComboBox anoAnualCombo) {
-        this.anoAnualCombo = anoAnualCombo;
+    public void setYearAnnualCombo(ComboBox yearAnnualCombo) {
+        this.yearAnnualCombo = yearAnnualCombo;
     }
     
 

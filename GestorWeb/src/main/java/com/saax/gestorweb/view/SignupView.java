@@ -1,5 +1,4 @@
 package com.saax.gestorweb.view;
-//teste de commit -> volta
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
@@ -21,96 +20,93 @@ import java.util.ResourceBundle;
 import org.vaadin.addons.maskedtextfield.MaskedTextField;
 
 /**
- * Janela de criaÃ§Ã£o de nova conta, com dados do usuÃ¡iro, billing, empresas, etc.
+ * New account creation window, with user data, billing, business, etc.
  *
  * @author Rodrigo / Fernando
  */
 public class SignupView extends Window {
 
-    // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    // Reference to the use of the messages:
+    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
-    // A view mantem acesso ao listener (Presenter) para notificar os eventos
-    // Este acesso se dÃ¡ por uma interface para manter a abstraÃ§Ã£o das camadas
+    // The view maintains access to the listener (Presenter) to notify events
+    // This access is by Gives an interface to maintain the abstraction layers
     private SignupViewListener listener;
 
     public void setListener(SignupViewListener listener) {
         this.listener = listener;
     }
 
-    // componentes visuais da view
+    // Visual components of view
     
-    // ABA #1 : Dados do usuÃ¡rio
-    private TextField nomeTextField;
-    private TextField sobrenomeTextField;
-    private TextField emailUsuarioTextField;
-    private TextField confirmaEmailUsuarioTextField;
-    private TextField senhaTextField;
-    private CheckBox aceitaTermosCheckBox;
+    // Tab 1: User Data
+    private TextField nameTextField;
+    private TextField surnameTextField;
+    private TextField userEmailTextField;
+    private TextField confirmeUserEmailTextField;
+    private TextField passwordTextField;
+    private CheckBox acceptTermsCheckBox;
     
+    // Tab 2: billing data (will be done in the future)
     
-    
-    // ABA #2 : Dados de billing (serÃ¡ feito fururamente)
-    
-    // ABA #3 : Dados de empresas e filiais
-     private TextField razaoSocialTextField;
-     private TextField nomeFantasiaTextField;
-     private OptionGroup tipoPessoaOptionGroup;
-     private MaskedTextField cnpjCpfTextField;
-     private TextField logradouroTextField;
-     private TextField numeroTextField;
-     private TextField complementoTextField;
-     private TextField bairroTextField;
-     private ComboBox cidadeComboBox;
-     private ComboBox estadoComboBox;
-     private MaskedTextField cepTextField;
-     private Table empresasTable;
-     private CheckBox empresaAtivaCheckBox;
+    // Tab 3: Data companies and subsidiaries
+     private TextField companyNameTextField;
+     private TextField fancyNameTextField;
+     private OptionGroup personTypeOptionGroup;
+     private MaskedTextField nationalEntityRegistrationCodeTextField;
+     private TextField adressTextField;
+     private TextField numberTextField;
+     private TextField complementTextField;
+     private TextField neighborhoodTextField;
+     private ComboBox cityComboBox;
+     private ComboBox stateComboBox;
+     private MaskedTextField zipCodeTextField;
+     private Table companiesTable;
+     private CheckBox activeCompanyCheckBox;
      
 
-    // ABA #4 : Adicionar mais usuÃ¡rios Ã  empresa
-     private TextField nomeUsuarioTextField;
-     private TextField sobrenomeUsuarioTextField;
+    // Tab 4: Add more users to the company
+     private TextField userNameTextField;
+     private TextField userSurnameTextField;
      private TextField emailTextField;
-     private TextField confirmaEmailTextField;
-     private Table usuariosTable;
-     private CheckBox usuarioAdmCheckBox;
+     private TextField emailConfirmTextField;
+     private Table usersTable;
+     private CheckBox userAdmCheckBox;
      
-    //ABA #5: Adicionar Empresas Coligadas
-    private TextField nomeColigadaTextField;
-    private MaskedTextField cnpjColigadaTextField;
-    private CheckBox coligadaAtivaCheckBox;
-    private Table coligadasTable;
+    // Tab 5: Add Associated Companies
+    private TextField associatedNameTextField;
+    private MaskedTextField nationalEntityRegistrationAssociatedTextField;
+    private CheckBox activeAssociatedCheckBox;
+    private Table associatedTable;
     
-    //ABA #6: Adicionar Empresas Filiais
-    private TextField nomeFilialTextField;
-    private MaskedTextField cnpjFilialTextField;
-    private CheckBox filialAtivaCheckBox;
-    private Table filiaisTable;
+    // Tab 6: Add Subsidiaries
+    private TextField subsidiaryNameTextField;
+    private MaskedTextField nationalEntityRegistrationSubsidiaryTextField;
+    private CheckBox activeSubsidiaryCheckBox;
+    private Table subsidiariesTable;
    
-    
     /**
-     * Cria o pop-up de login, com campos para usuÃ¡rio e senha
+     * Creates the pop-up login with fields for username and password
      *
      */
     public SignupView() {
         super();
 
-        setCaption(mensagens.getString("SignupView.titulo"));
+        setCaption(messages.getString("SignupView.titulo"));
         setModal(true);
         setWidth(500, Unit.PIXELS);
         setHeight(500, Unit.PIXELS);
 
-        // Container que armazena os elementos visuais (campos de login e senha)       
+        // Container that stores the visual elements (login and password fields)
         VerticalLayout container = new VerticalLayout();
         container.setMargin(true);
         setContent(container);
 
-        // Adicionar: componentes visuais
+        // Add: visual components
         container.addComponent(buildTabPanel());
 
-        // barra dos botoes
+        // Buttons Bar
         HorizontalLayout barraBotoes = buildBarraBotoes();
         container.addComponent(barraBotoes);
         container.setComponentAlignment(barraBotoes, Alignment.MIDDLE_CENTER);
@@ -121,24 +117,21 @@ public class SignupView extends Window {
 
     
     /**
-     * Cria e retorna a barra de botoes
-     * @return barra com os botoes OK e Cancelar
+     * Creates and returns the buttons bar
+     * @return bar with the buttons OK and Cancel
      */
     private HorizontalLayout buildBarraBotoes(){
         
         HorizontalLayout barraBotoes = new HorizontalLayout();
         
-        // botÃ£o para Confirmar
-        final Button okButton = new Button(getMensagens().getString("SignupView.okButton.label"), new Button.ClickListener() {
+        final Button okButton = new Button(getMessages().getString("SignupView.okButton.label"), new Button.ClickListener() {
              @Override
             public void buttonClick(Button.ClickEvent event) {
             listener.okButtonClicked();
             }
         });
         
-                      
-        // botÃ£o para cancelar
-        final Button cancelButton = new Button(getMensagens().getString("SignupView.cancelButton.label"), (Button.ClickEvent event) -> {
+        final Button cancelButton = new Button(getMessages().getString("SignupView.cancelButton.label"), (Button.ClickEvent event) -> {
             getListener().cancelButtonClicked();
         });
 
@@ -150,30 +143,27 @@ public class SignupView extends Window {
     
     
     /**
-     * Cria o painel com ABAs que terÃ¡ os paineis de: <br>
-     * 1. Cadastro do usuario <br>
+     * Creates the tabbed panel that will have the panels of: <br>
+     * 1. User's registration <br>
      * 2. Billing <br>
-     * 3. Cadastro da empresa (conta) <br>
-     * 4. Adcionar mais usuÃ¡rios Ã  empresa <br>
-     * @TODO: Fernando
+     * 3. Registration of the company (account) <br>
+     * 4. Later add more users to the company <br>
      */
     private TabSheet buildTabPanel() {
 
-        // Fernando: criar e retornar o painel de abas
         TabSheet tabSheet = new TabSheet();
                 
-        tabSheet.addTab(buildAba1CadastroUsuario(), getMensagens().getString("SignupView.tabPanel.aba1.titulo"));
-        //tabSheet.addTab(buildAba2Billing(), mensagens.getString("SignupView.tabPanel.aba2.titulo"));
-        tabSheet.addTab(buildAba3CadastroEmpresas(), getMensagens().getString("SignupView.tabPanel.aba3.titulo"));
-        tabSheet.addTab(buildAba4UsuarioEmpresa(), getMensagens().getString("SignupView.tabPanel.aba4.titulo"));
+        tabSheet.addTab(buildAba1CadastroUsuario(), getMessages().getString("SignupView.tabPanel.aba1.titulo"));
+        //tabSheet.addTab(buildAba2Billing(), messages.getString("SignupView.tabPanel.aba2.titulo"));
+        tabSheet.addTab(buildAba3CadastroEmpresas(), getMessages().getString("SignupView.tabPanel.aba3.titulo"));
+        tabSheet.addTab(buildAba4UsuarioEmpresa(), getMessages().getString("SignupView.tabPanel.aba4.titulo"));
         
         return tabSheet;
     }
 
     /**
-     * Cria e retorna a 1a. aba com os campos para o cadastro de usuario
-     * @TODO: Fernando
-     * @return aba de cadastro de usuÃ¡rios
+     * Creates and returns to first. tab with the fields for User registration
+     * @return User registration tab
      */
     private VerticalLayout buildAba1CadastroUsuario(){
         
@@ -181,163 +171,137 @@ public class SignupView extends Window {
         containerAba1.setMargin(true);
         containerAba1.setSpacing(true);
        
-  
-        
-        // text field: Nome
-        setNomeTextField(new TextField());
-        containerAba1.addComponent(getNomeTextField());
-        getNomeTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
-        nomeTextField.setWidth("300px");
-        nomeTextField.setValidationVisible(false);
-        getNomeTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.nomeTextField.erro.nomeNaoInformado"),1, 100, false));
+        setNameTextField(new TextField());
+        containerAba1.addComponent(getNameTextField());
+        getNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeTextField.label"));
+        nameTextField.setWidth("300px");
+        nameTextField.setValidationVisible(false);
+        getNameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.nomeTextField.erro.nomeNaoInformado"),1, 100, false));
 
+        setSurnameTextField(new TextField());
+        containerAba1.addComponent(getSurnameTextField());
+        getSurnameTextField().setInputPrompt(getMessages().getString("SignupView.sobrenomeTextField.label"));
+        surnameTextField.setWidth("300px");
+        surnameTextField.setValidationVisible(false);
+        getSurnameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.sobrenomeTextField.erro.nomeNaoInformado"),1, 100, false));
         
+        setUserEmailTextField(new TextField());
+        containerAba1.addComponent(getUserEmailTextField());
+        getUserEmailTextField().setInputPrompt(getMessages().getString("SignupView.emailTextField.label"));
+        userEmailTextField.setWidth("300px");
+        userEmailTextField.setValidationVisible(false);
+        getUserEmailTextField().addValidator(new EmailValidator(messages.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
         
-                
-        // text field: Sobrenome
-        setSobrenomeTextField(new TextField());
-        containerAba1.addComponent(getSobrenomeTextField());
-        getSobrenomeTextField().setInputPrompt(getMensagens().getString("SignupView.sobrenomeTextField.label"));
-        sobrenomeTextField.setWidth("300px");
-        sobrenomeTextField.setValidationVisible(false);
-        getSobrenomeTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.sobrenomeTextField.erro.nomeNaoInformado"),1, 100, false));
+        setConfirmeUserEmailTextField(new TextField());
+        containerAba1.addComponent(getConfirmeUserEmailTextField());
+        getConfirmeUserEmailTextField().setInputPrompt(getMessages().getString("SignupView.confirmaEmailTextField.label"));
+        confirmeUserEmailTextField.setWidth("300px");
+        confirmeUserEmailTextField.setValidationVisible(false);
+        getConfirmeUserEmailTextField().addValidator(new EmailValidator(messages.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
         
-        // text field: Email
-        setEmailUsuarioTextField(new TextField());
-        containerAba1.addComponent(getEmailUsuarioTextField());
-        getEmailUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.emailTextField.label"));
-        emailUsuarioTextField.setWidth("300px");
-        emailUsuarioTextField.setValidationVisible(false);
-        getEmailUsuarioTextField().addValidator(new EmailValidator(mensagens.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
+        setPasswordTextField(new TextField());
+        containerAba1.addComponent(getPasswordTextField());
+        getPasswordTextField().setInputPrompt(getMessages().getString("SignupView.senhaTextField.label"));
+        passwordTextField.setValidationVisible(false);
+        getPasswordTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.senhaTextField.erro.nomeNaoInformado"),1, 100, false));
         
-        // text field: ConfirmaEmail
-        setConfirmaEmailUsuarioTextField(new TextField());
-        containerAba1.addComponent(getConfirmaEmailUsuarioTextField());
-        getConfirmaEmailUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.confirmaEmailTextField.label"));
-        confirmaEmailUsuarioTextField.setWidth("300px");
-        confirmaEmailUsuarioTextField.setValidationVisible(false);
-        getConfirmaEmailUsuarioTextField().addValidator(new EmailValidator(mensagens.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
+        setAcceptTermsCheckBox(new CheckBox(getMessages().getString("SignupView.aceitaTermosCheckBox.label")));
+        containerAba1.addComponent(getAcceptTermsCheckBox());
+        acceptTermsCheckBox.setValidationVisible(false);
         
-         // text field: Senha
-        setSenhaTextField(new TextField());
-        containerAba1.addComponent(getSenhaTextField());
-        getSenhaTextField().setInputPrompt(getMensagens().getString("SignupView.senhaTextField.label"));
-        senhaTextField.setValidationVisible(false);
-        getSenhaTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.senhaTextField.erro.nomeNaoInformado"),1, 100, false));
-        
-        // check box : aceita termos
-        setAceitaTermosCheckBox(new CheckBox(getMensagens().getString("SignupView.aceitaTermosCheckBox.label")));
-        containerAba1.addComponent(getAceitaTermosCheckBox());
-        aceitaTermosCheckBox.setValidationVisible(false);
-        
-           return containerAba1;
+        return containerAba1;
     }
 
     /**
-     * Cria e retorna a 2a. aba com os campos para o billing
-     * @TODO: SerÃ¡ feito futuramente
-     * @return aba com os campos para o billing
+     * Creates and returns the second. tab with fields for the billing
+     * @return tab with fields for the billing
      */
     private VerticalLayout buildAba2Billing(){
         return new VerticalLayout();
     }
     
     /**
-     * Cria e retorna a 3a. aba com os campos para o cadastro da empresa e suas empresas coligadas e filiais
-     * @TODO: Fernando
-     * @return aba de cadastro de empresas
+     * Creates and returns the third. tab with the fields for the registration of the company and its affiliates and subsidiaries
+     * @return registration tab companies
      */
     private VerticalLayout buildAba3CadastroEmpresas(){
         VerticalLayout containerAba3 = new VerticalLayout();
         containerAba3.setMargin(true);
         containerAba3.setSpacing(true);
        
-          // text field: Razao Social
-        setRazaoSocialTextField(new TextField());
-        containerAba3.addComponent(getRazaoSocialTextField());
-        getRazaoSocialTextField().setInputPrompt(getMensagens().getString("SignupView.razaoSocialTextField.label"));
-        razaoSocialTextField.setWidth("300px");
-        getRazaoSocialTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.razaoSocialTextField.erro.RazaoSocialNaoInformada"),1, 100, false));
-        razaoSocialTextField.setValidationVisible(false);
+        setCompanyNameTextField(new TextField());
+        containerAba3.addComponent(getCompanyNameTextField());
+        getCompanyNameTextField().setInputPrompt(getMessages().getString("SignupView.razaoSocialTextField.label"));
+        companyNameTextField.setWidth("300px");
+        getCompanyNameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.razaoSocialTextField.erro.RazaoSocialNaoInformada"),1, 100, false));
+        companyNameTextField.setValidationVisible(false);
 
-        // text field: Nome Fantasia
-        setNomeFantasiaTextField(new TextField());
-        containerAba3.addComponent(getNomeFantasiaTextField());
-        getNomeFantasiaTextField().setInputPrompt(getMensagens().getString("SignupView.nomeFantasiaTextField.label"));
-        nomeFantasiaTextField.setWidth("300px");
-        getNomeFantasiaTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.nomeFantasiaTextField.erro.NomeFantasiaNaoInformado"),1, 100, false));
-        nomeFantasiaTextField.setValidationVisible(false);
+        setFancyNameTextField(new TextField());
+        containerAba3.addComponent(getFancyNameTextField());
+        getFancyNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeFantasiaTextField.label"));
+        fancyNameTextField.setWidth("300px");
+        getFancyNameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.nomeFantasiaTextField.erro.NomeFantasiaNaoInformado"),1, 100, false));
+        fancyNameTextField.setValidationVisible(false);
         
         HorizontalLayout containerHorizontal1 = new HorizontalLayout();
         containerHorizontal1.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba3.addComponent(containerHorizontal1); // adiciona o container de datas no superior
 
-        setTipoPessoaOptionGroup(new OptionGroup());
-        tipoPessoaOptionGroup.addItem("Pessoa Física");
-        tipoPessoaOptionGroup.addItem("Pessoa Jurídica");
-        containerHorizontal1.addComponent(tipoPessoaOptionGroup);
+        setPersonTypeOptionGroup(new OptionGroup());
+        personTypeOptionGroup.addItem("Pessoa Física");
+        personTypeOptionGroup.addItem("Pessoa Jurídica");
+        containerHorizontal1.addComponent(personTypeOptionGroup);
         
+        setNationalEntityRegistrationCodeTextField(new MaskedTextField("", "##.###.###/####-##"));
+        containerHorizontal1.addComponent(getNationalEntityRegistrationCodeTextField());
+        getNationalEntityRegistrationCodeTextField().setInputPrompt(getMessages().getString("SignupView.cnpjCpfTextField.label"));
+        nationalEntityRegistrationCodeTextField.setWidth("180px");
         
-         // text field: Cnpj
-        setCnpjCpfTextField(new MaskedTextField("", "##.###.###/####-##"));
-        containerHorizontal1.addComponent(getCnpjCpfTextField());
-        getCnpjCpfTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjCpfTextField.label"));
-        cnpjCpfTextField.setWidth("180px");
-        
-        
-        
-        
-        cnpjCpfTextField.setValidationVisible(false);
+        nationalEntityRegistrationCodeTextField.setValidationVisible(false);
          
-        getCnpjCpfTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.cnpjCpfTextField.erro.cnpjCpfNaoInformado"),1, 100, false));
-        
+        getNationalEntityRegistrationCodeTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.cnpjCpfTextField.erro.cnpjCpfNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
         containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba3.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
-        // text field: Lograoudo
-        setLogradouroTextField(new TextField());
-        containerHorizontal.addComponent(getLogradouroTextField());
-        getLogradouroTextField().setInputPrompt(getMensagens().getString("SignupView.logradouroTextField.label"));
-        logradouroTextField.setWidth("300px");
-        logradouroTextField.setValidationVisible(false);
-        getLogradouroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.logradouroTextField.erro.logradouroNaoInformado"),1, 100, false));
+        setAdressTextField(new TextField());
+        containerHorizontal.addComponent(getAdressTextField());
+        getAdressTextField().setInputPrompt(getMessages().getString("SignupView.logradouroTextField.label"));
+        adressTextField.setWidth("300px");
+        adressTextField.setValidationVisible(false);
+        getAdressTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.logradouroTextField.erro.logradouroNaoInformado"),1, 100, false));
         
-        // text field: Numero
-        setNumeroTextField(new TextField());
-        containerHorizontal.addComponent(getNumeroTextField());
-        getNumeroTextField().setInputPrompt(getMensagens().getString("SignupView.numeroTextField.label"));
-        numeroTextField.setWidth("100px");
-        numeroTextField.setValidationVisible(false);
-        getNumeroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
+        setNumberTextField(new TextField());
+        containerHorizontal.addComponent(getNumberTextField());
+        getNumberTextField().setInputPrompt(getMessages().getString("SignupView.numeroTextField.label"));
+        numberTextField.setWidth("100px");
+        numberTextField.setValidationVisible(false);
+        getNumberTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal2 = new HorizontalLayout();
         containerHorizontal2.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba3.addComponent(containerHorizontal2); // adiciona o container de datas no superior
         
-         // text field: Complemento
-        setComplementoTextField(new TextField());
-        containerHorizontal2.addComponent(getComplementoTextField());
-        getComplementoTextField().setInputPrompt(getMensagens().getString("SignupView.complementoTextField.label"));
-        complementoTextField.setWidth("300px");
-        complementoTextField.setValidationVisible(false);
-        getNumeroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
+        setComplementTextField(new TextField());
+        containerHorizontal2.addComponent(getComplementTextField());
+        getComplementTextField().setInputPrompt(getMessages().getString("SignupView.complementoTextField.label"));
+        complementTextField.setWidth("300px");
+        complementTextField.setValidationVisible(false);
+        getNumberTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.numeroTextField.erro.numeroNaoInformado"),1, 100, false));
         
-         // text field: bairro
-        setBairroTextField(new TextField());
-        containerHorizontal2.addComponent(getBairroTextField());
-        getBairroTextField().setInputPrompt(getMensagens().getString("SignupView.bairroTextField.label"));
-        bairroTextField.setWidth("100px");
-        bairroTextField.setValidationVisible(false);
-        getBairroTextField().addValidator(new StringLengthValidator(mensagens.getString("SignupView.bairroTextField.erro.bairroNaoInformado"),1, 100, false));
+        setNeighborhoodTextField(new TextField());
+        containerHorizontal2.addComponent(getNeighborhoodTextField());
+        getNeighborhoodTextField().setInputPrompt(getMessages().getString("SignupView.bairroTextField.label"));
+        neighborhoodTextField.setWidth("100px");
+        neighborhoodTextField.setValidationVisible(false);
+        getNeighborhoodTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.bairroTextField.erro.bairroNaoInformado"),1, 100, false));
         
-        // text field: estado
-        setEstadoComboBox(new ComboBox());
-        containerAba3.addComponent(getEstadoComboBox());
-        getEstadoComboBox().setInputPrompt(getMensagens().getString("SignupView.estadoComboBox.label"));
-        estadoComboBox.setWidth("300px");
-        estadoComboBox.addValueChangeListener(new Property.ValueChangeListener() {
+        setStateComboBox(new ComboBox());
+        containerAba3.addComponent(getStateComboBox());
+        getStateComboBox().setInputPrompt(getMessages().getString("SignupView.estadoComboBox.label"));
+        stateComboBox.setWidth("300px");
+        stateComboBox.addValueChangeListener(new Property.ValueChangeListener() {
 
             @Override
             public void valueChange(Property.ValueChangeEvent event) {
@@ -345,84 +309,66 @@ public class SignupView extends Window {
             }
         });
         
-          // text field: cidade
-        setCidadeComboBox(new ComboBox());
-        containerAba3.addComponent(getCidadeComboBox());
-        getCidadeComboBox().setInputPrompt(getMensagens().getString("SignupView.cidadeComboBox.label"));
+        setCityComboBox(new ComboBox());
+        containerAba3.addComponent(getCityComboBox());
+        getCityComboBox().setInputPrompt(getMessages().getString("SignupView.cidadeComboBox.label"));
         
-        cidadeComboBox.setWidth("300px");
+        cityComboBox.setWidth("300px");
         
-        
-              
-        // text field: cep
-        setCepTextField(new MaskedTextField("", "##.###-###"));
-        containerAba3.addComponent(getCepTextField());
-        getCepTextField().setInputPrompt(getMensagens().getString("SignupView.cepTextField.label"));
-        cepTextField.setWidth("300px");
-        
-                  
-         
+        setZipCodeTextField(new MaskedTextField("", "##.###-###"));
+        containerAba3.addComponent(getZipCodeTextField());
+        getZipCodeTextField().setInputPrompt(getMessages().getString("SignupView.cepTextField.label"));
+        zipCodeTextField.setWidth("300px");
         
         TabSheet tabSheetColigadas = new TabSheet();
         
-        tabSheetColigadas.addTab(buildAba5Coligadas(), getMensagens().getString("SignupView.tabPanel.aba1.coligadas"));
-        tabSheetColigadas.addTab(buildAba6Filiais(), getMensagens().getString("SignupView.tabPanel.aba1.filiais"));
+        tabSheetColigadas.addTab(buildAba5Coligadas(), getMessages().getString("SignupView.tabPanel.aba1.coligadas"));
+        tabSheetColigadas.addTab(buildAba6Filiais(), getMessages().getString("SignupView.tabPanel.aba1.filiais"));
         
         containerAba3.addComponent(tabSheetColigadas);
         
-        
-        
-           return containerAba3;
+        return containerAba3;
     }
+    
     private VerticalLayout buildAba5Coligadas(){
         VerticalLayout containerAba5 = new VerticalLayout();
         containerAba5.setMargin(true);
         containerAba5.setSpacing(true);
         
-        // text field: nomeColigada
-        setNomeColigadaTextField(new TextField());
-        containerAba5.addComponent(getNomeColigadaTextField());
-        getNomeColigadaTextField().setInputPrompt(getMensagens().getString("SignupView.nomeColigadaTextField.label"));
-        nomeColigadaTextField.setWidth("300px");
+        setAssociatedNameTextField(new TextField());
+        containerAba5.addComponent(getAssociatedNameTextField());
+        getAssociatedNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeColigadaTextField.label"));
+        associatedNameTextField.setWidth("300px");
         
-         // text field: cnpjColigada
-        
-        setCnpjColigadaTextField(new MaskedTextField("", "##.###.###/####-##"));
-        containerAba5.addComponent(getCnpjColigadaTextField());
-        getCnpjColigadaTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjColigadaTextField.label"));
-        cnpjColigadaTextField.setWidth("300px");
+        setNationalEntityRegistrationAssociatedTextField(new MaskedTextField("", "##.###.###/####-##"));
+        containerAba5.addComponent(getNationalEntityRegistrationAssociatedTextField());
+        getNationalEntityRegistrationAssociatedTextField().setInputPrompt(getMessages().getString("SignupView.cnpjColigadaTextField.label"));
+        nationalEntityRegistrationAssociatedTextField.setWidth("300px");
    
-
-          
-        
         HorizontalLayout containerHorizontal = new HorizontalLayout();
         containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba5.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
-        // botÃ£o para Confirmar
-        final Button adicionarColigadaButton = new Button(getMensagens().getString("SignupView.adicionarColigadaButton.label"), new Button.ClickListener() {
+        final Button adicionarColigadaButton = new Button(getMessages().getString("SignupView.adicionarColigadaButton.label"), new Button.ClickListener() {
              @Override
             public void buttonClick(Button.ClickEvent event) {
                listener.incluirColigadas();
             }
         });
         
-        
-        
         containerHorizontal.addComponent(adicionarColigadaButton);
         adicionarColigadaButton.addStyleName("small default");
         
-        coligadasTable = new Table();
-        containerAba5.addComponent(coligadasTable);
-        coligadasTable.setPageLength(5);
-        coligadasTable.setSizeFull();
+        associatedTable = new Table();
+        containerAba5.addComponent(associatedTable);
+        associatedTable.setPageLength(5);
+        associatedTable.setSizeFull();
         
-      
-        coligadasTable.addContainerProperty(getMensagens().getString("SignupView.coligadasTable.nome"), String.class, null);
-        coligadasTable.addContainerProperty(getMensagens().getString("SignupView.coligadasTable.cnpj"), String.class, null);
-        coligadasTable.addContainerProperty(getMensagens().getString("SignupView.coligadasTable.remover"), Button.class, null);
-        coligadasTable.setImmediate(true);
-        coligadasTable.setSelectable(true);
+        associatedTable.addContainerProperty(getMessages().getString("SignupView.coligadasTable.nome"), String.class, null);
+        associatedTable.addContainerProperty(getMessages().getString("SignupView.coligadasTable.cnpj"), String.class, null);
+        associatedTable.addContainerProperty(getMessages().getString("SignupView.coligadasTable.remover"), Button.class, null);
+        associatedTable.setImmediate(true);
+        associatedTable.setSelectable(true);
         
         return containerAba5;
     }
@@ -432,104 +378,81 @@ public class SignupView extends Window {
         containerAba6.setMargin(true);
         containerAba6.setSpacing(true);
         
-        // text field: nomeFilial
-        setNomeFilialTextField(new TextField());
-        containerAba6.addComponent(getNomeFilialTextField());
-        getNomeFilialTextField().setInputPrompt(getMensagens().getString("SignupView.nomeFilialTextField.label"));
-        nomeFilialTextField.setWidth("300px");
+        setSubsidiaryNameTextField(new TextField());
+        containerAba6.addComponent(getSubsidiaryNameTextField());
+        getSubsidiaryNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeFilialTextField.label"));
+        subsidiaryNameTextField.setWidth("300px");
         
-         // text field: cnpjColigada
-        setCnpjFilialTextField(new MaskedTextField("", "##.###.###/####-##"));
-        containerAba6.addComponent(getCnpjFilialTextField());
-        getCnpjFilialTextField().setInputPrompt(getMensagens().getString("SignupView.cnpjFilialTextField.label"));
-        cnpjFilialTextField.setWidth("300px");
+        setNationalEntityRegistrationSubsidiaryTextField(new MaskedTextField("", "##.###.###/####-##"));
+        containerAba6.addComponent(getNationalEntityRegistrationSubsidiaryTextField());
+        getNationalEntityRegistrationSubsidiaryTextField().setInputPrompt(getMessages().getString("SignupView.cnpjFilialTextField.label"));
+        nationalEntityRegistrationSubsidiaryTextField.setWidth("300px");
         
-         HorizontalLayout containerHorizontal = new HorizontalLayout();
+        HorizontalLayout containerHorizontal = new HorizontalLayout();
         containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba6.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
-       
-        
-        // botÃ£o para Confirmar
-        final Button adicionarFilialButton = new Button(getMensagens().getString("SignupView.adicionarFilialButton.label"), new Button.ClickListener() {
+        final Button adicionarFilialButton = new Button(getMessages().getString("SignupView.adicionarFilialButton.label"), new Button.ClickListener() {
              @Override
             public void buttonClick(Button.ClickEvent event) {
                listener.incluirFiliais();
             }
         });
         
-              
-          
-        
-       
-        
         containerHorizontal.addComponent(adicionarFilialButton);
         adicionarFilialButton.addStyleName("small default");
         
+        subsidiariesTable = new Table();
+        containerAba6.addComponent(subsidiariesTable);
+        subsidiariesTable.setPageLength(5);
         
-        filiaisTable = new Table();
-        containerAba6.addComponent(filiaisTable);
-        filiaisTable.setPageLength(5);
-        
-       
-        filiaisTable.addContainerProperty(getMensagens().getString("SignupView.filiaisTable.nome"), String.class, null);
-        filiaisTable.addContainerProperty(getMensagens().getString("SignupView.filiaisTable.cnpj"), String.class, null);
-        filiaisTable.addContainerProperty(getMensagens().getString("SignupView.filiaisTable.remover"), Button.class, null);
-        filiaisTable.setImmediate(true);
-        filiaisTable.setSelectable(true);
+        subsidiariesTable.addContainerProperty(getMessages().getString("SignupView.filiaisTable.nome"), String.class, null);
+        subsidiariesTable.addContainerProperty(getMessages().getString("SignupView.filiaisTable.cnpj"), String.class, null);
+        subsidiariesTable.addContainerProperty(getMessages().getString("SignupView.filiaisTable.remover"), Button.class, null);
+        subsidiariesTable.setImmediate(true);
+        subsidiariesTable.setSelectable(true);
         
         return containerAba6;
     }
+     
     /**
-     * Cria e retorna a 4a. aba com os campos para adicionar novos usuÃ¡rios as empresas
+     * Creates and returns the 4th. tab with the fields to add new users to businesses
      * @TODO: Fernando
-     * @return aba de cadastro de usuÃ¡rio -> empresa
+     * @return user registration tab -> Business
      */
     private VerticalLayout buildAba4UsuarioEmpresa(){
         VerticalLayout containerAba4 = new VerticalLayout();
         containerAba4.setMargin(true);
         containerAba4.setSpacing(true);
        
-          // text field: Nome
-        setNomeUsuarioTextField(new TextField());
-        containerAba4.addComponent(getNomeUsuarioTextField());
-        getNomeUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.nomeTextField.label"));
-        nomeUsuarioTextField.setWidth("300px");
+        setUserNameTextField(new TextField());
+        containerAba4.addComponent(getUserNameTextField());
+        getUserNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeTextField.label"));
+        userNameTextField.setWidth("300px");
 
-        // text field: Sobrenome
-        setSobrenomeUsuarioTextField(new TextField());
-        containerAba4.addComponent(getSobrenomeUsuarioTextField());
-        getSobrenomeUsuarioTextField().setInputPrompt(getMensagens().getString("SignupView.sobrenomeTextField.label"));
-        sobrenomeUsuarioTextField.setWidth("300px");
+        setUserSurnameTextField(new TextField());
+        containerAba4.addComponent(getUserSurnameTextField());
+        getUserSurnameTextField().setInputPrompt(getMessages().getString("SignupView.sobrenomeTextField.label"));
+        userSurnameTextField.setWidth("300px");
         
-        // text field: E-mail
         setEmailTextField(new TextField());
         containerAba4.addComponent(getEmailTextField());
-        getEmailTextField().setInputPrompt(getMensagens().getString("SignupView.emailTextField.label"));
+        getEmailTextField().setInputPrompt(getMessages().getString("SignupView.emailTextField.label"));
         emailTextField.setWidth("300px");
         
-        // text field: Confirma e-mail
-        setConfirmaEmailTextField(new TextField());
-        containerAba4.addComponent(getConfirmaEmailTextField());
-        getConfirmaEmailTextField().setInputPrompt(getMensagens().getString("SignupView.confirmaEmailTextField.label"));
-        confirmaEmailTextField.setWidth("300px");
+        setEmailConfirmTextField(new TextField());
+        containerAba4.addComponent(getEmailConfirmTextField());
+        getEmailConfirmTextField().setInputPrompt(getMessages().getString("SignupView.confirmaEmailTextField.label"));
+        emailConfirmTextField.setWidth("300px");
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
         containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba4.addComponent(containerHorizontal); // adiciona o container de datas no superior
         
-         
+        setUserAdmCheckBox(new CheckBox(getMessages().getString("SignupView.usuarioAdmCheckBox.label")));
+        containerHorizontal.addComponent(getUserAdmCheckBox());
         
-        
-        // check box : usuario adm
-        setUsuarioAdmCheckBox(new CheckBox(getMensagens().getString("SignupView.usuarioAdmCheckBox.label")));
-        containerHorizontal.addComponent(getUsuarioAdmCheckBox());
-        
-         // botÃ£o para Confirmar
-        
-        
-                
-        final Button adicionarUsuarioButton = new Button(getMensagens().getString("SignupView.adicionarUsuarioButton.label"), new Button.ClickListener() {
+        final Button adicionarUsuarioButton = new Button(getMessages().getString("SignupView.adicionarUsuarioButton.label"), new Button.ClickListener() {
           
 
             @Override
@@ -539,51 +462,48 @@ public class SignupView extends Window {
         });
         
        
-        
-        
         containerHorizontal.addComponent(adicionarUsuarioButton);
         adicionarUsuarioButton.addStyleName("small default");
         
-        usuariosTable = new Table();
-        containerAba4.addComponent(usuariosTable);
-        usuariosTable.setPageLength(5);
-        usuariosTable.setSizeFull();
+        usersTable = new Table();
+        containerAba4.addComponent(usersTable);
+        usersTable.setPageLength(5);
+        usersTable.setSizeFull();
             
         
-        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.nome"), String.class, null);
-        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.sobrenome"), String.class, null);
-        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.email"), String.class, null);
-        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.administrador"), String.class, null);
-        //usuariosTable.addContainerProperty("Editar", Button.class, null);
-        usuariosTable.addContainerProperty(getMensagens().getString("SignupView.usuariosTable.remover"), Button.class, null);
-        usuariosTable.setImmediate(true);
-        usuariosTable.setSelectable(true);
+        usersTable.addContainerProperty(getMessages().getString("SignupView.usuariosTable.nome"), String.class, null);
+        usersTable.addContainerProperty(getMessages().getString("SignupView.usuariosTable.sobrenome"), String.class, null);
+        usersTable.addContainerProperty(getMessages().getString("SignupView.usuariosTable.email"), String.class, null);
+        usersTable.addContainerProperty(getMessages().getString("SignupView.usuariosTable.administrador"), String.class, null);
+        usersTable.addContainerProperty(getMessages().getString("SignupView.usuariosTable.remover"), Button.class, null);
+        usersTable.setImmediate(true);
+        usersTable.setSelectable(true);
          
         return containerAba4;
     }
     
     
     public String getNome() {
-        return getNomeTextField().getValue();
+        return getNameTextField().getValue();
     }
 
     public String getSobrenome() {
-        return getSobrenomeTextField().getValue();
+        return getSurnameTextField().getValue();
     }
 
     public String getSenha() {
-        return getSenhaTextField().getValue();
+        return getPasswordTextField().getValue();
     }
 
     public CheckBox getAceitaTermos() {
-        return getAceitaTermosCheckBox();
+        return getAcceptTermsCheckBox();
     }
 
     /**
-     * @return the mensagens
+     * @return the messages
      */
-    public ResourceBundle getMensagens() {
-        return mensagens;
+    public ResourceBundle getMessages() {
+        return messages;
     }
 
     /**
@@ -594,369 +514,369 @@ public class SignupView extends Window {
     }
 
     /**
-     * @return the nomeTextField
+     * @return the nameTextField
      */
-    public TextField getNomeTextField() {
-        return nomeTextField;
+    public TextField getNameTextField() {
+        return nameTextField;
     }
 
     /**
-     * @param nomeTextField the nomeTextField to set
+     * @param nameTextField the nameTextField to set
      */
-    public void setNomeTextField(TextField nomeTextField) {
-        this.nomeTextField = nomeTextField;
+    public void setNameTextField(TextField nameTextField) {
+        this.nameTextField = nameTextField;
     }
     
     /**
-     * @return the emailUsuarioTextField
+     * @return the userEmailTextField
      */
-    public TextField getEmailUsuarioTextField() {
-        return emailUsuarioTextField;
+    public TextField getUserEmailTextField() {
+        return userEmailTextField;
     }
 
     /**
-     * @param emailUsuarioTextField the emailUsuarioTextField to set
+     * @param userEmailTextField the userEmailTextField to set
      */
-    public void setEmailUsuarioTextField(TextField emailUsuarioTextField) {
-        this.emailUsuarioTextField = emailUsuarioTextField;
+    public void setUserEmailTextField(TextField userEmailTextField) {
+        this.userEmailTextField = userEmailTextField;
     }
     
      /**
-     * @return the confirmaEmailUsuarioTextField
+     * @return the confirmeUserEmailTextField
      */
-    public TextField getConfirmaEmailUsuarioTextField() {
-        return confirmaEmailUsuarioTextField;
+    public TextField getConfirmeUserEmailTextField() {
+        return confirmeUserEmailTextField;
     }
 
     /**
-     * @param confirmaEmailUsuarioTextField the confirmaEmailUsuarioTextField to set
+     * @param confirmeUserEmailTextField the confirmeUserEmailTextField to set
      */
-    public void setConfirmaEmailUsuarioTextField(TextField confirmaEmailUsuarioTextField) {
-        this.confirmaEmailUsuarioTextField = confirmaEmailUsuarioTextField;
+    public void setConfirmeUserEmailTextField(TextField confirmeUserEmailTextField) {
+        this.confirmeUserEmailTextField = confirmeUserEmailTextField;
     }
 
 
     /**
-     * @return the sobrenomeTextField
+     * @return the surnameTextField
      */
-    public TextField getSobrenomeTextField() {
-        return sobrenomeTextField;
+    public TextField getSurnameTextField() {
+        return surnameTextField;
     }
 
     /**
-     * @param sobrenomeTextField the sobrenomeTextField to set
+     * @param surnameTextField the surnameTextField to set
      */
-    public void setSobrenomeTextField(TextField sobrenomeTextField) {
-        this.sobrenomeTextField = sobrenomeTextField;
+    public void setSurnameTextField(TextField surnameTextField) {
+        this.surnameTextField = surnameTextField;
     }
 
     /**
-     * @return the senhaTextField
+     * @return the passwordTextField
      */
-    public TextField getSenhaTextField() {
-        return senhaTextField;
+    public TextField getPasswordTextField() {
+        return passwordTextField;
     }
 
     /**
-     * @param senhaTextField the senhaTextField to set
+     * @param passwordTextField the passwordTextField to set
      */
-    public void setSenhaTextField(TextField senhaTextField) {
-        this.senhaTextField = senhaTextField;
+    public void setPasswordTextField(TextField passwordTextField) {
+        this.passwordTextField = passwordTextField;
     }
 
     /**
-     * @return the usuariosTable
+     * @return the usersTable
      */
-    public Table getUsuariosTable() {
-        return usuariosTable;
+    public Table getUsersTable() {
+        return usersTable;
     }
 
     /**
-     * @param usuariosTable the UsuariosTable to set
+     * @param usersTable the UsuariosTable to set
      */
-    public void setUsuariosTable(Table usuariosTable) {
-        this.usuariosTable = usuariosTable;
+    public void setUsersTable(Table usersTable) {
+        this.usersTable = usersTable;
     }
     
     /**
-     * @return the coligadasTable
+     * @return the associatedTable
      */
-    public Table getColigadasTable() {
-        return coligadasTable;
+    public Table getAssociatedTable() {
+        return associatedTable;
     }
 
     /**
-     * @param coligadasTable the ColigadasTable to set
+     * @param associatedTable the ColigadasTable to set
      */
-    public void setColigadasTable(Table coligadasTable) {
-        this.coligadasTable = coligadasTable;
+    public void setAssociatedTable(Table associatedTable) {
+        this.associatedTable = associatedTable;
     }
     
     /**
-     * @return the filiaisTable
+     * @return the subsidiariesTable
      */
-    public Table getFiliaisTable() {
-        return filiaisTable;
+    public Table getSubsidiariesTable() {
+        return subsidiariesTable;
     }
 
     /**
-     * @param filiaisTable the FiliaisTable to set
+     * @param subsidiariesTable the FiliaisTable to set
      */
-    public void setFiliaisTable(Table filiaisTable) {
-        this.filiaisTable = filiaisTable;
+    public void setSubsidiariesTable(Table subsidiariesTable) {
+        this.subsidiariesTable = subsidiariesTable;
     }
     
     /**
-     * @return the aceitaTermosCheckBox
+     * @return the acceptTermsCheckBox
      */
-    public CheckBox getAceitaTermosCheckBox() {
-        return aceitaTermosCheckBox;
+    public CheckBox getAcceptTermsCheckBox() {
+        return acceptTermsCheckBox;
     }
     
       /**
-     * @param aceitaTermosCheckBox the aceitaTermosCheckBox to set
+     * @param acceptTermsCheckBox the acceptTermsCheckBox to set
      */
-    public void setAceitaTermosCheckBox(CheckBox aceitaTermosCheckBox) {
-        this.aceitaTermosCheckBox = aceitaTermosCheckBox;
+    public void setAcceptTermsCheckBox(CheckBox acceptTermsCheckBox) {
+        this.acceptTermsCheckBox = acceptTermsCheckBox;
     }
 
     /**
-     * @return the razaoSocialTextField
+     * @return the companyNameTextField
      */
-    public TextField getRazaoSocialTextField() {
-        return razaoSocialTextField;
+    public TextField getCompanyNameTextField() {
+        return companyNameTextField;
     }
 
     /**
-     * @param razaoSocialTextField the razaoSocialTextField to set
+     * @param companyNameTextField the companyNameTextField to set
      */
-    public void setRazaoSocialTextField(TextField razaoSocialTextField) {
-        this.razaoSocialTextField = razaoSocialTextField;
+    public void setCompanyNameTextField(TextField companyNameTextField) {
+        this.companyNameTextField = companyNameTextField;
     }
 
     /**
-     * @return the nomeFantasiaTextField
+     * @return the fancyNameTextField
      */
-    public TextField getNomeFantasiaTextField() {
-        return nomeFantasiaTextField;
+    public TextField getFancyNameTextField() {
+        return fancyNameTextField;
     }
 
     /**
-     * @param nomeFantasiaTextField the nomeFantasiaTextField to set
+     * @param fancyNameTextField the fancyNameTextField to set
      */
-    public void setNomeFantasiaTextField(TextField nomeFantasiaTextField) {
-        this.nomeFantasiaTextField = nomeFantasiaTextField;
+    public void setFancyNameTextField(TextField fancyNameTextField) {
+        this.fancyNameTextField = fancyNameTextField;
     }
     
     /**
-     * @return the tipoPessoaOptionGroup
+     * @return the personTypeOptionGroup
      */
-    public OptionGroup getTipoPessoaOptionGroup() {
-        return tipoPessoaOptionGroup;
+    public OptionGroup getPersonTypeOptionGroup() {
+        return personTypeOptionGroup;
     }
 
     /**
-     * @param tipoPessoaOptionGroup the tipoPessoaOptionGroup to set
+     * @param personTypeOptionGroup the personTypeOptionGroup to set
      */
-    public void setTipoPessoaOptionGroup(OptionGroup tipoPessoaOptionGroup) {
-        this.tipoPessoaOptionGroup = tipoPessoaOptionGroup;
+    public void setPersonTypeOptionGroup(OptionGroup personTypeOptionGroup) {
+        this.personTypeOptionGroup = personTypeOptionGroup;
     }
     
     /**
      * @return the cnpjTextField
      */
-    public MaskedTextField getCnpjCpfTextField() {
-        return cnpjCpfTextField;
+    public MaskedTextField getNationalEntityRegistrationCodeTextField() {
+        return nationalEntityRegistrationCodeTextField;
     }
 
     /**
      * @param cnpjTextField the cnpjTextField to set
      */
-    public void setCnpjCpfTextField(MaskedTextField cnpjTextField) {
-        this.cnpjCpfTextField = cnpjTextField;
+    public void setNationalEntityRegistrationCodeTextField(MaskedTextField cnpjTextField) {
+        this.nationalEntityRegistrationCodeTextField = cnpjTextField;
     }
 
     /**
      * @return the enderecoTextField
      */
-    public TextField getLogradouroTextField() {
-        return logradouroTextField;
+    public TextField getAdressTextField() {
+        return adressTextField;
     }
 
     /**
      * @param enderecoTextField the enderecoTextField to set
      */
-    public void setLogradouroTextField(TextField enderecoTextField) {
-        this.logradouroTextField = enderecoTextField;
+    public void setAdressTextField(TextField enderecoTextField) {
+        this.adressTextField = enderecoTextField;
     }
     
     /**
-     * @return the numeroTextField
+     * @return the numberTextField
      */
-    public TextField getNumeroTextField() {
-        return numeroTextField;
+    public TextField getNumberTextField() {
+        return numberTextField;
     }
 
     /**
-     * @param numeroTextField the enderecoTextField to set
+     * @param numberTextField the enderecoTextField to set
      */
-    public void setNumeroTextField(TextField numeroTextField) {
-        this.numeroTextField = numeroTextField;
+    public void setNumberTextField(TextField numberTextField) {
+        this.numberTextField = numberTextField;
     }
     
        /**
-     * @return the complementoTextField
+     * @return the complementTextField
      */
-    public TextField getComplementoTextField() {
-        return complementoTextField;
+    public TextField getComplementTextField() {
+        return complementTextField;
     }
 
     /**
-     * @param complementoTextField the enderecoTextField to set
+     * @param complementTextField the enderecoTextField to set
      */
-    public void setComplementoTextField(TextField complementoTextField) {
-        this.complementoTextField = complementoTextField;
+    public void setComplementTextField(TextField complementTextField) {
+        this.complementTextField = complementTextField;
     }
     
         /**
-     * @return the bairroTextField
+     * @return the neighborhoodTextField
      */
-    public TextField getBairroTextField() {
-        return bairroTextField;
+    public TextField getNeighborhoodTextField() {
+        return neighborhoodTextField;
     }
 
     /**
-     * @param bairroTextField the enderecoTextField to set
+     * @param neighborhoodTextField the enderecoTextField to set
      */
-    public void setBairroTextField(TextField bairroTextField) {
-        this.bairroTextField = bairroTextField;
+    public void setNeighborhoodTextField(TextField neighborhoodTextField) {
+        this.neighborhoodTextField = neighborhoodTextField;
     }
     
          /**
-     * @return the cidadeComboBox
+     * @return the cityComboBox
      */
-    public ComboBox getCidadeComboBox() {
-        return cidadeComboBox;
+    public ComboBox getCityComboBox() {
+        return cityComboBox;
     }
 
     /**
-     * @param cidadeComboBox the cidadeComboBox to set
+     * @param cityComboBox the cityComboBox to set
      */
-    public void setCidadeComboBox(ComboBox cidadeComboBox) {
-        this.cidadeComboBox = cidadeComboBox;
+    public void setCityComboBox(ComboBox cityComboBox) {
+        this.cityComboBox = cityComboBox;
     }
     
           /**
-     * @return the estadoComboBox
+     * @return the stateComboBox
      */
-    public ComboBox getEstadoComboBox() {
-        return estadoComboBox;
+    public ComboBox getStateComboBox() {
+        return stateComboBox;
     }
 
     /**
-     * @param estadoComboBox the cidadeComboBox to set
+     * @param stateComboBox the cityComboBox to set
      */
-    public void setEstadoComboBox(ComboBox estadoComboBox) {
-        this.estadoComboBox = estadoComboBox;
+    public void setStateComboBox(ComboBox stateComboBox) {
+        this.stateComboBox = stateComboBox;
     }
     
           /**
-     * @return the cepTextField
+     * @return the zipCodeTextField
      */
-    public MaskedTextField getCepTextField() {
-        return cepTextField;
+    public MaskedTextField getZipCodeTextField() {
+        return zipCodeTextField;
     }
 
     /**
-     * @param cepTextField the cepTextField to set
+     * @param zipCodeTextField the zipCodeTextField to set
      */
-    public void setCepTextField(MaskedTextField cepTextField) {
-        this.cepTextField = cepTextField;
+    public void setZipCodeTextField(MaskedTextField zipCodeTextField) {
+        this.zipCodeTextField = zipCodeTextField;
     }
     
     /**
-     * @return the nomeColigadaTextField
+     * @return the associatedNameTextField
      */
-    public TextField getNomeColigadaTextField() {
-        return nomeColigadaTextField;
+    public TextField getAssociatedNameTextField() {
+        return associatedNameTextField;
     }
 
     /**
-     * @param nomeColigadaTextField the nomeColigadaTextField to set
+     * @param associatedNameTextField the associatedNameTextField to set
      */
-    public void setNomeColigadaTextField(TextField nomeColigadaTextField) {
-        this.nomeColigadaTextField = nomeColigadaTextField;
-    }
-    
-     /**
-     * @return the nomeFilialTextField
-     */
-    public TextField getNomeFilialTextField() {
-        return nomeFilialTextField;
-    }
-
-    /**
-     * @param nomeFilialTextField the nomeFilialTextField to set
-     */
-    public void setNomeFilialTextField(TextField nomeFilialTextField) {
-        this.nomeFilialTextField = nomeFilialTextField;
-    }
-    
-    
-    /**
-     * @return the cnpjColigadaTextField
-     */
-    public MaskedTextField getCnpjColigadaTextField() {
-        return cnpjColigadaTextField;
-    }
-
-    /**
-     * @param cnpjColigadaTextField the cnpjColigadaTextField to set
-     */
-    public void setCnpjColigadaTextField(MaskedTextField cnpjColigadaTextField) {
-        this.cnpjColigadaTextField = cnpjColigadaTextField;
+    public void setAssociatedNameTextField(TextField associatedNameTextField) {
+        this.associatedNameTextField = associatedNameTextField;
     }
     
      /**
-     * @return the cnpjFilialTextField
+     * @return the subsidiaryNameTextField
      */
-    public MaskedTextField getCnpjFilialTextField() {
-        return cnpjFilialTextField;
+    public TextField getSubsidiaryNameTextField() {
+        return subsidiaryNameTextField;
     }
 
     /**
-     * @param cnpjFilialTextField the cnpjFilialTextField to set
+     * @param subsidiaryNameTextField the subsidiaryNameTextField to set
      */
-    public void setCnpjFilialTextField(MaskedTextField cnpjFilialTextField) {
-        this.cnpjFilialTextField = cnpjFilialTextField;
+    public void setSubsidiaryNameTextField(TextField subsidiaryNameTextField) {
+        this.subsidiaryNameTextField = subsidiaryNameTextField;
+    }
+    
+    
+    /**
+     * @return the nationalEntityRegistrationAssociatedTextField
+     */
+    public MaskedTextField getNationalEntityRegistrationAssociatedTextField() {
+        return nationalEntityRegistrationAssociatedTextField;
     }
 
     /**
-     * @return the nomeUsuarioTextField
+     * @param nationalEntityRegistrationAssociatedTextField the nationalEntityRegistrationAssociatedTextField to set
      */
-    public TextField getNomeUsuarioTextField() {
-        return nomeUsuarioTextField;
+    public void setNationalEntityRegistrationAssociatedTextField(MaskedTextField nationalEntityRegistrationAssociatedTextField) {
+        this.nationalEntityRegistrationAssociatedTextField = nationalEntityRegistrationAssociatedTextField;
+    }
+    
+     /**
+     * @return the nationalEntityRegistrationSubsidiaryTextField
+     */
+    public MaskedTextField getNationalEntityRegistrationSubsidiaryTextField() {
+        return nationalEntityRegistrationSubsidiaryTextField;
     }
 
     /**
-     * @param nomeUsuarioTextField the nomeUsuarioTextField to set
+     * @param nationalEntityRegistrationSubsidiaryTextField the nationalEntityRegistrationSubsidiaryTextField to set
      */
-    public void setNomeUsuarioTextField(TextField nomeUsuarioTextField) {
-        this.nomeUsuarioTextField = nomeUsuarioTextField;
+    public void setNationalEntityRegistrationSubsidiaryTextField(MaskedTextField nationalEntityRegistrationSubsidiaryTextField) {
+        this.nationalEntityRegistrationSubsidiaryTextField = nationalEntityRegistrationSubsidiaryTextField;
+    }
+
+    /**
+     * @return the userNameTextField
+     */
+    public TextField getUserNameTextField() {
+        return userNameTextField;
+    }
+
+    /**
+     * @param userNameTextField the userNameTextField to set
+     */
+    public void setUserNameTextField(TextField userNameTextField) {
+        this.userNameTextField = userNameTextField;
     }
     
     /**
-     * @return the sobrenomeUsuarioTextField
+     * @return the userSurnameTextField
      */
-    public TextField getSobrenomeUsuarioTextField() {
-        return sobrenomeUsuarioTextField;
+    public TextField getUserSurnameTextField() {
+        return userSurnameTextField;
     }
 
     /**
-     * @param sobrenomeUsuarioTextField the sobrenomeUsuarioTextField to set
+     * @param userSurnameTextField the userSurnameTextField to set
      */
-    public void setSobrenomeUsuarioTextField(TextField sobrenomeUsuarioTextField) {
-        this.sobrenomeUsuarioTextField = sobrenomeUsuarioTextField;
+    public void setUserSurnameTextField(TextField userSurnameTextField) {
+        this.userSurnameTextField = userSurnameTextField;
     }
 
     /**
@@ -974,118 +894,117 @@ public class SignupView extends Window {
     }
 
     /**
-     * @return the confirmaEmailTextField
+     * @return the emailConfirmTextField
      */
-    public TextField getConfirmaEmailTextField() {
-        return confirmaEmailTextField;
+    public TextField getEmailConfirmTextField() {
+        return emailConfirmTextField;
     }
 
     /**
-     * @param confirmaEmailTextField the confirmaEmailTextField to set
+     * @param emailConfirmTextField the emailConfirmTextField to set
      */
-    public void setConfirmaEmailTextField(TextField confirmaEmailTextField) {
-        this.confirmaEmailTextField = confirmaEmailTextField;
+    public void setEmailConfirmTextField(TextField emailConfirmTextField) {
+        this.emailConfirmTextField = emailConfirmTextField;
     }
     
     /**
-     * @return the usuarioAdmCheckBox
+     * @return the userAdmCheckBox
      */
-    public CheckBox getUsuarioAdmCheckBox() {
-        return usuarioAdmCheckBox;
+    public CheckBox getUserAdmCheckBox() {
+        return userAdmCheckBox;
     }
 
     /**
-     * @param usuarioAdmCheckBox the usuarioAdmCheckBox to set
+     * @param userAdmCheckBox the userAdmCheckBox to set
      */
-    public void setUsuarioAdmCheckBox(CheckBox usuarioAdmCheckBox) {
-        this.usuarioAdmCheckBox = usuarioAdmCheckBox;
+    public void setUserAdmCheckBox(CheckBox userAdmCheckBox) {
+        this.userAdmCheckBox = userAdmCheckBox;
     }
     
     /**
-     * @return the empresaAtivaCheckBox
+     * @return the activeCompanyCheckBox
      */
-    public CheckBox getEmpresaAtivaCheckBox() {
-        return empresaAtivaCheckBox;
+    public CheckBox getActiveCompanyCheckBox() {
+        return activeCompanyCheckBox;
     }
 
     /**
-     * @param empresaAtivaCheckBox the empresaAtivaCheckBox to set
+     * @param activeCompanyCheckBox the activeCompanyCheckBox to set
      */
-    public void setEmpresaAtivaCheckBox(CheckBox empresaAtivaCheckBox) {
-        this.empresaAtivaCheckBox = empresaAtivaCheckBox;
+    public void setActiveCompanyCheckBox(CheckBox activeCompanyCheckBox) {
+        this.activeCompanyCheckBox = activeCompanyCheckBox;
     }
     
     /**
-     * @return the coligadaAtivaCheckBox
+     * @return the activeAssociatedCheckBox
      */
-    public CheckBox getColigadaAtivaCheckBox() {
-        return coligadaAtivaCheckBox;
+    public CheckBox getActiveAssociatedCheckBox() {
+        return activeAssociatedCheckBox;
     }
 
     /**
-     * @param coligadaAtivaCheckBox the coligadaAtivaCheckBox to set
+     * @param activeAssociatedCheckBox the activeAssociatedCheckBox to set
      */
-    public void setColigadaAtivaCheckBox(CheckBox coligadaAtivaCheckBox) {
-        this.coligadaAtivaCheckBox = coligadaAtivaCheckBox;
+    public void setActiveAssociatedCheckBox(CheckBox activeAssociatedCheckBox) {
+        this.activeAssociatedCheckBox = activeAssociatedCheckBox;
     }
     
     /**
-     * @return the filialAtivaCheckBox
+     * @return the activeSubsidiaryCheckBox
      */
-    public CheckBox getFilialAtivaCheckBox() {
-        return filialAtivaCheckBox;
+    public CheckBox getActiveSubsidiaryCheckBox() {
+        return activeSubsidiaryCheckBox;
     }
 
     /**
-     * @param filialAtivaCheckBox the filialAtivaCheckBox to set
+     * @param activeSubsidiaryCheckBox the activeSubsidiaryCheckBox to set
      */
-    public void setFilialAtivaCheckBox(CheckBox filialAtivaCheckBox) {
-        this.filialAtivaCheckBox = filialAtivaCheckBox;
+    public void setActiveSubsidiaryCheckBox(CheckBox activeSubsidiaryCheckBox) {
+        this.activeSubsidiaryCheckBox = activeSubsidiaryCheckBox;
     }
 
     /**
-     * Executa os metodos de validaÃ§Ãµes dos campos de preenchimento obrigatorio
-     * @TODO: fernando
+     * Performs validation of methods required fields
      */
     public void validate() {
-     nomeTextField.setValidationVisible(true);
-     sobrenomeTextField.setValidationVisible(true);
-     emailUsuarioTextField.setValidationVisible(true);
-     confirmaEmailUsuarioTextField.setValidationVisible(true);
-     senhaTextField.setValidationVisible(true);
-     aceitaTermosCheckBox.setValidationVisible(true);
+     nameTextField.setValidationVisible(true);
+     surnameTextField.setValidationVisible(true);
+     userEmailTextField.setValidationVisible(true);
+     confirmeUserEmailTextField.setValidationVisible(true);
+     passwordTextField.setValidationVisible(true);
+     acceptTermsCheckBox.setValidationVisible(true);
         
-     nomeTextField.validate();
-     sobrenomeTextField.validate();
-     emailUsuarioTextField.validate();
-     confirmaEmailUsuarioTextField.validate();
-     senhaTextField.validate();
-     aceitaTermosCheckBox.validate();
+     nameTextField.validate();
+     surnameTextField.validate();
+     userEmailTextField.validate();
+     confirmeUserEmailTextField.validate();
+     passwordTextField.validate();
+     acceptTermsCheckBox.validate();
         
         
-     razaoSocialTextField.setValidationVisible(true);
-     nomeFantasiaTextField.setValidationVisible(true);
-     tipoPessoaOptionGroup.setValidationVisible(true);
-     cnpjCpfTextField.setValidationVisible(true);
-     logradouroTextField.setValidationVisible(true);
-     numeroTextField.setValidationVisible(true);
-     complementoTextField.setValidationVisible(true);
-     bairroTextField.setValidationVisible(true);
-     cidadeComboBox.setValidationVisible(true);
-     estadoComboBox.setValidationVisible(true);
-     cepTextField.setValidationVisible(true);
+     companyNameTextField.setValidationVisible(true);
+     fancyNameTextField.setValidationVisible(true);
+     personTypeOptionGroup.setValidationVisible(true);
+     nationalEntityRegistrationCodeTextField.setValidationVisible(true);
+     adressTextField.setValidationVisible(true);
+     numberTextField.setValidationVisible(true);
+     complementTextField.setValidationVisible(true);
+     neighborhoodTextField.setValidationVisible(true);
+     cityComboBox.setValidationVisible(true);
+     stateComboBox.setValidationVisible(true);
+     zipCodeTextField.setValidationVisible(true);
      
-     razaoSocialTextField.validate();
-     nomeFantasiaTextField.validate();
-     tipoPessoaOptionGroup.validate();
-     cnpjCpfTextField.validate();
-     logradouroTextField.validate();
-     numeroTextField.validate();
-     complementoTextField.validate();
-     bairroTextField.validate();
-     cidadeComboBox.validate();
-     estadoComboBox.validate();
-     cepTextField.validate();
+     companyNameTextField.validate();
+     fancyNameTextField.validate();
+     personTypeOptionGroup.validate();
+     nationalEntityRegistrationCodeTextField.validate();
+     adressTextField.validate();
+     numberTextField.validate();
+     complementTextField.validate();
+     neighborhoodTextField.validate();
+     cityComboBox.validate();
+     stateComboBox.validate();
+     zipCodeTextField.validate();
      
      
      

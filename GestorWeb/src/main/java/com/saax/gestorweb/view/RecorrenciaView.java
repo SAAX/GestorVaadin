@@ -388,20 +388,19 @@ private Button cancelButton;
         kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
         kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
         
-        //Fernando: Preciso fazer a internacionalização dos meses
         monthAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.mesAnualCombo.label"));
-        monthAnnualCombo.addItem("Janeiro");
-        monthAnnualCombo.addItem("Fevereiro");
-        monthAnnualCombo.addItem("Março");
-        monthAnnualCombo.addItem("Abril");
-        monthAnnualCombo.addItem("Maio");
-        monthAnnualCombo.addItem("Junho");
-        monthAnnualCombo.addItem("Julho");
-        monthAnnualCombo.addItem("Agosto");
-        monthAnnualCombo.addItem("Setembro");
-        monthAnnualCombo.addItem("Outubro");
-        monthAnnualCombo.addItem("Novembro");
-        monthAnnualCombo.addItem("Dezembro");
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.janeiro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.fevereiro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.marco"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.abril"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.maio"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.junho"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.julho"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.agosto"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.setembro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.outubro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.novembro"));
+        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.dezembro"));
 
         yearAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.anoAnualCombo.label"));
         yearAnnualCombo.addItem("2015");

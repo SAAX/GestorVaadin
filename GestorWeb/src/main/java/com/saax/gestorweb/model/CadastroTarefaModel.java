@@ -98,9 +98,9 @@ public class CadastroTarefaModel {
                 em.getTransaction().begin();
             }
 
-            for (Tarefa sub : task.getSubTarefas()) {
-                saveTask(sub);
-            }
+//            for (Tarefa sub : task.getSubTarefas()) {
+//                saveTask(sub);
+//            }
 
             // TODO: Colocar projecao calculada
             task.setProjecao(ProjecaoTarefa.NORMAL);

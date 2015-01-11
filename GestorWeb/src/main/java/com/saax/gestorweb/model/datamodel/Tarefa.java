@@ -149,7 +149,7 @@ public class Tarefa implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private EmpresaCliente empresaCliente;
 
-    @OneToMany(mappedBy = "tarefaPai")
+    @OneToMany(mappedBy = "tarefaPai", cascade = CascadeType.ALL)
     private List<Tarefa> subTarefas;
 
     @JoinColumn(name = "idproximatarefa", referencedColumnName = "idtarefa")

@@ -212,6 +212,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         for (Tarefa sub : tarefaToEdit.getSubTarefas()) {
             adicionarSubTarefa(sub);
         }
+        
+        organizeTree(tarefaToEdit, tarefaToEdit.getSubTarefas());
 
         // configura a categoria
         ComboBox combo = view.getHierarquiaCombo();
@@ -328,6 +330,21 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
             responsavel.addItem(usuario);
             responsavel.setItemCaption(usuario, usuario.getNome());
 
+        }
+    }
+
+    
+    /**
+     * 
+     */
+    private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
+
+        
+        for (Tarefa subTask : subTasks) {
+            view.getSubTarefasTable().setParent(subTask, parentTask);
+            if (subTask.getSubTarefas()!=null && !subTask.getSubTarefas().isEmpty()){
+                organizeTree(subTask, subTask.getSubTarefas());
+            }
         }
     }
 
@@ -548,13 +565,14 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         }
 
         /**
-         * only persist if this is the parent task if it is a child, the
-         * persistence will occour on the parent if it is a task attached to a
+         * only persist if this is the parent task. if it is a child (sub task), the
+         * persistence will occour on the parent. if it is a task attached to a
          * target, the persistence will occour on the target
          */
         if (task.getMeta() == null && task.getTarefaPai() == null) {
             task = model.saveTask(task);
         }
+        
         // Notifies the call back listener that the create/update is done
         if (callbackListener != null) {
             if (novaTarefa) {
@@ -730,6 +748,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     public void taskCreationDone(Tarefa tarefa) {
 
         adicionarSubTarefa(tarefa);
+        organizeTree(tarefa, tarefa.getSubTarefas());
 
     }
 

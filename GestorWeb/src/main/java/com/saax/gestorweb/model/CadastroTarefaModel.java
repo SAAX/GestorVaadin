@@ -291,7 +291,7 @@ public class CadastroTarefaModel {
 
     }
 
-    private void recalculaSaldoApontamentoHoras(List<ApontamentoTarefa> apontamentos) {
+    public void recalculaSaldoApontamentoHoras(List<ApontamentoTarefa> apontamentos) {
 
         Collections.sort(apontamentos, (ApontamentoTarefa o1, ApontamentoTarefa o2) -> o1.getDataHoraInclusao().compareTo(o2.getDataHoraInclusao()));
 

@@ -293,6 +293,7 @@ public class SignupPresenter implements SignupViewListener {
         String nomeFantasia = view.getFancyNameTextField().getValue();
         String razaosocial = view.getCompanyNameTextField().getValue();
         String cpfCnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
+        
         char tipoPessoa = '\0';
         if (view.getPersonTypeOptionGroup().getValue() == mensagens.getString("SignupView.pessoaFisicaCheckBox.label")) { // @ATENCAO
             tipoPessoa = 'F';

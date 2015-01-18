@@ -10,6 +10,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -45,7 +46,7 @@ public class SignupView extends Window {
     private TextField surnameTextField;
     private TextField userEmailTextField;
     private TextField confirmeUserEmailTextField;
-    private TextField passwordTextField;
+    private PasswordField passwordTextField;
     private CheckBox acceptTermsCheckBox;
     
     // Tab 2: billing data (will be done in the future)
@@ -199,7 +200,7 @@ public class SignupView extends Window {
         confirmeUserEmailTextField.setValidationVisible(false);
         getConfirmeUserEmailTextField().addValidator(new EmailValidator(messages.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
         
-        setPasswordTextField(new TextField());
+        setPasswordTextField(new PasswordField());
         containerAba1.addComponent(getPasswordTextField());
         getPasswordTextField().setInputPrompt(getMessages().getString("SignupView.senhaTextField.label"));
         passwordTextField.setValidationVisible(false);
@@ -228,6 +229,18 @@ public class SignupView extends Window {
         VerticalLayout containerAba3 = new VerticalLayout();
         containerAba3.setMargin(true);
         containerAba3.setSpacing(true);
+        
+        HorizontalLayout containerHorizontal1 = new HorizontalLayout();
+        containerHorizontal1.setSpacing(true); 
+        containerAba3.addComponent(containerHorizontal1); 
+
+        setPersonTypeOptionGroup(new OptionGroup());
+        personTypeOptionGroup.addItem("Pessoa Física");
+        personTypeOptionGroup.addItem("Pessoa Jurídica");
+        personTypeOptionGroup.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.personTypeSelected(event.getProperty().getValue());
+        });
+        containerHorizontal1.addComponent(personTypeOptionGroup);
        
         setCompanyNameTextField(new TextField());
         containerAba3.addComponent(getCompanyNameTextField());
@@ -243,15 +256,6 @@ public class SignupView extends Window {
         getFancyNameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.nomeFantasiaTextField.erro.NomeFantasiaNaoInformado"),1, 100, false));
         fancyNameTextField.setValidationVisible(false);
         
-        HorizontalLayout containerHorizontal1 = new HorizontalLayout();
-        containerHorizontal1.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
-        containerAba3.addComponent(containerHorizontal1); // adiciona o container de datas no superior
-
-        setPersonTypeOptionGroup(new OptionGroup());
-        personTypeOptionGroup.addItem("Pessoa Física");
-        personTypeOptionGroup.addItem("Pessoa Jurídica");
-        containerHorizontal1.addComponent(personTypeOptionGroup);
-        
         setNationalEntityRegistrationCodeTextField(new MaskedTextField("", "##.###.###/####-##"));
         containerHorizontal1.addComponent(getNationalEntityRegistrationCodeTextField());
         getNationalEntityRegistrationCodeTextField().setInputPrompt(getMessages().getString("SignupView.cnpjCpfTextField.label"));
@@ -262,8 +266,8 @@ public class SignupView extends Window {
         getNationalEntityRegistrationCodeTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.cnpjCpfTextField.erro.cnpjCpfNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
-        containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
-        containerAba3.addComponent(containerHorizontal); // adiciona o container de datas no superior
+        containerHorizontal.setSpacing(true);
+        containerAba3.addComponent(containerHorizontal);
         
         setAdressTextField(new TextField());
         containerHorizontal.addComponent(getAdressTextField());
@@ -573,14 +577,14 @@ public class SignupView extends Window {
     /**
      * @return the passwordTextField
      */
-    public TextField getPasswordTextField() {
+    public PasswordField getPasswordTextField() {
         return passwordTextField;
     }
 
     /**
      * @param passwordTextField the passwordTextField to set
      */
-    public void setPasswordTextField(TextField passwordTextField) {
+    public void setPasswordTextField(PasswordField passwordTextField) {
         this.passwordTextField = passwordTextField;
     }
 

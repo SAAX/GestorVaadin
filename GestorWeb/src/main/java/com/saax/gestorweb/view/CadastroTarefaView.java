@@ -93,6 +93,7 @@ public class CadastroTarefaView extends Window {
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
     private CadastroTarefaViewListener listener;
+    private CadastroTarefaModel model;
 
     // lista com todos os campos que possuem validação
     private final List<AbstractField> camposObrigatorios;
@@ -563,6 +564,7 @@ public class CadastroTarefaView extends Window {
             Button removeButton = new Button(mensagens.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerParticipante((ParticipanteTarefa) itemId);
+                
             });
             return removeButton;
         });
@@ -827,7 +829,6 @@ public class CadastroTarefaView extends Window {
             Button removeButton = new Button("x");
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerApontamentoHoras((ApontamentoTarefa) itemId);
-
             });
             return removeButton;
         });

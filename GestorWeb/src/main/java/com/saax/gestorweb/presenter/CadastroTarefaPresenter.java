@@ -601,7 +601,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         view.getControleHorasTable().removeItem(apontamentoTarefa);
         model.removerApontamentoHoras(apontamentoTarefa);
-
+        model.recalculaSaldoApontamentoHoras(view.getTarefa().getApontamentos());
     }
 
     /**

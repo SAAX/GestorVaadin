@@ -12,6 +12,7 @@ public interface SignupViewListener {
     public void incluirColigadas();
     public void incluirFiliais();
     public void okButtonClicked();
+    public void personTypeSelected();
 
     public void estadoSelecionado();
     

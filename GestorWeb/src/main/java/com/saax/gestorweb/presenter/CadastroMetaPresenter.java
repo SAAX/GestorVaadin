@@ -46,7 +46,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     
     // usuario logado
-    private final Usuario usuarioLogado;
+    private final Usuario loggedUser;
     private CadastroMetaCallBackListener callbackListener;
     private Meta target;
 
@@ -62,7 +62,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
         this.model = model;
         this.view = view;
 
-        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
         view.setListener(this);
 
@@ -75,7 +75,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
      */
     public void criarNovaMeta(HierarquiaProjetoDetalhe categoria) {
 
-        target = model.criarNovaMeta(categoria, usuarioLogado);
+        target = model.criarNovaMeta(categoria, loggedUser);
         
 
         // configura a categoria
@@ -118,7 +118,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
 
         EmpresaModel empresaModel = new EmpresaModel();
 
-        List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(usuarioLogado);
+        List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(loggedUser);
         for (Empresa empresa : empresas) {
 
             empresaCombo.addItem(empresa);
@@ -227,7 +227,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
      */
     private void carregaComboEmpresaCliente() {
         ComboBox empresaCliente = view.getEmpresaClienteCombo();
-        for (EmpresaCliente cliente : model.listarEmpresasCliente(usuarioLogado)) {
+        for (EmpresaCliente cliente : model.listarEmpresasCliente(loggedUser)) {
             empresaCliente.addItem(cliente);
             empresaCliente.setItemCaption(cliente, cliente.getNome());
         }
@@ -303,7 +303,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
         for (Tarefa task : targetToEdit.getTarefas()) {
             addTaskInTable(task);
         }
-        
+        organizeTree(null, targetToEdit.getTarefas());
         view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + targetToEdit.getCategoria().getCategoria());
 
 
@@ -364,10 +364,20 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     public void taskCreationDone(Tarefa createdTask) {
 
         addTaskInTable(createdTask);
-
+        organizeTree(createdTask, createdTask.getSubTarefas());
     }
 
-    
+    private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
+
+        
+        for (Tarefa subTask : subTasks) {
+            view.getTarefasTable().setParent(subTask, parentTask);
+            if (subTask.getSubTarefas()!=null && !subTask.getSubTarefas().isEmpty()){
+                organizeTree(subTask, subTask.getSubTarefas());
+            }
+        }
+    }
+
     private void addTaskInTable(Tarefa task){
         Object[] gridRow = new Object[]{
             CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
@@ -386,6 +396,11 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
 
         };
         view.getTarefasTable().addItem(gridRow, task);
+        
+        
+        for (Tarefa subTarefa : task.getSubTarefas()) {
+            addTaskInTable(subTarefa);
+        }
         
     }
     

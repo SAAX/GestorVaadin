@@ -29,7 +29,7 @@ public class LoginModel {
     public  Empresa getEmpresaUsuarioLogado()  {
         
         // obtem o usuario logado
-        Usuario usuario = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario usuario = (Usuario) GestorSession.getAttribute("loggedUser");
         
         // obtem a empresa ativa do usuario logado 
         // so pode haver uma

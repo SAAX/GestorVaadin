@@ -45,15 +45,15 @@ public class CadastroMetaModel {
      * Cria uma nova meta na categoria informada, com valores default
      *
      * @param categoria
-     * @param usuarioLogado
+     * @param loggedUser
      * @return a meta criada
      */
-    public Meta criarNovaMeta(HierarquiaProjetoDetalhe categoria, Usuario usuarioLogado) {
+    public Meta criarNovaMeta(HierarquiaProjetoDetalhe categoria, Usuario loggedUser) {
         Meta meta = new Meta();
         meta.setCategoria(categoria);
         meta.setDataHoraInclusao(LocalDateTime.now());
-        meta.setUsuarioSolicitante(usuarioLogado);
-        meta.setUsuarioInclusao(usuarioLogado);
+        meta.setUsuarioSolicitante(loggedUser);
+        meta.setUsuarioInclusao(loggedUser);
         meta.setStatus(StatusMeta.NAO_INICIADA);
         meta.setPrioridade(PrioridadeMeta.ALTA);
         return meta;
@@ -73,11 +73,11 @@ public class CadastroMetaModel {
     /**
      * Delega chamada ao model responsavel (EmpresaModel)
      *
-     * @param usuarioLogado
+     * @param loggedUser
      * @return lista de EmpresaCliente
      */
-    public List<EmpresaCliente> listarEmpresasCliente(Usuario usuarioLogado) {
-        return empresaModel.listarEmpresasCliente(usuarioLogado);
+    public List<EmpresaCliente> listarEmpresasCliente(Usuario loggedUser) {
+        return empresaModel.listarEmpresasCliente(loggedUser);
     }
 
     /**

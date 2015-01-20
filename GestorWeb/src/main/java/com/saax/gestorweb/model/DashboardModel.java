@@ -44,16 +44,16 @@ public class DashboardModel {
     /**
      * Obtém as tarefas sob responsabilidade do usuário logado
      *
-     * @param usuarioLogado
+     * @param loggedUser
      * @return
      */
-    public List<Tarefa> listarTarefas(Usuario usuarioLogado) {
+    public List<Tarefa> listarTarefas(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findByUsuarioResponsavel")
-                .setParameter("usuarioResponsavel", usuarioLogado)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("usuarioResponsavel", loggedUser)
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
 
         return tarefas;
@@ -63,16 +63,16 @@ public class DashboardModel {
     /**
      * Obtém as metas sob responsabilidade do usuário logado
      *
-     * @param usuarioLogado
+     * @param loggedUser
      * @return
      */
-    public List<Meta> listarMetas(Usuario usuarioLogado) {
+    public List<Meta> listarMetas(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         List<Meta> metas = em.createNamedQuery("Meta.findByUsuarioResponsavel")
-                .setParameter("usuarioResponsavel", usuarioLogado)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("usuarioResponsavel", loggedUser)
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
 
         return metas;
@@ -102,7 +102,7 @@ public class DashboardModel {
      * @return
      */
     public List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis,
-            List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes) {
+            List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -175,7 +175,9 @@ public class DashboardModel {
 
         } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
 
-            tarefas.addAll(em.createNamedQuery("Tarefa.findAll").getResultList());
+            tarefas.addAll(em.createNamedQuery("Tarefa.findAll")
+                    .setParameter("empresa",loggedUser.getEmpresaAtiva())
+                    .getResultList());
 
             if (!tarefasUsuarioResponsavel.isEmpty()) {
                 tarefas.retainAll(tarefasUsuarioResponsavel);
@@ -207,20 +209,20 @@ public class DashboardModel {
     /**
      * Obtém as tarefas solicitadas pelo usuário logado, ordenadas por data FIM
      *
-     * @param usuarioLogado
+     * @param loggedUser
      * @return
      */
-    public List<Tarefa> listarTarefasPrincipais(Usuario usuarioLogado) {
+    public List<Tarefa> listarTarefasPrincipais(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        Empresa empresa = usuarioLogado.getEmpresaAtiva();
+        Empresa empresa = loggedUser.getEmpresaAtiva();
 
         String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante ORDER BY t.dataFim DESC";
 
         Query q = em.createQuery(sql)
                 .setParameter("empresa", empresa)
-                .setParameter("usuarioSolicitante", usuarioLogado);
+                .setParameter("usuarioSolicitante", loggedUser);
 
         List<Tarefa> tarefas = q.getResultList();
 
@@ -229,13 +231,13 @@ public class DashboardModel {
     }
 
     public List<Tarefa> getTarefasTemplate() {
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
         List<Tarefa> templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .setParameter("template", true)
                 .getResultList();
 
-        for (Empresa subEmpresa : usuarioLogado.getEmpresaAtiva().getSubEmpresas()) {
+        for (Empresa subEmpresa : loggedUser.getEmpresaAtiva().getSubEmpresas()) {
             templates.addAll(
                     GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
                     .setParameter("empresa", subEmpresa)
@@ -261,9 +263,9 @@ public class DashboardModel {
                 .getResultList();
 
         // Obtem as hiearquias da empresa do usuário logad
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
         List<HierarquiaProjeto> hierarquiasEmpresa = em.createNamedQuery("HierarquiaProjeto.findByEmpresa")
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
         
         List<HierarquiaProjeto> hierarquiasCadastradas = new ArrayList<>();

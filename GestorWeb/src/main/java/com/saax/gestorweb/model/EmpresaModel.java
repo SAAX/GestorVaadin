@@ -22,12 +22,12 @@ public class EmpresaModel {
     /**
      * Obtem a lista de empresas possiveis de seleção para o usuário logado
      *
-     * @param usuarioLogado
+     * @param loggedUser
      * @return a empresa principal do usuário + as coligadas (se existirem)
      */
-    public List<Empresa> listarEmpresasParaSelecao(Usuario usuarioLogado) {
+    public List<Empresa> listarEmpresasParaSelecao(Usuario loggedUser) {
 
-        Empresa empresa = usuarioLogado.getEmpresaAtiva();
+        Empresa empresa = loggedUser.getEmpresaAtiva();
 
         List<Empresa> empresas = new ArrayList<>();
 
@@ -47,17 +47,17 @@ public class EmpresaModel {
      * Lista e retorna todos os clientes (EmpresaCliente) de todas as empresas
      * de usuario logado
      *
-     * @param usuarioLogado
+     * @param loggedUser
      * @return lista de EmpresaCliente
      */
-    public List<EmpresaCliente> listarEmpresasCliente(Usuario usuarioLogado) {
+    public List<EmpresaCliente> listarEmpresasCliente(Usuario loggedUser) {
 
         List<EmpresaCliente> clientes = new ArrayList<>();
 
         EmpresaModel empresaModel = new EmpresaModel();
 
         // obtem as coligadas a empresa do usuario logado
-        for (Empresa empresa : empresaModel.listarEmpresasParaSelecao(usuarioLogado)) {
+        for (Empresa empresa : empresaModel.listarEmpresasParaSelecao(loggedUser)) {
             // obtem os clientes destas empresas
             for (EmpresaCliente cliente : empresa.getClientes()) {
                 // verifica se o cliente é ativo e adiciona na lista de retorno

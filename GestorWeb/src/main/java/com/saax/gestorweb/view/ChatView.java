@@ -69,7 +69,7 @@ public class ChatView extends Window{
         container.setHeight("100%");
         setContent(container);
         
-        userLogged = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        userLogged = (Usuario) GestorSession.getAttribute("loggedUser");
         
         HorizontalLayout hlayout = new HorizontalLayout();
         

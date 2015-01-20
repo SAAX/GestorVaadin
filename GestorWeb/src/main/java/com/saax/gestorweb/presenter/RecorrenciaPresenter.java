@@ -33,7 +33,7 @@ public class RecorrenciaPresenter implements RecorrenciaViewListener {
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    private final Usuario usuarioLogado;
+    private final Usuario loggedUser;
 /**
      * Cria o presenter PopUpStatusigando o Model ao View
      *
@@ -48,7 +48,7 @@ public class RecorrenciaPresenter implements RecorrenciaViewListener {
 
         view.setListener(this);
 
-        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
     }  
     

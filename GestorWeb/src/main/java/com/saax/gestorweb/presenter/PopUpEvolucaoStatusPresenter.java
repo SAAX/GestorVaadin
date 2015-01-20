@@ -13,7 +13,7 @@ import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusViewListener;
 import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.UI;
-import java.util.List;
+import java.io.Serializable;
 import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -23,7 +23,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author rodrigo
  */
-public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewListener {
+public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucaoStatusViewListener {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient PopUpEvolucaoStatusView view;
@@ -46,7 +46,7 @@ public class PopUpEvolucaoStatusPresenter implements PopUpEvolucaoStatusViewList
     public PopUpEvolucaoStatusPresenter(PopUpEvolucaoStatusView view, PopUpEvolucaoStatusModel model) {
         this.view = view;
         this.model = model;
-        usuario = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        usuario = (Usuario) GestorSession.getAttribute("loggedUser");
         view.setListener(this);
 
     }

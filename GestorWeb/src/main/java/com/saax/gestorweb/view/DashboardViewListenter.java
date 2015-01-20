@@ -13,8 +13,8 @@ public interface DashboardViewListenter {
     void removerFiltrosPesquisa();
     void carregarListaTarefasUsuarioLogado();
     void carregarListaMetasUsuarioLogado();
-    void aplicarFiltroPesquisa();
-    void criarNovaTarefaViaTemplate();
+    void applyAutoFilter();
+    void createsNewTaskByTemplate();
     void init();
     void usuarioLogadoAlteradoAPENASTESTE();
     

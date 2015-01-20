@@ -81,9 +81,9 @@ public class PaginaInicialView extends HorizontalLayout {
         // botão para preview do dashboard
         final Button previewDashboardButton = new Button("dashboard preview", (Button.ClickEvent event) -> {
             Usuario usuarioTeste = new LoginModel().getUsuario("teste-user@gmail.com");
-            getSession().setAttribute("usuarioLogado", usuarioTeste);
+            getSession().setAttribute("loggedUser", usuarioTeste);
             usuarioTeste.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
-            getSession().setAttribute("usuarioLogado", usuarioTeste);
+            getSession().setAttribute("loggedUser", usuarioTeste);
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         });
 

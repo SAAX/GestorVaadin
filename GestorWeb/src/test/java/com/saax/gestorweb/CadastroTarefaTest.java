@@ -73,7 +73,7 @@ public class CadastroTarefaTest {
 
         // set logged user
         Usuario usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "teste-user@gmail.com").getSingleResult();
-        GestorSession.setAttribute("usuarioLogado", usuario);
+        GestorSession.setAttribute("loggedUser", usuario);
         usuario.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
 
         // creates UI
@@ -84,15 +84,15 @@ public class CadastroTarefaTest {
         mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
 
         // se assegura que nao existem tarefas ja cadastradas
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
         GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
         List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findAll")
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva()).getResultList();
+                .setParameter("empresa", loggedUser.getEmpresaAtiva()).getResultList();
         for (Tarefa tarefa : tarefas) {
             tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
             GestorEntityManagerProvider.getEntityManager().remove(tarefa);
         }
-        for (Empresa sub : usuarioLogado.getEmpresaAtiva().getSubEmpresas()) {
+        for (Empresa sub : loggedUser.getEmpresaAtiva().getSubEmpresas()) {
             tarefas = em.createNamedQuery("Tarefa.findAll")
                     .setParameter("empresa", sub).getResultList();
             for (Tarefa tarefa : tarefas) {
@@ -148,7 +148,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro simples de tarefa");
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
@@ -159,7 +159,7 @@ public class CadastroTarefaTest {
         view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
         view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         view.getDataInicioDateField().setValue(new Date());
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
         try {
             view.getTarefaFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
@@ -169,7 +169,7 @@ public class CadastroTarefaTest {
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         tarefasCadastradas.add(t);
@@ -190,7 +190,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro de tarefa com anexo");
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
@@ -201,7 +201,7 @@ public class CadastroTarefaTest {
         view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
         view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         view.getDataInicioDateField().setValue(new Date());
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
 
         File anexoTeste = new File(System.getProperty("user.dir") + "/anexoTeste.pdf");
         try {
@@ -220,7 +220,7 @@ public class CadastroTarefaTest {
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         tarefasCadastradas.add(t);
@@ -242,7 +242,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro completo de uma tarefa");
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
         Usuario usuarioResponsavel = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
@@ -264,7 +264,7 @@ public class CadastroTarefaTest {
             }
         }
         //        private Empresa empresa;
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
         //        private String nome;
         view.getNomeTarefaTextField().setValue(nome);
         //        private PrioridadeTarefa prioridade;
@@ -282,11 +282,11 @@ public class CadastroTarefaTest {
         CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio(em);
         view.getCentroCustoCombo().setValue(centroCusto);
         //        private Departamento departamento;
-        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, usuarioLogado.getEmpresaAtiva());
+        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, loggedUser.getEmpresaAtiva());
         view.getDepartamentoCombo().setValue(departamento);
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
-        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, usuarioLogado.getEmpresaAtiva());
+        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
         view.getEmpresaClienteCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
         //        private Tarefa proximaTarefa;
@@ -365,7 +365,7 @@ public class CadastroTarefaTest {
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         tarefasCadastradas.add(t);
@@ -398,7 +398,7 @@ public class CadastroTarefaTest {
         //        private Departamento departamento;
         Assert.assertEquals(departamento, t.getDepartamento());
         //        private Empresa empresa;
-        Assert.assertEquals(usuarioLogado.getEmpresaAtiva(), t.getEmpresa());
+        Assert.assertEquals(loggedUser.getEmpresaAtiva(), t.getEmpresa());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
@@ -414,9 +414,9 @@ public class CadastroTarefaTest {
         //        private LocalDate dataFim;
         Assert.assertEquals(DateUtils.truncate(dataFim, Calendar.DATE), DateTimeConverters.toDate(t.getDataFim()));
         //        private Usuario usuarioInclusao;
-        Assert.assertEquals(usuarioLogado, t.getUsuarioInclusao());
+        Assert.assertEquals(loggedUser, t.getUsuarioInclusao());
         //        private Usuario usuarioSolicitante;
-        Assert.assertEquals(usuarioLogado, t.getUsuarioSolicitante());
+        Assert.assertEquals(loggedUser, t.getUsuarioSolicitante());
         //        private Usuario usuarioResponsavel;
         Assert.assertEquals(usuarioResponsavel, t.getUsuarioResponsavel());
         //        private List<ParticipanteTarefa> participantes;
@@ -449,7 +449,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro multiplas sub tarefas");
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis
@@ -473,7 +473,7 @@ public class CadastroTarefaTest {
         view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
         view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         view.getDataInicioDateField().setValue(new Date());
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis -> Sub 1
@@ -549,7 +549,7 @@ public class CadastroTarefaTest {
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome_principal)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         tarefasCadastradas.add(t);
@@ -586,7 +586,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando a edição (alteração) da tarefa complesta");
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
         Usuario usuarioResponsavel = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
 
         String nome = "Teste Cadastro Tarefa #2";
@@ -594,7 +594,7 @@ public class CadastroTarefaTest {
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         presenter.editar(t);
@@ -621,13 +621,13 @@ public class CadastroTarefaTest {
         CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio(em);
         view.getCentroCustoCombo().setValue(centroCusto);
         //        private Departamento departamento;
-        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, usuarioLogado.getEmpresaAtiva());
+        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, loggedUser.getEmpresaAtiva());
         view.getDepartamentoCombo().setValue(departamento);
         //        private Empresa empresa;
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
-        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, usuarioLogado.getEmpresaAtiva());
+        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
         view.getEmpresaClienteCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
         //        private Tarefa proximaTarefa;
@@ -700,7 +700,7 @@ public class CadastroTarefaTest {
         // obtem novamente a tarefa do banco
         t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", novonome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         // ---------------------------------------------------------------------
@@ -731,7 +731,7 @@ public class CadastroTarefaTest {
         //        private Departamento departamento;
         Assert.assertEquals(departamento, t.getDepartamento());
         //        private Empresa empresa;
-        Assert.assertEquals(usuarioLogado.getEmpresaAtiva(), t.getEmpresa());
+        Assert.assertEquals(loggedUser.getEmpresaAtiva(), t.getEmpresa());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
@@ -747,9 +747,9 @@ public class CadastroTarefaTest {
         //        private LocalDate dataFim;
         Assert.assertEquals(DateUtils.truncate(dataFim, Calendar.DATE), DateTimeConverters.toDate(t.getDataFim()));
         //        private Usuario usuarioInclusao;
-        Assert.assertEquals(usuarioLogado, t.getUsuarioInclusao());
+        Assert.assertEquals(loggedUser, t.getUsuarioInclusao());
         //        private Usuario usuarioSolicitante;
-        Assert.assertEquals(usuarioLogado, t.getUsuarioSolicitante());
+        Assert.assertEquals(loggedUser, t.getUsuarioSolicitante());
         //        private Usuario usuarioResponsavel;
         Assert.assertEquals(usuarioResponsavel, t.getUsuarioResponsavel());
         //        private List<ParticipanteTarefa> participantes;
@@ -784,7 +784,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro simples de tarefa");
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
@@ -795,7 +795,7 @@ public class CadastroTarefaTest {
         view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
         view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
         view.getDataInicioDateField().setValue(new Date());
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
         try {
             view.getTarefaFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
@@ -805,17 +805,17 @@ public class CadastroTarefaTest {
 
         Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
-        t.addHistorico(new HistoricoTarefa("teste", "comentario", usuarioLogado, t, LocalDateTime.now()));
+        t.addHistorico(new HistoricoTarefa("teste", "comentario", loggedUser, t, LocalDateTime.now()));
 
         em.persist(t);
         
 
         t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         Assert.assertEquals(1,t.getHistorico().size());

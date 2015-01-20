@@ -27,13 +27,13 @@ public class PopUpEvolucaoStatusModel {
     /**
      * Registra o andamento de uma tarefa
      *
-     * @param usuarioLogado
+     * @param loggedUser
      * @param idTarefa
      * @param andamento
      * @param comentarioAndamento
      * @return
      */
-    public Tarefa atualizarAndamentoTarefa(Usuario usuarioLogado, Integer idTarefa, Integer andamento, String comentarioAndamento) {
+    public Tarefa atualizarAndamentoTarefa(Usuario loggedUser, Integer idTarefa, Integer andamento, String comentarioAndamento) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -48,7 +48,7 @@ public class PopUpEvolucaoStatusModel {
             AndamentoTarefa andamentoTarefa = new AndamentoTarefa();
             andamentoTarefa.setAndamentoatual(andamento);
             andamentoTarefa.setComentario(comentarioAndamento);
-            andamentoTarefa.setUsuarioInclusao(usuarioLogado);
+            andamentoTarefa.setUsuarioInclusao(loggedUser);
             andamentoTarefa.setDataHoraInclusao(LocalDateTime.now());
             andamentoTarefa.setTarefa(tarefa);
 
@@ -60,7 +60,7 @@ public class PopUpEvolucaoStatusModel {
             historico.append(andamento);
             historico.append("% ");
 
-            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), comentarioAndamento, usuarioLogado, tarefa, LocalDateTime.now());
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), comentarioAndamento, loggedUser, tarefa, LocalDateTime.now());
 
             tarefa.addHistorico(historicoTarefa);
 
@@ -112,10 +112,10 @@ public class PopUpEvolucaoStatusModel {
      *
      * @param idTarefa
      * @param motivoBloqueio
-     * @param usuarioLogado
+     * @param loggedUser
      * @return
      */
-    public Tarefa bloquearTarefa(Integer idTarefa, String motivoBloqueio, Usuario usuarioLogado) {
+    public Tarefa bloquearTarefa(Integer idTarefa, String motivoBloqueio, Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -130,7 +130,7 @@ public class PopUpEvolucaoStatusModel {
             bloqueioTarefa.setMotivo(motivoBloqueio);
             bloqueioTarefa.setStatus(tarefa.getStatus());
             bloqueioTarefa.setDataHoraInclusao(LocalDateTime.now());
-            bloqueioTarefa.setUsuarioInclusao(usuarioLogado);
+            bloqueioTarefa.setUsuarioInclusao(loggedUser);
 
             tarefa.setStatus(StatusTarefa.BLOQUEADA);
 
@@ -139,7 +139,7 @@ public class PopUpEvolucaoStatusModel {
             StringBuilder historico = new StringBuilder();
             historico.append("Tarefa BLOQUEADA!");
 
-            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), motivoBloqueio, usuarioLogado, tarefa, LocalDateTime.now());
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), motivoBloqueio, loggedUser, tarefa, LocalDateTime.now());
 
             tarefa.addHistorico(historicoTarefa);
 

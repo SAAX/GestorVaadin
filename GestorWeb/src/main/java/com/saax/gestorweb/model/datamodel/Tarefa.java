@@ -275,11 +275,11 @@ public class Tarefa implements Serializable {
             }
             clone.setSubTarefas(cloneSubs);
 
-            Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+            Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
             clone.setId(null);
-            clone.setUsuarioInclusao(usuarioLogado);
-            clone.setUsuarioSolicitante(usuarioLogado);
+            clone.setUsuarioInclusao(loggedUser);
+            clone.setUsuarioSolicitante(loggedUser);
             clone.setDataHoraInclusao(LocalDateTime.now());
             clone.setAndamento(0);
             clone.setAndamentos(new ArrayList<>());

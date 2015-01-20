@@ -65,7 +65,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private TaskCreationCallBackListener callbackListener;
-    private final Usuario usuarioLogado;
+    private final Usuario loggedUser;
     private PopUpEvolucaoStatusPresenter presenterPopUpStatus;
 
     /**
@@ -82,7 +82,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         view.setListener(this);
 
-        usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
     }
 
@@ -99,9 +99,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         // Cria uma nova tarefa com valores default
         tarefa = new Tarefa();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
-        tarefa.setEmpresa(usuarioLogado.getEmpresaAtiva());
-        tarefa.setUsuarioInclusao(usuarioLogado);
-        tarefa.setUsuarioSolicitante(usuarioLogado);
+        tarefa.setEmpresa(loggedUser.getEmpresaAtiva());
+        tarefa.setUsuarioInclusao(loggedUser);
+        tarefa.setUsuarioSolicitante(loggedUser);
         tarefa.setDataHoraInclusao(LocalDateTime.now());
 
         // configuras as caracteristicas de sub-tarefa
@@ -167,9 +167,9 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         // Cria uma nova tarefa com valores default
         tarefa = new Tarefa();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
-        tarefa.setEmpresa(usuarioLogado.getEmpresaAtiva());
-        tarefa.setUsuarioInclusao(usuarioLogado);
-        tarefa.setUsuarioSolicitante(usuarioLogado);
+        tarefa.setEmpresa(loggedUser.getEmpresaAtiva());
+        tarefa.setUsuarioInclusao(loggedUser);
+        tarefa.setUsuarioSolicitante(loggedUser);
         tarefa.setDataHoraInclusao(LocalDateTime.now());
         tarefa.setSubTarefas(new ArrayList<>());
         if (possibleCategories.size() == 1) {
@@ -242,8 +242,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         setPopUpEvolucaoStatusEAndamento(tarefa);
 
         // Configuras os beans de 1-N
-        view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, usuarioLogado));
-        view.setOrcamentoTarefa(new OrcamentoTarefa(tarefa, usuarioLogado));
+        view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, loggedUser));
+        view.setOrcamentoTarefa(new OrcamentoTarefa(tarefa, loggedUser));
 
         view.setAbaControleHorasVisible(tarefa.isApontamentoHoras());
         view.setAbaControleOrcamentoVisible(tarefa.isOrcamentoControlado());
@@ -275,7 +275,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         EmpresaModel empresaModel = new EmpresaModel();
 
-        List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(usuarioLogado);
+        List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(loggedUser);
         for (Empresa empresa : empresas) {
 
             empresaCombo.addItem(empresa);
@@ -390,7 +390,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
      */
     private void carregaComboEmpresaCliente() {
         ComboBox empresaCliente = view.getEmpresaClienteCombo();
-        for (EmpresaCliente cliente : model.listarEmpresasCliente(usuarioLogado)) {
+        for (EmpresaCliente cliente : model.listarEmpresasCliente(loggedUser)) {
             empresaCliente.addItem(cliente);
             empresaCliente.setItemCaption(cliente, cliente.getNome());
         }
@@ -605,7 +605,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
                 view.getTarefa().setCustoHoraApontamento(apontamentoTarefa.getCustoHora());
             }
             // criar um novo apontamento em branco para o usuario adicionar um novo:
-            view.setApontamentoTarefa(new ApontamentoTarefa(view.getTarefa(), usuarioLogado));
+            view.setApontamentoTarefa(new ApontamentoTarefa(view.getTarefa(), loggedUser));
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
@@ -635,7 +635,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
             view.getOrcamentoContainer().addItem(orcamentoTarefa);
 
             // criar um novo apontamento de orçamento em branco para o usuario adicionar um novo:
-            view.setOrcamentoTarefa(new OrcamentoTarefa(view.getTarefa(), usuarioLogado));
+            view.setOrcamentoTarefa(new OrcamentoTarefa(view.getTarefa(), loggedUser));
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
@@ -737,6 +737,11 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         };
         view.getSubTarefasTable().addItem(linha, sub);
+    
+        for (Tarefa subTarefa : sub.getSubTarefas()) {
+            adicionarSubTarefa(subTarefa);
+        }
+
     }
 
     /**
@@ -783,7 +788,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     @Override
     public void adicionarParticipante(Usuario usuario) {
 
-        if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || usuarioLogado.equals(view.getUsuarioResponsavelCombo().getValue())) {
+        if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || loggedUser.equals(view.getUsuarioResponsavelCombo().getValue())) {
             Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
         } else {
             ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
@@ -804,7 +809,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         AnexoTarefa anexoTarefa = new AnexoTarefa();
         anexoTarefa.setNome(anexo.getName());
         anexoTarefa.setDataHoraInclusao(LocalDateTime.now());
-        anexoTarefa.setUsuarioInclusao(usuarioLogado);
+        anexoTarefa.setUsuarioInclusao(loggedUser);
         anexoTarefa.setTarefa(view.getTarefa());
         anexoTarefa.setArquivoTemporario(anexo);
         anexoTarefa.setCaminhoCompleto(anexo.getAbsolutePath());

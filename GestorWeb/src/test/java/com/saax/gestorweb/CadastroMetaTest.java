@@ -47,7 +47,7 @@ import org.junit.Test;
 public class CadastroMetaTest {
 
     private static ResourceBundle mensagens;
-    private static Usuario usuarioLogado;
+    private static Usuario loggedUser;
     private CadastroMetaView view;
     private CadastroMetaModel model;
     private CadastroMetaPresenter presenter;
@@ -63,9 +63,9 @@ public class CadastroMetaTest {
         GestorEntityManagerProvider.setCurrentEntityManager(em);
 
         // set logged user
-        usuarioLogado = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "teste-user@gmail.com").getSingleResult();
-        GestorSession.setAttribute("usuarioLogado", usuarioLogado);
-        usuarioLogado.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
+        loggedUser = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "teste-user@gmail.com").getSingleResult();
+        GestorSession.setAttribute("loggedUser", loggedUser);
+        loggedUser.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
 
         // creates UI
         GestorMDI gestor = new GestorMDI();
@@ -132,10 +132,10 @@ public class CadastroMetaTest {
         
         Assert.assertEquals(2, view.getEmpresaCombo().getItemIds().size());
         
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
         
         List<Departamento> departamentos = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager().createNamedQuery("Departamento.findByEmpresaAtivo")
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
         
         Assert.assertArrayEquals(departamentos.toArray(), view.getDepartamentoCombo().getItemIds().toArray());
@@ -170,7 +170,7 @@ public class CadastroMetaTest {
         Assert.assertEquals(2, view.getEmpresaCombo().getItemIds().size());
 
         // selects a company
-        view.getEmpresaCombo().setValue(usuarioLogado.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
         
         // fills the required fields
         view.getNomeMetaTextField().setValue("Target Test: createsNewTaskUnderTheTarget");
@@ -227,7 +227,7 @@ public class CadastroMetaTest {
         Meta m = (Meta) PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager()
                 .createNamedQuery("Meta.findByNome")
                 .setParameter("nome", "Target Test: createsNewTaskUnderTheTarget")
-                .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         persistedTargets.add(m);

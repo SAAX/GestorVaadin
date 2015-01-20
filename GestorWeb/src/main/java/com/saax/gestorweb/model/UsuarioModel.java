@@ -23,8 +23,8 @@ public class UsuarioModel {
      */
     public List<Usuario> listarUsuariosEmpresa() {
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
-        Empresa empresa = usuarioLogado.getEmpresaAtiva();
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Empresa empresa = loggedUser.getEmpresaAtiva();
 
         List<Usuario> usuarios = new ArrayList<>();
 

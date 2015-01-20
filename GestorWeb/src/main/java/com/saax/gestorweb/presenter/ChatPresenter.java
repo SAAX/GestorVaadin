@@ -49,7 +49,7 @@ public class ChatPresenter implements ChatViewListener {
         this.model = model;
         this.view = view;
         view.setListener(this);
-        userLogged = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        userLogged = (Usuario) GestorSession.getAttribute("loggedUser");
     }
 
     public void open(Tarefa task) {

@@ -69,11 +69,11 @@ public class CadastroTarefaModel {
     /**
      * Lista e retorna todos os clientes de todas as empresas de usuario logado
      *
-     * @param usuarioLogado
+     * @param loggedUser
      * @return
      */
-    public List<EmpresaCliente> listarEmpresasCliente(Usuario usuarioLogado) {
-        return empresaModel.listarEmpresasCliente(usuarioLogado);
+    public List<EmpresaCliente> listarEmpresasCliente(Usuario loggedUser) {
+        return empresaModel.listarEmpresasCliente(loggedUser);
     }
 
     /**
@@ -255,7 +255,7 @@ public class CadastroTarefaModel {
     public ApontamentoTarefa configuraApontamento(ApontamentoTarefa apontamentoTarefa) {
 
         // Identifica os usuários relacionados ao apontamento e a tarefa
-        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("loggedUser");
         Usuario usuarioResponsavel = apontamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = apontamentoTarefa.getTarefa().getUsuarioSolicitante();
 
@@ -375,7 +375,7 @@ public class CadastroTarefaModel {
     public OrcamentoTarefa configuraInputOrcamento(OrcamentoTarefa orcamentoTarefa) {
 
         // Identifica os usuários relacionados ao apontamento e a tarefa
-        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("loggedUser");
         Usuario usuarioResponsavel = orcamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = orcamentoTarefa.getTarefa().getUsuarioSolicitante();
 
@@ -459,11 +459,11 @@ public class CadastroTarefaModel {
 
     public ParticipanteTarefa criarParticipante(Usuario usuario, Tarefa tarefa) {
 
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute("usuarioLogado");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
         ParticipanteTarefa participanteTarefa = new ParticipanteTarefa();
         participanteTarefa.setTarefa(tarefa);
-        participanteTarefa.setUsuarioInclusao(usuarioLogado);
+        participanteTarefa.setUsuarioInclusao(loggedUser);
         participanteTarefa.setUsuarioParticipante(usuario);
         participanteTarefa.setDataHoraInclusao(LocalDateTime.now());
 

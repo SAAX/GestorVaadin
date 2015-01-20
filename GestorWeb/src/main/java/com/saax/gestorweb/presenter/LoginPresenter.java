@@ -91,7 +91,7 @@ public final class LoginPresenter implements LoginViewListener {
         // LOGIN BEM SUCEDIDO!
         
         // Configura o usuáio logado na seção
-        GestorSession.setAttribute("usuarioLogado",u);
+        GestorSession.setAttribute("loggedUser",u);
         u.setEmpresaAtiva(model.getEmpresaUsuarioLogado());
         
 

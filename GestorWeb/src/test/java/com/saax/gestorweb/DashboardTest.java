@@ -38,7 +38,7 @@ public class DashboardTest {
         
         // set logged user
         Usuario usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "teste-user@gmail.com").getSingleResult();
-        GestorSession.setAttribute("usuarioLogado", usuario);
+        GestorSession.setAttribute("loggedUser", usuario);
         usuario.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
         
         // creates UI

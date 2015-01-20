@@ -419,7 +419,7 @@ public class SignupPresenter implements SignupViewListener {
 
         }
 
-        GestorSession.setAttribute("usuarioLogado", empresa.getUsuarioInclusao());
+        GestorSession.setAttribute("loggedUser", empresa.getUsuarioInclusao());
 
     }
 

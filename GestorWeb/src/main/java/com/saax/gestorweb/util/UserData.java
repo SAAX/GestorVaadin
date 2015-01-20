@@ -12,24 +12,24 @@ import java.util.ResourceBundle;
 public class UserData implements Serializable {
     
     // Usuário logado
-    private Usuario usuarioLogado;
+    private Usuario loggedUser;
     // cookies da sessão
     private CookiesManager cookies;
     
     
 
     /**
-     * @return the usuarioLogado
+     * @return the loggedUser
      */
     public Usuario getUsuarioLogado() {
-        return usuarioLogado;
+        return loggedUser;
     }
 
     /**
-     * @param usuarioLogado the usuarioLogado to set
+     * @param loggedUser the loggedUser to set
      */
-    public void setUsuarioLogado(Usuario usuarioLogado) {
-        this.usuarioLogado = usuarioLogado;
+    public void setUsuarioLogado(Usuario loggedUser) {
+        this.loggedUser = loggedUser;
     }
 
     /**

@@ -602,6 +602,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         view.getControleHorasTable().removeItem(apontamentoTarefa);
         model.removerApontamentoHoras(apontamentoTarefa);
         model.recalculaSaldoApontamentoHoras(view.getTarefa().getApontamentos());
+        view.getControleHorasTable().refreshRowCache();
     }
 
     /**
@@ -629,6 +630,8 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa) {
         view.getControleOrcamentoTable().removeItem(orcamentoTarefa);
         model.removerOrcamentoTarefa(orcamentoTarefa);
+        model.recalculaSaldoOrcamento(view.getTarefa().getOrcamentos());
+        view.getControleOrcamentoTable().refreshRowCache();
     }
 
     @Override

@@ -383,6 +383,8 @@ public class CadastroTarefaModel {
         try {
             inputValor = new BigDecimal(orcamentoTarefa.getInputValor());
             inputValor.setScale(2);
+            inputValor.doubleValue();
+            
 
         } catch (Exception e) {
             throw new RuntimeException("Não foi possível identificar o valor informado: " + orcamentoTarefa.getInputValor());
@@ -407,7 +409,7 @@ public class CadastroTarefaModel {
         return orcamentoTarefa;
     }
 
-    private void recalculaSaldoOrcamento(List<OrcamentoTarefa> orcamentos) {
+    public void recalculaSaldoOrcamento(List<OrcamentoTarefa> orcamentos) {
 
         Collections.sort(orcamentos, (OrcamentoTarefa o1, OrcamentoTarefa o2) -> o1.getDataHoraInclusao().compareTo(o2.getDataHoraInclusao()));
 

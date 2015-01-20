@@ -895,6 +895,8 @@ public class CadastroTarefaView extends Window {
         imputarOrcamentoTextField = new TextField();
         imputarOrcamentoTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.imputarOrcamentoTextField.inputPrompt"));
         imputarOrcamentoTextField.setNullRepresentation("");
+        imputarOrcamentoTextField.setConverter(new StringToBigDecimalConverter());
+        
 
         observacaoOrcamentoTextField = new TextField();
         observacaoOrcamentoTextField.setInputPrompt(mensagens.getString("CadastroTarefaView.observacaoOrcamentoTextField.inputPrompt"));
@@ -907,17 +909,49 @@ public class CadastroTarefaView extends Window {
         orcamentoContainer = new BeanItemContainer<>(OrcamentoTarefa.class);
 
         controleOrcamentoTable = new Table() {
-            @Override
+                        @Override
             protected String formatPropertyValue(Object rowId,
                     Object colId, Property property) {
-
                 // Format by property type
                 if (property.getType() == LocalDateTime.class) {
-                    return ((LocalDateTime) property.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
+                    return FormatterUtil.formatDateTime((LocalDateTime) property.getValue());
+
+                } else if (property.getType() == Duration.class) {
+
+                    if ((Duration) property.getValue() == null) {
+                        return null;
+                    }
+
+                    DecimalFormat df = new DecimalFormat("00");
+                    long hour = ((Duration) property.getValue()).toHours();
+                    long minute = ((Duration) property.getValue()).toMinutes() % 60;
+
+                    return new StringBuilder().append(df.format(hour)).append(":").append(df.format(minute)).toString();
+                } else if (property.getType() == BigDecimal.class) {
+
+                    if (property.getValue() == null) {
+                        return null;
+                    }
+
+                    DecimalFormat df = new DecimalFormat("¤ #,##0.00");
+
+                    return df.format(((BigDecimal) property.getValue()));
                 }
 
                 return super.formatPropertyValue(rowId, colId, property);
             }
+//            @Override
+//            protected String formatPropertyValue(Object rowId,
+//                    Object colId, Property property) {
+//
+//                // Format by property type
+//                if (property.getType() == LocalDateTime.class) {
+//                    return ((LocalDateTime) property.getValue()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+//                }
+//
+//                return super.formatPropertyValue(rowId, colId, property);
+//            }
         };
         controleOrcamentoTable.setContainerDataSource(orcamentoContainer);
         controleOrcamentoTable.setColumnWidth("dataHoraInclusao", 150);

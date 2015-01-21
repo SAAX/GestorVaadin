@@ -2,7 +2,6 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
-import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
@@ -35,10 +34,10 @@ import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  * MVP View tier of the Dashboard.
- * Defines the 
+ * Static struture with vaadin visual components
  * @author Rodrigo
  */
-public class DashBoardView extends VerticalLayout {
+public class DashboardView extends VerticalLayout {
 
     // message resource
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -93,13 +92,17 @@ public class DashBoardView extends VerticalLayout {
     private HorizontalLayout currentDateContainer;
     private Label currentDateLabel;
 
-    // Tab sheet with all data tables
+    // ---------------------------------------------------------------------------------------------------
+    // Tabseet with all data tables
+    // ---------------------------------------------------------------------------------------------------
     private HorizontalLayout tabSheetContainer;
     private TabSheet tabSheet;
     private TreeTable taskTable;
     private TreeTable targetTable;
 
+    // ---------------------------------------------------------------------------------------------------
     // bottom container
+    // ---------------------------------------------------------------------------------------------------
     private HorizontalLayout bottomContainer;
     private VerticalLayout bottomTasksContainer;
     private VerticalLayout bottomForecastsContainer;
@@ -108,7 +111,7 @@ public class DashBoardView extends VerticalLayout {
     /**
      * Builds the view with all visual components
      */
-    public DashBoardView() {
+    public DashboardView() {
 
         // initial parameters
         setMargin(true);
@@ -177,10 +180,8 @@ public class DashBoardView extends VerticalLayout {
         topMenu.setHeight("100%");
         topMenu.setHtmlContentAllowed(true);
 
-        // menu: Criar
         createNewByCategoryMenuItem = topMenu.addItem("<h3>"+messages.getString("DashboardView.createNewByCategoryMenuItem")+"</h3>", null, null);
 
-        // menu: Criar -> Projeto
         createNewByTemplate = createNewByCategoryMenuItem.addItem(messages.getString("DashboardView.createNewByTemplate"), (MenuBar.MenuItem selectedItem) -> {
             listener.createsNewTaskByTemplate();
         });
@@ -366,43 +367,47 @@ public class DashBoardView extends VerticalLayout {
         tabSheet = new TabSheet();
         tabSheet.setWidth("100%");
         tabSheet.setHeight("100%");
-        tabSheet.addTab(buildTaskTable(), "Tarefa");
-        tabSheet.addTab(buildTargetTable(), "Meta");
-        tabSheet.addTab(new HorizontalLayout(), "Publicações");
+        tabSheet.addTab(buildTaskTable(), messages.getString("DashboardView.taskTab"));
+        tabSheet.addTab(buildTargetTable(), messages.getString("DashboardView.targetTab"));
+        tabSheet.addTab(new HorizontalLayout(), messages.getString("DashboardView.publicationsTab"));
 
         tabSheetContainer.addComponent(tabSheet);
 
         return tabSheetContainer;
     }
     
+    /**
+     * Build the task table with its columns and initial parameters
+     * @return the task table
+     */
     private Table buildTaskTable() {
 
         taskTable = new TreeTable();
         taskTable.setWidth("100%");
-        taskTable.addContainerProperty("Cod", Button.class, "");
-        taskTable.setColumnWidth("Cod", 70);
-        taskTable.addContainerProperty("Título", Button.class, "");
-        taskTable.setColumnWidth("Título", 50);
-        taskTable.addContainerProperty("Nome", Button.class, "");
-        taskTable.setColumnWidth("Nome", 250);
-        taskTable.addContainerProperty("Empresa/Filial", String.class, "");
-        taskTable.setColumnWidth("Empresa/Filial", 200);
-        taskTable.addContainerProperty("Solicitante", String.class, "");
-        taskTable.setColumnWidth("Solicitante", 80);
-        taskTable.addContainerProperty("Responsável", String.class, "");
-        taskTable.setColumnWidth("Responsável", 80);
-        taskTable.addContainerProperty("Data Início", String.class, "");
-        taskTable.setColumnWidth("Data Início", 80);
-        taskTable.addContainerProperty("Data Fim", String.class, "");
-        taskTable.setColumnWidth("Data Fim", 80);
-        taskTable.addContainerProperty("Status", PopupButton.class, "");
-        taskTable.setColumnWidth("Status", 200);
-        taskTable.addContainerProperty("Projeção", Character.class, "");
-        taskTable.setColumnWidth("Proj.", 30);
-        taskTable.addContainerProperty("Email", Button.class, "");
-        taskTable.setColumnWidth("Email", 30);
-        taskTable.addContainerProperty("Chat", Button.class, "");
-        taskTable.setColumnWidth("Chat", 30);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.cod"), Button.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.cod"), 70);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.title"), Button.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.title"), 50);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.name"), Button.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.name"), 250);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.company"), String.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.company"), 200);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.requestor"), String.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.requestor"), 80);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.assingee"), String.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.assingee"), 80);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.startDate"), String.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.startDate"), 80);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.endDate"), String.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.endDate"), 80);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.state"), PopupButton.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.state"), 200);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.forecast"), Character.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.forecast"), 30);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.email"), Button.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.email"), 30);
+        taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.chat"), Button.class, "");
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.chat"), 30);
 
         taskTable.setPageLength(0);
         taskTable.setSelectable(true);
@@ -412,31 +417,38 @@ public class DashBoardView extends VerticalLayout {
 
     }
     
+    /**
+     * Build the target table with its columns and initial parameters
+     * @return the target table
+     */
     private Table buildTargetTable() {
 
         targetTable = new TreeTable();
         targetTable.setWidth("100%");
-        targetTable.addContainerProperty("Cod", Button.class, "");
-        targetTable.setColumnWidth("Cod", 70);
-        targetTable.addContainerProperty("Título", Button.class, "");
-        targetTable.setColumnWidth("Título", 150);
-        targetTable.addContainerProperty("Nome", Button.class, "");
-        targetTable.setColumnWidth("Nome", 250);
-        targetTable.addContainerProperty("Empresa/Filial", String.class, "");
-        targetTable.setColumnWidth("Empresa/Filial", 200);
-        targetTable.addContainerProperty("Solicitante", String.class, "");
-        targetTable.setColumnWidth("Solicitante", 100);
-        targetTable.addContainerProperty("Responsável", String.class, "");
-        targetTable.setColumnWidth("Responsável", 100);
-        targetTable.addContainerProperty("Data Início", String.class, "");
-        targetTable.setColumnWidth("Data Início", 80);
-        targetTable.addContainerProperty("Data Fim", String.class, "");
-        targetTable.setColumnWidth("Data Fim", 80);
-        targetTable.addContainerProperty("Proj.", Character.class, "");
-        targetTable.setColumnWidth("Proj.", 30);
-        targetTable.addContainerProperty("Email", Button.class, "");
-        targetTable.setColumnWidth("Email", 50);
-
+        
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.cod"), Button.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.cod"), 70);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.title"), Button.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.title"), 50);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.name"), Button.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.name"), 250);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.company"), String.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.company"), 200);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.requestor"), String.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.requestor"), 80);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.assingee"), String.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.assingee"), 80);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.startDate"), String.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.startDate"), 80);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.endDate"), String.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.endDate"), 80);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.forecast"), Character.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.forecast"), 30);
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.email"), Button.class, "");
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.email"), 30);
+        
+        
+        
         targetTable.setPageLength(0);
         targetTable.setSelectable(true);
         targetTable.setImmediate(true);
@@ -445,6 +457,10 @@ public class DashBoardView extends VerticalLayout {
 
     }
 
+    /**
+     * Builds the bottom container with its 3 inner components (tasks, forecasts, invites)
+     * @return the bottom container
+     */
     private Component buildBottomContainer() {
 
         bottomContainer = new HorizontalLayout();
@@ -485,7 +501,7 @@ public class DashBoardView extends VerticalLayout {
 
     
     // ------------------------------------------------------------------------------------------------
-    // GETTERS TO EXTERNAL ACESS
+    // GETTERS TO EXTERNAL ACCESS
     // ------------------------------------------------------------------------------------------------
     
     public MenuBar.MenuItem getCreateNewByCategoryMenuItem() {

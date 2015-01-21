@@ -7,7 +7,7 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.util.DBConnect;
-import com.saax.gestorweb.view.DashBoardView;
+import com.saax.gestorweb.view.DashboardView;
 import com.vaadin.server.VaadinRequest;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -55,7 +55,7 @@ public class GestorMDITest {
         
         Object result = instance.getContent();
         
-        assertTrue(result instanceof DashBoardView);
+        assertTrue(result instanceof DashboardView);
 
     }
 

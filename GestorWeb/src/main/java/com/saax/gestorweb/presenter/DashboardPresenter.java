@@ -20,7 +20,7 @@ import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.TaskCreationCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
-import com.saax.gestorweb.view.DashBoardView;
+import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.data.Item;
 import com.saax.gestorweb.util.GestorSession;
@@ -61,7 +61,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
 public class DashboardPresenter implements DashboardViewListenter, TaskCreationCallBackListener, CadastroMetaCallBackListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
-    private final transient DashBoardView view;
+    private final transient DashboardView view;
     private final transient DashboardModel model;
 
     // Referencia ao recurso das mensagens:
@@ -286,7 +286,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
      * @param view
      */
     public DashboardPresenter(DashboardModel model,
-            DashBoardView view) {
+            DashboardView view) {
 
         this.model = model;
         this.view = view;
@@ -488,7 +488,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
             meta.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(meta.getDataInicio()),
             FormatterUtil.formatDate(meta.getDataFim()),
-            "A",
+            'A',
             new Button("E"), 
         };
 

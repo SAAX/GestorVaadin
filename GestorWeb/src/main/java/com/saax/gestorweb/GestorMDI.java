@@ -9,7 +9,7 @@ import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 
-import com.saax.gestorweb.view.DashBoardView;
+import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.PaginaInicialView;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
@@ -99,7 +99,7 @@ public class GestorMDI extends UI {
 
         // Cria a pagina inical
         DashboardModel dashboradModel = new DashboardModel();
-        DashBoardView dashboardView = new DashBoardView();
+        DashboardView dashboardView = new DashboardView();
 
         // O presenter liga model e view
         DashboardPresenter dashboardPresenter = new DashboardPresenter(dashboradModel, dashboardView);
@@ -123,7 +123,7 @@ public class GestorMDI extends UI {
         setStyleName("blue");
         
         // obtém o arquivo de mensagens de acordo com o locale do usuário
-        mensagens = (ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", new Locale("pt", "br")));
+        mensagens = (ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", request.getLocale()));
 
         application = new Properties();
 

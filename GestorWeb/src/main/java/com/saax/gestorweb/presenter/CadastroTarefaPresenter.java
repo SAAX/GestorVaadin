@@ -107,7 +107,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         // configuras as caracteristicas de sub-tarefa
         tarefa.setTarefaPai(tarefaPai);
         tarefa.setEmpresa(tarefaPai.getEmpresa());
-        view.getEmpresaCombo().setEnabled(false);
+        view.getCompanyCombo().setEnabled(false);
         if (tarefaPai.getSubTarefas() == null) {
             tarefaPai.setSubTarefas(new ArrayList<>());
         }
@@ -120,7 +120,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         List<HierarquiaProjetoDetalhe> proximasCategorias = model.getProximasCategorias(tarefaPai);
         StringBuilder nomesProximasCategorias = new StringBuilder();
         for (HierarquiaProjetoDetalhe proximaCategoria : proximasCategorias) {
-            ComboBox combo = view.getHierarquiaCombo();
+            ComboBox combo = view.getHierarchyCombo();
             combo.addItem(proximaCategoria);
             combo.setItemCaption(proximaCategoria, proximaCategoria.getCategoria());
             nomesProximasCategorias.append(proximasCategorias.indexOf(proximaCategoria) == 0 ? "" : "/");
@@ -182,7 +182,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         tarefa.setProjecao(ProjecaoTarefa.NORMAL);
 
         // configura a categoria
-        ComboBox combo = view.getHierarquiaCombo();
+        ComboBox combo = view.getHierarchyCombo();
         for (HierarquiaProjetoDetalhe categoria : possibleCategories) {
             combo.addItem(categoria);
             combo.setItemCaption(categoria, categoria.getCategoria());
@@ -192,7 +192,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         if (possibleCategories.size() == 1) {
             view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
-            view.getHierarquiaCombo().setEnabled(false);
+            view.getHierarchyCombo().setEnabled(false);
         }
 
         init(tarefa);
@@ -216,14 +216,14 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         organizeTree(tarefaToEdit, tarefaToEdit.getSubTarefas());
 
         // configura a categoria
-        ComboBox combo = view.getHierarquiaCombo();
+        ComboBox combo = view.getHierarchyCombo();
         combo.addItem(tarefaToEdit.getHierarquia());
         combo.setItemCaption(tarefaToEdit.getHierarquia(), tarefaToEdit.getHierarquia().getCategoria());
 
-        view.getParticipantesContainer().addAll(tarefaToEdit.getParticipantes());
-        view.getAnexoTarefaContainer().addAll(tarefaToEdit.getAnexos());
-        view.getControleHorasContainer().addAll(tarefaToEdit.getApontamentos());
-        view.getOrcamentoContainer().addAll(tarefaToEdit.getOrcamentos());
+        view.getParticipantsContainer().addAll(tarefaToEdit.getParticipantes());
+        view.getTaskAttachContainer().addAll(tarefaToEdit.getAnexos());
+        view.getHoursControlContainer().addAll(tarefaToEdit.getApontamentos());
+        view.getBudgetContainer().addAll(tarefaToEdit.getOrcamentos());
 
         view.setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao") + tarefaToEdit.getHierarquia().getCategoria());
     }
@@ -271,7 +271,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
      * ao usuário logado
      */
     private void carregaComboEmpresa() {
-        ComboBox empresaCombo = view.getEmpresaCombo();
+        ComboBox empresaCombo = view.getCompanyCombo();
 
         EmpresaModel empresaModel = new EmpresaModel();
 
@@ -289,7 +289,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
      * enumeração
      */
     private void carregaComboPrioridade() {
-        ComboBox prioridade = view.getPrioridadeCombo();
+        ComboBox prioridade = view.getPriorityCombo();
         for (PrioridadeTarefa prioridadeValue : PrioridadeTarefa.values()) {
             prioridade.addItem(prioridadeValue);
             prioridade.setItemCaption(prioridadeValue, prioridadeValue.getLocalizedString());
@@ -325,7 +325,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
      * empresa do usuário logado
      */
     private void carregaComboResponsavel() {
-        ComboBox responsavel = view.getUsuarioResponsavelCombo();
+        ComboBox responsavel = view.getResponsibleUserCombo();
         for (Usuario usuario : model.listarUsuariosEmpresa()) {
             responsavel.addItem(usuario);
             responsavel.setItemCaption(usuario, usuario.getNome());
@@ -341,7 +341,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         
         for (Tarefa subTask : subTasks) {
-            view.getSubTarefasTable().setParent(subTask, parentTask);
+            view.getSubTasksTable().setParent(subTask, parentTask);
             if (subTask.getSubTarefas()!=null && !subTask.getSubTarefas().isEmpty()){
                 organizeTree(subTask, subTask.getSubTarefas());
             }
@@ -353,7 +353,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
      * empresa do usuário logado
      */
     private void carregaComboParticipante() {
-        ComboBox participante = view.getParticipantesCombo();
+        ComboBox participante = view.getParticipantsCombo();
         for (Usuario usuario : model.listarUsuariosEmpresa()) {
             participante.addItem(usuario);
             participante.setItemCaption(usuario, usuario.getNome());
@@ -376,7 +376,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
         presenterPopUpStatus = new PopUpEvolucaoStatusPresenter(viewPopUP, modelPopUP);
 
-        presenterPopUpStatus.load(tarefa, view.getStatusTarefaPopUpButton());
+        presenterPopUpStatus.load(tarefa, view.getTaskStatusPopUpButton());
 
     }
 
@@ -389,7 +389,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
      * empresas (empresa pricipal + subs ) do usuario logado
      */
     private void carregaComboEmpresaCliente() {
-        ComboBox empresaCliente = view.getEmpresaClienteCombo();
+        ComboBox empresaCliente = view.getCustomerCompanyCombo();
         for (EmpresaCliente cliente : model.listarEmpresasCliente(loggedUser)) {
             empresaCliente.addItem(cliente);
             empresaCliente.setItemCaption(cliente, cliente.getNome());
@@ -404,7 +404,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     private void loadDepartmentCombo(Empresa company) {
 
         // Retrieves the combo reference
-        ComboBox department = view.getDepartamentoCombo();
+        ComboBox department = view.getDepartamentCombo();
 
         // Verify if the company is already set
         if (company != null) {
@@ -443,7 +443,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     private void loadCostCenterCombo(Empresa company) {
 
         // Retrieves the combo reference
-        ComboBox costCenterCombo = view.getCentroCustoCombo();
+        ComboBox costCenterCombo = view.getCostCenterCombo();
 
         // Verify if the company is already set
         if (company != null) {
@@ -488,7 +488,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     public void addSubButtonClicked() {
 
         try {
-            view.getTarefaFieldGroup().commit();
+            view.getTaskFieldGroup().commit();
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
             presenter.setCallBackListener(this);
             presenter.criarNovaSubTarefa(view.getTarefa());
@@ -599,7 +599,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         try {
             ApontamentoTarefa apontamentoTarefa = view.getApontamentoTarefa();
             apontamentoTarefa = model.configuraApontamento(apontamentoTarefa);
-            view.getControleHorasContainer().addItem(apontamentoTarefa);
+            view.getHoursControlContainer().addItem(apontamentoTarefa);
             // se o usuário informou um custo / hora, congela este custo para todos os futuros apontamentos
             if (apontamentoTarefa.getCustoHora() != null) {
                 view.getTarefa().setCustoHoraApontamento(apontamentoTarefa.getCustoHora());
@@ -617,10 +617,10 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     @Override
     public void removerApontamentoHoras(ApontamentoTarefa apontamentoTarefa) {
 
-        view.getControleHorasTable().removeItem(apontamentoTarefa);
+        view.getHoursContolTable().removeItem(apontamentoTarefa);
         model.removerApontamentoHoras(apontamentoTarefa);
         model.recalculaSaldoApontamentoHoras(view.getTarefa().getApontamentos());
-        view.getControleHorasTable().refreshRowCache();
+        view.getHoursContolTable().refreshRowCache();
     }
 
     /**
@@ -633,7 +633,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         try {
             OrcamentoTarefa orcamentoTarefa = view.getOrcamentoTarefa();
             orcamentoTarefa = model.configuraInputOrcamento(orcamentoTarefa);
-            view.getOrcamentoContainer().addItem(orcamentoTarefa);
+            view.getBudgetContainer().addItem(orcamentoTarefa);
 
             // criar um novo apontamento de orçamento em branco para o usuario adicionar um novo:
             view.setOrcamentoTarefa(new OrcamentoTarefa(view.getTarefa(), loggedUser));
@@ -646,15 +646,15 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     @Override
     public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa) {
-        view.getControleOrcamentoTable().removeItem(orcamentoTarefa);
+        view.getBudgetControlTable().removeItem(orcamentoTarefa);
         model.removerOrcamentoTarefa(orcamentoTarefa);
         model.recalculaSaldoOrcamento(view.getTarefa().getOrcamentos());
-        view.getControleOrcamentoTable().refreshRowCache();
+        view.getBudgetControlTable().refreshRowCache();
     }
 
     @Override
     public void removerAnexo(AnexoTarefa anexoTarefa) {
-        view.getAnexosAdicionadosTable().removeItem(anexoTarefa);
+        view.getAttachmentsAddedTable().removeItem(anexoTarefa);
         Tarefa tarefa = view.getTarefa();
         tarefa.getAnexos().remove(anexoTarefa);
     }
@@ -712,7 +712,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         link.setStyleName("link");
         TaskCreationCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
-            view.getSubTarefasTable().setValue(subTarefa);
+            view.getSubTasksTable().setValue(subTarefa);
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
             presenter.setCallBackListener(callback);
             presenter.editar(subTarefa);
@@ -733,13 +733,13 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
             sub.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(sub.getDataInicio()),
             FormatterUtil.formatDate(sub.getDataFim()),
-            CadastroTarefaView.buildPopUpStatusProgressTask(view.getSubTarefasTable(), sub),
+            CadastroTarefaView.buildPopUpStatusProgressTask(view.getSubTasksTable(), sub),
             sub.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
 
         };
-        view.getSubTarefasTable().addItem(linha, sub);
+        view.getSubTasksTable().addItem(linha, sub);
     
         for (Tarefa subTarefa : sub.getSubTarefas()) {
             adicionarSubTarefa(subTarefa);
@@ -763,7 +763,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     @Override
     public void taskUpdateDone(Tarefa tarefa) {
 
-        Item it = view.getSubTarefasTable().getItem(tarefa);
+        Item it = view.getSubTasksTable().getItem(tarefa);
 
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaCod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaTitulo")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
@@ -774,7 +774,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaStatus")).setValue(CadastroTarefaView.buildPopUpStatusProgressTask(view.getSubTarefasTable(), tarefa));
+        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaStatus")).setValue(CadastroTarefaView.buildPopUpStatusProgressTask(view.getSubTasksTable(), tarefa));
         it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
@@ -783,7 +783,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     @Override
     public void removerParticipante(ParticipanteTarefa participanteTarefa) {
-        view.getParticipantesTable().removeItem(participanteTarefa);
+        view.getParticipantsTable().removeItem(participanteTarefa);
         Tarefa tarefa = view.getTarefa();
         tarefa.getParticipantes().remove(participanteTarefa);
     }
@@ -791,11 +791,11 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
     @Override
     public void adicionarParticipante(Usuario usuario) {
 
-        if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || loggedUser.equals(view.getUsuarioResponsavelCombo().getValue())) {
+        if (usuario.equals(view.getResponsibleUserCombo().getValue()) || loggedUser.equals(view.getResponsibleUserCombo().getValue())) {
             Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
         } else {
             ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
-            view.getParticipantesContainer().addBean(participanteTarefa);
+            view.getParticipantsContainer().addBean(participanteTarefa);
             Tarefa tarefa = view.getTarefa();
 
             if (tarefa.getParticipantes() == null) {
@@ -820,7 +820,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
             view.getTarefa().setAnexos(new ArrayList<>());
         }
         view.getTarefa().getAnexos().add(anexoTarefa);
-        view.getAnexoTarefaContainer().addBean(anexoTarefa);
+        view.getTaskAttachContainer().addBean(anexoTarefa);
 
     }
 

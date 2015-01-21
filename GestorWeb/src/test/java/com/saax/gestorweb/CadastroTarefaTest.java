@@ -154,14 +154,14 @@ public class CadastroTarefaTest {
         presenter.createTask(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa #1";
-        view.getNomeTarefaTextField().setValue(nome);
+        view.getTaskNameTextField().setValue(nome);
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
-        view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
-        view.getDataInicioDateField().setValue(new Date());
-        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
+        view.getStartDateDateField().setValue(new Date());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
         try {
-            view.getTarefaFieldGroup().commit();
+            view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
@@ -196,12 +196,12 @@ public class CadastroTarefaTest {
         presenter.createTask(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa com Anexo";
-        view.getNomeTarefaTextField().setValue(nome);
+        view.getTaskNameTextField().setValue(nome);
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
-        view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
-        view.getDataInicioDateField().setValue(new Date());
-        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
+        view.getStartDateDateField().setValue(new Date());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
 
         File anexoTeste = new File(System.getProperty("user.dir") + "/anexoTeste.pdf");
         try {
@@ -212,7 +212,7 @@ public class CadastroTarefaTest {
         }
 
         try {
-            view.getTarefaFieldGroup().commit();
+            view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
@@ -260,96 +260,96 @@ public class CadastroTarefaTest {
 
         for (HierarquiaProjetoDetalhe categoria : hierarquiaProjetoDefault.getCategorias()) {
             if (categoria.getNivel() == 2) {
-                view.getHierarquiaCombo().setValue(categoria);
+                view.getHierarchyCombo().setValue(categoria);
             }
         }
         //        private Empresa empresa;
-        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
         //        private String nome;
-        view.getNomeTarefaTextField().setValue(nome);
+        view.getTaskNameTextField().setValue(nome);
         //        private PrioridadeTarefa prioridade;
-        view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
+        view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         //        private StatusTarefa status;
         //        private ProjecaoTarefa projecao;
         //        private int andamento;
         //        private String descricao;
-        view.getDescricaoTarefaTextArea().setValue("Descrição da Tarefa #2");
+        view.getTaskDescriptionTextArea().setValue("Descrição da Tarefa #2");
         //        private boolean apontamentoHoras;
         view.getApontamentoHorasCheckBox().setValue(Boolean.TRUE);
         //        private boolean orcamentoControlado;
-        view.getOrcamentoControladoCheckBox().setValue(Boolean.FALSE);
+        view.getBudgetControlCheckBox().setValue(Boolean.FALSE);
         //        private CentroCusto centroCusto;
         CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio(em);
-        view.getCentroCustoCombo().setValue(centroCusto);
+        view.getCostCenterCombo().setValue(centroCusto);
         //        private Departamento departamento;
         Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, loggedUser.getEmpresaAtiva());
-        view.getDepartamentoCombo().setValue(departamento);
+        view.getDepartamentCombo().setValue(departamento);
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
-        view.getEmpresaClienteCombo().setValue(empresaCliente);
+        view.getCustomerCompanyCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
         //        private Tarefa proximaTarefa;
         //        private TipoTarefa tipoRecorrencia;
-        view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
+        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
         //        private Tarefa tarefaPai;
         //        private LocalDate dataInicio;
         Date dataInicio = DAOAleatorio.getDataByOffset(20, true); // hoje + 20 dias
-        view.getDataInicioDateField().setValue(dataInicio);
+        view.getStartDateDateField().setValue(dataInicio);
         //        private LocalDate dataTermino;
         //        private LocalDate dataFim;
         Date dataFim = DAOAleatorio.getDataByOffset(30, true); // hoje + 30 dias
-        view.getDataFimDateField().setValue(dataFim);
+        view.getEndDateDateField().setValue(dataFim);
         //        private Usuario usuarioInclusao;
         //        private Usuario usuarioSolicitante;
         //        private Usuario usuarioResponsavel;
-        view.getUsuarioResponsavelCombo().setValue(usuarioResponsavel);
+        view.getResponsibleUserCombo().setValue(usuarioResponsavel);
         //        private List<ParticipanteTarefa> participantes;
         Usuario usuarioParticipante_0 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
-        view.getParticipantesCombo().setValue(usuarioParticipante_0);
+        view.getParticipantsCombo().setValue(usuarioParticipante_0);
         Usuario usuarioParticipante_1 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
-        view.getParticipantesCombo().setValue(usuarioParticipante_1);
+        view.getParticipantsCombo().setValue(usuarioParticipante_1);
         //        private List<AvaliacaoMetaTarefa> avaliacoes;
         //        private List<OrcamentoTarefa> orcamentos;
-        view.getImputarOrcamentoTextField().setValue("123.34");
-        view.getObservacaoOrcamentoTextField().setValue("v0");
+        view.getBudgetAddTextField().setValue("123.34");
+        view.getObservationBudgetTextField().setValue("v0");
         OrcamentoTarefa orcamentoTarefa_0 = new OrcamentoTarefa();
         try {
             orcamentoTarefa_0 = view.getOrcamentoTarefa();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        view.getImputarOrcamentoButton().click();
+        view.getBudgetAddButton().click();
 
-        view.getImputarOrcamentoTextField().setValue("254.67");
-        view.getObservacaoOrcamentoTextField().setValue("v1");
+        view.getBudgetAddTextField().setValue("254.67");
+        view.getObservationBudgetTextField().setValue("v1");
         OrcamentoTarefa orcamentoTarefa_1 = new OrcamentoTarefa();
         try {
             orcamentoTarefa_1 = view.getOrcamentoTarefa();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        view.getImputarOrcamentoButton().click();
+        view.getBudgetAddButton().click();
         //        private List<ApontamentoTarefa> apontamentos;
-        view.getImputarHorasTextField().setValue("135:00");
-        view.getCustoHoraTextField().setValue("14.36"); // 1938.6
+        view.getHoursAddTextField().setValue("135:00");
+        view.getHourCostTextField().setValue("14.36"); // 1938.6
         ApontamentoTarefa apontamento_0 = new ApontamentoTarefa();
         try {
             apontamento_0 = view.getApontamentoTarefa();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        view.getImputarHorasButton().click();
+        view.getHoursAddButton().click();
 
-        view.getImputarHorasTextField().setValue("214:30"); // 3080.22
+        view.getHoursAddTextField().setValue("214:30"); // 3080.22
         ApontamentoTarefa apontamento_1 = new ApontamentoTarefa();
         try {
             apontamento_1 = view.getApontamentoTarefa();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        view.getImputarHorasButton().click();
+        view.getHoursAddButton().click();
         //        private List<AnexoTarefa> anexos;
         //        private List<AndamentoTarefa> andamentos;
         //        private List<BloqueioTarefa> bloqueios;
@@ -357,7 +357,7 @@ public class CadastroTarefaTest {
         //        private LocalDateTime dataHoraInclusao;
 
         try {
-            view.getTarefaFieldGroup().commit();
+            view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
@@ -468,18 +468,18 @@ public class CadastroTarefaTest {
         presenter.createTask(categoriaDefaultTarefa);
 
         String nome_principal = "Teste Multiplos Niveis";
-        view.getNomeTarefaTextField().setValue(nome_principal);
+        view.getTaskNameTextField().setValue(nome_principal);
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
-        view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
-        view.getDataInicioDateField().setValue(new Date());
-        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
+        view.getStartDateDateField().setValue(new Date());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis -> Sub 1
         // -------------------------------------------------------------------------------------
         try {
-            view.getTarefaFieldGroup().commit();
+            view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
@@ -492,18 +492,18 @@ public class CadastroTarefaTest {
         presenter_sub1.criarNovaSubTarefa(view.getTarefa());
 
         String nome_sub1 = "Sub 1";
-        view_sub1.getNomeTarefaTextField().setValue(nome_sub1);
+        view_sub1.getTaskNameTextField().setValue(nome_sub1);
         //view_sub1.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view_sub1.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
-        view_sub1.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
-        view_sub1.getDataInicioDateField().setValue(new Date());
-        view_sub1.getHierarquiaCombo().setValue(view_sub1.getHierarquiaCombo().getItemIds().toArray()[0]);
+        view_sub1.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view_sub1.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
+        view_sub1.getStartDateDateField().setValue(new Date());
+        view_sub1.getHierarchyCombo().setValue(view_sub1.getHierarchyCombo().getItemIds().toArray()[0]);
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis -> Sub 1 -> Sub 2
         // -------------------------------------------------------------------------------------
         try {
-            view_sub1.getTarefaFieldGroup().commit();
+            view_sub1.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
@@ -516,16 +516,16 @@ public class CadastroTarefaTest {
         presenter_sub2.criarNovaSubTarefa(view_sub1.getTarefa());
 
         String nome_sub2 = "Sub 2";
-        view_sub2.getNomeTarefaTextField().setValue(nome_sub2);
+        view_sub2.getTaskNameTextField().setValue(nome_sub2);
         //view_sub2.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view_sub2.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
-        view_sub2.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
-        view_sub2.getDataInicioDateField().setValue(new Date());
-        view_sub2.getHierarquiaCombo().setValue(view_sub2.getHierarquiaCombo().getItemIds().toArray()[0]);
+        view_sub2.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view_sub2.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
+        view_sub2.getStartDateDateField().setValue(new Date());
+        view_sub2.getHierarchyCombo().setValue(view_sub2.getHierarchyCombo().getItemIds().toArray()[0]);
 
         // Grava a sub nivel 2
         try {
-            view_sub2.getTarefaFieldGroup().commit();
+            view_sub2.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
@@ -533,7 +533,7 @@ public class CadastroTarefaTest {
 
         // Grava a sub nivel 1
         try {
-            view_sub1.getTarefaFieldGroup().commit();
+            view_sub1.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
@@ -541,7 +541,7 @@ public class CadastroTarefaTest {
 
         // Grava a principal
         try {
-            view.getTarefaFieldGroup().commit();
+            view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
@@ -602,69 +602,69 @@ public class CadastroTarefaTest {
         // ---------------------------------------------------------------------
         // Alterando os campos
         //        private String nome;
-        view.getNomeTarefaTextField().setValue(novonome);
+        view.getTaskNameTextField().setValue(novonome);
         //        private PrioridadeTarefa prioridade;
-        view.getPrioridadeCombo().setValue(PrioridadeTarefa.BAIXA);
+        view.getPriorityCombo().setValue(PrioridadeTarefa.BAIXA);
         //        private StatusTarefa status;
-        view.getStatusTarefaPopUpButton().click();
+        view.getTaskStatusPopUpButton().click();
         PopUpEvolucaoStatusPresenter presenterPopUP = presenter.getPresenterPopUpStatus();
         presenterPopUP.aceitarTarefaClicked(); // Tarefa ficará com status = aceita
         //        private ProjecaoTarefa projecao;
         //        private int andamento;
         //        private String descricao;
-        view.getDescricaoTarefaTextArea().setValue("Descrição da Tarefa #2 - Alterada");
+        view.getTaskDescriptionTextArea().setValue("Descrição da Tarefa #2 - Alterada");
         //        private boolean apontamentoHoras;
         view.getApontamentoHorasCheckBox().setValue(Boolean.FALSE);
         //        private boolean orcamentoControlado;
-        view.getOrcamentoControladoCheckBox().setValue(Boolean.TRUE);
+        view.getBudgetControlCheckBox().setValue(Boolean.TRUE);
         //        private CentroCusto centroCusto;
         CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio(em);
-        view.getCentroCustoCombo().setValue(centroCusto);
+        view.getCostCenterCombo().setValue(centroCusto);
         //        private Departamento departamento;
         Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, loggedUser.getEmpresaAtiva());
-        view.getDepartamentoCombo().setValue(departamento);
+        view.getDepartamentCombo().setValue(departamento);
         //        private Empresa empresa;
-        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
-        view.getEmpresaClienteCombo().setValue(empresaCliente);
+        view.getCustomerCompanyCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
         //        private Tarefa proximaTarefa;
         //        private TipoTarefa tipoRecorrencia;
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.UNICA);
-        view.getTipoRecorrenciaButton().getCaption().equals("ÚNICA");
+        view.getTypeRecurrenceButton().getCaption().equals("ÚNICA");
         //        private Tarefa tarefaPai;
         //        private LocalDate dataInicio;
         Date dataInicio = DAOAleatorio.getDataByOffset(10, true); // hoje + 10 dias
-        view.getDataInicioDateField().setValue(dataInicio);
+        view.getStartDateDateField().setValue(dataInicio);
         //        private LocalDate dataTermino;
         //        private LocalDate dataFim;
         Date dataFim = DAOAleatorio.getDataByOffset(35, true); // hoje + 35 dias
-        view.getDataFimDateField().setValue(dataFim);
+        view.getEndDateDateField().setValue(dataFim);
         //        private Usuario usuarioInclusao;
         //        private Usuario usuarioSolicitante;
         //        private Usuario usuarioResponsavel;
-        view.getUsuarioResponsavelCombo().setValue(usuarioResponsavel);
+        view.getResponsibleUserCombo().setValue(usuarioResponsavel);
         //        private List<ParticipanteTarefa> participantes;
         presenter.removerParticipante(t.getParticipantes().get(1));
         Usuario usuarioParticipante_0 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
         Usuario usuarioParticipante_1 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
-        view.getParticipantesCombo().setValue(usuarioParticipante_1); // insere o participante rodrigo
+        view.getParticipantsCombo().setValue(usuarioParticipante_1); // insere o participante rodrigo
         //        private List<AvaliacaoMetaTarefa> avaliacoes;
         //        private List<OrcamentoTarefa> orcamentos;
         presenter.removerRegistroOrcamento(t.getOrcamentos().get(0));
         OrcamentoTarefa orcamentoTarefa_0 = t.getOrcamentos().get(0);
 
-        view.getImputarOrcamentoTextField().setValue("472.17");
-        view.getObservacaoOrcamentoTextField().setValue("v1");
+        view.getBudgetAddTextField().setValue("472.17");
+        view.getObservationBudgetTextField().setValue("v1");
         OrcamentoTarefa orcamentoTarefa_1 = new OrcamentoTarefa();
         try {
             orcamentoTarefa_1 = view.getOrcamentoTarefa();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        view.getImputarOrcamentoButton().click();
+        view.getBudgetAddButton().click();
 //        //        private List<ApontamentoTarefa> apontamentos;
 //        view.getImputarHorasTextField().setValue("135:00");
 //        view.getCustoHoraTextField().setValue("14.36"); // 1938.6
@@ -691,11 +691,11 @@ public class CadastroTarefaTest {
 //        //        private LocalDateTime dataHoraInclusao;
 
         try {
-            view.getTarefaFieldGroup().commit();
+            view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        view.getGravarButton().click();
+        view.getSaveButton().click();
 
         // obtem novamente a tarefa do banco
         t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
@@ -790,14 +790,14 @@ public class CadastroTarefaTest {
         presenter.createTask(categoriaDefaultMeta);
 
         String nome = "Teste Cadastro Tarefa Com Historico";
-        view.getNomeTarefaTextField().setValue(nome);
+        view.getTaskNameTextField().setValue(nome);
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
-        view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
-        view.getDataInicioDateField().setValue(new Date());
-        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
+        view.getStartDateDateField().setValue(new Date());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
         try {
-            view.getTarefaFieldGroup().commit();
+            view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }

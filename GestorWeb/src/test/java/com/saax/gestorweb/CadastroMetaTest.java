@@ -198,16 +198,16 @@ public class CadastroMetaTest {
         taskPresenter.createTask(view.getMeta(), tasksCategories);
             
         // fills the required fields of Task
-        taskView.getNomeTarefaTextField().setValue("Task under a target");
+        taskView.getTaskNameTextField().setValue("Task under a target");
         //taskView.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        taskView.getTipoRecorrenciaButton().getCaption().equals("RECORRENTE");
-        taskView.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
-        taskView.getDataInicioDateField().setValue(new Date());
-        taskView.getHierarquiaCombo().setValue(taskView.getHierarquiaCombo().getItemIds().toArray()[0]);
+        taskView.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        taskView.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
+        taskView.getStartDateDateField().setValue(new Date());
+        taskView.getHierarchyCombo().setValue(taskView.getHierarchyCombo().getItemIds().toArray()[0]);
         
         // commits the task
         try {
-            taskView.getTarefaFieldGroup().commit();
+            taskView.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }

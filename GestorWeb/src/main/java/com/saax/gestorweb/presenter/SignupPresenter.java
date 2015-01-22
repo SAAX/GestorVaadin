@@ -570,4 +570,9 @@ public class SignupPresenter implements SignupViewListener {
 
     }
 
+    @Override
+    public void personTypeSelected() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

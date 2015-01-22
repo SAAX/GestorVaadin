@@ -238,7 +238,7 @@ public class SignupView extends Window {
         personTypeOptionGroup.addItem("Pessoa Física");
         personTypeOptionGroup.addItem("Pessoa Jurídica");
         personTypeOptionGroup.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.personTypeSelected(event.getProperty().getValue());
+            //listener.personTypeSelected(event.getProperty().getValue());
         });
         containerHorizontal1.addComponent(personTypeOptionGroup);
        

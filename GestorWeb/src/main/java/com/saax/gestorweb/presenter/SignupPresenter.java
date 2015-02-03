@@ -31,24 +31,24 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * SignUP Presenter <br>
- * Esta classe é responsável captar todos os eventos que ocorrem na View <br>
- * e dar o devido tratamento, utilizando para isto o modelo
+ * This class is responsible capture all events that occur in View <br>
+ * and provide appropriate treatment, using this model
  *
  *
  * @author Rodrigo
  */
 public class SignupPresenter implements SignupViewListener {
 
-    // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    // Reference to the use of the messages:
+    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
-    // Todo presenter mantem acesso à view e ao model
+    // Every presenter keeps access to view and model
     private final SignupView view;
     private final SignupModel model;
 
     /**
-     * Cria o presenter ligando o Model ao View
+     * Creates the presenter linking the Model View
      *
      * @param model
      * @param view
@@ -63,7 +63,7 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     public void open() {
-        // Carrega os combos de seleção
+        // Load the state combos
         carregaComboEstado();
 
     }
@@ -74,22 +74,21 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * valida a aba de dados do usuário princiapal para cadastro
+     * validates user data tab mainly be to register
      *
-     * @return true se os dados forem validos
+     * @return true
      */
     private boolean validaDadosUsuarioPrincipal() {
 
-        //String login = ""; // @TODO: obter email do usuário principal
-        String login = (String) view.getUserEmailTextField().getValue(); // @TODO: Obter da view
-        //System.out.println("usuario " + login);
+        //String login = ""; // @TODO: get email the primary user
+        String login = (String) view.getUserEmailTextField().getValue(); // @TODO: get from view
 
-        // verifica se o usuário informado existe (login)
+        // Check if the user informed there (login)
         if (model.verificaLoginExistente(login)) {
 
-            // Exibe uma mensagem de erro indicando que este login (email) já 
-            //existe no sistema e pergunta ao usuário se ele não quer recuperar sua senha
-            Notification.show(mensagens.getString("SignupPresenter.mensagem.loginPreExistente"), Notification.Type.WARNING_MESSAGE);
+            // Displays an error message indicating that this login (email) already
+            // exists in the system and asks the user if he does not recover your password
+            Notification.show(messages.getString("SignupPresenter.mensagem.loginPreExistente"), Notification.Type.WARNING_MESSAGE);
 
             return false;
         }
@@ -98,13 +97,13 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * valida dados da conta (empresa principal)
+     * validates account information (parent company)
      *
-     * @return true se os dados forem validos
+     * @return true if the data is valid
      */
     private boolean validaDadosEmpresa() {
 
-        // verifica se a empresa (conta) informada já não existe no cadastro
+        // checks whether the company (account) informed no longer exists in the record
         char tipoPessoa = '\0';
 
         if (view.getPersonTypeOptionGroup().getValue() == "Pessoa Física") {
@@ -119,8 +118,8 @@ public class SignupPresenter implements SignupViewListener {
 
         if (model.verificaEmpresaExistente(cpf_cnpj, tipoPessoa)) {
 
-            // Exibe uma mensagem de erro indicando que esta empresa (pelo cnpj/cpf) já existe no sistema
-            Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
+            // Displays an error message indicating that this company exists in the system
+            Notification.show(messages.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
 
             return false;
         }
@@ -129,9 +128,9 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * valida dados das sub empresas coligadas a empresa principal
+     * validates data from sub affiliates the main company
      *
-     * @return true se os dados forem validos
+     * @return true if the data is valid
      */
     private boolean validaDadosEmpresasColigadas() {
 
@@ -142,23 +141,23 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = empresasColigadasTable.getItem(itemID);
 
-            String cpfCnpjSubEmpresa = (String) linha.getItemProperty(mensagens.getString("SignupView.coligadasTable.email")).getValue(); // @ATENCAO
-            String nomeSubEmpresa = (String) linha.getItemProperty(mensagens.getString("SignupView.coligadasTable.nome")).getValue(); // @ATENCAO
-            char tipoPessoaSubEmpresa = 'J'; // @TODO: Obter da view
+            String cpfCnpjSubEmpresa = (String) linha.getItemProperty(messages.getString("SignupView.coligadasTable.email")).getValue(); // @ATENCAO
+            String nomeSubEmpresa = (String) linha.getItemProperty(messages.getString("SignupView.coligadasTable.nome")).getValue(); // @ATENCAO
+            char tipoPessoaSubEmpresa = 'J'; // @TODO: Get from view
             if (cpfCnpjSubEmpresa != null) {
                 if (model.verificaEmpresaExistente(cpfCnpjSubEmpresa, tipoPessoaSubEmpresa)) {
 
-                    // Exibe uma mensagem de erro indicando que esta empresa (pelo cnpj/cpf) já existe no sistema
-                    Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
+                    // Displays an error message indicating that this company exists in the system
+                    Notification.show(messages.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
 
                     return false;
                 }
             }
-            // Valida se a sub empresa já não faz parte desta mesma empresa principal
+            // Validates the sub company is no longer part of the same parent company
             if (identificadoresEmpresasColigadas.contains(nomeSubEmpresa)) {
-                // Exibe uma mensagem de erro indicando que esta sub empresa (pelo cnpj/cpf) 
-                // foi cadastrada em duplicidade
-                Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaColigadaDuplicada"), Notification.Type.WARNING_MESSAGE);
+                // Displays an error message indicating that this sub company
+                // Was registered in duplicate
+                Notification.show(messages.getString("SignupPresenter.mensagem.empresaColigadaDuplicada"), Notification.Type.WARNING_MESSAGE);
 
                 return false;
 
@@ -172,13 +171,13 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * valida dados das filiais a empresa principal
+     * validates data from subsidiaries to parent company
      *
-     * @return true se os dados forem validos
+     * @return true if the data is valid
      */
     private boolean validaDadosFiliais() {
 
-        final Table filiaisTable = view.getSubsidiariesTable(); // @TODO: Obter a tabela de sub empresas
+        final Table filiaisTable = view.getSubsidiariesTable();
         Set<String> identificadoresFiliais = new HashSet<>();
         Set<String> nomesFiliais = new HashSet<>();
 
@@ -186,35 +185,35 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = filiaisTable.getItem(itemID);
 
-            // Valida se a filial já não está cadastrada no sistema
-            String cnpjFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.cnpj")).getValue(); // @ATENCAO
-            String nomeFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.nome")).getValue(); // @ATENCAO
+            // Validates if the branch is no longer registered in the system
+            String cnpjFilial = (String) linha.getItemProperty(messages.getString("SignupView.filiaisTable.cnpj")).getValue(); // @ATENCAO
+            String nomeFilial = (String) linha.getItemProperty(messages.getString("SignupView.filiaisTable.nome")).getValue(); // @ATENCAO
 
             if (StringUtils.isNotBlank(cnpjFilial)) {
                 if (model.verificaFilialExistente(cnpjFilial)) {
 
-                    // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj) já existe no sistema
-                    Notification.show(mensagens.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
+                    // Displays an error message indicating that this branch exists in the system
+                    Notification.show(messages.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
 
                     return false;
                 }
 
-                // Valida se a filial já não faz parte desta mesma empresa principal pelo CNPJ
+                // Validates that the subsidiary is no longer part of the same parent company
                 if (identificadoresFiliais.contains(cnpjFilial)) {
-                    // Exibe uma mensagem de erro indicando que esta filial (pelo cnpj/cpf) 
-                    // foi cadastrada em duplicidade
-                    Notification.show(mensagens.getString("SignupPresenter.mensagem.filialDuplicada"), Notification.Type.WARNING_MESSAGE);
+                    // Displays an error message indicating that this branch
+                    // Was registered in duplicate
+                    Notification.show(messages.getString("SignupPresenter.mensagem.filialDuplicada"), Notification.Type.WARNING_MESSAGE);
 
                     return false;
 
                 }
                 identificadoresFiliais.add(cnpjFilial);
             } else {
-                // Valida se a filial já não faz parte desta mesma empresa principal pelo nome
+                // Validates that the subsidiary is no longer part of the same parent company by name
                 if (nomesFiliais.contains(nomeFilial)) {
-                    // Exibe uma mensagem de erro indicando que esta filial (pelo nome) 
-                    // foi cadastrada em duplicidade
-                    Notification.show(mensagens.getString("SignupPresenter.mensagem.filialDuplicada"), Notification.Type.WARNING_MESSAGE);
+                    // Displays an error message indicating that this branch (by name) 
+                    // Was registered in duplicate
+                    Notification.show(messages.getString("SignupPresenter.mensagem.filialDuplicada"), Notification.Type.WARNING_MESSAGE);
 
                     return false;
 
@@ -228,9 +227,9 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * valida dados dos demais usuarios
+     * validates data from other users
      *
-     * @return true se os dados forem validos
+     * @return true if date is valid
      */
     private boolean validaDadosDemaisUsuarios() {
 
@@ -241,21 +240,21 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linha = usuariosTable.getItem(itemID);
 
-            // Valida se o usuários já não está cadastrado no sistema
-            String emailUsuario = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.email")).getValue(); // @ATENCAO
+            // Validates if the users are not already registered in the system
+            String emailUsuario = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.email")).getValue(); // @ATENCAO
             System.out.println("usuario " + emailUsuario);
             if (model.verificaLoginExistente(emailUsuario)) {
 
-                // Exibe uma mensagem de erro indicando que este usuario ja existe no sistema
-                Notification.show(mensagens.getString("SignupPresenter.mensagem.usuarioExistente"), Notification.Type.WARNING_MESSAGE);
+                // Displays an error message indicating that this User already exists in the system
+                Notification.show(messages.getString("SignupPresenter.mensagem.usuarioExistente"), Notification.Type.WARNING_MESSAGE);
 
                 return false;
             }
 
-            // Valida se o usuário já não está relacionado a esta mesma empresa
+            // Validates if the user is no longer related to the same enterprise
             if (identificadoresUsuarios.contains(emailUsuario)) {
-                // Exibe uma mensagem de erro indicando que este usuario esta duplicado
-                Notification.show(mensagens.getString("SignupPresenter.mensagem.usuarioDuplicado"), Notification.Type.WARNING_MESSAGE);
+                // Displays an error message indicating that this User is duplicated
+                Notification.show(messages.getString("SignupPresenter.mensagem.usuarioDuplicado"), Notification.Type.WARNING_MESSAGE);
 
                 return false;
 
@@ -268,8 +267,8 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * Obtem todos os dados da view necessários para montar o cadastro inicial
-     * com a empresa principal + coligadas e filiais + usuarios
+     * Fetch all view of the data needed to set the initial registration
+     * with the main company subsidiaries and affiliates + users
      *
      */
     private Empresa buildConta() {
@@ -277,7 +276,7 @@ public class SignupPresenter implements SignupViewListener {
         Empresa empresaPrincipal;
 
         // ---------------------------------------------------------------------
-        // cria o usuario principal
+        // creates the main User
         // ---------------------------------------------------------------------
         Usuario usuarioADM = model.criarNovoUsuario(
                 view.getNameTextField().getValue(),
@@ -288,16 +287,16 @@ public class SignupPresenter implements SignupViewListener {
         );
 
         // ---------------------------------------------------------------------
-        // cria a empresa principal
+        // creates the main company
         // ---------------------------------------------------------------------
         String nomeFantasia = view.getFancyNameTextField().getValue();
         String razaosocial = view.getCompanyNameTextField().getValue();
         String cpfCnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
         
         char tipoPessoa = '\0';
-        if (view.getPersonTypeOptionGroup().getValue() == mensagens.getString("SignupView.pessoaFisicaCheckBox.label")) { // @ATENCAO
+        if (view.getPersonTypeOptionGroup().getValue() == messages.getString("SignupView.pessoaFisicaCheckBox.label")) { // @ATENCAO
             tipoPessoa = 'F';
-        } else if (view.getPersonTypeOptionGroup().getValue() == mensagens.getString("SignupView.pessoaJuridicaCheckBox.label")) { // @ATENCAO
+        } else if (view.getPersonTypeOptionGroup().getValue() == messages.getString("SignupView.pessoaJuridicaCheckBox.label")) { // @ATENCAO
             tipoPessoa = 'J';
         } else {
             return null;
@@ -305,7 +304,6 @@ public class SignupPresenter implements SignupViewListener {
 
         empresaPrincipal = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
 
-        // cria o endereco
         String logradouro = view.getAdressTextField().getValue();
         String numero = view.getNumberTextField().getValue();
         String complemento = view.getComplementTextField().getValue();
@@ -319,7 +317,7 @@ public class SignupPresenter implements SignupViewListener {
         model.relacionarUsuarioEmpresa(usuarioADM, empresaPrincipal, true, usuarioADM);
 
         // ---------------------------------------------------------------------
-        // cria a lista de sub empresas 
+        // creates the list of sub companies 
         // ---------------------------------------------------------------------
         Table empresasColigadasTable = view.getAssociatedTable();
 
@@ -327,9 +325,8 @@ public class SignupPresenter implements SignupViewListener {
 
             Item linhaEmpresaColigada = empresasColigadasTable.getItem(itemID);
 
-            // Fer: usar o mesmo criterio abaixo para todas as tabelas:
-            String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(mensagens.getString("SignupView.coligadasTable.nome")).getValue();
-            String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(mensagens.getString("SignupView.coligadasTable.cnpj")).getValue();
+            String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(messages.getString("SignupView.coligadasTable.nome")).getValue();
+            String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(messages.getString("SignupView.coligadasTable.cnpj")).getValue();
 
             Empresa subempresa = model.criarNovaEmpresaColigada(nomeFantasiaEmpresaColigada, cpfCnpjEmpresaColigada, usuarioADM);
 
@@ -338,15 +335,15 @@ public class SignupPresenter implements SignupViewListener {
         });
 
         // ---------------------------------------------------------------------
-        // cria a lista de filiais
+            // creates the branch list
         // ---------------------------------------------------------------------
         Table filiaisTable = view.getSubsidiariesTable();
         filiaisTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = filiaisTable.getItem(itemID);
 
-            String nomeFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.nome")).getValue();
-            String cnpjFilial = (String) linha.getItemProperty(mensagens.getString("SignupView.filiaisTable.cnpj")).getValue();
+            String nomeFilial = (String) linha.getItemProperty(messages.getString("SignupView.filiaisTable.nome")).getValue();
+            String cnpjFilial = (String) linha.getItemProperty(messages.getString("SignupView.filiaisTable.cnpj")).getValue();
 
             FilialEmpresa filialEmpresa = model.criarFilialEmpresa(nomeFilial, cnpjFilial, usuarioADM);
             model.relacionarEmpresaFilial(empresaPrincipal, filialEmpresa);
@@ -354,17 +351,17 @@ public class SignupPresenter implements SignupViewListener {
         });
 
         // ---------------------------------------------------------------------
-        // cria a lista de usuarios
+        // creates a list of users
         // ---------------------------------------------------------------------
         Table usuariosTable = view.getUsersTable();
         usuariosTable.getItemIds().stream().forEach((itemID) -> {
 
             Item linha = usuariosTable.getItem(itemID);
 
-            String nome = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.nome")).getValue();
-            String sobreNome = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.sobrenome")).getValue();
-            String email = (String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.email")).getValue();
-            boolean administrador = ((String) linha.getItemProperty(mensagens.getString("SignupView.usuariosTable.administrador")).getValue()).equals("SIM");
+            String nome = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.nome")).getValue();
+            String sobreNome = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.sobrenome")).getValue();
+            String email = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.email")).getValue();
+            boolean administrador = ((String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.administrador")).getValue()).equals("SIM");
 
             Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email, usuarioADM);
             model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador, usuarioADM);
@@ -378,7 +375,7 @@ public class SignupPresenter implements SignupViewListener {
     @Override
     public void okButtonClicked() {
 
-        // valida o preenchimento dos campos obrigatórios
+        // Validate filling the required fields
         view.validate();
 
         if (!validaDadosUsuarioPrincipal()) {
@@ -402,10 +399,10 @@ public class SignupPresenter implements SignupViewListener {
         }
 
         // ---------------------------------------------------------------------
-        // Validações bem sucedidas !!!
-        // procede com a gravação dos dados
+        // Validations successful !!!
+        // proceeds with the recording of data
         // ---------------------------------------------------------------------
-        // obtem todos os dados da view e monta os objetos
+        // Get all data from view and assembles objects
         Empresa empresa = buildConta();
 
         try {
@@ -414,9 +411,9 @@ public class SignupPresenter implements SignupViewListener {
             view.close();
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         } catch (RuntimeException ex) {
-            // Este é o topo da pilha de chamada ( o try catch mais alto) portante este deve logar a exceção:
+            // This is the top of the call stack (the highest try catch) bearing this must log the exception:
             Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
-            Notification.show(mensagens.getString("Gestor.mensagemErroGenerica"), Notification.Type.WARNING_MESSAGE);
+            Notification.show(messages.getString("Gestor.mensagemErroGenerica"), Notification.Type.WARNING_MESSAGE);
 
         }
 
@@ -425,8 +422,8 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * Evento disparado ao ser acionado o botão para efetuar a inclusão do
-     * Usuário na grid Obtém o nome, sobrenome e e-mail
+     * Event fired when clicked the button to make the inclusion of
+     * User in grid Gets the name, surname and email
      */
     @Override
     public void incluirUsuario() {
@@ -435,7 +432,7 @@ public class SignupPresenter implements SignupViewListener {
         String sobrenomeUsuario = view.getUserSurnameTextField().getValue();
         String email = view.getEmailTextField().getValue();
 
-        //Verifica se Usuário é Administrador ou não
+        // Check if User is Administrator or not
         Boolean usuarioAdm = view.getUserAdmCheckBox().getValue();
         String adm = "";
         if (usuarioAdm == true) {
@@ -444,14 +441,14 @@ public class SignupPresenter implements SignupViewListener {
             adm = "NÃO";
         }
 
-        Button removerUsuarioButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
+        Button removerUsuarioButton = new Button(messages.getString("SignupPresenter.removerButton.label"));
         removerUsuarioButton.setId(nomeUsuario);
         removerUsuarioButton.addClickListener((Button.ClickEvent event) -> {
             String nomeUsuarioBotao = event.getButton().getId();
 
             view.getUsersTable().removeItem(nomeUsuarioBotao);
             view.getUsersTable().refreshRowCache();
-            Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
+            Notification.show((messages.getString("Notificacao.Sucesso")), (messages.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
@@ -466,27 +463,27 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * Evento disparado ao ser acionado o botão para efetuar a inclusão das
-     * Coligadas na grid Obtém o nome, sobrenome e e-mail
+     * Event fired when clicked the button to make the inclusion of
+     * Related in the grid Gets the name, surname and email
      */
     @Override
     public void incluirColigadas() {
 
         String nomeColigada = view.getAssociatedNameTextField().getValue();
-        view.getNationalEntityRegistrationAssociatedTextField().commit(); // Veja se dá certo
+        view.getNationalEntityRegistrationAssociatedTextField().commit();
         view.getNationalEntityRegistrationAssociatedTextField().setValue("teste");
         String cnpjColigada = view.getNationalEntityRegistrationAssociatedTextField().getValue();
 
         System.out.println("cnpj: " + cnpjColigada);
 
-        Button removerColigadasButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
+        Button removerColigadasButton = new Button(messages.getString("SignupPresenter.removerButton.label"));
         removerColigadasButton.setId(nomeColigada);
         removerColigadasButton.addClickListener((Button.ClickEvent event) -> {
             String nomeColigadaBotao = event.getButton().getId();
 
             view.getAssociatedTable().removeItem(nomeColigadaBotao);
             view.getAssociatedTable().refreshRowCache();
-            Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE); // @ATENCAO
+            Notification.show((messages.getString("Notificacao.Sucesso")), (messages.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE); // @ATENCAO
 
         });
 
@@ -498,8 +495,8 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * Evento disparado ao ser acionado o botão para efetuar a inclusão das
-     * Coligadas na grid Obtém o nome, sobrenome e e-mail
+     * Event fired when clicked the button to make the inclusion of
+     * Related in the grid Gets the name, surname and email
      */
     @Override
     public void incluirFiliais() {
@@ -507,14 +504,14 @@ public class SignupPresenter implements SignupViewListener {
         String nomeFilial = view.getSubsidiaryNameTextField().getValue();
         String cnpjFilial = view.getNationalEntityRegistrationSubsidiaryTextField().getValue();
 
-        Button removerFiliaisButton = new Button(mensagens.getString("SignupPresenter.removerButton.label"));
+        Button removerFiliaisButton = new Button(messages.getString("SignupPresenter.removerButton.label"));
         removerFiliaisButton.setId(nomeFilial);
         removerFiliaisButton.addClickListener((Button.ClickEvent event) -> {
             String nomeFilialBotao = event.getButton().getId();
 
             view.getSubsidiariesTable().removeItem(nomeFilialBotao);
             view.getSubsidiariesTable().refreshRowCache();
-            Notification.show((mensagens.getString("Notificacao.Sucesso")), (mensagens.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
+            Notification.show((messages.getString("Notificacao.Sucesso")), (messages.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
@@ -526,8 +523,8 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * Evento disparado ao ser acionado o botão selecionar o Estado da Empresa a
-     * ser cadastrada
+     * Event fired when clicked the button to select the state of the Company
+     * be registered
      *
      */
     private void carregaComboEstado() {
@@ -547,8 +544,8 @@ public class SignupPresenter implements SignupViewListener {
     }
 
     /**
-     * Evento disparado após ser selecionado o Estado da empresa a ser
-     * cadastrada e carrega o comboBox com as cidades pertencentes a este estado
+     * Event fired after being selected the company's state to be
+     * registered and carries the comboBox with belonging to this state cities
      */
     @Override
     public void estadoSelecionado() {

@@ -6,6 +6,7 @@ import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.RecorrenciaModel;
+import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
@@ -22,6 +23,7 @@ import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -41,8 +43,12 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -240,6 +246,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         carregaComboParticipante();
         carregaComboEmpresaCliente();
         setPopUpEvolucaoStatusEAndamento(tarefa);
+        carregaApontamento(tarefa);
 
         // Configuras os beans de 1-N
         view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, loggedUser));
@@ -253,6 +260,78 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
         view.setTarefa(tarefa);
 
     }
+    
+    /**
+     * Carrega os apontamentos e executa o método para o cálculo da projeção
+     */
+    private void carregaApontamento(Tarefa tarefa) {
+        List<AndamentoTarefa> andamentos = tarefa.getAndamentos();
+        if(andamentos.size() != 0){
+        //Buscando o andamento da tarefa    
+        int andamento = tarefa.getAndamento();  
+        System.out.println("Andamento Atual "+tarefa.getAndamento());
+
+        Date inicio = DateTimeConverters.toDate(tarefa.getDataInicio());
+        Date fim = DateTimeConverters.toDate(tarefa.getDataFim());
+        Date hoje = DateTimeConverters.toDate(LocalDate.now());
+        
+        int diasRealizar = contarDias(inicio,fim);
+        System.out.println("Dias para realizar :"+diasRealizar);
+        
+        int diasCorridos = contarDias(inicio,hoje);
+        System.out.println("Dias corridos :"+diasCorridos);
+        
+        //Porcentagem ideal até o momento
+        Double porcIdeal = ((100.00/diasRealizar)*(diasCorridos));
+        System.out.println("Porcentagem ideal é: "+ porcIdeal);
+        
+        if (andamento == 0){
+            System.out.println("Não Iniciada");
+            view.getProjectionButton().setCaption("Não Iniciada");
+        } else if(andamento < porcIdeal){
+            System.out.println("Andamento Baixo");
+            view.getProjectionButton().setCaption("Andamento Baixo");
+        } else if(andamento == porcIdeal){
+            System.out.println("Ideal");
+            view.getProjectionButton().setCaption("Ideal");
+        } else if(andamento > porcIdeal){
+            System.out.println("Andamento Alto");
+            view.getProjectionButton().setCaption("Andamento Alto");
+        } else if(andamento == 100){
+            System.out.println("Finalizado");
+            view.getProjectionButton().setCaption("Finalizado");
+        }
+        
+    }
+    }
+    
+    //comparar quantidade de dias entre as datas
+    public int contarDias(Date anterior, Date prox){  
+           Calendar ant = Calendar.getInstance();  
+           Calendar dep = Calendar.getInstance();  
+           int dias = 0;  
+           int resultado = 0;  
+             
+           ant.setTime(anterior);  
+           dep.setTime(prox);  
+           
+           if (ant.before(dep)){
+           while(ant.before(dep)){  
+               dias++;  
+               ant.add(Calendar.DATE, 1);  
+           }
+           dias = dias;
+           }
+           if (dep.before(ant)){
+           while(dep.before(ant)){  
+               dias++;  
+               dep.add(Calendar.DATE, 1);  
+           }
+           dias = (dias * -1);
+           }
+           resultado = dias;
+           return resultado;
+     }  
 
     /**
      * Carrega o combo de seleçao com os status possiveis para a tarefa

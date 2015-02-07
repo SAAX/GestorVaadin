@@ -2,6 +2,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
@@ -14,6 +15,8 @@ import com.saax.gestorweb.view.PopUpEvolucaoStatusViewListener;
 import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
 

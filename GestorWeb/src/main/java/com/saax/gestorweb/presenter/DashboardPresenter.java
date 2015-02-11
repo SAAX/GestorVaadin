@@ -382,7 +382,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         for (int i = 0; i < tarefasPrincipais.size() && i < 5; i++) {
             Tarefa tarefa = tarefasPrincipais.get(i);
             
-            Button tarefaButton = buildButtonEditarTarefa(tarefa, tarefa.getNome().substring(0, 25));
+            Button tarefaButton = buildButtonEditarTarefa(tarefa, tarefa.getNome().length()>25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
             tarefaButton.setStyleName("v-button-link");
             view.getBottomTasksContainer().addComponent(tarefaButton);
         }

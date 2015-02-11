@@ -66,7 +66,9 @@ public class ChatPresenter implements ChatViewListener {
      */
     public void loadingTable(Tarefa task) {                                              
         view.getUserTable().addItem(new Object[]{task.getUsuarioSolicitante().getNome(), messages.getString("ChatPresenter.solicitante")}, messages.getString("ChatPresenter.solicitante"));
-        view.getUserTable().addItem(new Object[]{task.getUsuarioResponsavel().getNome(), messages.getString("ChatPresenter.responsavel")}, messages.getString("ChatPresenter.responsavel"));
+        if (task.getUsuarioResponsavel()!=null){
+            view.getUserTable().addItem(new Object[]{task.getUsuarioResponsavel().getNome(), messages.getString("ChatPresenter.responsavel")}, messages.getString("ChatPresenter.responsavel"));
+        }
         
         List<ParticipanteTarefa> participants = task.getParticipantes();
         

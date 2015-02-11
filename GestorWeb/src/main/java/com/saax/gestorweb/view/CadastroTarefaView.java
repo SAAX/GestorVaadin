@@ -718,6 +718,8 @@ public class CadastroTarefaView extends Window {
         taskAppointmentFieldGroup.bind(hourCostTextField, "custoHora");
         taskAppointmentFieldGroup.bind(hoursAddTextField, "inputHoras");
         taskAppointmentFieldGroup.bind(hoursObservationTextField, "observacoes");
+        
+        
 
     }
 

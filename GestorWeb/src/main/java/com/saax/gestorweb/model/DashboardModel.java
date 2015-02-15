@@ -318,4 +318,81 @@ public class DashboardModel {
         return null;
     }
 
+    public List<Meta> filtrarMetas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        final List<Meta> metasUsuarioResponsavel = new ArrayList<>();
+        usuariosResponsaveis.stream().forEach((usuario) -> {
+            // refresh
+            usuario = em.find(Usuario.class, usuario.getId());
+            metasUsuarioResponsavel.addAll(usuario.getMetasSobResponsabilidade());
+
+        });
+
+        List<Meta> metasUsuarioSolicitante = new ArrayList<>();
+        usuariosSolicitantes.stream().forEach((usuario) -> {
+            usuario = em.find(Usuario.class, usuario.getId());
+            metasUsuarioSolicitante.addAll(usuario.getMetasSolicitadas());
+        });
+
+        List<Meta> metasEmpresa = new ArrayList<>();
+        empresas.stream().forEach((empresa) -> {
+            empresa = em.find(Empresa.class, empresa.getId());
+            metasEmpresa.addAll(empresa.getMetas());
+        });
+
+        List<Meta> metasFiliais = new ArrayList<>();
+        filiais.stream().forEach((filial) -> {
+            filial = em.find(FilialEmpresa.class, filial.getId());
+            metasFiliais.addAll(filial.getMetas());
+        });
+
+        List<Meta> metasDataFim = new ArrayList<>();
+        if (dataFim != null) {
+
+            metasDataFim.addAll(em.createNamedQuery("Meta.findByDataFim")
+                    .setParameter("datafim", dataFim)
+                    .getResultList());
+        }
+
+        List<Meta> metas = new ArrayList<>();
+        if (tipoPesquisa == DashboardPresenter.TipoPesquisa.INCLUSIVA_OU) {
+
+            metas.addAll(metasUsuarioResponsavel);
+
+            metas.addAll(metasUsuarioSolicitante);
+
+            metas.addAll(metasEmpresa);
+
+            metas.addAll(metasFiliais);
+
+            metas.addAll(metasDataFim);
+
+        } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
+
+            metas.addAll(em.createNamedQuery("Meta.findAll")
+                    .setParameter("empresa",loggedUser.getEmpresaAtiva())
+                    .getResultList());
+
+            if (!metasUsuarioResponsavel.isEmpty()) {
+                metas.retainAll(metasUsuarioResponsavel);
+            }
+            if (!metasUsuarioSolicitante.isEmpty()) {
+                metas.retainAll(metasUsuarioSolicitante);
+            }
+            if (!metasEmpresa.isEmpty()) {
+                metas.retainAll(metasEmpresa);
+            }
+            if (!metasFiliais.isEmpty()) {
+                metas.retainAll(metasFiliais);
+            }
+            if (!metasDataFim.isEmpty()) {
+                metas.retainAll(metasDataFim);
+            }
+
+        }
+
+        return metas;
+    }
+
 }

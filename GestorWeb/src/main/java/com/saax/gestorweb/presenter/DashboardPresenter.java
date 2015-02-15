@@ -168,6 +168,46 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
 
     }
 
+    private void updateTargetTable(Meta target) {
+        Item it = view.getTargetTable().getItem(target);
+
+        /*
+                    buildButtonEditarMeta(meta, meta.getGlobalID()),
+            buildButtonEditarMeta(meta, meta.getCategoria().getCategoria()),
+            buildButtonEditarMeta(meta, meta.getNome()),
+            meta.getEmpresa().getNome()
+            + (meta.getFilialEmpresa() != null ? "/" + meta.getFilialEmpresa().getNome() : ""),
+            meta.getUsuarioSolicitante().getNome(),
+            meta.getUsuarioResponsavel().getNome(),
+            FormatterUtil.formatDate(meta.getDataInicio()),
+            FormatterUtil.formatDate(meta.getDataFim()),
+            'A',
+            new Button("E"), 
+
+        
+        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.email"), Button.class, "");
+
+        */
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.cod")).setValue(buildButtonEditarMeta(target, target.getGlobalID()));
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.title")).setValue(buildButtonEditarMeta(target, target.getCategoria().getCategoria()));
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.name")).setValue(buildButtonEditarMeta(target, target.getNome()));
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.company")).setValue(target.getEmpresa().getNome()
+                + (target.getFilialEmpresa() != null ? "/" + target.getFilialEmpresa().getNome() : ""));
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.requestor")).setValue(target.getUsuarioSolicitante().getNome());
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.assingee")).setValue(target.getUsuarioResponsavel().getNome());
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.startDate")).setValue(FormatterUtil.formatDate(target.getDataInicio()));
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.endDate")).setValue(FormatterUtil.formatDate(target.getDataFim()));
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.forecast")).setValue('F');
+        it.getItemProperty(mensagens.getString("DashboardView.targetTable.email")).setValue(new Button("E"));
+        
+        // se a meta possui tarefas, chama recursivamente
+        for (Tarefa subTarefa : target.getTarefas()) {
+            addTaskInTargetTable(subTarefa);
+        }
+
+   
+    }
+
     @Override
     public void taskUpdateDone(Tarefa tarefa) {
         atualizarTarefaTable(tarefa);
@@ -261,7 +301,8 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
 
     @Override
     public void edicaoMetaConcluida(Meta meta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        updateTargetTable(meta);
+        organizeTree(view.getTargetTable(), meta, meta.getTarefas());
     }
 
     /**
@@ -591,6 +632,13 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
                 usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
 
         exibirListaTarefas(listaTarefas);
+        
+        List<Meta> listaMetas = model.filtrarMetas(tipoPesquisa, usuariosResponsaveis, 
+                usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
+
+        exibirListaMetas(listaMetas);
+        
+        
 
         view.getCleanFiltersButton().setVisible(true);
         view.getSwitchAndOrFilters().setVisible(true);

@@ -88,7 +88,10 @@ public class Usuario implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioResponsavel")
     private Collection<Meta> metasSobResponsabilidade;
-    
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioSolicitante")
+    private Collection<Meta> metasSolicitadas;
+
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
@@ -451,6 +454,15 @@ public class Usuario implements Serializable {
         return empresaAtiva;
     }
 
+    public void setMetasSolicitadas(Collection<Meta> metasSolicitadas) {
+        this.metasSolicitadas = metasSolicitadas;
+    }
+
+    public Collection<Meta> getMetasSolicitadas() {
+        return metasSolicitadas;
+    }
+
+    
     
     
 }

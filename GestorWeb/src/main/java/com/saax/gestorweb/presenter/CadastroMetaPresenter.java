@@ -22,6 +22,7 @@ import com.saax.gestorweb.view.CadastroMetaViewListener;
 import com.saax.gestorweb.view.TaskCreationCallBackListener;
 import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
+import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -93,7 +94,7 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
     /**
      * Inicializa o formulário carregando a meta informada
      */
-    private void init(Meta meta) {
+    private void init(Meta target) {
 
         carregaComboEmpresa();
         carregaComboResponsavel();
@@ -103,9 +104,9 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
         UI.getCurrent().addWindow(view);
 
         // liga (bind) o form com a meta
-        view.setMeta(meta);
+        view.setMeta(target);
         
-        this.target = meta;
+        this.target = target;
 
     }
 
@@ -281,11 +282,6 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
         UI.getCurrent().removeWindow(view);
     }
 
-    @Override
-    public void hierarquiaSelecionada(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
     /**
      * Opens the presenter in editing mode with the target to edit
      *
@@ -296,6 +292,11 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
 
         // sets the title
         view.exibeTituloEdicao(targetToEdit);
+
+        // configura a categoria
+        ComboBox combo = view.getHierarquiaCombo();
+        combo.addItem(targetToEdit.getCategoria());
+        combo.setItemCaption(targetToEdit.getCategoria(), targetToEdit.getCategoria().getCategoria());
 
         // inits the UI
         init(targetToEdit);
@@ -410,8 +411,34 @@ public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCrea
      */
     @Override
     public void taskUpdateDone(Tarefa updatedTask) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        atualizarTarefaTable(updatedTask);
+        organizeTree(updatedTask, updatedTask.getSubTarefas());
+
     }
     
+    private void atualizarTarefaTable(Tarefa task) {
+        Item it = view.getTarefasTable().getItem(task);
+
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial")).setValue(task.getEmpresa().getNome()
+                + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante")).setValue(task.getUsuarioSolicitante().getNome());
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel")).setValue(task.getUsuarioResponsavel().getNome());
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(CadastroTarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), task));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao")).setValue(task.getProjecao().toString().charAt(0));
+        it.getItemProperty("[E]").setValue(new Button("E"));
+        it.getItemProperty("[C]").setValue(new Button("C"));
+
+        for (Tarefa subTarefa : task.getSubTarefas()) {
+            addTaskInTable(subTarefa);
+        }
+
+    }
+
 
 }

@@ -21,8 +21,6 @@ public interface CadastroMetaViewListener {
     
     public void edit(Meta metaToEdit);   
 
-    public void hierarquiaSelecionada(HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe);
-
     public void addTaskButtonClicked();
 
     public void chatButtonClicked();

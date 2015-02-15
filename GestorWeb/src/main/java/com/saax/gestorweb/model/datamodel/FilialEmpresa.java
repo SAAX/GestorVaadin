@@ -77,6 +77,9 @@ public class FilialEmpresa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "filialEmpresa")
     private List<Tarefa> tarefas;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "filialEmpresa")
+    private List<Meta> metas;
+
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
@@ -194,6 +197,15 @@ public class FilialEmpresa implements Serializable {
     public List<Tarefa> getTarefas() {
         return tarefas;
     }
+
+    public void setMetas(List<Meta> metas) {
+        this.metas = metas;
+    }
+
+    public List<Meta> getMetas() {
+        return metas;
+    }
+    
     
     
 }

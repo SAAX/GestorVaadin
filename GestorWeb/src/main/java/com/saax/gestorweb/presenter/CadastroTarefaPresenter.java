@@ -220,6 +220,10 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
             adicionarSubTarefa(sub);
         }
         
+        if(tarefaToEdit.getUsuarioResponsavel().equals(tarefaToEdit.getUsuarioSolicitante())){
+            view.getChatButton().setEnabled(false);
+        }
+        
         organizeTree(tarefaToEdit, tarefaToEdit.getSubTarefas());
 
         // configura a categoria

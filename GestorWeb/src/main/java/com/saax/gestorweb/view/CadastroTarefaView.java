@@ -665,6 +665,7 @@ public class CadastroTarefaView extends Window {
             Button downloadButton = new Button(messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"));
             AnexoTarefa anexoTarefa = (AnexoTarefa) itemId;
             FileDownloader fd = new FileDownloader(new FileResource(anexoTarefa.getArquivo() == null ? anexoTarefa.getArquivoTemporario() : anexoTarefa.getArquivo()));
+            
             fd.extend(downloadButton);
 
             return downloadButton;

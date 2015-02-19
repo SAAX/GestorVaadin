@@ -19,6 +19,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,15 +38,15 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Rodrigo
  */
-public class SignupPresenter implements SignupViewListener {
+public class SignupPresenter implements Serializable, SignupViewListener {
 
     // Reference to the use of the messages:
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // Every presenter keeps access to view and model
-    private final SignupView view;
-    private final SignupModel model;
+    private final transient SignupView view;
+    private final transient SignupModel model;
 
     /**
      * Creates the presenter linking the Model View

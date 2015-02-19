@@ -28,6 +28,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
+import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
@@ -36,15 +37,15 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class CadastroMetaPresenter implements CadastroMetaViewListener, TaskCreationCallBackListener {
+public class CadastroMetaPresenter implements Serializable, CadastroMetaViewListener, TaskCreationCallBackListener {
 
     // Todo presenter mantem acesso à view e ao model
-    private final CadastroMetaView view;
-    private final CadastroMetaModel model;
+    private final transient CadastroMetaView view;
+    private final transient CadastroMetaModel model;
 
     // recursos de aplicação
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     
     // usuario logado
     private final Usuario loggedUser;

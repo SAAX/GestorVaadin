@@ -34,7 +34,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
 
     // Referencia ao recurso das mensagens e imagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     private Tarefa tarefa = null;
     private PopupButton statusButton = null;

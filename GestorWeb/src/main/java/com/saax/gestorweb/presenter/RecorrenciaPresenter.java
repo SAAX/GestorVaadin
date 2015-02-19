@@ -10,11 +10,11 @@ import com.saax.gestorweb.model.RecorrenciaModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.RecorrenciaView;
 import com.saax.gestorweb.view.RecorrenciaViewListener;
 import com.vaadin.data.Property;
 import com.vaadin.ui.UI;
+import java.io.Serializable;
 import java.util.ResourceBundle;
 
 /**
@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
  *
  * @author rodrigo
  */
-public class RecorrenciaPresenter implements RecorrenciaViewListener {
+public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListener {
     
     // Todo presenterPopUpStatus mantem acesso à view e ao model
     private final transient RecorrenciaView view;
@@ -32,7 +32,7 @@ public class RecorrenciaPresenter implements RecorrenciaViewListener {
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private final Usuario loggedUser;
 /**
      * Cria o presenter PopUpStatusigando o Model ao View

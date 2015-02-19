@@ -43,6 +43,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
@@ -61,7 +62,7 @@ import java.util.logging.Logger;
  *
  * @author rodrigo
  */
-public class CadastroTarefaPresenter implements CadastroTarefaViewListener, TaskCreationCallBackListener {
+public class CadastroTarefaPresenter implements Serializable, CadastroTarefaViewListener, TaskCreationCallBackListener {
 
     // Todo presenterPopUpStatus mantem acesso à view e ao model
     private final transient CadastroTarefaView view;
@@ -69,7 +70,7 @@ public class CadastroTarefaPresenter implements CadastroTarefaViewListener, Task
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private TaskCreationCallBackListener callbackListener;
     private final Usuario loggedUser;
     private PopUpEvolucaoStatusPresenter presenterPopUpStatus;

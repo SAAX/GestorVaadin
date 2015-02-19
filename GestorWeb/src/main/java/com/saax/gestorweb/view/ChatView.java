@@ -33,7 +33,7 @@ public class ChatView extends Window{
     // Reference to feature messages
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
     
-    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private final Usuario userLogged;
     
     // The view maintains access to the listener (Presenter) to notify events

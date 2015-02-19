@@ -5,14 +5,6 @@
  */
 package com.saax.gestorweb.util;
 
-import com.saax.gestorweb.GestorMDI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-
-import org.atmosphere.cpr.Action;
-import org.atmosphere.cpr.AtmosphereInterceptorAdapter;
-import org.atmosphere.cpr.AtmosphereResource;
 
 /**
  * Designed to inject the EntityManager into requests that arrive via websockets
@@ -23,7 +15,7 @@ import org.atmosphere.cpr.AtmosphereResource;
  * web.xml.
  * 
 */
-public class AtmosphereFilter extends AtmosphereInterceptorAdapter {
+public class AtmosphereFilter {} /*extends AtmosphereInterceptorAdapter {
 
         @Override
         public Action inspect(AtmosphereResource r) {
@@ -40,5 +32,5 @@ public class AtmosphereFilter extends AtmosphereInterceptorAdapter {
                 GestorEntityManagerProvider.remove();
             }
         }
-    }
+    }*/
 

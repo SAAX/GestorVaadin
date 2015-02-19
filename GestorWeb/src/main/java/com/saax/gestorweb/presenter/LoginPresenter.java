@@ -10,6 +10,7 @@ import com.saax.gestorweb.view.LoginViewListener;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.UI;
+import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,11 +22,11 @@ import java.util.logging.Logger;
  *
  * @author Rodrigo
  */
-public final class LoginPresenter implements LoginViewListener {
+public class LoginPresenter implements Serializable, LoginViewListener {
 
     // Todo presenter mantem acesso à view e ao model
-    private final LoginView view;
-    private final LoginModel model;
+    private final transient LoginView view;
+    private final transient LoginModel model;
 
     /**
      * Cria o presenter ligando o Model ao View

@@ -15,6 +15,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.ChatViewListener;
 import com.vaadin.ui.UI;
+import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -26,16 +27,16 @@ import java.util.ResourceBundle;
  *
  * @author Rodrigo
  */
-public class ChatPresenter implements ChatViewListener {
+public class ChatPresenter implements Serializable, ChatViewListener {
 
     // Reference to the use of the messages:
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private final Usuario userLogged;
 
     // Every presenter keeps access to view and model
-    private final ChatView view;
-    private final ChatSingletonModel model;
+    private final transient ChatView view;
+    private final transient ChatSingletonModel model;
     private Tarefa task;
 
     /**

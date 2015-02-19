@@ -42,7 +42,7 @@ public class DashboardView extends VerticalLayout {
     // message resource
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
     // image resource
-    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     // listener interface (presenter in MVP)
     private DashboardViewListenter listener;
     public void setListener(DashboardViewListenter listener) {

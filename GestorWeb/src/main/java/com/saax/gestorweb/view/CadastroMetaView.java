@@ -32,6 +32,7 @@ import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -52,12 +53,12 @@ import java.util.logging.Logger;
  *
  * @author rodrigo
  */
-public class CadastroMetaView extends Window {
+public class CadastroMetaView  extends Window implements Serializable {
 
     // Message resource bunlde
     private final transient ResourceBundle message = ((GestorMDI) UI.getCurrent()).getMensagens();
     // Images resource
-    private final GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // Presenter (listener)
     private CadastroMetaViewListener listener;

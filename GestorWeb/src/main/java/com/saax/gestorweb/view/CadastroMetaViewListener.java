@@ -1,7 +1,6 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.Empresa;
-import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 
 /**

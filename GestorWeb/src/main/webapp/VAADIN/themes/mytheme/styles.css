@@ -903,7 +903,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.3.8";
+	content: "7.3.10";
 }
 
 .v-widget {
@@ -3001,6 +3001,8 @@ div.v-layout.v-horizontal.v-widget {
 
 .mytheme .v-button-icon-align-top .v-icon {
 	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .mytheme .v-button-icon-align-top .v-icon  + span:not(:empty) {
@@ -8050,6 +8052,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-window-outerheader {
+	cursor: move;
 	position: absolute;
 	z-index: 2;
 	top: 0;
@@ -8074,7 +8077,6 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .mytheme .v-window-header {
-	cursor: move;
 	line-height: 24px;
 	padding-left: 8px;
 	margin-right: 50px;
@@ -11608,7 +11610,7 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .v-upload-immediate input[type="file"] {
 	opacity: 0;
 	filter: alpha(opacity=0) ;
-	z-index: 2;
+	z-index: -1;
 	position: absolute;
 	right: 0;
 	height: 25px;

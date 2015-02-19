@@ -23,12 +23,12 @@ import java.util.ResourceBundle;
 public class PaginaInicialPresenter implements PaginaInicialViewListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
-    private final PaginaInicialView view;
-    private final PaginaInicialModel model;
+    private final transient PaginaInicialView view;
+    private final transient PaginaInicialModel model;
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     /**
      * Cria o presenter ligando o Model ao View

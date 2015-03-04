@@ -64,4 +64,6 @@ public interface CadastroTarefaViewListener {
     
     public void tipoRecorrenciaClicked();   
 
+    public void assigneeUserChanged(Usuario usuario);
+
 }

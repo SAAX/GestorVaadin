@@ -304,12 +304,12 @@ public class CadastroTarefaTest {
         //        private Usuario usuarioInclusao;
         //        private Usuario usuarioSolicitante;
         //        private Usuario usuarioResponsavel;
-        view.getResponsibleUserCombo().setValue(usuarioResponsavel);
+        view.getAssigneeUserCombo().setValue(usuarioResponsavel);
         //        private List<ParticipanteTarefa> participantes;
         Usuario usuarioParticipante_0 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
-        view.getParticipantsCombo().setValue(usuarioParticipante_0);
+        view.getFollowersCombo().setValue(usuarioParticipante_0);
         Usuario usuarioParticipante_1 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
-        view.getParticipantsCombo().setValue(usuarioParticipante_1);
+        view.getFollowersCombo().setValue(usuarioParticipante_1);
         //        private List<AvaliacaoMetaTarefa> avaliacoes;
         //        private List<OrcamentoTarefa> orcamentos;
         view.getBudgetAddTextField().setValue("123.34");
@@ -645,12 +645,12 @@ public class CadastroTarefaTest {
         //        private Usuario usuarioInclusao;
         //        private Usuario usuarioSolicitante;
         //        private Usuario usuarioResponsavel;
-        view.getResponsibleUserCombo().setValue(usuarioResponsavel);
+        view.getAssigneeUserCombo().setValue(usuarioResponsavel);
         //        private List<ParticipanteTarefa> participantes;
         presenter.removerParticipante(t.getParticipantes().get(1));
         Usuario usuarioParticipante_0 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
         Usuario usuarioParticipante_1 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
-        view.getParticipantsCombo().setValue(usuarioParticipante_1); // insere o participante rodrigo
+        view.getFollowersCombo().setValue(usuarioParticipante_1); // insere o participante rodrigo
         //        private List<AvaliacaoMetaTarefa> avaliacoes;
         //        private List<OrcamentoTarefa> orcamentos;
         presenter.removerRegistroOrcamento(t.getOrcamentos().get(0));

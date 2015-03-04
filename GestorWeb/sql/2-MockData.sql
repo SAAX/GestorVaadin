@@ -64,11 +64,25 @@ INSERT INTO HierarquiaProjeto (nome, idusuarioinclusao, datahorainclusao) VALUES
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 1, 'Meta',         1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 2, 'Tarefa',       1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 3, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 4, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 5, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 6, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 7, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 8, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 9, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (1, 10, 'SubTarefa',   1, CURRENT_TIMESTAMP);
 
 INSERT INTO HierarquiaProjeto (nome, idusuarioinclusao, datahorainclusao) VALUES ('Norma', 1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 1, 'Norma',          1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 2, 'Procedimento',   1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 3, 'Rotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 4, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 5, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 6, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 7, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 8, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 9, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (2, 10, 'SubRotina',        1, CURRENT_TIMESTAMP);
 
 INSERT INTO HierarquiaProjeto (nome, idusuarioinclusao, datahorainclusao) VALUES ('Norma c/ Tarefa', 1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 1, 'Norma c/ Tarefa',1, CURRENT_TIMESTAMP);
@@ -77,12 +91,31 @@ INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idu
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 3, 'Rotina',         1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 3, 'SubTarefa',         1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 4, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 4, 'SubTarefa',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 5, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 5, 'SubTarefa',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 6, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 6, 'SubTarefa',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 7, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 7, 'SubTarefa',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 8, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 8, 'SubTarefa',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 9, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 9, 'SubTarefa',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 10, 'SubRotina',         1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (3, 10, 'SubTarefa',         1, CURRENT_TIMESTAMP);
 
 INSERT INTO HierarquiaProjeto (nome, idusuarioinclusao, datahorainclusao) VALUES ('Projeto', 1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 1, 'Projeto',          1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 2, 'Procedimento',   1, CURRENT_TIMESTAMP);
 INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 3, 'Tarefa',   1, CURRENT_TIMESTAMP);
-INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 4, 'SubTArefa',   1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 4, 'SubTarefa',   1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 5, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 6, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 7, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 8, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 9, 'SubTarefa',    1, CURRENT_TIMESTAMP);
+INSERT INTO HierarquiaProjetoDetalhe (idHierarquiaProjeto, nivel, categoria, idusuarioinclusao, datahorainclusao) VALUES (4, 10, 'SubTarefa',   1, CURRENT_TIMESTAMP);
 
 
 

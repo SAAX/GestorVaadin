@@ -231,13 +231,50 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         combo.addItem(tarefaToEdit.getHierarquia());
         combo.setItemCaption(tarefaToEdit.getHierarquia(), tarefaToEdit.getHierarquia().getCategoria());
 
-        view.getParticipantsContainer().addAll(tarefaToEdit.getParticipantes());
+        view.getFollowersContainer().addAll(tarefaToEdit.getParticipantes());
         view.getTaskAttachContainer().addAll(tarefaToEdit.getAnexos());
         view.getHoursControlContainer().addAll(tarefaToEdit.getApontamentos());
         view.getBudgetContainer().addAll(tarefaToEdit.getOrcamentos());
-
+        
+        configPermissions(tarefaToEdit);
+                
         view.setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao") + tarefaToEdit.getHierarquia().getCategoria());
     }
+
+   
+    /**
+     * Sets the permission to add/remove participants
+     * @param assignee
+     * @param requestor 
+     */
+    private void configurePermissionToChangeFollowers(Usuario loggedInUser, Usuario assignee, Usuario requestor){
+        
+        boolean loggedUserIsTheAssignee = assignee != null && assignee.equals(loggedInUser);
+        boolean AssigneeIsNull = assignee == null;
+        boolean loggedUserIsTheRequestor = requestor != null && requestor.equals(loggedInUser);
+        boolean RequestorIsNull = requestor == null;
+        
+        view.setAllowAddRemoveFollowers(loggedUserIsTheAssignee || AssigneeIsNull || loggedUserIsTheRequestor || RequestorIsNull);
+        
+    }
+    
+    /**
+     * Config the view with the access permissions
+     * @param tarefaToEdit 
+     */
+    private void configPermissions(Tarefa tarefaToEdit) {
+        
+        configurePermissionToChangeFollowers(loggedUser, tarefaToEdit.getUsuarioResponsavel(), tarefaToEdit.getUsuarioSolicitante());
+    
+    }
+    
+    @Override
+    public void assigneeUserChanged(Usuario assigneeUser) {
+
+        configurePermissionToChangeFollowers(loggedUser, assigneeUser, view.getTarefa().getUsuarioSolicitante());        
+        
+    }
+
 
     /**
      * inicializa a gui
@@ -264,6 +301,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
         view.setTarefa(tarefa);
 
+        
     }
     
     /**
@@ -409,7 +447,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      * empresa do usuário logado
      */
     private void carregaComboResponsavel() {
-        ComboBox responsavel = view.getResponsibleUserCombo();
+        ComboBox responsavel = view.getAssigneeUserCombo();
         for (Usuario usuario : model.listarUsuariosEmpresa()) {
             responsavel.addItem(usuario);
             responsavel.setItemCaption(usuario, usuario.getNome());
@@ -437,7 +475,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      * empresa do usuário logado
      */
     private void carregaComboParticipante() {
-        ComboBox participante = view.getParticipantsCombo();
+        ComboBox participante = view.getFollowersCombo();
         for (Usuario usuario : model.listarUsuariosEmpresa()) {
             participante.addItem(usuario);
             participante.setItemCaption(usuario, usuario.getNome());
@@ -867,7 +905,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
     @Override
     public void removerParticipante(ParticipanteTarefa participanteTarefa) {
-        view.getParticipantsTable().removeItem(participanteTarefa);
+        view.getFollowersTable().removeItem(participanteTarefa);
         Tarefa tarefa = view.getTarefa();
         tarefa.getParticipantes().remove(participanteTarefa);
     }
@@ -875,11 +913,11 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     @Override
     public void adicionarParticipante(Usuario usuario) {
 
-        if (usuario.equals(view.getResponsibleUserCombo().getValue()) || loggedUser.equals(view.getResponsibleUserCombo().getValue())) {
+        if (usuario.equals(view.getAssigneeUserCombo().getValue()) || usuario.equals(view.getAssigneeUserCombo().getValue())) {
             Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
         } else {
             ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
-            view.getParticipantsContainer().addBean(participanteTarefa);
+            view.getFollowersContainer().addBean(participanteTarefa);
             Tarefa tarefa = view.getTarefa();
 
             if (tarefa.getParticipantes() == null) {
@@ -941,5 +979,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         UI.getCurrent().addWindow(recorrenciaView);
         recorrenciaPresenter.open();
     }
+
+
 
 }

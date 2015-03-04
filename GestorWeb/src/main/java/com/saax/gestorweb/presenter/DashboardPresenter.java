@@ -143,19 +143,20 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     private void atualizarTarefaTable(Tarefa tarefa) {
         Item it = view.getTaskTable().getItem(tarefa);
 
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaCod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaTitulo")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaNome")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaEmpresaFilial")).setValue(tarefa.getEmpresa().getNome()
+       
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.cod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.title")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.name")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.company")).setValue(tarefa.getEmpresa().getNome()
                 + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaSolicitante")).setValue(tarefa.getUsuarioSolicitante().getNome());
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaStatus")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
-        it.getItemProperty("Email").setValue(new Button("E"));
-        it.getItemProperty("Chat").setValue(new Button("C"));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.requestor")).setValue(tarefa.getUsuarioSolicitante().getNome());
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.assingee")).setValue(tarefa.getUsuarioResponsavel().getNome());
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.startDate")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.endDate")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.state")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.email")).setValue(new Button("E"));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.chat")).setValue(new Button("C"));
 
         // se a tarefa possui subs, chama recursivamente
         for (Tarefa subTarefa : tarefa.getSubTarefas()) {
@@ -171,23 +172,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     private void updateTargetTable(Meta target) {
         Item it = view.getTargetTable().getItem(target);
 
-        /*
-                    buildButtonEditarMeta(meta, meta.getGlobalID()),
-            buildButtonEditarMeta(meta, meta.getCategoria().getCategoria()),
-            buildButtonEditarMeta(meta, meta.getNome()),
-            meta.getEmpresa().getNome()
-            + (meta.getFilialEmpresa() != null ? "/" + meta.getFilialEmpresa().getNome() : ""),
-            meta.getUsuarioSolicitante().getNome(),
-            meta.getUsuarioResponsavel().getNome(),
-            FormatterUtil.formatDate(meta.getDataInicio()),
-            FormatterUtil.formatDate(meta.getDataFim()),
-            'A',
-            new Button("E"), 
-
-        
-        targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.email"), Button.class, "");
-
-        */
+       
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.cod")).setValue(buildButtonEditarMeta(target, target.getGlobalID()));
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.title")).setValue(buildButtonEditarMeta(target, target.getCategoria().getCategoria()));
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.name")).setValue(buildButtonEditarMeta(target, target.getNome()));

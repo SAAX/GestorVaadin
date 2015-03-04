@@ -18,6 +18,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.saax.gestorweb.view.validator.DataFimValidator;
 import com.saax.gestorweb.view.validator.DataInicioValidator;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
@@ -91,7 +92,6 @@ public class CadastroTarefaView extends Window {
     // The view maintains access to the listener (Presenter) to notify events
     // This access is through an interface to maintain the abstraction layers
     private CadastroTarefaViewListener listener;
-    private CadastroTarefaModel model;
 
     // List of all the fields that have validation
     private final List<AbstractField> requiredFields;
@@ -151,14 +151,14 @@ public class CadastroTarefaView extends Window {
     // Description tab of components and Responsible
     // -------------------------------------------------------------------------
     @PropertyId("usuarioResponsavel")
-    private ComboBox responsibleUserCombo;
+    private ComboBox assigneeUserCombo;
 
     @PropertyId("descricao")
     private RichTextArea taskDescriptionTextArea;
 
-    private ComboBox participantsCombo;
+    private ComboBox followersCombo;
 
-    private BeanItemContainer<ParticipanteTarefa> participantsContainer;
+    private BeanItemContainer<ParticipanteTarefa> followersContainer;
 
     @PropertyId("empresaCliente")
     private ComboBox customerCompanyCombo;
@@ -204,7 +204,7 @@ public class CadastroTarefaView extends Window {
     // -------------------------------------------------------------------------
     private TreeTable subTasksTable;
     private Table hoursContolTable;
-    private Table participantsTable;
+    private Table followersTable;
     private Table attachmentsAddedTable;
     private Table budgetControlTable;
     private Label pathTaskLabel;
@@ -216,6 +216,7 @@ public class CadastroTarefaView extends Window {
     // -------------------------------------------------------------------------
     private Button saveButton;
     private Button cancelButton;
+    private boolean allowAddRemoveFollowers = true;
 
     /**
      * Create a view and all components
@@ -522,19 +523,22 @@ public class CadastroTarefaView extends Window {
         taskDescriptionTextArea = new RichTextArea(messages.getString("CadastroTarefaView.descricaoTarefaTextArea.caption"));
         taskDescriptionTextArea.setNullRepresentation("");
 
-        responsibleUserCombo = new ComboBox(messages.getString("CadastroTarefaView.responsavelCombo.label"));
-        requiredFields.add(responsibleUserCombo);
-
-        participantsCombo = new ComboBox(messages.getString("CadastroTarefaView.participantesCombo.label"));
-
-        participantsCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.adicionarParticipante((Usuario) event.getProperty().getValue());
-
+        assigneeUserCombo = new ComboBox(messages.getString("CadastroTarefaView.responsavelCombo.label"));
+        assigneeUserCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.assigneeUserChanged((Usuario) event.getProperty().getValue());
         });
 
-        participantsContainer = new BeanItemContainer<>(ParticipanteTarefa.class);
+        requiredFields.add(assigneeUserCombo);
 
-        participantsTable = new Table() {
+        followersCombo = new ComboBox(messages.getString("CadastroTarefaView.participantesCombo.label"));
+
+        followersCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.adicionarParticipante((Usuario) event.getProperty().getValue());
+        });
+
+        followersContainer = new BeanItemContainer<>(ParticipanteTarefa.class);
+
+        followersTable = new Table() {
             @Override
             protected String formatPropertyValue(Object rowId,
                     Object colId, Property property) {
@@ -549,27 +553,28 @@ public class CadastroTarefaView extends Window {
             }
         };
 
-        participantsTable.setContainerDataSource(participantsContainer);
+        followersTable.setContainerDataSource(followersContainer);
 
-        participantsTable.setColumnWidth("usuarioParticipante", 120);
-        participantsTable.setColumnHeader("usuarioParticipante", messages.getString("CadastroTarefaView.participantesTable.colunaParticipante"));
+        followersTable.setColumnWidth("usuarioParticipante", 120);
+        followersTable.setColumnHeader("usuarioParticipante", messages.getString("CadastroTarefaView.participantesTable.colunaParticipante"));
 
-        participantsTable.setVisibleColumns("usuarioParticipante");
+        followersTable.setVisibleColumns("usuarioParticipante");
 
         // Adicionar coluna do botão "remover"
-        participantsTable.addGeneratedColumn(messages.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+        followersTable.addGeneratedColumn(messages.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button(messages.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerParticipante((ParticipanteTarefa) itemId);
-                
             });
+            
+            removeButton.setEnabled(allowAddRemoveFollowers);
             return removeButton;
         });
 
-        participantsTable.setSelectable(true);
-        participantsTable.setImmediate(true);
-        participantsTable.setWidth("100%");
-        participantsTable.setPageLength(3);
+        followersTable.setSelectable(true);
+        followersTable.setImmediate(true);
+        followersTable.setWidth("100%");
+        followersTable.setPageLength(3);
 
         Label labelCliente = new Label("<b>" + messages.getString("CadastroTarefaView.empresaClienteCombo.label") + "</b>", ContentMode.HTML);
         customerCompanyCombo = new ComboBox();
@@ -581,9 +586,9 @@ public class CadastroTarefaView extends Window {
         layout.setWidth("100%");
         layout.setHeight(null);
 
-        layout.addComponent(responsibleUserCombo, 0, 0);
-        layout.addComponent(participantsCombo, 1, 0);
-        layout.addComponent(participantsTable, 0, 1, 1, 1);
+        layout.addComponent(assigneeUserCombo, 0, 0);
+        layout.addComponent(followersCombo, 1, 0);
+        layout.addComponent(followersTable, 0, 1, 1, 1);
         layout.addComponent(labelCliente, 0, 2);
         layout.addComponent(customerCompanyCombo, 1, 2);
         layout.addComponent(taskDescriptionTextArea, 2, 0, 2, 2);
@@ -1159,17 +1164,17 @@ public class CadastroTarefaView extends Window {
 //        return avisoButton;
 //    }
     /**
-     * @return the responsibleUserCombo
+     * @return the assigneeUserCombo
      */
-    public ComboBox getResponsibleUserCombo() {
-        return responsibleUserCombo;
+    public ComboBox getAssigneeUserCombo() {
+        return assigneeUserCombo;
     }
 
     /**
-     * @return the participantsCombo
+     * @return the followersCombo
      */
-    public ComboBox getParticipantsCombo() {
-        return participantsCombo;
+    public ComboBox getFollowersCombo() {
+        return followersCombo;
     }
 
     /**
@@ -1321,8 +1326,8 @@ public class CadastroTarefaView extends Window {
         return hoursControlContainer;
     }
 
-    public BeanItemContainer<ParticipanteTarefa> getParticipantsContainer() {
-        return participantsContainer;
+    public BeanItemContainer<ParticipanteTarefa> getFollowersContainer() {
+        return followersContainer;
     }
 
     public BeanItemContainer<OrcamentoTarefa> getBudgetContainer() {
@@ -1333,8 +1338,8 @@ public class CadastroTarefaView extends Window {
         return hoursContolTable;
     }
 
-    public Table getParticipantsTable() {
-        return participantsTable;
+    public Table getFollowersTable() {
+        return followersTable;
     }
 
     public BeanItemContainer<AnexoTarefa> getTaskAttachContainer() {
@@ -1429,4 +1434,13 @@ public class CadastroTarefaView extends Window {
         return presenter.getStatusButton();
     }
 
+    /**
+     * Configure behavior for add/remove followers
+     * @param allowAddRemoveFollowers 
+     */
+    public void setAllowAddRemoveFollowers(boolean allowAddRemoveFollowers) {
+        this.allowAddRemoveFollowers = allowAddRemoveFollowers;
+        followersCombo.setEnabled(allowAddRemoveFollowers);
+    }
+    
 }

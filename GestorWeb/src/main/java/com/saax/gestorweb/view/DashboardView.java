@@ -191,7 +191,63 @@ public class DashboardView extends VerticalLayout {
         MenuBar.MenuItem reportsMenuItem = topMenu.addItem("<h3>"+messages.getString("DashboardView.reportsMenuItem")+"</h3>", null, null);
 
         MenuBar.MenuItem config = topMenu.addItem("<h3>Config</h3>", null, null);
-        config.addItem("Config 1", null, null);
+        MenuBar.MenuItem themeMenuItem = config.addItem("Tema", null, null);
+        themeMenuItem.addItem("Light", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                UI.getCurrent().setTheme("valo-light");
+            }
+        });
+        
+        themeMenuItem.addItem("Dark", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                UI.getCurrent().setTheme("valo-dark");
+            }
+        });
+        
+        themeMenuItem.addItem("Blueprint", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                UI.getCurrent().setTheme("valo-blueprint");
+            }
+        });
+        
+        themeMenuItem.addItem("Metro", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                UI.getCurrent().setTheme("valo-metro");
+            }
+        });
+        
+        themeMenuItem.addItem("Flat", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                UI.getCurrent().setTheme("valo-flat");
+            }
+        });
+        
+        themeMenuItem.addItem("Flat (Dark)", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                UI.getCurrent().setTheme("valo-flat-dark");
+            }
+        });
+        
+        themeMenuItem.addItem("Reindeer", new MenuBar.Command() {
+
+            @Override
+            public void menuSelected(MenuBar.MenuItem selectedItem) {
+                UI.getCurrent().setTheme("reindeer");
+            }
+        });
+        
         config.addItem("Config 2", null, null);
         config.addItem("Config 3", null, null);
 

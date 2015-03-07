@@ -11,6 +11,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 
 import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.PaginaInicialView;
+import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -42,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rodrigo
  */
-@Theme("mytheme")
+@Theme("valo-light")
 public class GestorMDI extends UI {
 
     private transient PaginaInicialModel paginaInicialModel;
@@ -120,7 +121,6 @@ public class GestorMDI extends UI {
     @Override
     protected void init(VaadinRequest request) {
 
-        setStyleName("blue");
         
         // obtém o arquivo de mensagens de acordo com o locale do usuário
         mensagens = (ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", request.getLocale()));

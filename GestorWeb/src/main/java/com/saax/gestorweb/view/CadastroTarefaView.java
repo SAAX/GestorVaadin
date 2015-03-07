@@ -1397,7 +1397,7 @@ public class CadastroTarefaView extends Window {
      */
     public static Button buildButtonOpenTask(TaskCreationCallBackListener callback, Table table, Tarefa task, String caption) {
         Button link = new Button(caption);
-        link.setStyleName("link");
+        link.setStyleName("quiet");
         link.addClickListener((Button.ClickEvent event) -> {
             table.setValue(task);
             CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());

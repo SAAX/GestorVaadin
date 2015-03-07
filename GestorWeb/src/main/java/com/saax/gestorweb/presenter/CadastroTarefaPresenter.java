@@ -675,10 +675,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
             }
         }
 
-        // if it is an own task, disable the budget and apponting control
         if (task.getUsuarioResponsavel().equals(task.getUsuarioSolicitante())) {
-            task.setOrcamentoControlado(false);
-            task.setApontamentoHoras(false);
         
             // if it is an own task auto accept the task (switches from NOT ACCEPTED to NOT STARTED)
             if (task.getStatus() == StatusTarefa.NAO_ACEITA) {
@@ -831,7 +828,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
     private Button buildButtonEditarTarefa(Tarefa subTarefa, String caption) {
         Button link = new Button(caption);
-        link.setStyleName("link");
+        link.setStyleName("quiet");
         TaskCreationCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getSubTasksTable().setValue(subTarefa);

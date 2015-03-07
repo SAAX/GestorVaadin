@@ -1,29 +1,25 @@
-
 // Modify the base color of the theme
 // see. https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
-$v-background-color: hsl(0, 0, 99.5%);
-$v-app-background-color: #fff;
-$v-focus-color: hsl(218, 80%, 60%);
-$v-border: 1px solid (v-shade 0.6);
-$v-border-radius: 3px;
-$v-bevel: inset 0 1px 0 v-tint;
-$v-textfield-bevel: false;
-$v-gradient: v-linear 3%;
+$v-font-family: "Roboto", sans-serif;
+$v-font-weight: 400;
+$v-font-weight--header: 400;
+$v-background-color: #fff;
+$v-focus-color: rgb(150,190,90);
+$v-error-indicator-color: rgb(150,190,90);
+$v-luminance-threshold: 180;
+$v-border: 2px solid v-shade;
+$v-border-radius: 6px;
+$v-bevel: false;
+$v-gradient: false;
 $v-shadow: false;
-$valo-menu-background-color: hsl(218, 20%, 98%);
-$v-friendly-color: hsl(163, 61%, 41%);
-$v-error-indicator-color: hsl(349, 66%, 56%);
-
-
-@import "../valo/valo";
-
-.tests-valo-light .valo-menu .valo-menu-title {
-    background: $v-app-background-color;
-    color: $v-selection-color;
-    text-shadow: none;
-    border-color: first-color(valo-border($color: $v-app-background-color, $strength: 0.5));
-}
-
+$v-textfield-bevel: false;
+$v-textfield-shadow: false;
+$v-link-text-decoration: false;
+$v-selection-overlay-padding-horizontal: 0;
+$v-selection-overlay-padding-vertical: 6px;
+$v-selection-item-height: 30px;
+$v-selection-item-border-radius: 0;
+$valo-menu-background-color: #eee;
 
 // Custom - Rodrigo
 $v-font-size: 14px;
@@ -35,41 +31,43 @@ $v-layout-margin-right: 10px;
 $v-layout-margin-bottom: 10px;
 $v-layout-margin-left: 10px;
 
+.valo-test {
+  .v-button-primary.v-button-primary {
+    background: #fff;
+    border-color: $v-focus-color;
+    color: $v-focus-color;
+  }
+
+  .v-button-danger.v-button-danger {
+    background: #fff;
+    border-color: $v-error-indicator-color;
+    color: $v-error-indicator-color;
+  }
+
+  .v-slider-base:before,
+  .v-slider-base:after {
+    border: none !important;
+  }
+}// -----------------------------------------------------------------------------
+
+
 // Import valo after setting the parameters
 @import "../valo/valo";
 
 
 /* This contains all of your theme. */
 /* If somebody wants to extend the theme she will include this mixin. */
-@mixin mytheme {
+@mixin valo-flat {
 
     /* Include all the styles from the reindeer theme */
     @include valo;
 
     // CSS
-    .v-window-subtarefa {
-        background: #adc4eb;
-    }
-    /* Insert your theme rules here */
-    /*.v-table-body{
-        overflow: hidden !important;
-    }*/
-
-
+  
     .v-tree-node-no-children{
         background: none;
     }
-    /*
-        v-tree-node-expanded {
-            background-position: -5px -10px;
-        }
-    */
-    .v-tree-node {
-        background-image: url("img/icone-treeview.jpeg");
-
-        padding: 1px 0;
-    }
-
+    
     .v-select-optiongroup-horizontal .v-select-option {
         display: inline-block;
     }
@@ -86,4 +84,9 @@ $v-layout-margin-left: 10px;
     .v-margin-right  {padding-right:  10px;}
     .v-margin-top    {padding-top:    10px;}
     .v-margin-bottom {padding-bottom: 10px;}
+    
+    .valo-flat.v-button-link {
+	color: inherit;
+    }
+
 }

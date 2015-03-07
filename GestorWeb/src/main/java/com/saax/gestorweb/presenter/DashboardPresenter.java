@@ -129,7 +129,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
 
     private Button buildButtonEditarTarefa(Tarefa tarefa, String caption) {
         Button link = new Button(caption);
-        link.setStyleName("link");
+        link.setStyleName("quiet");
         TaskCreationCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTaskTable().setValue(tarefa);
@@ -653,7 +653,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
 
     private Button buildButtonEditarMeta(Meta meta, String caption) {
         Button link = new Button(caption);
-        link.setStyleName("link");
+        link.setStyleName("quiet");
         CadastroMetaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTargetTable().setValue(meta);

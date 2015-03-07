@@ -1,0 +1,70 @@
+// Modify the base color of the theme
+// see. https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
+$v-background-color: #1a61b7;
+$v-focus-color: #fff;
+$v-panel-background-color: $v-background-color;
+$v-overlay-background-color: $v-background-color;
+$valo-menu-background-color: $v-background-color;
+$v-overlay-shadow: 0 0 0 1px rgba(#fff, .5);
+$v-window-shadow: $v-overlay-shadow;
+$v-window-modality-curtain-background-color: $v-background-color;
+$v-bevel: false;
+$v-gradient: false;
+$v-shadow: false;
+$v-textfield-bevel: false;
+$v-textfield-shadow: false;
+$v-border: 1px solid (v-tint 1.5);
+$v-textfield-background-color: $v-background-color;
+$v-font-family: sans-serif;
+$v-font-size: 18px;
+// -----------------------------------------------------------------------------
+
+// Custom - Rodrigo
+$v-font-size: 14px;
+$v-unit-size: 25px;
+$v-line-height: 1.0;
+$v-app-loading-text: "Preparando seu gestor Veertual...";
+$v-layout-margin-top: 10px;
+$v-layout-margin-right: 10px;
+$v-layout-margin-bottom: 10px;
+$v-layout-margin-left: 10px;
+
+// Import valo after setting the parameters
+@import "../valo/valo";
+
+
+/* This contains all of your theme. */
+/* If somebody wants to extend the theme she will include this mixin. */
+@mixin valo-blueprint {
+
+    /* Include all the styles from the reindeer theme */
+    @include valo;
+
+    // CSS
+  
+    .v-tree-node-no-children{
+        background: none;
+    }
+    
+    .v-select-optiongroup-horizontal .v-select-option {
+        display: inline-block;
+    }
+
+    .v-select-optiongroup-horizontal {
+        white-space: nowrap;
+    }
+
+    .v-select-optiongroup-horizontal .v-select-option.v-radiobutton {
+        padding-right: 10px;
+    }
+
+    .v-margin-left   {padding-left:   10px;}
+    .v-margin-right  {padding-right:  10px;}
+    .v-margin-top    {padding-top:    10px;}
+    .v-margin-bottom {padding-bottom: 10px;}
+    
+    .valo-dark .v-button-link {
+	color: inherit;
+    }
+
+}

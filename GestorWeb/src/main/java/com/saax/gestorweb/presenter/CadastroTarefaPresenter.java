@@ -44,6 +44,7 @@ import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
@@ -722,11 +723,15 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
         try {
             ApontamentoTarefa apontamentoTarefa = view.getApontamentoTarefa();
-//            if(apontamentoTarefa.getCreditoValor().doubleValue() < 0){
-//                Notification.show(mensagens.getString("Notificacao.SemCreditoHoras"));
-//             return;   
-//            }
+
+            
             apontamentoTarefa = model.configuraApontamento(apontamentoTarefa);
+            
+             
+            if(apontamentoTarefa.getSaldoValor().doubleValue() < 0.00 || apontamentoTarefa.getSaldoHoras().isZero()){
+                Notification.show(mensagens.getString("Notificacao.SemCreditoHoras"));
+            }else{
+            
             view.getHoursControlContainer().addItem(apontamentoTarefa);
 
             // se o usuário informou um custo / hora, congela este custo para todos os futuros apontamentos
@@ -735,7 +740,8 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
             }
             // criar um novo apontamento em branco para o usuario adicionar um novo:
             view.setApontamentoTarefa(new ApontamentoTarefa(view.getTarefa(), loggedUser));
-
+            
+            }
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
             Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);

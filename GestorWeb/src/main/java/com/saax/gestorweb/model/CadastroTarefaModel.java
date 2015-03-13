@@ -26,6 +26,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
@@ -281,8 +282,9 @@ public class CadastroTarefaModel {
         } else {
             throw new IllegalStateException("Usuário não deveria ter acesso aos apontamentos.");
         }
-
+        
         // Adiciona o apontamento na tarefa e ordena os apontamento por data/hora de inclusao
+        
         apontamentoTarefa.getTarefa().addApontamento(apontamentoTarefa);
 
         recalculaSaldoApontamentoHoras(apontamentoTarefa.getTarefa().getApontamentos());
@@ -309,6 +311,7 @@ public class CadastroTarefaModel {
             // Calcula saldo = saldoAnterior + Credito - Debito
             //      1. Saldo = Saldo Anterior
             Duration saldo = saldoAnterior;
+            
             //      2. Saldo = Saldo + Credito
             if (credito != null) {
                 saldo = saldo.plus(credito);
@@ -332,6 +335,8 @@ public class CadastroTarefaModel {
             // Calcula saldo = saldoAnterior + Credito - Debito
             //      1. Saldo = Saldo Anterior
             BigDecimal saldoValor = saldoAnteriorValor.setScale(2);
+            
+            
             //      2. Saldo = Saldo + Credito
             if (creditoValor != null) {
                 saldoValor = saldoValor.add(creditoValor);
@@ -345,8 +350,7 @@ public class CadastroTarefaModel {
 
             // configura o saldo alterior a ser usado na proxima iteraçao
             saldoAnteriorValor = saldoValor.setScale(2);
-
-        }
+            }
 
     }
 

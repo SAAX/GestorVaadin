@@ -119,6 +119,8 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
             tarefaPai.setSubTarefas(new ArrayList<>());
         }
         tarefaPai.getSubTarefas().add(tarefa);
+        view.getChatButton().setVisible(false);
+        view.getProjectionButton().setVisible(false);
 
         // ajuste ate a projecao ser implementada
         tarefa.setProjecao(ProjecaoTarefa.NORMAL);
@@ -201,6 +203,9 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
             view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
             view.getHierarchyCombo().setEnabled(false);
         }
+        
+        view.getChatButton().setVisible(false);
+        view.getProjectionButton().setVisible(false);
 
         init(tarefa);
 
@@ -717,8 +722,13 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
         try {
             ApontamentoTarefa apontamentoTarefa = view.getApontamentoTarefa();
+//            if(apontamentoTarefa.getCreditoValor().doubleValue() < 0){
+//                Notification.show(mensagens.getString("Notificacao.SemCreditoHoras"));
+//             return;   
+//            }
             apontamentoTarefa = model.configuraApontamento(apontamentoTarefa);
             view.getHoursControlContainer().addItem(apontamentoTarefa);
+
             // se o usuário informou um custo / hora, congela este custo para todos os futuros apontamentos
             if (apontamentoTarefa.getCustoHora() != null) {
                 view.getTarefa().setCustoHoraApontamento(apontamentoTarefa.getCustoHora());

@@ -283,13 +283,25 @@ public class CadastroTarefaModel {
             throw new IllegalStateException("Usuário não deveria ter acesso aos apontamentos.");
         }
         
-        // Adiciona o apontamento na tarefa e ordena os apontamento por data/hora de inclusao
         
+        //Verifica saldo de apontamento ref. a Valor
+        
+        int apontamentos = apontamentoTarefa.getTarefa().getApontamentos().size();
+        apontamentoTarefa.getTarefa().getApontamentos().get(apontamentos-1).getSaldoValor();
+         //Verifica saldo de apontamento ref. a Hora
+        int verificaApontamento = apontamentoTarefa.getTarefa().getApontamentos().get(apontamentos-1).getSaldoHoras().compareTo(inputHoras);
+        
+        if((calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras)).doubleValue() > apontamentoTarefa.getTarefa().getApontamentos().get(apontamentos-1).getSaldoValor().doubleValue() || verificaApontamento < 0){
+                throw new RuntimeException("Não existe saldo para este apontamento, o solicitante da tarefa deverá incluir crédito de horas"); 
+        }else{
+                
+        // Adiciona o apontamento na tarefa e ordena os apontamento por data/hora de inclusao
         apontamentoTarefa.getTarefa().addApontamento(apontamentoTarefa);
-
+        
         recalculaSaldoApontamentoHoras(apontamentoTarefa.getTarefa().getApontamentos());
 
         return apontamentoTarefa;
+        }
 
     }
 

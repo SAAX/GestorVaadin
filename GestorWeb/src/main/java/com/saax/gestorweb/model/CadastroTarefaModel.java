@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 import javax.persistence.EntityManager;
 
@@ -51,6 +52,9 @@ public class CadastroTarefaModel {
     // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
     private final EmpresaModel empresaModel;
+
+    // Reference to the use of the messages:
+    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
 
     public CadastroTarefaModel() {
         usuarioModel = new UsuarioModel();
@@ -102,7 +106,6 @@ public class CadastroTarefaModel {
 //            for (Tarefa sub : task.getSubTarefas()) {
 //                saveTask(sub);
 //            }
-
             // TODO: Colocar projecao calculada
             task.setProjecao(ProjecaoTarefa.NORMAL);
 
@@ -247,6 +250,60 @@ public class CadastroTarefaModel {
     }
 
     /**
+     * Verifica se o apontamento é de DEBITO e neste caso, verifica se há saldo
+     * suficiente para registrar este debito. <br>
+     * São verificados os saldos em Horas e em Valores
+     *
+     * @param usuarioApontamento usuário logado que realizou o apontamento
+     * @param usuarioSolicitante usuário solicitante da tarefa
+     * @param apontamentoTarefa registro de apontamento que está sendo inserido
+     * @param inputHoras quantidade de horas (Duração) que está sendo inputada
+     */
+    private void validaSaldoSuficiente(Usuario usuarioApontamento, Usuario usuarioSolicitante, ApontamentoTarefa apontamentoTarefa, Duration inputHoras) {
+
+        // se o usuário que criou o apontamento (logado) for o solicitante, o apontamento é de CREDITO e 
+        // não há verificação a ser feita
+        if (usuarioApontamento.equals(usuarioSolicitante)) {
+            return;
+        }
+
+        // Para verificar se haverá saldo, é necessário obter o último registro de apontamento.
+        // Porém de a lista de apontamentos estiver vazia significa que este é o primeiro apontamento.
+        // E sendo o primeiro apontamento um de DEBTIO o sistema reporta um aviso:
+        if (apontamentoTarefa.getTarefa().getApontamentos().isEmpty()) {
+            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
+        }
+
+        // obtem o ultimo registro de apontamento inserido (registro anterior), para verificar o saldo disponivel
+        List<ApontamentoTarefa> apontamentos = apontamentoTarefa.getTarefa().getApontamentos();
+        int indiceUltimoApontamento = apontamentos.size() - 1;
+        ApontamentoTarefa ultimoApontamentoTarefa = apontamentos.get(indiceUltimoApontamento);
+
+        // Inicialmente verifica se o saldo em Horas é suficiente para receber um débito de InputHoras
+        if (ultimoApontamentoTarefa.getSaldoHoras().compareTo(inputHoras) < 0) {
+            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
+        }
+
+        // Passada a verificação do saldo em horas, verifica o saldo em valores.
+        // somente faz sentido esta verificação se houver custo de horas.
+        if (apontamentoTarefa.getCustoHora() == null || apontamentoTarefa.getCustoHora().equals(BigDecimal.ZERO)) {
+            return;
+        }
+
+        // obtem Saldo disponível no último apontamento
+        BigDecimal saldoDisponivel = ultimoApontamentoTarefa.getSaldoValor();
+        // calcula o custo (Valor) das horas sendo inputadas
+        BigDecimal custoInputHoras = calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras);
+
+        // realiza a comparação
+        if (saldoDisponivel.compareTo(custoInputHoras) < 0) {
+            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
+        }
+
+        // Fim da verificação de saldo em valor
+    }
+
+    /**
      * Configura os campos de credito e débido do apontamento de acordo com o
      * usuário logado.
      *
@@ -272,9 +329,9 @@ public class CadastroTarefaModel {
 
         // se o usuário for o responsavel as horas inputadas são "debito"
         if (usuarioApontamento.equals(usuarioResponsavel)) {
-
             apontamentoTarefa.setDebitoHoras(inputHoras);
             apontamentoTarefa.setDebitoValor(calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras));
+
         } else if (usuarioApontamento.equals(usuarioSolicitante)) {
             // se o usuário for o solicitante as horas inputadas são "credito"
             apontamentoTarefa.setCreditoHoras(inputHoras);
@@ -282,26 +339,16 @@ public class CadastroTarefaModel {
         } else {
             throw new IllegalStateException("Usuário não deveria ter acesso aos apontamentos.");
         }
-        
-        
-        //Verifica saldo de apontamento ref. a Valor
-        
-        int apontamentos = apontamentoTarefa.getTarefa().getApontamentos().size();
-        apontamentoTarefa.getTarefa().getApontamentos().get(apontamentos-1).getSaldoValor();
-         //Verifica saldo de apontamento ref. a Hora
-        int verificaApontamento = apontamentoTarefa.getTarefa().getApontamentos().get(apontamentos-1).getSaldoHoras().compareTo(inputHoras);
-        
-        if((calculaCustoTotalHora(apontamentoTarefa.getCustoHora(), inputHoras)).doubleValue() > apontamentoTarefa.getTarefa().getApontamentos().get(apontamentos-1).getSaldoValor().doubleValue() || verificaApontamento < 0){
-                throw new RuntimeException("Não existe saldo para este apontamento, o solicitante da tarefa deverá incluir crédito de horas"); 
-        }else{
-                
+
+        // No caso de apontamentos de débito, verifica se existe saldo suficiente para lançar o débito
+        validaSaldoSuficiente(usuarioApontamento, usuarioSolicitante, apontamentoTarefa, inputHoras);
+
         // Adiciona o apontamento na tarefa e ordena os apontamento por data/hora de inclusao
         apontamentoTarefa.getTarefa().addApontamento(apontamentoTarefa);
-        
+
         recalculaSaldoApontamentoHoras(apontamentoTarefa.getTarefa().getApontamentos());
 
         return apontamentoTarefa;
-        }
 
     }
 
@@ -323,7 +370,7 @@ public class CadastroTarefaModel {
             // Calcula saldo = saldoAnterior + Credito - Debito
             //      1. Saldo = Saldo Anterior
             Duration saldo = saldoAnterior;
-            
+
             //      2. Saldo = Saldo + Credito
             if (credito != null) {
                 saldo = saldo.plus(credito);
@@ -347,8 +394,7 @@ public class CadastroTarefaModel {
             // Calcula saldo = saldoAnterior + Credito - Debito
             //      1. Saldo = Saldo Anterior
             BigDecimal saldoValor = saldoAnteriorValor.setScale(2);
-            
-            
+
             //      2. Saldo = Saldo + Credito
             if (creditoValor != null) {
                 saldoValor = saldoValor.add(creditoValor);
@@ -362,7 +408,7 @@ public class CadastroTarefaModel {
 
             // configura o saldo alterior a ser usado na proxima iteraçao
             saldoAnteriorValor = saldoValor.setScale(2);
-            }
+        }
 
     }
 
@@ -400,7 +446,6 @@ public class CadastroTarefaModel {
             inputValor = new BigDecimal(orcamentoTarefa.getInputValor());
             inputValor.setScale(2);
             inputValor.doubleValue();
-            
 
         } catch (Exception e) {
             throw new RuntimeException("Não foi possível identificar o valor informado: " + orcamentoTarefa.getInputValor());

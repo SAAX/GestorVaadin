@@ -354,8 +354,11 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     }
     }
     
-    //comparar quantidade de dias entre as datas
-    public int contarDias(Date anterior, Date prox){  
+    
+    public int contarDias(Date anterior, Date prox){ 
+    
+        if (anterior == null || prox == null) return 0;
+        
            Calendar ant = Calendar.getInstance();  
            Calendar dep = Calendar.getInstance();  
            int dias = 0;  
@@ -743,13 +746,21 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
     }
 
+    /**
+     * Remove a pointing time
+     * @param taskPointingTime 
+     */
     @Override
-    public void removerApontamentoHoras(ApontamentoTarefa apontamentoTarefa) {
+    public void removePointingTime(ApontamentoTarefa taskPointingTime) {
 
-        view.getHoursContolTable().removeItem(apontamentoTarefa);
-        model.removerApontamentoHoras(apontamentoTarefa);
-        model.recalculaSaldoApontamentoHoras(view.getTarefa().getApontamentos());
-        view.getHoursContolTable().refreshRowCache();
+        if (!taskPointingTime.getUsuarioInclusao().equals(loggedUser)) {
+            Notification.show("Ops, apenas " + taskPointingTime.getUsuarioInclusao() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
+        } else {
+            view.getPointingTimeTable().removeItem(taskPointingTime);
+            model.removerApontamentoHoras(taskPointingTime);
+            model.recalculaSaldoApontamentoHoras(view.getTarefa().getApontamentos());
+            view.getPointingTimeTable().refreshRowCache();
+        }
     }
 
     /**

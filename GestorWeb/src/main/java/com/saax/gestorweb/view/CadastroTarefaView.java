@@ -203,7 +203,7 @@ public class CadastroTarefaView extends Window {
     // Components subtask Tab
     // -------------------------------------------------------------------------
     private TreeTable subTasksTable;
-    private Table hoursContolTable;
+    private Table pointingTimeTable;
     private Table followersTable;
     private Table attachmentsAddedTable;
     private Table budgetControlTable;
@@ -768,7 +768,7 @@ public class CadastroTarefaView extends Window {
 
         hoursControlContainer = new BeanItemContainer<>(ApontamentoTarefa.class);
 
-        hoursContolTable = new Table() {
+        pointingTimeTable = new Table() {
             @Override
             protected String formatPropertyValue(Object rowId,
                     Object colId, Property property) {
@@ -803,42 +803,42 @@ public class CadastroTarefaView extends Window {
             }
         };
 
-        hoursContolTable.setContainerDataSource(hoursControlContainer);
+        pointingTimeTable.setContainerDataSource(hoursControlContainer);
 
-        hoursContolTable.setColumnWidth("dataHoraInclusao", 150);
-        hoursContolTable.setColumnHeader("dataHoraInclusao", messages.getString("CadastroTarefaView.controleHorasTable.colunaData"));
-        hoursContolTable.setColumnWidth("observacoes", 150);
-        hoursContolTable.setColumnHeader("observacoes", messages.getString("CadastroTarefaView.controleHorasTable.colunaObservacoes"));
-        hoursContolTable.setColumnWidth("creditoHoras", 80);
-        hoursContolTable.setColumnHeader("creditoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaCreditoHoras"));
-        hoursContolTable.setColumnWidth("debitoHoras", 80);
-        hoursContolTable.setColumnHeader("debitoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaDebitoHoras"));
-        hoursContolTable.setColumnWidth("saldoHoras", 80);
-        hoursContolTable.setColumnHeader("saldoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaSaldoHoras"));
-        hoursContolTable.setColumnWidth("creditoValor", 80);
-        hoursContolTable.setColumnAlignment("creditoValor", Table.Align.RIGHT);
-        hoursContolTable.setColumnHeader("creditoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaCreditoValor"));
-        hoursContolTable.setColumnWidth("debitoValor", 80);
-        hoursContolTable.setColumnAlignment("debitoValor", Table.Align.RIGHT);
-        hoursContolTable.setColumnHeader("debitoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaDebitoValor"));
-        hoursContolTable.setColumnWidth("saldoValor", 80);
-        hoursContolTable.setColumnAlignment("saldoValor", Table.Align.RIGHT);
-        hoursContolTable.setColumnHeader("saldoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"));
+        pointingTimeTable.setColumnWidth("dataHoraInclusao", 150);
+        pointingTimeTable.setColumnHeader("dataHoraInclusao", messages.getString("CadastroTarefaView.controleHorasTable.colunaData"));
+        pointingTimeTable.setColumnWidth("observacoes", 150);
+        pointingTimeTable.setColumnHeader("observacoes", messages.getString("CadastroTarefaView.controleHorasTable.colunaObservacoes"));
+        pointingTimeTable.setColumnWidth("creditoHoras", 80);
+        pointingTimeTable.setColumnHeader("creditoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaCreditoHoras"));
+        pointingTimeTable.setColumnWidth("debitoHoras", 80);
+        pointingTimeTable.setColumnHeader("debitoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaDebitoHoras"));
+        pointingTimeTable.setColumnWidth("saldoHoras", 80);
+        pointingTimeTable.setColumnHeader("saldoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaSaldoHoras"));
+        pointingTimeTable.setColumnWidth("creditoValor", 80);
+        pointingTimeTable.setColumnAlignment("creditoValor", Table.Align.RIGHT);
+        pointingTimeTable.setColumnHeader("creditoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaCreditoValor"));
+        pointingTimeTable.setColumnWidth("debitoValor", 80);
+        pointingTimeTable.setColumnAlignment("debitoValor", Table.Align.RIGHT);
+        pointingTimeTable.setColumnHeader("debitoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaDebitoValor"));
+        pointingTimeTable.setColumnWidth("saldoValor", 80);
+        pointingTimeTable.setColumnAlignment("saldoValor", Table.Align.RIGHT);
+        pointingTimeTable.setColumnHeader("saldoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"));
 
-        hoursContolTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor");
+        pointingTimeTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor");
         // Adicionar coluna do botão "remover"
-        hoursContolTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
+        pointingTimeTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("x");
             removeButton.addClickListener((ClickEvent event) -> {
-                listener.removerApontamentoHoras((ApontamentoTarefa) itemId);
+                listener.removePointingTime((ApontamentoTarefa) itemId);
             });
             return removeButton;
         });
 
-        hoursContolTable.setSelectable(true);
-        hoursContolTable.setImmediate(true);
-        hoursContolTable.setPageLength(5);
-        hoursContolTable.setWidth("100%");
+        pointingTimeTable.setSelectable(true);
+        pointingTimeTable.setImmediate(true);
+        pointingTimeTable.setPageLength(5);
+        pointingTimeTable.setWidth("100%");
 
         HorizontalLayout controleHorasLayout = new HorizontalLayout();
         controleHorasLayout.setSpacing(true);
@@ -854,7 +854,7 @@ public class CadastroTarefaView extends Window {
         hoursControlTab.setHeight(null);
 
         hoursControlTab.addComponent(controleHorasLayout);
-        hoursControlTab.addComponent(hoursContolTable);
+        hoursControlTab.addComponent(pointingTimeTable);
 
         return hoursControlTab;
     }
@@ -1334,8 +1334,8 @@ public class CadastroTarefaView extends Window {
         return budgetContainer;
     }
 
-    public Table getHoursContolTable() {
-        return hoursContolTable;
+    public Table getPointingTimeTable() {
+        return pointingTimeTable;
     }
 
     public Table getFollowersTable() {

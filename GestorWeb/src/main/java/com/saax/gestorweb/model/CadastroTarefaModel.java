@@ -302,6 +302,46 @@ public class CadastroTarefaModel {
 
         // Fim da verificação de saldo em valor
     }
+    
+    /**
+     * Verifica se o apontamento é de DEBITO e neste caso, verifica se há saldo
+     * suficiente para registrar este debito. <br>
+     * São verificados os saldos em Horas e em Valores
+     *
+     * @param usuarioApontamento usuário logado que realizou o apontamento
+     * @param usuarioSolicitante usuário solicitante da tarefa
+     * @param apontamentoOrcamento registro de apontamento que está sendo inserido
+     * @param inputHoras quantidade de horas (Duração) que está sendo inputada
+     */
+    private void validaSaldoSuficienteOrcamento(Usuario usuarioApontamento, Usuario usuarioSolicitante, OrcamentoTarefa orcamentoTarefa) {
+
+        // se o usuário que criou o apontamento (logado) for o solicitante, o apontamento é de CREDITO e 
+        // não há verificação a ser feita
+        if (usuarioApontamento.equals(usuarioSolicitante)) {
+            return;
+        }
+
+        // Para verificar se haverá saldo, é necessário obter o último registro de apontamento.
+        // Porém de a lista de apontamentos estiver vazia significa que este é o primeiro apontamento.
+        // E sendo o primeiro apontamento um de DEBTIO o sistema reporta um aviso:
+        if (orcamentoTarefa.getTarefa().getOrcamentos().isEmpty()) {
+            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
+        }
+
+        // obtem o ultimo registro de apontamento inserido (registro anterior), para verificar o saldo disponivel
+        List<OrcamentoTarefa> orcamentos = orcamentoTarefa.getTarefa().getOrcamentos();
+        int indiceUltimoApontamento = orcamentos.size() - 1;
+        OrcamentoTarefa ultimoApontamentoTarefa = orcamentos.get(indiceUltimoApontamento);
+
+        // obtem Saldo disponível no último apontamento
+        BigDecimal saldoDisponivel = ultimoApontamentoTarefa.getSaldo();
+        
+        if ((saldoDisponivel.compareTo(orcamentoTarefa.getDebito()))<0){
+            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoValorInsuficiente"));
+        }
+        
+        // Fim da verificação de saldo em valor
+    }
 
     /**
      * Configura os campos de credito e débido do apontamento de acordo com o
@@ -461,6 +501,9 @@ public class CadastroTarefaModel {
         } else {
             throw new IllegalStateException("Usuário não deveria ter acesso ao orçamento.");
         }
+        
+        // No caso de apontamentos de débito, verifica se existe saldo suficiente para lançar o débito
+        validaSaldoSuficienteOrcamento(usuarioApontamento, usuarioSolicitante, orcamentoTarefa);
 
         // Adiciona o valor de orçamento na tarefa e ordena os registros de orçamento por data/hora de inclusao
         orcamentoTarefa.getTarefa().addOrcamento(orcamentoTarefa);

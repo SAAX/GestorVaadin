@@ -51,9 +51,9 @@ public class DashboardModel {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findByUsuarioResponsavel")
+        List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findByUsuarioResponsavelDashboard")
                 .setParameter("usuarioResponsavel", loggedUser)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                //.setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
 
         return tarefas;
@@ -70,9 +70,9 @@ public class DashboardModel {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        List<Meta> metas = em.createNamedQuery("Meta.findByUsuarioResponsavel")
+        List<Meta> metas = em.createNamedQuery("Meta.findByUsuarioResponsavelDashboard")
                 .setParameter("usuarioResponsavel", loggedUser)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                //.setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
 
         return metas;

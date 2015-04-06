@@ -152,7 +152,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.requestor")).setValue(tarefa.getUsuarioSolicitante().getNome());
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.assingee")).setValue(tarefa.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.startDate")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.endDate")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(mensagens.getString("DashboardView.taskTable.endDate")).setValue(FormatterUtil.formatDate(tarefa.getDataFim()));
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.state")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.email")).setValue(new Button("E"));
@@ -297,6 +297,8 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     @Override
     public void usuarioLogadoAlteradoAPENASTESTE() {
         this.loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        adicionarHierarquiasProjeto();
+        carregaVisualizacaoInicial();
     }
 
     // enumeracao do tipo de pesquisa

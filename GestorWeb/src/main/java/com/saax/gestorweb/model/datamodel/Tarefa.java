@@ -54,6 +54,7 @@ import org.apache.commons.beanutils.BeanUtils;
     @NamedQuery(name = "Tarefa.findByTemplate", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.template = :template"),
     @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.apontamentoHoras = :apontamentohoras"),
     @NamedQuery(name = "Tarefa.findByUsuarioResponsavel", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioResponsavel = :usuarioResponsavel"),
+    @NamedQuery(name = "Tarefa.findByUsuarioResponsavelDashboard", query = "SELECT t FROM Tarefa t WHERE t.usuarioResponsavel = :usuarioResponsavel"),
     @NamedQuery(name = "Tarefa.findByUsuarioSolicitante", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante"),
     @NamedQuery(name = "Tarefa.findByOrcamentocontrolado", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.orcamentoControlado = :orcamentocontrolado"),
     @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao")})

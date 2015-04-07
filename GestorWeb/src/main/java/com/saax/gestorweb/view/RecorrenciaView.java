@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
@@ -25,8 +20,8 @@ import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
 
 /**
- * Pop-up Window for recurrence Viewing will be three check-box to choose the type
- * of recurrence:
+ * Pop-up Window for recurrence Viewing will be three check-box to choose the
+ * type of recurrence:
  * <br>
  * <ol>
  * <li>weekly</li>
@@ -40,67 +35,89 @@ import java.util.ResourceBundle;
 public class RecorrenciaView extends Window {
 
 // Reference to the use of messages:
-private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
-private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    
+    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+
 // The view maintains access to the listener (Presenter) to notify events
 // This access is through an interface to maintain the abstraction layers
-private RecorrenciaViewListener listener;
+    private RecorrenciaViewListener listener;
 
-private Accordion accordion;
+    private Accordion accordion;
 
-private Label titleLabel;
-private HorizontalLayout superiorBar;
-    
+    private Label titleLabel;
+    private HorizontalLayout superiorBar;
+
 // -------------------------------------------------------------------------
 // Components ref. The recurrence options
 // -------------------------------------------------------------------------     
+    private CheckBox weeklyCheckBox;
+    private CheckBox monthlyCheckBox;
+    private CheckBox annualCheckBox;
 
-private CheckBox weeklyCheckBox;
-private CheckBox monthlyCheckBox;
-private CheckBox annualCheckBox;
-    
 // -------------------------------------------------------------------------
 // Components ref. the weekly recurrence 
 // -------------------------------------------------------------------------   
-private VerticalLayout weeklyTab;        
-private CheckBox mondayCheckBox;
-private CheckBox tuesdayCheckBox;
-private CheckBox wednesdayCheckBox;
-private CheckBox thursdayCheckBox;
-private CheckBox fridayCheckBox;
-private CheckBox saturdayCheckBox;
-private CheckBox sundayCheckBox;
-private ComboBox numberWeeksCombo;
-private PopupDateField startDateWeeklyDateField;
-private PopupDateField endDateWeeklyDateField;
- 
+    private VerticalLayout weeklyTab;
+    private CheckBox mondayCheckBox;
+    private CheckBox tuesdayCheckBox;
+    private CheckBox wednesdayCheckBox;
+    private CheckBox thursdayCheckBox;
+    private CheckBox fridayCheckBox;
+    private CheckBox saturdayCheckBox;
+    private CheckBox sundayCheckBox;
+    private ComboBox numberWeeksCombo;
+    private PopupDateField startDateWeeklyDateField;
+    private PopupDateField endDateWeeklyDateField;
+
 // -------------------------------------------------------------------------
 // Components ref. the monthly recurrence
 // -------------------------------------------------------------------------  
-private VerticalLayout monthlyTab;    
-private ComboBox daysMonthlyCombo;    
-private ComboBox numberMonthsCombo;
-private ComboBox kindDayMonthlyCombo;
-private PopupDateField startDateMonthlyDateField;
-private PopupDateField endDateMonthlyDateField;
+    private VerticalLayout monthlyTab;
+    private ComboBox daysMonthlyCombo;
+    private ComboBox numberMonthsCombo;
+    private ComboBox kindDayMonthlyCombo;
+    private PopupDateField startDateMonthlyDateField;
+    private PopupDateField endDateMonthlyDateField;
 
 // -------------------------------------------------------------------------
 // Components ref. Annual recurrence
 // -------------------------------------------------------------------------  
-private VerticalLayout annualTab;        
-private ComboBox dayAnnualCombo;
-private ComboBox kindDayAnnualCombo;
-private ComboBox monthAnnualCombo;
-private ComboBox yearAnnualCombo;
-    
+    private VerticalLayout annualTab;
+    private ComboBox dayAnnualCombo;
+    private ComboBox kindDayAnnualCombo;
+    private ComboBox monthAnnualCombo;
+    private ComboBox yearAnnualCombo;
+
 // -------------------------------------------------------------------------
 // Buttons bar below
 // -------------------------------------------------------------------------
-private Button okButton;
-private Button cancelButton;
+    private Button okButton;
+    private Button cancelButton;
 
-/**
+    /**
+     * Lock acesso to check boxes, alowing only on event. Prevent one event to
+     * throw other
+     */
+    private boolean locked;
+
+    /**
+     * Sets the check boxes locked/unlocked
+     * Must be synchronized
+     * @param locked
+     */
+    public synchronized void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+    
+    /**
+     * 
+     * @return the lock state (lock/unlock)
+     */
+    public synchronized boolean isLocked() {
+        return locked;
+    }
+
+    /**
      * Create a view and all components
      *
      */
@@ -119,7 +136,7 @@ private Button cancelButton;
         center();
 
     }
-    
+
     /**
      * Builds the main container that will hold all other
      *
@@ -134,7 +151,7 @@ private Button cancelButton;
 
         titleLabel = new Label("Escolha o tipo de Recorrência");
         containerPrincipal.addComponent(titleLabel);
-                
+
         containerPrincipal.addComponent(buildBarraSuperior());
         containerPrincipal.setComponentAlignment(superiorBar, Alignment.MIDDLE_RIGHT);
 
@@ -156,9 +173,7 @@ private Button cancelButton;
         return containerPrincipal;
 
     }
-    
-    
-    
+
     /**
      * Constructs and returns to the top button bar
      *
@@ -172,28 +187,45 @@ private Button cancelButton;
         weeklyCheckBox = new CheckBox(messages.getString("RecorrenciaView.semanalCheckBox.caption"));
         monthlyCheckBox = new CheckBox(messages.getString("RecorrenciaView.mensalCheckBox.caption"));
         annualCheckBox = new CheckBox(messages.getString("RecorrenciaView.anualCheckBox.caption"));
-        
+
         superiorBar.addComponent(weeklyCheckBox);
 
         weeklyCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.recorrenciaSemanal(event);
+            // only handle the event if it's not nocked
+            if (!isLocked()) {
+                setLocked(true);
+                listener.recorrenciaSemanal(event);
+                setLocked(false);
+            }
         });
-        
+
         superiorBar.addComponent(monthlyCheckBox);
 
         monthlyCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.recorrenciaMensal(event);
+
+            // only handle the event if it's not nocked
+            if (!isLocked()) {
+                setLocked(true);
+                listener.recorrenciaMensal(event);
+                setLocked(false);
+            }
         });
-        
+
         superiorBar.addComponent(annualCheckBox);
 
         annualCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.recorrenciaAnual(event);
+            // only handle the event if it's not nocked
+            if (!isLocked()) {
+                setLocked(true);
+                listener.recorrenciaAnual(event);
+                setLocked(false);
+
+            }
         });
-        
+
         return superiorBar;
     }
-    
+
     /**
      * Constructs tab of recurrence Weekly:
      *
@@ -208,20 +240,20 @@ private Button cancelButton;
         fridayCheckBox = new CheckBox(messages.getString("RecorrenciaView.sextaCheckBox.caption"));
         saturdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.sabadoCheckBox.caption"));
         sundayCheckBox = new CheckBox(messages.getString("RecorrenciaView.domingoCheckBox.caption"));
-        
+
         numberWeeksCombo = new ComboBox(messages.getString("RecorrenciaView.qtdeSemanasCombo.label"));
         numberWeeksCombo.addItem("1");
         numberWeeksCombo.addItem("2");
         numberWeeksCombo.addItem("3");
         numberWeeksCombo.addItem("4");
-        
+
         startDateWeeklyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
         endDateWeeklyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataFimSemanalDateField.label"));
-        
+
         HorizontalLayout diasContainer = new HorizontalLayout();
         diasContainer.setSpacing(true);
         diasContainer.setSizeFull();
-        
+
         diasContainer.addComponent(mondayCheckBox);
         diasContainer.addComponent(tuesdayCheckBox);
         diasContainer.addComponent(wednesdayCheckBox);
@@ -229,16 +261,14 @@ private Button cancelButton;
         diasContainer.addComponent(fridayCheckBox);
         diasContainer.addComponent(saturdayCheckBox);
         diasContainer.addComponent(sundayCheckBox);
-        
-        
+
         HorizontalLayout datasContainer = new HorizontalLayout();
         datasContainer.setSpacing(true);
         datasContainer.setSizeFull();
-        
+
         datasContainer.addComponent(numberWeeksCombo);
         datasContainer.addComponent(startDateWeeklyDateField);
         datasContainer.addComponent(endDateWeeklyDateField);
-        
 
         weeklyTab = new VerticalLayout();
         weeklyTab.setSpacing(true);
@@ -251,7 +281,7 @@ private Button cancelButton;
 
         return weeklyTab;
     }
-    
+
     /**
      * Constructs tab of recurrence Monthly:
      *
@@ -293,7 +323,7 @@ private Button cancelButton;
         daysMonthlyCombo.addItem("29");
         daysMonthlyCombo.addItem("30");
         daysMonthlyCombo.addItem("31");
-        
+
         numberMonthsCombo = new ComboBox(messages.getString("RecorrenciaView.qtdeMesesCombo.label"));
         numberMonthsCombo.addItem("01");
         numberMonthsCombo.addItem("02");
@@ -307,27 +337,26 @@ private Button cancelButton;
         numberMonthsCombo.addItem("10");
         numberMonthsCombo.addItem("11");
         numberMonthsCombo.addItem("12");
-        
+
         kindDayMonthlyCombo = new ComboBox(messages.getString("RecorrenciaView.tipoDiaMensalCombo.label"));
         kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaCorrido"));
         kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
         kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
-        
+
         startDateMonthlyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
         endDateMonthlyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataFimSemanalDateField.label"));
-        
+
         HorizontalLayout mesContainer = new HorizontalLayout();
         mesContainer.setSpacing(true);
         mesContainer.setSizeFull();
-        
+
         mesContainer.addComponent(daysMonthlyCombo);
         mesContainer.addComponent(numberMonthsCombo);
         mesContainer.addComponent(kindDayMonthlyCombo);
-        
+
         HorizontalLayout datasMensalContainer = new HorizontalLayout();
         datasMensalContainer.setSpacing(true);
         datasMensalContainer.setSizeFull();
-        
 
         monthlyTab = new VerticalLayout();
         monthlyTab.setSpacing(true);
@@ -340,7 +369,7 @@ private Button cancelButton;
 
         return monthlyTab;
     }
-    
+
     /**
      * Builds the tab Annual recurrence:
      *
@@ -382,13 +411,12 @@ private Button cancelButton;
         dayAnnualCombo.addItem("29");
         dayAnnualCombo.addItem("30");
         dayAnnualCombo.addItem("31");
-        
-        
+
         kindDayAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.tipoDiaAnualCombo.label"));
         kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaCorrido"));
         kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
         kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
-        
+
         monthAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.mesAnualCombo.label"));
         monthAnnualCombo.addItem(messages.getString("RecorrenciaView.janeiro"));
         monthAnnualCombo.addItem(messages.getString("RecorrenciaView.fevereiro"));
@@ -410,21 +438,20 @@ private Button cancelButton;
         yearAnnualCombo.addItem("2018");
         yearAnnualCombo.addItem("2019");
         yearAnnualCombo.addItem("2020");
-        
+
         HorizontalLayout anoContainer = new HorizontalLayout();
         anoContainer.setSpacing(true);
         anoContainer.setSizeFull();
-        
+
         anoContainer.addComponent(dayAnnualCombo);
         anoContainer.addComponent(kindDayAnnualCombo);
-        
+
         HorizontalLayout anoContainer2 = new HorizontalLayout();
         anoContainer2.setSpacing(true);
         anoContainer2.setSizeFull();
-        
+
         anoContainer2.addComponent(monthAnnualCombo);
         anoContainer2.addComponent(yearAnnualCombo);
-        
 
         annualTab = new VerticalLayout();
         annualTab.setSpacing(true);
@@ -437,7 +464,7 @@ private Button cancelButton;
 
         return annualTab;
     }
-    
+
     /**
      * Constructs and returns the lower button bar
      *
@@ -454,12 +481,12 @@ private Button cancelButton;
         barraBotoesInferior.addComponent(okButton);
 
         cancelButton = new Button(messages.getString("RecorrenciaView.cancelarButton.caption"));
-        
+
         barraBotoesInferior.addComponent(cancelButton);
 
         return barraBotoesInferior;
     }
-    
+
     /**
      * Sets the listener's view events
      *
@@ -468,7 +495,7 @@ private Button cancelButton;
     public void setListener(RecorrenciaViewListener listener) {
         this.listener = listener;
     }
-    
+
     /**
      * Hides / shows the weekly recurrence tab
      *
@@ -480,7 +507,7 @@ private Button cancelButton;
         tab.setVisible(visible);
 
     }
-    
+
     /**
      * Hides / shows the monthly recurrence tab
      *
@@ -492,8 +519,8 @@ private Button cancelButton;
         tab.setVisible(visible);
 
     }
-    
-     /**
+
+    /**
      * Hides / shows the annual recurrence tab
      *
      * @param visible
@@ -648,7 +675,5 @@ private Button cancelButton;
     public void setYearAnnualCombo(ComboBox yearAnnualCombo) {
         this.yearAnnualCombo = yearAnnualCombo;
     }
-    
-
 
 }

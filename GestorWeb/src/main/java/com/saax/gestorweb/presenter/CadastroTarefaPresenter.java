@@ -245,6 +245,8 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         configPermissions(tarefaToEdit);
                 
         view.setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao") + tarefaToEdit.getHierarquia().getCategoria());
+        
+        
     }
 
    
@@ -710,6 +712,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
             }
         }
         view.close();
+        
     }
 
     @Override

@@ -984,7 +984,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     }
 
     @Override
-    public void tipoRecorrenciaClicked() {
+    public void recurrenceClicked() {
 
         //Cria o pop up para registrar a conta (model e view)
         RecorrenciaModel recorrenciaModel = new RecorrenciaModel();

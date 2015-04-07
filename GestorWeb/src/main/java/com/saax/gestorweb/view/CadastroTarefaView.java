@@ -378,7 +378,7 @@ public class CadastroTarefaView extends Window {
 
         // Button Recurrence
         typeRecurrenceButton = new Button(messages.getString("CadastroTarefaView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
-          listener.tipoRecorrenciaClicked();
+          listener.recurrenceClicked();
         });
         typeRecurrenceButton.setWidth("100%");
          

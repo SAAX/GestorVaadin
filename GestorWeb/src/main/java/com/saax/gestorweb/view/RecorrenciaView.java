@@ -16,6 +16,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
@@ -167,7 +168,7 @@ private Button cancelButton;
         superiorBar = new HorizontalLayout();
         superiorBar.setSpacing(true);
         superiorBar.setSizeUndefined();
-        
+
         weeklyCheckBox = new CheckBox(messages.getString("RecorrenciaView.semanalCheckBox.caption"));
         monthlyCheckBox = new CheckBox(messages.getString("RecorrenciaView.mensalCheckBox.caption"));
         annualCheckBox = new CheckBox(messages.getString("RecorrenciaView.anualCheckBox.caption"));

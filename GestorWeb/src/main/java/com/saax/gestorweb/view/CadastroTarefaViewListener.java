@@ -62,7 +62,7 @@ public interface CadastroTarefaViewListener {
 
     public void empresaSelecionada(Empresa empresa);
     
-    public void tipoRecorrenciaClicked();   
+    public void recurrenceClicked();   
 
     public void assigneeUserChanged(Usuario usuario);
 

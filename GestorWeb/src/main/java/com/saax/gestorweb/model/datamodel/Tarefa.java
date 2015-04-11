@@ -263,10 +263,13 @@ public class Tarefa implements Serializable {
      * </ul>
      *
      * @return o clone
+     * @throws java.lang.CloneNotSupportedException
      */
     @Override
-    public Tarefa clone() {
+    public Tarefa clone() throws CloneNotSupportedException {
 
+        super.clone();
+        
         Tarefa clone = null;
         try {
             clone = (Tarefa) BeanUtils.cloneBean(this);

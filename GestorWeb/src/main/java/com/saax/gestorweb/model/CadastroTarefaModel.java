@@ -103,9 +103,6 @@ public class CadastroTarefaModel {
                 em.getTransaction().begin();
             }
 
-//            for (Tarefa sub : task.getSubTarefas()) {
-//                saveTask(sub);
-//            }
             // TODO: Colocar projecao calculada
             task.setProjecao(ProjecaoTarefa.NORMAL);
 
@@ -200,14 +197,6 @@ public class CadastroTarefaModel {
      * Valida o arquivo que será enviado ao servidor. <br>
      * Regras: 1. O arquivo deve existir 2. O arquivo deve ter menos que 10 mb
      * 3. O arquivo nao pode ser executavel por risco de virus
-     *
-     * NOTA AO FERNANDAO: Veja que este metodo nao tem try-catch, isto significa
-     * que ele não trata a exceção, apenas PROPAGA pra cima até quem o chamou.
-     *
-     * NOTA AO FERNANDAO (2): IllegalArgumentException e SecurityException são
-     * exceções não verificadas (sub classes de runtime) portando não precisam
-     * estar na cláusula "throws". Mas se forem lançadas irão parar a execução
-     * do mesmo jeito.
      *
      *
      * @throws java.io.FileNotFoundException

@@ -7,17 +7,30 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatSingletonModel;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.FileResource;
+import com.vaadin.ui.Accordion;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.Random;
 import java.util.ResourceBundle;
 import org.vaadin.chatbox.ChatBox;
 import org.vaadin.chatbox.SharedChat;
@@ -42,8 +55,12 @@ public class ChatView extends Window{
     // Create the selection component
     private Panel containerUserTable;
     private Table userTable;
+    private Table attachmentsAddedTable;
+    private BeanItemContainer<AnexoTarefa> taskAttachContainer;
     
+    private Accordion accordion;
     private final HorizontalSplitPanel hsplit;
+    private HorizontalLayout uploadHorizontalLayout;
     
     public void setListener(ChatViewListener listener) {
         this.listener = listener;
@@ -59,8 +76,8 @@ public class ChatView extends Window{
         
         setCaption(messages.getString("ChatView.titulo"));
         setModal(true);
-        setWidth("70%");
-        setHeight("60%");
+        setWidth("80%");
+        setHeight("80%");
         setResizable(false);
         
         VerticalLayout container = new VerticalLayout();
@@ -79,15 +96,23 @@ public class ChatView extends Window{
         // Put a component in the left panel
         hsplit.setFirstComponent(containerUserTable());
         hsplit.getFirstComponent().setWidth("100%");
+        
         // A static variable so that everybody gets the same instance.
         
+        //accordion
         container.addComponent(hsplit);
+        accordion = new Accordion();
+        accordion.setWidth("100%");
+        accordion.addTab(buildAttachTable(), "Anexos", null);
+        container.addComponent(accordion);
+        //container.addComponent(buildAttachTable());
         
     }
 
     public void chatConfigure(Tarefa task, SharedChat chat){
         
         ChatBox cb = new ChatBox(chat);
+        
      
         ChatUser user = new ChatUser(ChatSingletonModel.getInstance().buildID(userLogged, task, false), userLogged.getNome(), "user1");
         cb.setUser(user);
@@ -98,18 +123,30 @@ public class ChatView extends Window{
         
     }
        
-    
+    private Table buildAttachTable(){
+        
+        attachmentsAddedTable = new Table();
+        
+        attachmentsAddedTable.addContainerProperty("Arquivo:", String.class, null);
+        attachmentsAddedTable.addContainerProperty("Enviado em:", String.class, null);
+        attachmentsAddedTable.addContainerProperty("Download:", Button.class, null);
+        
+        attachmentsAddedTable.setColumnWidth("Arquivo:", 700);
+        attachmentsAddedTable.setColumnWidth("Enviado em:", 300);
+        attachmentsAddedTable.setColumnWidth("Download:", 80);
+        
+        attachmentsAddedTable.setWidth("100%");
+        
+        return attachmentsAddedTable;
+    }
     
     private VerticalLayout containerUserTable(){
         
         VerticalLayout users = new VerticalLayout();
+        users.setSizeFull();
         
-        containerUserTable = new Panel();
-        containerUserTable.setWidth("100%");
-
         userTable = new Table();
-        containerUserTable.setContent(userTable);
-        
+        userTable.setWidth("100%");
 
         userTable.addContainerProperty(messages.getString("ChatView.usuario"), String.class, null);
         userTable.addContainerProperty(messages.getString("ChatView.funcao"), String.class, null);
@@ -117,10 +154,14 @@ public class ChatView extends Window{
         userTable.setImmediate(true);
         userTable.setSelectable(true);
         
-        users.addComponent(containerUserTable);
+        users.addComponent(userTable);
         
+        uploadHorizontalLayout = new HorizontalLayout();
+        uploadHorizontalLayout.setWidth("100%");
+
         return users;
     }
+    
     
     /**
      * @return the listener
@@ -145,6 +186,17 @@ public class ChatView extends Window{
         this.userTable = userTable;
     }
     
+    public BeanItemContainer<AnexoTarefa> getTaskAttachContainer() {
+        return taskAttachContainer;
+    }
+
+    public Table getAttachmentsAddedTable() {
+        return attachmentsAddedTable;
+    }
+
+    public void setAttachmentsAddedTable(Table attachmentsAddedTable) {
+        this.attachmentsAddedTable = attachmentsAddedTable;
+    }
     
 }
 

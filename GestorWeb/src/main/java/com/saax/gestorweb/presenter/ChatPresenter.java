@@ -7,15 +7,26 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatSingletonModel;
+import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.ChatViewListener;
+import com.vaadin.server.FileDownloader;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
+import java.io.File;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -60,6 +71,27 @@ public class ChatPresenter implements Serializable, ChatViewListener {
         loadingTable(task);
         this.task = task;
 
+        for (int i = 0; i < task.getAnexos().size(); i++) {
+            view.getAttachmentsAddedTable().addItem(task.getAnexos().get(i).getId());
+            view.getAttachmentsAddedTable().getContainerProperty(task.getAnexos().get(i).getId(), "Arquivo:").setValue(task.getAnexos().get(i).getNome());
+            view.getAttachmentsAddedTable().getContainerProperty(task.getAnexos().get(i).getId(), "Enviado em:").setValue(task.getAnexos().get(i).getUsuarioInclusao().getNome() + " às " + (FormatterUtil.formatDateTime(task.getAnexos().get(i).getDataHoraInclusao())));
+            view.getAttachmentsAddedTable().getContainerProperty(task.getAnexos().get(i).getId(), "Download:").setValue(buildButtonDownload(task.getAnexos().get(i)));
+        }
+        
+            
+            
+    }
+    
+    private Button buildButtonDownload(AnexoTarefa anexos) {
+        Button exportar = new Button();
+        exportar.setIcon(FontAwesome.DOWNLOAD);
+        exportar.addStyleName(ValoTheme.BUTTON_ICON_ONLY);
+        exportar.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+        FileDownloader fd = new FileDownloader(new FileResource(new File(anexos.getCaminhoCompleto())));
+        fd.extend(exportar);
+        //Notification.show(("Download realizado com sucesso!"), Notification.Type.TRAY_NOTIFICATION);
+        return exportar;
+        
     }
 
     /**
@@ -84,5 +116,6 @@ public class ChatPresenter implements Serializable, ChatViewListener {
     public void cancelButtonClicked() {
         ((GestorMDI) UI.getCurrent()).logout();
     }
+    
 
 }

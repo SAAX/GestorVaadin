@@ -19,7 +19,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class FormatterUtil {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     public static SimpleDateFormat getDateFormat() {
         return dateFormat;

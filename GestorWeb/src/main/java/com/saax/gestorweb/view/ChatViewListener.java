@@ -5,6 +5,8 @@
  */
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.model.datamodel.Tarefa;
+import java.io.File;
 import org.vaadin.chatbox.client.ChatLine;
 
 /**
@@ -14,6 +16,7 @@ import org.vaadin.chatbox.client.ChatLine;
 public interface ChatViewListener {
     
      public void cancelButtonClicked();
+     
      
     
 }

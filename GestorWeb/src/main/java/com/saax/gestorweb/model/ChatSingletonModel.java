@@ -69,7 +69,6 @@ public class ChatSingletonModel implements SharedChat.ChatListener {
 
             ChatUser user = new ChatUser(buildID(message.getUsuario(), task, true), message.getUsuario().getNome(), "user1");
             ChatLine line = new ChatLine(message.getMensagem()+"   às "+FormatterUtil.formatDateTime(message.getDataHoraInclusao()).toString(), user);
-
             chat.addLine(line);
         }
 

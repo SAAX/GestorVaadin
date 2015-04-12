@@ -17,21 +17,15 @@ public class DataFuturaValidator implements Validator {
 
     private final String campo;
     private final boolean incluirHoje;
-    private final LocalDate startDate;
 
     /**
      * Cria um validator para datas do tipo LocalDate
      * @param incluirHoje se true permite data maior ou igual a hoje
      * @param campo nome do campo
      */
-    public DataFuturaValidator(LocalDate startDate, boolean incluirHoje, String campo) {
+    public DataFuturaValidator(boolean incluirHoje, String campo) {
         this.campo = campo;
         this.incluirHoje = incluirHoje;
-        if (startDate==null){
-            this.startDate = LocalDate.now();
-        }else{
-            this.startDate = startDate;
-        }
     }
 
     @Override
@@ -45,13 +39,13 @@ public class DataFuturaValidator implements Validator {
 
         if (incluirHoje){
             // se a data for menor que a data atual
-            if (data.isBefore(startDate)) {
+            if (data.isBefore(LocalDate.now())) {
                 throw new InvalidValueException(campo + " deve ser maior ou igual a " + LocalDate.now());
             }
             
         } else {
             // se a data for menor ou igual que a data atual
-            if (data.isBefore(startDate)||data.isEqual(startDate)) {
+            if (data.isBefore(LocalDate.now())||data.isEqual(LocalDate.now())) {
                 throw new InvalidValueException(campo + " deve ser maior que " + LocalDate.now());
             }
             

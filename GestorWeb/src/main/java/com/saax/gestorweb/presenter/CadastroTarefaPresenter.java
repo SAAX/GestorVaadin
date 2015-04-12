@@ -75,7 +75,6 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     private TaskCreationCallBackListener callbackListener;
     private final Usuario loggedUser;
     private PopUpEvolucaoStatusPresenter presenterPopUpStatus;
-    private List<LocalDate> recurrentDates;
 
     /**
      * Cria o presenterPopUpStatus ligando o Model ao View
@@ -306,16 +305,10 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         view.setAbaControleHorasVisible(tarefa.isApontamentoHoras());
         view.setAbaControleOrcamentoVisible(tarefa.isOrcamentoControlado());
 
-        // It this task already has recurrent tasks, disable the recurrent button
-        if (tarefa.getProximaTarefa()!=null) {
-            view.getTypeRecurrenceButton().setEnabled(false);
-        }
-        
         UI.getCurrent().addWindow(view);
 
         view.setTarefa(tarefa);
 
-        
         
     }
     
@@ -707,13 +700,6 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
          * target, the persistence will occour on the target
          */
         if (task.getMeta() == null && task.getTarefaPai() == null) {
-            if (recurrentDates != null){
-                RecorrenciaModel recorrenciaModel = new RecorrenciaModel();
-                List<Tarefa> recurrentTasks = recorrenciaModel.createRecurrentTasks(task,recurrentDates);
-                for (Tarefa recurrentTask : recurrentTasks) {
-                    model.saveTask(recurrentTask);
-                }
-            }
             task = model.saveTask(task);
         }
         
@@ -1003,7 +989,6 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     @Override
     public void recurrenceClicked() {
 
-        
         //Cria o pop up para registrar a conta (model e view)
         RecorrenciaModel recorrenciaModel = new RecorrenciaModel();
         RecorrenciaView recorrenciaView = new RecorrenciaView();
@@ -1014,9 +999,6 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(recorrenciaView);
         recorrenciaPresenter.open();
-        
-        recurrentDates = recorrenciaPresenter.getRecurrentDates();
-        
     }
 
 

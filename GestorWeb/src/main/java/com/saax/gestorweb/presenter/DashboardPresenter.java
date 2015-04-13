@@ -48,6 +48,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -236,10 +238,15 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
                     CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
                     presenter.setCallBackListener(callback);
 
-                    Tarefa novaTarefa = template.clone();
-                    novaTarefa.setTarefaPai(null);
-                    novaTarefa.setTemplate(false);
-                    presenter.editar(novaTarefa);
+                    Tarefa novaTarefa;
+                    try {
+                        novaTarefa = template.clone();
+                        novaTarefa.setTarefaPai(null);
+                        novaTarefa.setTemplate(false);
+                        presenter.editar(novaTarefa);
+                    } catch (CloneNotSupportedException ex) {
+                        Logger.getLogger(DashboardPresenter.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 }
             }

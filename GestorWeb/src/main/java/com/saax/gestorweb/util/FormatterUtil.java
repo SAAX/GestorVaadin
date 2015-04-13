@@ -1,15 +1,12 @@
 package com.saax.gestorweb.util;
 
-import com.saax.gestorweb.view.CadastroTarefaView;
 import com.vaadin.data.Validator;
-import com.vaadin.ui.Notification;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.text.MaskFormatter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,10 +16,15 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class FormatterUtil {
 
-    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private static final DecimalFormat decimalFormater00 = new DecimalFormat("00");
 
     public static SimpleDateFormat getDateFormat() {
         return dateFormat;
+    }
+    
+    public static DecimalFormat getDecimalFormat00(){
+        return decimalFormater00;
     }
 
     public static String removeNonDigitChars(String value) {

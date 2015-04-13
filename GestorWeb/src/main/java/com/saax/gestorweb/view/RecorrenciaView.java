@@ -1,8 +1,14 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
+import com.saax.gestorweb.view.validator.DataFimValidator;
+import com.saax.gestorweb.view.validator.DataInicioValidator;
 import com.vaadin.data.Property;
+import com.vaadin.data.validator.AbstractValidator;
+import com.vaadin.data.validator.NullValidator;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -11,13 +17,16 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.List;
 import java.util.ResourceBundle;
+import org.vaadin.dialogs.ConfirmDialog;
 
 /**
  * Pop-up Window for recurrence Viewing will be three check-box to choose the
@@ -101,16 +110,16 @@ public class RecorrenciaView extends Window {
     private boolean locked;
 
     /**
-     * Sets the check boxes locked/unlocked
-     * Must be synchronized
+     * Sets the check boxes locked/unlocked Must be synchronized
+     *
      * @param locked
      */
     public synchronized void setLocked(boolean locked) {
         this.locked = locked;
     }
-    
+
     /**
-     * 
+     *
      * @return the lock state (lock/unlock)
      */
     public synchronized boolean isLocked() {
@@ -125,8 +134,8 @@ public class RecorrenciaView extends Window {
         super();
 
         setModal(true);
-        setWidth("70%");
-        setHeight("50%");
+        setWidth("710px");
+        setHeight("220px");
 
         // Container main, which will store all other containers
         VerticalLayout containerPrincipal = buildContainerPrincipal();
@@ -233,22 +242,57 @@ public class RecorrenciaView extends Window {
      */
     private Component buildAbaSemanal() {
 
+        AbstractValidator<Boolean> weekDayValidator = new AbstractValidator<Boolean>("Select the weekdays.") {
+
+            @Override
+            protected boolean isValidValue(Boolean value) {
+                return mondayCheckBox.getValue()
+                        || tuesdayCheckBox.getValue()
+                        || wednesdayCheckBox.getValue()
+                        || thursdayCheckBox.getValue()
+                        || fridayCheckBox.getValue()
+                        || saturdayCheckBox.getValue()
+                        || sundayCheckBox.getValue();
+            }
+
+            @Override
+            public Class<Boolean> getType() {
+                return Boolean.class;
+            }
+
+        };
         mondayCheckBox = new CheckBox(messages.getString("RecorrenciaView.segundaCheckBox.caption"));
+        mondayCheckBox.addValidator(weekDayValidator);
         tuesdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.tercaCheckBox.caption"));
+        tuesdayCheckBox.addValidator(weekDayValidator);
         wednesdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.quartaCheckBox.caption"));
+        wednesdayCheckBox.addValidator(weekDayValidator);
         thursdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.quintaCheckBox.caption"));
+        thursdayCheckBox.addValidator(weekDayValidator);
         fridayCheckBox = new CheckBox(messages.getString("RecorrenciaView.sextaCheckBox.caption"));
+        fridayCheckBox.addValidator(weekDayValidator);
         saturdayCheckBox = new CheckBox(messages.getString("RecorrenciaView.sabadoCheckBox.caption"));
+        saturdayCheckBox.addValidator(weekDayValidator);
         sundayCheckBox = new CheckBox(messages.getString("RecorrenciaView.domingoCheckBox.caption"));
+        sundayCheckBox.addValidator(weekDayValidator);
 
         numberWeeksCombo = new ComboBox(messages.getString("RecorrenciaView.qtdeSemanasCombo.label"));
+        numberWeeksCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.numberWeeksCombo.inputValidatorMessage"), false));
         numberWeeksCombo.addItem("1");
         numberWeeksCombo.addItem("2");
         numberWeeksCombo.addItem("3");
         numberWeeksCombo.addItem("4");
 
         startDateWeeklyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
+        startDateWeeklyDateField.setConverter(new DateToLocalDateConverter());
+
         endDateWeeklyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataFimSemanalDateField.label"));
+        endDateWeeklyDateField.setConverter(new DateToLocalDateConverter());
+
+        startDateWeeklyDateField.addValidator(new DataInicioValidator(endDateWeeklyDateField, messages.getString("RecorrenciaView.dataInicioSemanalDateField.label")));
+        endDateWeeklyDateField.addValidator(new DataFimValidator(startDateWeeklyDateField, messages.getString("RecorrenciaView.dataFimSemanalDateField.label")));
+        startDateWeeklyDateField.addValidator(new NullValidator(messages.getString("RecorrenciaView.startDateWeeklyDateField.erroMessage"), false));
+        endDateWeeklyDateField.addValidator(new NullValidator(messages.getString("RecorrenciaView.dataFimSemanalDateField.erroMessage"), false));
 
         HorizontalLayout diasContainer = new HorizontalLayout();
         diasContainer.setSpacing(true);
@@ -273,8 +317,7 @@ public class RecorrenciaView extends Window {
         weeklyTab = new VerticalLayout();
         weeklyTab.setSpacing(true);
         weeklyTab.setMargin(true);
-        weeklyTab.setWidth("100%");
-        weeklyTab.setHeight(null);
+        weeklyTab.setSizeFull();
 
         weeklyTab.addComponent(diasContainer);
         weeklyTab.addComponent(datasContainer);
@@ -292,59 +335,34 @@ public class RecorrenciaView extends Window {
         daysMonthlyCombo = new ComboBox(messages.getString("RecorrenciaView.diaMesCombo.label"));
         daysMonthlyCombo.addItem(messages.getString("RecorrenciaView.primeiroDiaUtil"));
         daysMonthlyCombo.addItem(messages.getString("RecorrenciaView.ultimoDiaMes"));
-        daysMonthlyCombo.addItem("01");
-        daysMonthlyCombo.addItem("02");
-        daysMonthlyCombo.addItem("03");
-        daysMonthlyCombo.addItem("04");
-        daysMonthlyCombo.addItem("05");
-        daysMonthlyCombo.addItem("06");
-        daysMonthlyCombo.addItem("07");
-        daysMonthlyCombo.addItem("08");
-        daysMonthlyCombo.addItem("09");
-        daysMonthlyCombo.addItem("10");
-        daysMonthlyCombo.addItem("11");
-        daysMonthlyCombo.addItem("12");
-        daysMonthlyCombo.addItem("13");
-        daysMonthlyCombo.addItem("14");
-        daysMonthlyCombo.addItem("15");
-        daysMonthlyCombo.addItem("16");
-        daysMonthlyCombo.addItem("17");
-        daysMonthlyCombo.addItem("18");
-        daysMonthlyCombo.addItem("19");
-        daysMonthlyCombo.addItem("20");
-        daysMonthlyCombo.addItem("21");
-        daysMonthlyCombo.addItem("22");
-        daysMonthlyCombo.addItem("23");
-        daysMonthlyCombo.addItem("24");
-        daysMonthlyCombo.addItem("25");
-        daysMonthlyCombo.addItem("26");
-        daysMonthlyCombo.addItem("27");
-        daysMonthlyCombo.addItem("28");
-        daysMonthlyCombo.addItem("29");
-        daysMonthlyCombo.addItem("30");
-        daysMonthlyCombo.addItem("31");
+        daysMonthlyCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.daysMonthlyCombo.inputValidatorMessage"), false));
+
+        for (int i = 1; i <= 31; i++) {
+            daysMonthlyCombo.addItem(FormatterUtil.getDecimalFormat00().format(i));
+        }
 
         numberMonthsCombo = new ComboBox(messages.getString("RecorrenciaView.qtdeMesesCombo.label"));
-        numberMonthsCombo.addItem("01");
-        numberMonthsCombo.addItem("02");
-        numberMonthsCombo.addItem("03");
-        numberMonthsCombo.addItem("04");
-        numberMonthsCombo.addItem("05");
-        numberMonthsCombo.addItem("06");
-        numberMonthsCombo.addItem("07");
-        numberMonthsCombo.addItem("08");
-        numberMonthsCombo.addItem("09");
-        numberMonthsCombo.addItem("10");
-        numberMonthsCombo.addItem("11");
-        numberMonthsCombo.addItem("12");
+        numberMonthsCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.numberMonthsCombo.inputValidatorMessage"), false));
+        numberMonthsCombo.setPageLength(12);
+        for (int i = 1; i <= 12; i++) {
+            numberMonthsCombo.addItem(FormatterUtil.getDecimalFormat00().format(i));
+        }
 
         kindDayMonthlyCombo = new ComboBox(messages.getString("RecorrenciaView.tipoDiaMensalCombo.label"));
+        kindDayMonthlyCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.kindDayMonthlyCombo.inputValidatorMessage"), false));
         kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaCorrido"));
         kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
         kindDayMonthlyCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
 
         startDateMonthlyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataInicioSemanalDateField.label"));
+        startDateMonthlyDateField.setConverter(new DateToLocalDateConverter());
         endDateMonthlyDateField = new PopupDateField(messages.getString("RecorrenciaView.dataFimSemanalDateField.label"));
+        endDateMonthlyDateField.setConverter(new DateToLocalDateConverter());
+
+        startDateMonthlyDateField.addValidator(new DataInicioValidator(endDateMonthlyDateField, messages.getString("RecorrenciaView.dataInicioSemanalDateField.label")));
+        endDateMonthlyDateField.addValidator(new DataFimValidator(startDateMonthlyDateField, messages.getString("RecorrenciaView.dataFimSemanalDateField.label")));
+        startDateMonthlyDateField.addValidator(new NullValidator(messages.getString("RecorrenciaView.startDateWeeklyDateField.erroMessage"), false));
+        endDateMonthlyDateField.addValidator(new NullValidator(messages.getString("RecorrenciaView.dataFimSemanalDateField.erroMessage"), false));
 
         HorizontalLayout mesContainer = new HorizontalLayout();
         mesContainer.setSpacing(true);
@@ -353,6 +371,8 @@ public class RecorrenciaView extends Window {
         mesContainer.addComponent(daysMonthlyCombo);
         mesContainer.addComponent(numberMonthsCombo);
         mesContainer.addComponent(kindDayMonthlyCombo);
+        mesContainer.addComponent(startDateMonthlyDateField);
+        mesContainer.addComponent(endDateMonthlyDateField);
 
         HorizontalLayout datasMensalContainer = new HorizontalLayout();
         datasMensalContainer.setSpacing(true);
@@ -361,8 +381,7 @@ public class RecorrenciaView extends Window {
         monthlyTab = new VerticalLayout();
         monthlyTab.setSpacing(true);
         monthlyTab.setMargin(true);
-        monthlyTab.setWidth("100%");
-        monthlyTab.setHeight(null);
+        monthlyTab.setSizeFull();
 
         monthlyTab.addComponent(mesContainer);
         monthlyTab.addComponent(datasMensalContainer);
@@ -380,42 +399,17 @@ public class RecorrenciaView extends Window {
         dayAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.diaAnualCombo.label"));
         dayAnnualCombo.addItem(messages.getString("RecorrenciaView.primeiroDiaUtil"));
         dayAnnualCombo.addItem(messages.getString("RecorrenciaView.ultimoDiaMes"));
-        dayAnnualCombo.addItem("01");
-        dayAnnualCombo.addItem("02");
-        dayAnnualCombo.addItem("03");
-        dayAnnualCombo.addItem("04");
-        dayAnnualCombo.addItem("05");
-        dayAnnualCombo.addItem("06");
-        dayAnnualCombo.addItem("07");
-        dayAnnualCombo.addItem("08");
-        dayAnnualCombo.addItem("09");
-        dayAnnualCombo.addItem("10");
-        dayAnnualCombo.addItem("11");
-        dayAnnualCombo.addItem("12");
-        dayAnnualCombo.addItem("13");
-        dayAnnualCombo.addItem("14");
-        dayAnnualCombo.addItem("15");
-        dayAnnualCombo.addItem("16");
-        dayAnnualCombo.addItem("17");
-        dayAnnualCombo.addItem("18");
-        dayAnnualCombo.addItem("19");
-        dayAnnualCombo.addItem("20");
-        dayAnnualCombo.addItem("21");
-        dayAnnualCombo.addItem("22");
-        dayAnnualCombo.addItem("23");
-        dayAnnualCombo.addItem("24");
-        dayAnnualCombo.addItem("25");
-        dayAnnualCombo.addItem("26");
-        dayAnnualCombo.addItem("27");
-        dayAnnualCombo.addItem("28");
-        dayAnnualCombo.addItem("29");
-        dayAnnualCombo.addItem("30");
-        dayAnnualCombo.addItem("31");
+        dayAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.dayAnnualCombo.inputValidatorMessage"), false));
+
+        for (int i = 1; i <= 31; i++) {
+            dayAnnualCombo.addItem(FormatterUtil.getDecimalFormat00().format(i));
+        }
 
         kindDayAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.tipoDiaAnualCombo.label"));
         kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaCorrido"));
         kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtil"));
         kindDayAnnualCombo.addItem(messages.getString("RecorrenciaView.diaUtilSabado"));
+        kindDayAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.kindDayMonthlyCombo.inputValidatorMessage"), false));
 
         monthAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.mesAnualCombo.label"));
         monthAnnualCombo.addItem(messages.getString("RecorrenciaView.janeiro"));
@@ -430,14 +424,15 @@ public class RecorrenciaView extends Window {
         monthAnnualCombo.addItem(messages.getString("RecorrenciaView.outubro"));
         monthAnnualCombo.addItem(messages.getString("RecorrenciaView.novembro"));
         monthAnnualCombo.addItem(messages.getString("RecorrenciaView.dezembro"));
+        monthAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.monthAnnualCombo.inputValidatorMessage"), false));
 
         yearAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.anoAnualCombo.label"));
-        yearAnnualCombo.addItem("2015");
-        yearAnnualCombo.addItem("2016");
-        yearAnnualCombo.addItem("2017");
-        yearAnnualCombo.addItem("2018");
-        yearAnnualCombo.addItem("2019");
-        yearAnnualCombo.addItem("2020");
+        final int startYear = Calendar.getInstance().get(Calendar.YEAR);
+        // rolls 7 years from startYear
+        for (int i = startYear; i <= (startYear + 7); i++) {
+            dayAnnualCombo.addItem(FormatterUtil.getDecimalFormat00().format(i));
+        }
+        dayAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.dayAnnualCombo.inputValidatorMessage"), false));
 
         HorizontalLayout anoContainer = new HorizontalLayout();
         anoContainer.setSpacing(true);
@@ -456,8 +451,7 @@ public class RecorrenciaView extends Window {
         annualTab = new VerticalLayout();
         annualTab.setSpacing(true);
         annualTab.setMargin(true);
-        annualTab.setWidth("100%");
-        annualTab.setHeight(null);
+        annualTab.setSizeFull();
 
         annualTab.addComponent(anoContainer);
         annualTab.addComponent(anoContainer2);
@@ -477,10 +471,16 @@ public class RecorrenciaView extends Window {
         barraBotoesInferior.setSpacing(true);
 
         okButton = new Button(messages.getString("RecorrenciaView.okButton.caption"));
+        okButton.addClickListener((Button.ClickEvent event) -> {
+            listener.okButtonClicked();
+        });
 
         barraBotoesInferior.addComponent(okButton);
 
         cancelButton = new Button(messages.getString("RecorrenciaView.cancelarButton.caption"));
+        cancelButton.addClickListener((Button.ClickEvent event) -> {
+            listener.cancelButtonClicked();
+        });
 
         barraBotoesInferior.addComponent(cancelButton);
 
@@ -532,124 +532,12 @@ public class RecorrenciaView extends Window {
 
     }
 
-    public CheckBox getSemanalCheckBox() {
-        return weeklyCheckBox;
-    }
-
-    public void setSemanalCheckBox(CheckBox semanalCheckBox) {
-        this.weeklyCheckBox = semanalCheckBox;
-    }
-
-    public CheckBox getMensalCheckBox() {
-        return monthlyCheckBox;
-    }
-
-    public void setMensalCheckBox(CheckBox mensalCheckBox) {
-        this.monthlyCheckBox = mensalCheckBox;
-    }
-
-    public CheckBox getAnualCheckBox() {
-        return annualCheckBox;
-    }
-
-    public void setAnualCheckBox(CheckBox anualCheckBox) {
-        this.annualCheckBox = anualCheckBox;
-    }
-
-    public CheckBox getSegundaCheckBox() {
-        return mondayCheckBox;
-    }
-
-    public void setSegundaCheckBox(CheckBox segundaCheckBox) {
-        this.mondayCheckBox = segundaCheckBox;
-    }
-
-    public CheckBox getTercaCheckBox() {
-        return tuesdayCheckBox;
-    }
-
-    public void setTercaCheckBox(CheckBox tercaCheckBox) {
-        this.tuesdayCheckBox = tercaCheckBox;
-    }
-
-    public CheckBox getQuartaCheckBox() {
-        return wednesdayCheckBox;
-    }
-
-    public void setQuartaCheckBox(CheckBox quartaCheckBox) {
-        this.wednesdayCheckBox = quartaCheckBox;
-    }
-
-    public CheckBox getQuintaCheckBox() {
-        return thursdayCheckBox;
-    }
-
-    public void setQuintaCheckBox(CheckBox quintaCheckBox) {
-        this.thursdayCheckBox = quintaCheckBox;
-    }
-
-    public CheckBox getSextaCheckBox() {
-        return fridayCheckBox;
-    }
-
-    public void setSextaCheckBox(CheckBox sextaCheckBox) {
-        this.fridayCheckBox = sextaCheckBox;
-    }
-
-    public CheckBox getSabadoCheckBox() {
-        return saturdayCheckBox;
-    }
-
-    public void setSabadoCheckBox(CheckBox sabadoCheckBox) {
-        this.saturdayCheckBox = sabadoCheckBox;
-    }
-
-    public CheckBox getDomingoCheckBox() {
-        return sundayCheckBox;
-    }
-
-    public void setDomingoCheckBox(CheckBox domingoCheckBox) {
-        this.sundayCheckBox = domingoCheckBox;
-    }
-
-    public ComboBox getQtdeSemanasCombo() {
-        return numberWeeksCombo;
-    }
-
-    public void setQtdeSemanasCombo(ComboBox qtdeSemanasCombo) {
-        this.numberWeeksCombo = qtdeSemanasCombo;
-    }
-
-    public ComboBox getDiaMesCombo() {
-        return daysMonthlyCombo;
-    }
-
-    public void setDiaMesCombo(ComboBox diaMesCombo) {
-        this.daysMonthlyCombo = diaMesCombo;
-    }
-
-    public ComboBox getNumberMonthsCombo() {
-        return numberMonthsCombo;
-    }
-
-    public void setNumberMonthsCombo(ComboBox numberMonthsCombo) {
-        this.numberMonthsCombo = numberMonthsCombo;
-    }
-
     public ComboBox getKindDayMonthlyCombo() {
         return kindDayMonthlyCombo;
     }
 
     public void setKindDayMonthlyCombo(ComboBox kindDayMonthlyCombo) {
         this.kindDayMonthlyCombo = kindDayMonthlyCombo;
-    }
-
-    public ComboBox getDiaAnualCombo() {
-        return dayAnnualCombo;
-    }
-
-    public void setDiaAnualCombo(ComboBox diaAnualCombo) {
-        this.dayAnnualCombo = diaAnualCombo;
     }
 
     public ComboBox getKindDayAnnualCombo() {
@@ -674,6 +562,263 @@ public class RecorrenciaView extends Window {
 
     public void setYearAnnualCombo(ComboBox yearAnnualCombo) {
         this.yearAnnualCombo = yearAnnualCombo;
+    }
+
+    /**
+     * @return the titleLabel
+     */
+    public Label getTitleLabel() {
+        return titleLabel;
+    }
+
+    /**
+     * @return the superiorBar
+     */
+    public HorizontalLayout getSuperiorBar() {
+        return superiorBar;
+    }
+
+    /**
+     * @return the weeklyCheckBox
+     */
+    public CheckBox getWeeklyCheckBox() {
+        return weeklyCheckBox;
+    }
+
+    /**
+     * @return the monthlyCheckBox
+     */
+    public CheckBox getMonthlyCheckBox() {
+        return monthlyCheckBox;
+    }
+
+    /**
+     * @return the annualCheckBox
+     */
+    public CheckBox getAnnualCheckBox() {
+        return annualCheckBox;
+    }
+
+    /**
+     * @return the weeklyTab
+     */
+    public VerticalLayout getWeeklyTab() {
+        return weeklyTab;
+    }
+
+    /**
+     * @return the mondayCheckBox
+     */
+    public CheckBox getMondayCheckBox() {
+        return mondayCheckBox;
+    }
+
+    /**
+     * @return the tuesdayCheckBox
+     */
+    public CheckBox getTuesdayCheckBox() {
+        return tuesdayCheckBox;
+    }
+
+    /**
+     * @return the wednesdayCheckBox
+     */
+    public CheckBox getWednesdayCheckBox() {
+        return wednesdayCheckBox;
+    }
+
+    /**
+     * @return the thursdayCheckBox
+     */
+    public CheckBox getThursdayCheckBox() {
+        return thursdayCheckBox;
+    }
+
+    /**
+     * @return the fridayCheckBox
+     */
+    public CheckBox getFridayCheckBox() {
+        return fridayCheckBox;
+    }
+
+    /**
+     * @return the saturdayCheckBox
+     */
+    public CheckBox getSaturdayCheckBox() {
+        return saturdayCheckBox;
+    }
+
+    /**
+     * @return the sundayCheckBox
+     */
+    public CheckBox getSundayCheckBox() {
+        return sundayCheckBox;
+    }
+
+    /**
+     * @return the numberWeeksCombo
+     */
+    public ComboBox getNumberWeeksCombo() {
+        return numberWeeksCombo;
+    }
+
+    /**
+     * @return the startDateWeeklyDateField
+     */
+    public PopupDateField getStartDateWeeklyDateField() {
+        return startDateWeeklyDateField;
+    }
+
+    /**
+     * @return the endDateWeeklyDateField
+     */
+    public PopupDateField getEndDateWeeklyDateField() {
+        return endDateWeeklyDateField;
+    }
+
+    /**
+     * @return the monthlyTab
+     */
+    public VerticalLayout getMonthlyTab() {
+        return monthlyTab;
+    }
+
+    /**
+     * @return the daysMonthlyCombo
+     */
+    public ComboBox getDaysMonthlyCombo() {
+        return daysMonthlyCombo;
+    }
+
+    /**
+     * @return the startDateMonthlyDateField
+     */
+    public PopupDateField getStartDateMonthlyDateField() {
+        return startDateMonthlyDateField;
+    }
+
+    /**
+     * @return the endDateMonthlyDateField
+     */
+    public PopupDateField getEndDateMonthlyDateField() {
+        return endDateMonthlyDateField;
+    }
+
+    /**
+     * @return the annualTab
+     */
+    public VerticalLayout getAnnualTab() {
+        return annualTab;
+    }
+
+    /**
+     * @return the dayAnnualCombo
+     */
+    public ComboBox getDayAnnualCombo() {
+        return dayAnnualCombo;
+    }
+
+    /**
+     * @return the okButton
+     */
+    public Button getOkButton() {
+        return okButton;
+    }
+
+    /**
+     * @return the cancelButton
+     */
+    public Button getCancelButton() {
+        return cancelButton;
+    }
+
+    public ComboBox getNumberMonthsCombo() {
+        return numberMonthsCombo;
+    }
+
+    /**
+     * Set all required fields validators visible or not
+     * @param visible 
+     */
+    public void setValidatorsVisible(boolean visible) {
+
+        mondayCheckBox.setValidationVisible(visible);
+        tuesdayCheckBox.setValidationVisible(visible);
+        wednesdayCheckBox.setValidationVisible(visible);
+        thursdayCheckBox.setValidationVisible(visible);
+        fridayCheckBox.setValidationVisible(visible);
+        saturdayCheckBox.setValidationVisible(visible);
+        sundayCheckBox.setValidationVisible(visible);
+
+        numberWeeksCombo.setValidationVisible(visible);
+        startDateWeeklyDateField.setValidationVisible(visible);
+        endDateWeeklyDateField.setValidationVisible(visible);
+        daysMonthlyCombo.setValidationVisible(visible);
+
+        numberMonthsCombo.setValidationVisible(visible);
+        kindDayMonthlyCombo.setValidationVisible(visible);
+        startDateMonthlyDateField.setValidationVisible(visible);
+        endDateMonthlyDateField.setValidationVisible(visible);
+        dayAnnualCombo.setValidationVisible(visible);
+        kindDayAnnualCombo.setValidationVisible(visible);
+
+        monthAnnualCombo.setValidationVisible(visible);
+        dayAnnualCombo.setValidationVisible(visible);
+
+    }
+
+    /**
+     * Verify if all required fields ar correctly fullfilled
+     * @return true if all validators is OK
+     */
+    public boolean isValid() {
+
+        return mondayCheckBox.isValid()
+                && tuesdayCheckBox.isValid()
+                && wednesdayCheckBox.isValid()
+                && thursdayCheckBox.isValid()
+                && fridayCheckBox.isValid()
+                && saturdayCheckBox.isValid()
+                && sundayCheckBox.isValid()
+                && numberWeeksCombo.isValid()
+                && startDateWeeklyDateField.isValid()
+                && endDateWeeklyDateField.isValid()
+                && daysMonthlyCombo.isValid()
+                && numberMonthsCombo.isValid()
+                && kindDayMonthlyCombo.isValid()
+                && startDateMonthlyDateField.isValid()
+                && endDateMonthlyDateField.isValid()
+                && dayAnnualCombo.isValid()
+                && kindDayAnnualCombo.isValid()
+                && monthAnnualCombo.isValid()
+                && dayAnnualCombo.isValid() ;
+
+    }
+
+    /**
+     * Show a confirmation dialog with de recurrent tasks dates If the user do
+     * confirm: the listener is called to creat the tasks
+     *
+     * @param tarefasRecorrentes
+     */
+    public void showConfirmCreateRecurrentTasks(List<LocalDate> tarefasRecorrentes) {
+
+        StringBuilder dates = new StringBuilder(messages.getString("RecorrenciaView.showConfirmCreateRecurrentTasks.text"));
+        dates.append("\n");
+        for (LocalDate tarefasRecorrente : tarefasRecorrentes) {
+            dates.append("\n\t * ");
+            dates.append(FormatterUtil.formatDate(tarefasRecorrente));
+        }
+
+        ConfirmDialog.show(UI.getCurrent(), messages.getString("RecorrenciaView.showConfirmCreateRecurrentTasks.title"), dates.toString(),
+                messages.getString("RecorrenciaView.showConfirmCreateRecurrentTasks.OKButton"), 
+                messages.getString("RecorrenciaView.showConfirmCreateRecurrentTasks.CancelButton"), (ConfirmDialog dialog) -> {
+                    if (dialog.isConfirmed()) {
+                        listener.setRecurrentDates(tarefasRecorrentes);
+                    } else {
+                        listener.setRecurrentDates(null);
+                    }
+                });
     }
 
 }

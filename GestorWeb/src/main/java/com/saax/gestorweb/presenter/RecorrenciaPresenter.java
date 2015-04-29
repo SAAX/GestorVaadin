@@ -2,11 +2,13 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.RecorrenciaModel;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.RecorrenciaView;
 import com.saax.gestorweb.view.RecorrenciaViewListener;
+import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Property;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
@@ -16,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import org.vaadin.dialogs.ConfirmDialog;
 
 /**
  * Presenter:
@@ -31,11 +34,18 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
     private final transient RecorrenciaModel model;
 
     // Referencia ao recurso das mensagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private final Usuario loggedUser;
-    private List<LocalDate> recurrentDates;
+    private Tarefa tarefa;
+    private RecurrencyDoneCallBackListener callBackListener;
 
+    public void setCallBackListener(RecurrencyDoneCallBackListener callBackListener) {
+        this.callBackListener = callBackListener;
+    }
+    
+    
+    
     /**
      * Cria o presenter PopUpStatusigando o Model ao View
      *
@@ -53,14 +63,8 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
         loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
     }
-
-    public void open() {
-        view.setAbaMensalVisible(false);
-        view.setAbaSemanalVisible(false);
-        view.setAbaAnualVisible(false);
-        view.setValidatorsVisible(false);
-    }
-
+    
+    
     @Override
     public void recorrenciaSemanal(Property.ValueChangeEvent event) {
         view.setValidatorsVisible(false);
@@ -90,6 +94,30 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
         view.setAbaMensalVisible(false);
         view.getMonthlyCheckBox().setValue(Boolean.FALSE);
     }
+    
+    /**
+     * validates the required fields for the selected recurrency type choosed
+     * @return 
+     */
+    private boolean validate(){
+        
+        if (view.getWeeklyCheckBox().getValue()) {
+
+            return view.isValidForWeeklyRecurrency();
+            
+        } else if (view.getMonthlyCheckBox().getValue()) {
+
+            return view.isValidForMonthlyRecurrency();
+        
+        } else if (view.getAnnualCheckBox().getValue()) {
+
+            return view.isValidForAnualRecurrency();
+            
+        } else {
+            throw new RuntimeException("Select the recurrence type.");
+        }
+        
+    }
 
     /**
      * Handles the event OK. 
@@ -102,7 +130,7 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
         
         // verify if all validators in view are OK
         // return if they aren't
-        if (!view.isValid()) return ;
+        if (!validate()) return ;
         
         List<LocalDate> tarefasRecorrentes = null;
         
@@ -121,25 +149,31 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
             
         } else if (view.getMonthlyCheckBox().getValue()) {
             // if its is a MONTHLY recurrence:
-            model.createMonthlyRecurrence(
-                    view.getDaysMonthlyCombo().getValue(), 
-                    view.getNumberMonthsCombo().getValue(), 
-                    view.getKindDayMonthlyCombo().getValue(),
+            tarefasRecorrentes = model.createMonthlyRecurrence(
+                    (String)view.getDaysMonthlyCombo().getValue(), 
+                    Integer.parseInt(view.getNumberMonthsCombo().getValue().toString()), 
+                    (String)view.getKindDayMonthlyCombo().getValue(),
                     view.getStartDateMonthlyDateField().getValue(),
                     view.getEndDateMonthlyDateField().getValue());
+            
+            view.showConfirmCreateRecurrentTasks(tarefasRecorrentes);
         
         } else if (view.getAnnualCheckBox().getValue()) {
             // if its is a ANNUAL recurrence:
-            model.createAnnualRecurrence(
-                    view.getDayAnnualCombo().getValue(),
-                    view.getKindDayAnnualCombo().getValue(),
-                    view.getMonthAnnualCombo().getValue(),
-                    view.getYearAnnualCombo().getValue()
+            tarefasRecorrentes = model.createAnnualRecurrence(
+                    (String)view.getDayAnnualCombo().getValue(),
+                    (String)view.getKindDayAnnualCombo().getValue(),
+                    view.getMonthAnnualCombo().getValue().toString(),
+                    (String)view.getYearAnnualCombo().getValue()
             );
+            
+            view.showConfirmCreateRecurrentTasks(tarefasRecorrentes);
             
         } else {
             throw new RuntimeException("Select the recurrence type.");
         }
+        
+        
     }
 
     /**
@@ -185,16 +219,49 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
      * @param recurrentDates 
      */
     @Override
-    public void setRecurrentDates(List<LocalDate> recurrentDates) {
-        this.recurrentDates = recurrentDates;
+    public void confirmRecurrencyCreation(List<LocalDate> recurrentDates) {
+        callBackListener.recurrencyCreationDone(recurrentDates);
+        UI.getCurrent().removeWindow(view);
 }
 
     /**
-     * Retrieves the recurrent dates list
-     * @return      
+     * Show a confirmation dialog to remove all recurrent tasks.
+     * If the user DO confirm, call the listener to remove the tasks
      */
-    public List<LocalDate> getRecurrentDates() {
-        return recurrentDates;
+    @Override
+    public void removeAllRecurrency() {
+
+        ConfirmDialog.show(UI.getCurrent(), messages.getString("RecorrenciaPresenter.removeAllRecurrency.title"), 
+                messages.getString("RecorrenciaPresenter.removeAllRecurrency.text"),
+                messages.getString("RecorrenciaPresenter.removeAllRecurrency.OKButton"), 
+                messages.getString("RecorrenciaPresenter.removeAllRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
+                    if (dialog.isConfirmed()) {
+                        model.removeAllRecurrency(tarefa);
+                    }
+                });
+    }
+
+    /**
+     * Show a confirmation dialog to remove all next recurrent tasks.
+     * If the user DO confirm, call the listener to remove the tasks
+     */
+    @Override
+    public void removeAllNextRecurrency() {
+        ConfirmDialog.show(UI.getCurrent(), 
+                messages.getString("RecorrenciaPresenter.removeAllNextRecurrency.title"), 
+                messages.getString("RecorrenciaPresenter.removeAllNextRecurrency.text"), 
+                messages.getString("RecorrenciaPresenter.removeAllNextRecurrency.OKButton"), 
+                messages.getString("RecorrenciaPresenter.removeAllNextRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
+                    if (dialog.isConfirmed()) {
+                        model.removeAllNextRecurrency(tarefa);
+                        UI.getCurrent().removeWindow(view);
+                    }
+                });
+        
+    }
+
+    public void setTask(Tarefa tarefa) {
+        this.tarefa = tarefa;
     }
     
     

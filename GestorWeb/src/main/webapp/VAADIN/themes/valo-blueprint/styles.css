@@ -911,7 +911,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.4.3";
+	content: "7.4.4";
 }
 
 .v-widget {
@@ -9849,7 +9849,7 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .valo-blueprint .v-colorpicker {
-	width: auto !important;
+	width: auto;
 }
 
 .valo-blueprint .v-colorpicker-button-color {

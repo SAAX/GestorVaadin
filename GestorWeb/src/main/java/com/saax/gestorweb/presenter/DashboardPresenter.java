@@ -15,6 +15,7 @@ import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -117,6 +118,17 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
 
         adicionarTarefaTable(tarefaCriada);
         organizeTree(view.getTaskTable(), tarefaCriada, tarefaCriada.getSubTarefas());
+
+        if (tarefaCriada.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
+
+            Tarefa next = tarefaCriada.getProximaTarefa();
+            while (next != null) {
+                adicionarTarefaTable(next);
+                next = next.getProximaTarefa();
+
+            }
+            organizeTree(view.getTaskTable(), tarefaCriada, tarefaCriada.getSubTarefas());
+        }
     }
 
     private void organizeTree(TreeTable table, Object parentTaskOrTarget, List<Tarefa> subTasks) {
@@ -145,7 +157,6 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     private void atualizarTarefaTable(Tarefa tarefa) {
         Item it = view.getTaskTable().getItem(tarefa);
 
-       
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.cod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.title")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.name")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
@@ -174,7 +185,6 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     private void updateTargetTable(Meta target) {
         Item it = view.getTargetTable().getItem(target);
 
-       
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.cod")).setValue(buildButtonEditarMeta(target, target.getGlobalID()));
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.title")).setValue(buildButtonEditarMeta(target, target.getCategoria().getCategoria()));
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.name")).setValue(buildButtonEditarMeta(target, target.getNome()));
@@ -186,19 +196,35 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.endDate")).setValue(FormatterUtil.formatDate(target.getDataFim()));
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.forecast")).setValue('F');
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.email")).setValue(new Button("E"));
-        
+
         // se a meta possui tarefas, chama recursivamente
         for (Tarefa subTarefa : target.getTarefas()) {
             addTaskInTargetTable(subTarefa);
         }
 
-   
     }
 
     @Override
     public void taskUpdateDone(Tarefa tarefa) {
+
         atualizarTarefaTable(tarefa);
+
+        if (tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
+
+            Tarefa task = tarefa;
+            do {
+
+                if (task.isRemovida()){
+                    view.getTaskTable().removeItem(task);
+                }
+                task = task.getProximaTarefa();
+                
+            } while (task != null);
+            
+        }
+        
         organizeTree(view.getTaskTable(), tarefa, tarefa.getSubTarefas());
+
     }
 
     public Layout buildChooseTemplatePopUp(Window window) {
@@ -229,29 +255,24 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
             }
         });
         DashboardPresenter callback = this;
-        Button criar = new Button("Criar Tarefa", new Button.ClickListener() {
+        Button criar = new Button("Criar Tarefa", (Button.ClickEvent event) -> {
+            Tarefa template = (Tarefa) listaTemplates.getValue();
+            if (template != null) {
+                CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+                presenter.setCallBackListener(callback);
 
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                Tarefa template = (Tarefa) listaTemplates.getValue();
-                if (template != null) {
-                    CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
-                    presenter.setCallBackListener(callback);
-
-                    Tarefa novaTarefa;
-                    try {
-                        novaTarefa = template.clone();
-                        novaTarefa.setTarefaPai(null);
-                        novaTarefa.setTemplate(false);
-                        presenter.editar(novaTarefa);
-                    } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(DashboardPresenter.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-
+                Tarefa novaTarefa;
+                try {
+                    novaTarefa = template.clone();
+                    novaTarefa.setTarefaPai(null);
+                    novaTarefa.setTemplate(false);
+                    presenter.editar(novaTarefa);
+                } catch (CloneNotSupportedException ex) {
+                    Logger.getLogger(DashboardPresenter.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             }
-        }
-        );
+        });
         content.addComponent(new HorizontalLayout(cancelar, criar));
 
         return content;
@@ -416,8 +437,8 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         view.getBottomTasksContainer().removeAllComponents();
         for (int i = 0; i < tarefasPrincipais.size() && i < 5; i++) {
             Tarefa tarefa = tarefasPrincipais.get(i);
-            
-            Button tarefaButton = buildButtonEditarTarefa(tarefa, tarefa.getNome().length()>25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
+
+            Button tarefaButton = buildButtonEditarTarefa(tarefa, tarefa.getNome().length() > 25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
             tarefaButton.setStyleName("v-button-link");
             view.getBottomTasksContainer().addComponent(tarefaButton);
         }
@@ -524,8 +545,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
             FormatterUtil.formatDate(meta.getDataInicio()),
             FormatterUtil.formatDate(meta.getDataFim()),
             'A',
-            new Button("E"), 
-        };
+            new Button("E"),};
 
         view.getTargetTable().addItem(linha, meta);
 
@@ -622,17 +642,15 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         List<ProjecaoTarefa> projecoes = new ArrayList<>((Collection<ProjecaoTarefa>) view.getForecastFilterOptionGroup().getValue());
 
         // recarrega a visualizacao
-        List<Tarefa> listaTarefas = model.filtrarTarefas(tipoPesquisa, usuariosResponsaveis, 
+        List<Tarefa> listaTarefas = model.filtrarTarefas(tipoPesquisa, usuariosResponsaveis,
                 usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
 
         exibirListaTarefas(listaTarefas);
-        
-        List<Meta> listaMetas = model.filtrarMetas(tipoPesquisa, usuariosResponsaveis, 
+
+        List<Meta> listaMetas = model.filtrarMetas(tipoPesquisa, usuariosResponsaveis,
                 usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
 
         exibirListaMetas(listaMetas);
-        
-        
 
         view.getCleanFiltersButton().setVisible(true);
         view.getSwitchAndOrFilters().setVisible(true);

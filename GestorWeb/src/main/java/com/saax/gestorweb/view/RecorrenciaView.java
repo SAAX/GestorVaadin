@@ -15,6 +15,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.PopupDateField;
@@ -81,7 +82,7 @@ public class RecorrenciaView extends Window {
 // -------------------------------------------------------------------------
 // Components ref. the monthly recurrence
 // -------------------------------------------------------------------------  
-    private VerticalLayout monthlyTab;
+    private GridLayout monthlyTab;
     private ComboBox daysMonthlyCombo;
     private ComboBox numberMonthsCombo;
     private ComboBox kindDayMonthlyCombo;
@@ -108,6 +109,8 @@ public class RecorrenciaView extends Window {
      * throw other
      */
     private boolean locked;
+    private Button removeAllRecurrentTasksButton;
+    private Button removeAllNextRecurrentTasksButton;
 
     /**
      * Sets the check boxes locked/unlocked Must be synchronized
@@ -129,8 +132,9 @@ public class RecorrenciaView extends Window {
     /**
      * Create a view and all components
      *
+     * @param isRecurrent true if the task is already a recurrent task.
      */
-    public RecorrenciaView() {
+    public RecorrenciaView(boolean isRecurrent) {
         super();
 
         setModal(true);
@@ -138,7 +142,16 @@ public class RecorrenciaView extends Window {
         setHeight("220px");
 
         // Container main, which will store all other containers
-        VerticalLayout containerPrincipal = buildContainerPrincipal();
+        VerticalLayout containerPrincipal = null;
+        
+        if (isRecurrent){
+            containerPrincipal = buildRemoveRecurrencyContainer();
+            
+        } else {
+            containerPrincipal = buildRecurrencyParametersContainer();
+            
+        }
+        
         containerPrincipal.setSpacing(true);
         setContent(containerPrincipal);
 
@@ -148,10 +161,42 @@ public class RecorrenciaView extends Window {
 
     /**
      * Builds the main container that will hold all other
-     *
+     * Its the main container to remove (reset) the recurrency.
+     * It is called when the task is already a recurrent task
      * @return
      */
-    private VerticalLayout buildContainerPrincipal() {
+    private VerticalLayout buildRemoveRecurrencyContainer() {
+
+        VerticalLayout containerPrincipal = new VerticalLayout();
+        containerPrincipal.setMargin(true);
+        containerPrincipal.setSpacing(true);
+        containerPrincipal.setSizeFull();
+
+        titleLabel = new Label("Esta é uma tarefa recorrente:");
+        containerPrincipal.addComponent(titleLabel);
+
+        // options
+        removeAllRecurrentTasksButton = new Button("Redefinir a recorrencia (remover todas as tarefas)", (Button.ClickEvent event) -> {
+            listener.removeAllRecurrency();
+        });
+        
+        removeAllNextRecurrentTasksButton = new Button("Remover todas as tarefas seguintes", (Button.ClickEvent event) -> {
+            listener.removeAllNextRecurrency();
+        });
+        
+        containerPrincipal.addComponent(removeAllRecurrentTasksButton);
+        containerPrincipal.addComponent(removeAllNextRecurrentTasksButton);
+
+        return containerPrincipal;
+
+    }
+
+    /**
+     * Builds the main container that will hold all other
+     * Its the main container to set the recurrency parameters
+     * @return
+     */
+    private VerticalLayout buildRecurrencyParametersContainer() {
 
         VerticalLayout containerPrincipal = new VerticalLayout();
         containerPrincipal.setMargin(true);
@@ -179,6 +224,11 @@ public class RecorrenciaView extends Window {
         containerPrincipal.addComponent(barraInferior);
         containerPrincipal.setComponentAlignment(barraInferior, Alignment.MIDDLE_CENTER);
 
+        setAbaMensalVisible(false);
+        setAbaSemanalVisible(false);
+        setAbaAnualVisible(false);
+        setValidatorsVisible(false);
+        
         return containerPrincipal;
 
     }
@@ -364,27 +414,18 @@ public class RecorrenciaView extends Window {
         startDateMonthlyDateField.addValidator(new NullValidator(messages.getString("RecorrenciaView.startDateWeeklyDateField.erroMessage"), false));
         endDateMonthlyDateField.addValidator(new NullValidator(messages.getString("RecorrenciaView.dataFimSemanalDateField.erroMessage"), false));
 
-        HorizontalLayout mesContainer = new HorizontalLayout();
-        mesContainer.setSpacing(true);
-        mesContainer.setSizeFull();
-
-        mesContainer.addComponent(daysMonthlyCombo);
-        mesContainer.addComponent(numberMonthsCombo);
-        mesContainer.addComponent(kindDayMonthlyCombo);
-        mesContainer.addComponent(startDateMonthlyDateField);
-        mesContainer.addComponent(endDateMonthlyDateField);
-
-        HorizontalLayout datasMensalContainer = new HorizontalLayout();
-        datasMensalContainer.setSpacing(true);
-        datasMensalContainer.setSizeFull();
-
-        monthlyTab = new VerticalLayout();
+        monthlyTab = new GridLayout(3, 2);
         monthlyTab.setSpacing(true);
         monthlyTab.setMargin(true);
-        monthlyTab.setSizeFull();
+        monthlyTab.setWidth("100%");
+        monthlyTab.setHeight(null);
 
-        monthlyTab.addComponent(mesContainer);
-        monthlyTab.addComponent(datasMensalContainer);
+        monthlyTab.addComponent(daysMonthlyCombo, 0, 0);
+        monthlyTab.addComponent(numberMonthsCombo, 1, 0);
+        monthlyTab.addComponent(kindDayMonthlyCombo, 2, 0);
+        monthlyTab.addComponent(startDateMonthlyDateField, 0, 1);
+        monthlyTab.addComponent(endDateMonthlyDateField, 1, 1);
+
 
         return monthlyTab;
     }
@@ -412,27 +453,40 @@ public class RecorrenciaView extends Window {
         kindDayAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.kindDayMonthlyCombo.inputValidatorMessage"), false));
 
         monthAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.mesAnualCombo.label"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.janeiro"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.fevereiro"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.marco"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.abril"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.maio"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.junho"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.julho"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.agosto"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.setembro"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.outubro"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.novembro"));
-        monthAnnualCombo.addItem(messages.getString("RecorrenciaView.dezembro"));
+        monthAnnualCombo.addItem(1);
+        monthAnnualCombo.addItem(2);
+        monthAnnualCombo.addItem(3);
+        monthAnnualCombo.addItem(4);
+        monthAnnualCombo.addItem(5);
+        monthAnnualCombo.addItem(6);
+        monthAnnualCombo.addItem(7);
+        monthAnnualCombo.addItem(8);
+        monthAnnualCombo.addItem(9);
+        monthAnnualCombo.addItem(10);
+        monthAnnualCombo.addItem(11);
+        monthAnnualCombo.addItem(12);
+        
+        monthAnnualCombo.setItemCaption(1, messages.getString("RecorrenciaView.janeiro"));
+        monthAnnualCombo.setItemCaption(2, messages.getString("RecorrenciaView.fevereiro"));
+        monthAnnualCombo.setItemCaption(3, messages.getString("RecorrenciaView.marco"));
+        monthAnnualCombo.setItemCaption(4, messages.getString("RecorrenciaView.abril"));
+        monthAnnualCombo.setItemCaption(5, messages.getString("RecorrenciaView.maio"));
+        monthAnnualCombo.setItemCaption(6, messages.getString("RecorrenciaView.junho"));
+        monthAnnualCombo.setItemCaption(7, messages.getString("RecorrenciaView.julho"));
+        monthAnnualCombo.setItemCaption(8, messages.getString("RecorrenciaView.agosto"));
+        monthAnnualCombo.setItemCaption(9, messages.getString("RecorrenciaView.setembro"));
+        monthAnnualCombo.setItemCaption(10, messages.getString("RecorrenciaView.outubro"));
+        monthAnnualCombo.setItemCaption(11, messages.getString("RecorrenciaView.novembro"));
+        monthAnnualCombo.setItemCaption(12, messages.getString("RecorrenciaView.dezembro"));
         monthAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.monthAnnualCombo.inputValidatorMessage"), false));
 
         yearAnnualCombo = new ComboBox(messages.getString("RecorrenciaView.anoAnualCombo.label"));
         final int startYear = Calendar.getInstance().get(Calendar.YEAR);
         // rolls 7 years from startYear
         for (int i = startYear; i <= (startYear + 7); i++) {
-            dayAnnualCombo.addItem(FormatterUtil.getDecimalFormat00().format(i));
+            yearAnnualCombo.addItem(String.valueOf(i));
         }
-        dayAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.dayAnnualCombo.inputValidatorMessage"), false));
+        yearAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrenciaView.anoAnualCombo.inputValidatorMessage"), false));
 
         HorizontalLayout anoContainer = new HorizontalLayout();
         anoContainer.setSpacing(true);
@@ -679,7 +733,7 @@ public class RecorrenciaView extends Window {
     /**
      * @return the monthlyTab
      */
-    public VerticalLayout getMonthlyTab() {
+    public GridLayout getMonthlyTab() {
         return monthlyTab;
     }
 
@@ -764,6 +818,7 @@ public class RecorrenciaView extends Window {
 
         monthAnnualCombo.setValidationVisible(visible);
         dayAnnualCombo.setValidationVisible(visible);
+        yearAnnualCombo.setValidationVisible(visible);
 
     }
 
@@ -771,7 +826,7 @@ public class RecorrenciaView extends Window {
      * Verify if all required fields ar correctly fullfilled
      * @return true if all validators is OK
      */
-    public boolean isValid() {
+    public boolean isValidForWeeklyRecurrency() {
 
         return mondayCheckBox.isValid()
                 && tuesdayCheckBox.isValid()
@@ -782,13 +837,31 @@ public class RecorrenciaView extends Window {
                 && sundayCheckBox.isValid()
                 && numberWeeksCombo.isValid()
                 && startDateWeeklyDateField.isValid()
-                && endDateWeeklyDateField.isValid()
-                && daysMonthlyCombo.isValid()
+                && endDateWeeklyDateField.isValid();
+
+    }
+
+    /**
+     * Verify if all required fields ar correctly fullfilled
+     * @return true if all validators is OK
+     */
+    public boolean isValidForMonthlyRecurrency() {
+
+        return daysMonthlyCombo.isValid()
                 && numberMonthsCombo.isValid()
                 && kindDayMonthlyCombo.isValid()
                 && startDateMonthlyDateField.isValid()
-                && endDateMonthlyDateField.isValid()
-                && dayAnnualCombo.isValid()
+                && endDateMonthlyDateField.isValid();
+
+    }
+
+    /**
+     * Verify if all required fields ar correctly fullfilled
+     * @return true if all validators is OK
+     */
+    public boolean isValidForAnualRecurrency() {
+
+        return dayAnnualCombo.isValid()
                 && kindDayAnnualCombo.isValid()
                 && monthAnnualCombo.isValid()
                 && dayAnnualCombo.isValid() ;
@@ -814,11 +887,12 @@ public class RecorrenciaView extends Window {
                 messages.getString("RecorrenciaView.showConfirmCreateRecurrentTasks.OKButton"), 
                 messages.getString("RecorrenciaView.showConfirmCreateRecurrentTasks.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
-                        listener.setRecurrentDates(tarefasRecorrentes);
+                        listener.confirmRecurrencyCreation(tarefasRecorrentes);
                     } else {
-                        listener.setRecurrentDates(null);
+                        listener.confirmRecurrencyCreation(null);
                     }
                 });
     }
+
 
 }

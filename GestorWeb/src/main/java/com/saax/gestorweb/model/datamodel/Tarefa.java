@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.SetProperty;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -40,24 +41,24 @@ import org.apache.commons.beanutils.BeanUtils;
 @Entity
 @Table(name = "tarefa")
 @NamedQueries({
-    @NamedQuery(name = "Tarefa.findAll", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa"),
-    @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.nome = :nome"),
-    @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa"),
-    @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.prioridade = :prioridade"),
-    @NamedQuery(name = "Tarefa.findByDataInicio", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataInicio = :dataInicio"),
-    @NamedQuery(name = "Tarefa.findByDataFim", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataFim = :dataFim"),
-    @NamedQuery(name = "Tarefa.findByDataTermino", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataTermino = :dataTermino"),
-    @NamedQuery(name = "Tarefa.findByStatus", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.status = :status"),
-    @NamedQuery(name = "Tarefa.findByProjecao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.projecao = :projecao"),
-    @NamedQuery(name = "Tarefa.findByAndamento", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.andamento = :andamento"),
-    @NamedQuery(name = "Tarefa.findByDescricao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.descricao = :descricao"),
-    @NamedQuery(name = "Tarefa.findByTemplate", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.template = :template"),
-    @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.apontamentoHoras = :apontamentohoras"),
-    @NamedQuery(name = "Tarefa.findByUsuarioResponsavel", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioResponsavel = :usuarioResponsavel"),
-    @NamedQuery(name = "Tarefa.findByUsuarioResponsavelDashboard", query = "SELECT t FROM Tarefa t WHERE t.usuarioResponsavel = :usuarioResponsavel"),
-    @NamedQuery(name = "Tarefa.findByUsuarioSolicitante", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante"),
-    @NamedQuery(name = "Tarefa.findByOrcamentocontrolado", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.orcamentoControlado = :orcamentocontrolado"),
-    @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao")})
+    @NamedQuery(name = "Tarefa.findAll", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.nome = :nome AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.prioridade = :prioridade AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByDataInicio", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataInicio = :dataInicio AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByDataFim", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataFim = :dataFim AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByDataTermino", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataTermino = :dataTermino AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByStatus", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.status = :status AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByProjecao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.projecao = :projecao AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByAndamento", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.andamento = :andamento AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByDescricao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.descricao = :descrica AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByTemplate", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.template = :template AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.apontamentoHoras = :apontamentohoras AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByUsuarioResponsavel", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioResponsavel = :usuarioResponsavel AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByUsuarioResponsavelDashboard", query = "SELECT t FROM Tarefa t WHERE t.usuarioResponsavel = :usuarioResponsavel AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByUsuarioSolicitante", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByOrcamentocontrolado", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.orcamentoControlado = :orcamentocontrolado AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao AND NOT t.removida")})
 public class Tarefa implements Serializable {
 
     /**
@@ -154,7 +155,7 @@ public class Tarefa implements Serializable {
     private List<Tarefa> subTarefas;
 
     @JoinColumn(name = "idproximatarefa", referencedColumnName = "idtarefa")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Tarefa proximaTarefa;
 
     @Enumerated(EnumType.STRING)
@@ -227,6 +228,10 @@ public class Tarefa implements Serializable {
     @JoinColumn(name = "idhierarquiaprojetodetalhe", referencedColumnName = "idhierarquiaprojetodetalhe")
     @ManyToOne(optional = false)
     private HierarquiaProjetoDetalhe hierarquia;
+    
+    @NotNull()
+    @Column(name = "removida")
+    private boolean removida;
 
     // ----------------------------------------------------------------------------------------------------------------
     // ATRIBUTOS TRANSIENTES
@@ -268,8 +273,6 @@ public class Tarefa implements Serializable {
     @Override
     public Tarefa clone() throws CloneNotSupportedException {
 
-        super.clone();
-        
         Tarefa clone = null;
         try {
             clone = (Tarefa) BeanUtils.cloneBean(this);
@@ -652,6 +655,14 @@ public class Tarefa implements Serializable {
 
     public Meta getMeta() {
         return meta;
+    }
+
+    public void setRemovida(boolean removida) {
+        this.removida = removida;
+    }
+
+    public boolean isRemovida() {
+        return removida;
     }
 
     // ----------------------------------------------------------------------------------------------------------------

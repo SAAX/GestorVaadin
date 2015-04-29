@@ -33,6 +33,7 @@ import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
 import com.saax.gestorweb.view.RecorrenciaView;
+import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -44,10 +45,8 @@ import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,7 +62,7 @@ import java.util.logging.Logger;
  *
  * @author rodrigo
  */
-public class CadastroTarefaPresenter implements Serializable, CadastroTarefaViewListener, TaskCreationCallBackListener {
+public class CadastroTarefaPresenter implements Serializable, CadastroTarefaViewListener, TaskCreationCallBackListener, RecurrencyDoneCallBackListener {
 
     // Todo presenterPopUpStatus mantem acesso à view e ao model
     private final transient CadastroTarefaView view;
@@ -76,6 +75,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     private final Usuario loggedUser;
     private PopUpEvolucaoStatusPresenter presenterPopUpStatus;
     private List<LocalDate> recurrentDates;
+    private RecorrenciaPresenter recorrenciaPresenter;
 
     /**
      * Cria o presenterPopUpStatus ligando o Model ao View
@@ -306,11 +306,6 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         view.setAbaControleHorasVisible(tarefa.isApontamentoHoras());
         view.setAbaControleOrcamentoVisible(tarefa.isOrcamentoControlado());
 
-        // It this task already has recurrent tasks, disable the recurrent button
-        if (tarefa.getProximaTarefa()!=null) {
-            view.getTypeRecurrenceButton().setEnabled(false);
-        }
-        
         UI.getCurrent().addWindow(view);
 
         view.setTarefa(tarefa);
@@ -709,10 +704,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         if (task.getMeta() == null && task.getTarefaPai() == null) {
             if (recurrentDates != null){
                 RecorrenciaModel recorrenciaModel = new RecorrenciaModel();
-                List<Tarefa> recurrentTasks = recorrenciaModel.createRecurrentTasks(task,recurrentDates);
-                for (Tarefa recurrentTask : recurrentTasks) {
-                    model.saveTask(recurrentTask);
-                }
+                task = recorrenciaModel.createRecurrentTasks(task,recurrentDates);
             }
             task = model.saveTask(task);
         }
@@ -1006,17 +998,25 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         
         //Cria o pop up para registrar a conta (model e view)
         RecorrenciaModel recorrenciaModel = new RecorrenciaModel();
-        RecorrenciaView recorrenciaView = new RecorrenciaView();
+        boolean isRecurrent = view.getTarefa().getTipoRecorrencia() == TipoTarefa.RECORRENTE;
+        RecorrenciaView recorrenciaView = new RecorrenciaView(isRecurrent);
 
         //o presenter liga model e view
-        RecorrenciaPresenter recorrenciaPresenter;
         recorrenciaPresenter = new RecorrenciaPresenter(recorrenciaModel, recorrenciaView);
+        recorrenciaPresenter.setTask(view.getTarefa());
+        recorrenciaPresenter.setCallBackListener(this);
+        
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(recorrenciaView);
-        recorrenciaPresenter.open();
         
-        recurrentDates = recorrenciaPresenter.getRecurrentDates();
         
+    }
+
+    @Override
+    public void recurrencyCreationDone(List<LocalDate> tarefasRecorrentes) {
+        recurrentDates = tarefasRecorrentes;
+        view.getStartDateDateField().setValue(DateTimeConverters.toDate(recurrentDates.get(0)));
+      
     }
 
 

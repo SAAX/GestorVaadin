@@ -1,15 +1,12 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.CadastroMetaModel;
 import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.LoginModel;
-import com.saax.gestorweb.model.UsuarioModel;
-import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.CadastroMetaPresenter;
 import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -71,7 +68,6 @@ public class PaginaInicialView extends HorizontalLayout {
         final Button signUpButton = new Button(mensagens.getString("PaginaInicialView.signUpButton.label"), (Button.ClickEvent event) -> {
             listener.signUpButtonClicked();
         });
-        
 
         // botão para Login
         final Button loginButton = new Button(mensagens.getString("PaginaInicialView.loginButton.label"), (Button.ClickEvent event) -> {
@@ -88,6 +84,13 @@ public class PaginaInicialView extends HorizontalLayout {
         });
 
         
+        // botão para preview de nova aba
+        BrowserWindowOpener opener = new BrowserWindowOpener("http://google.com");// 
+        opener.setWindowName("_blank");// _new, _blank, _top, etc.
+
+        final Button previewNewTabButton = new Button("Nova Aba");
+        opener.extend(previewNewTabButton);
+
         // barra dos botoes
         HorizontalLayout barraBotoes = new HorizontalLayout();
         containerDireito.addComponent(barraBotoes);
@@ -96,7 +99,7 @@ public class PaginaInicialView extends HorizontalLayout {
         barraBotoes.addComponent(signUpButton);
         barraBotoes.addComponent(loginButton);
         barraBotoes.addComponent(previewDashboardButton);
-        
+
         // Adicona os dois containers, lado-a-lado
         addComponent(containerEsquerdo);
         setComponentAlignment(containerEsquerdo, Alignment.MIDDLE_LEFT);

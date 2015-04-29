@@ -55,6 +55,7 @@ public class CadastroTarefaModel {
 
     // Reference to the use of the messages:
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private Tarefa firstRecurrentTask;
 
     public CadastroTarefaModel() {
         usuarioModel = new UsuarioModel();
@@ -106,15 +107,34 @@ public class CadastroTarefaModel {
             // TODO: Colocar projecao calculada
             task.setProjecao(ProjecaoTarefa.NORMAL);
 
+            // persiste as tarefas recorrentes:
+            if (task.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
+                if (firstRecurrentTask == null){
+                    firstRecurrentTask = task; // save the first of the recurrency set
+                }
+                if (task.getProximaTarefa() != null){
+                    saveTask(task.getProximaTarefa());
+                }
+            }
+
             if (task.getId() == null) {
                 em.persist(task);
             } else {
                 em.merge(task);
             }
 
-            // so comita na gravação da tarefa pai
+            // so comita na gravação da tarefa pai e na 1a. ( no caso de uma recorrencia ) 
             if (task.getTarefaPai() == null) {
-                em.getTransaction().commit();
+                // verify if it is a recurrent set of tasks
+                if (firstRecurrentTask != null) {
+                    // if it is a recurrent set, only commit on the first 
+                    if (task == firstRecurrentTask){
+                        em.getTransaction().commit();
+                    }
+                } else {
+                    em.getTransaction().commit();
+
+                }
             }
 
             // mover anexos das pastas temporarias para as oficiais
@@ -291,7 +311,7 @@ public class CadastroTarefaModel {
 
         // Fim da verificação de saldo em valor
     }
-    
+
     /**
      * Verifica se o apontamento é de DEBITO e neste caso, verifica se há saldo
      * suficiente para registrar este debito. <br>
@@ -299,7 +319,8 @@ public class CadastroTarefaModel {
      *
      * @param usuarioApontamento usuário logado que realizou o apontamento
      * @param usuarioSolicitante usuário solicitante da tarefa
-     * @param apontamentoOrcamento registro de apontamento que está sendo inserido
+     * @param apontamentoOrcamento registro de apontamento que está sendo
+     * inserido
      * @param inputHoras quantidade de horas (Duração) que está sendo inputada
      */
     private void validaSaldoSuficienteOrcamento(Usuario usuarioApontamento, Usuario usuarioSolicitante, OrcamentoTarefa orcamentoTarefa) {
@@ -324,11 +345,11 @@ public class CadastroTarefaModel {
 
         // obtem Saldo disponível no último apontamento
         BigDecimal saldoDisponivel = ultimoApontamentoTarefa.getSaldo();
-        
-        if ((saldoDisponivel.compareTo(orcamentoTarefa.getDebito()))<0){
+
+        if ((saldoDisponivel.compareTo(orcamentoTarefa.getDebito())) < 0) {
             throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoValorInsuficiente"));
         }
-        
+
         // Fim da verificação de saldo em valor
     }
 
@@ -490,7 +511,7 @@ public class CadastroTarefaModel {
         } else {
             throw new IllegalStateException("Usuário não deveria ter acesso ao orçamento.");
         }
-        
+
         // No caso de apontamentos de débito, verifica se existe saldo suficiente para lançar o débito
         validaSaldoSuficienteOrcamento(usuarioApontamento, usuarioSolicitante, orcamentoTarefa);
 

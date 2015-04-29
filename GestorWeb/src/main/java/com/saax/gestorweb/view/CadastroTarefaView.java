@@ -13,12 +13,12 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
 import com.saax.gestorweb.presenter.PopUpEvolucaoStatusPresenter;
+import com.saax.gestorweb.util.ErrorUtils;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.saax.gestorweb.view.validator.DataFimValidator;
 import com.saax.gestorweb.view.validator.DataInicioValidator;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
@@ -68,9 +68,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.vaadin.hene.popupbutton.PopupButton;
 
-
 /**
- * Pop-up Window task master. The display will be in a accordion structure with three tabs:
+ * Pop-up Window task master. The display will be in a accordion structure with
+ * three tabs:
  * <br>
  * <ol>
  * <li>Initial task data</li>
@@ -378,10 +378,10 @@ public class CadastroTarefaView extends Window {
 
         // Button Recurrence
         typeRecurrenceButton = new Button(messages.getString("CadastroTarefaView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
-          listener.recurrenceClicked();
+            listener.recurrenceClicked();
         });
         typeRecurrenceButton.setWidth("100%");
-         
+
         // Combo Priority
         priorityCombo = new ComboBox(messages.getString("CadastroTarefaView.prioridadeCombo.label"));
         priorityCombo.setWidth("100%");
@@ -397,7 +397,7 @@ public class CadastroTarefaView extends Window {
 
         startDateDateField.addValidator(new DataInicioValidator(endDateDateField, "Data Inicio"));
         endDateDateField.addValidator(new DataFimValidator(startDateDateField, "Data Fim"));
-        
+
         // Componente de aviso
 //        avisoButton = new Button(messages.getString("CadastroTarefaView.avisoButton.caption"), (Button.ClickEvent event) -> {
 //            listener.avisoButtonClicked();
@@ -427,7 +427,7 @@ public class CadastroTarefaView extends Window {
         grid.addComponent(endDateDateField);
         grid.addComponent(taskStatusPopUpButton);
         grid.setComponentAlignment(taskStatusPopUpButton, Alignment.BOTTOM_CENTER);
-       
+
         return grid;
     }
 
@@ -495,10 +495,7 @@ public class CadastroTarefaView extends Window {
                 taskFieldGroup.commit();
                 listener.gravarButtonClicked();
             } catch (Exception ex) {
-
-                String mensagem = FormatterUtil.extrairMensagemValidacao(ex);
-
-                Notification.show(mensagem, Notification.Type.WARNING_MESSAGE);
+                ErrorUtils.showComponentErrors(this.taskFieldGroup.getFields());
                 Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.WARNING, null, ex);
             }
         });
@@ -566,7 +563,7 @@ public class CadastroTarefaView extends Window {
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerParticipante((ParticipanteTarefa) itemId);
             });
-            
+
             removeButton.setEnabled(allowAddRemoveFollowers);
             return removeButton;
         });
@@ -670,7 +667,7 @@ public class CadastroTarefaView extends Window {
             Button downloadButton = new Button(messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"));
             AnexoTarefa anexoTarefa = (AnexoTarefa) itemId;
             FileDownloader fd = new FileDownloader(new FileResource(anexoTarefa.getArquivo() == null ? anexoTarefa.getArquivoTemporario() : anexoTarefa.getArquivo()));
-            
+
             fd.extend(downloadButton);
 
             return downloadButton;
@@ -724,8 +721,6 @@ public class CadastroTarefaView extends Window {
         taskAppointmentFieldGroup.bind(hourCostTextField, "custoHora");
         taskAppointmentFieldGroup.bind(hoursAddTextField, "inputHoras");
         taskAppointmentFieldGroup.bind(hoursObservationTextField, "observacoes");
-        
-        
 
     }
 
@@ -896,7 +891,7 @@ public class CadastroTarefaView extends Window {
         budgetAddTextField.setInputPrompt(messages.getString("CadastroTarefaView.imputarOrcamentoTextField.inputPrompt"));
         budgetAddTextField.setNullRepresentation("");
         budgetAddTextField.setConverter(new StringToBigDecimalConverter());
-        
+
         observationBudgetTextField = new TextField();
         observationBudgetTextField.setInputPrompt(messages.getString("CadastroTarefaView.observacaoOrcamentoTextField.inputPrompt"));
         observationBudgetTextField.setNullRepresentation("");
@@ -908,7 +903,7 @@ public class CadastroTarefaView extends Window {
         budgetContainer = new BeanItemContainer<>(OrcamentoTarefa.class);
 
         budgetControlTable = new Table() {
-                        @Override
+            @Override
             protected String formatPropertyValue(Object rowId,
                     Object colId, Property property) {
 
@@ -1149,7 +1144,6 @@ public class CadastroTarefaView extends Window {
         this.typeRecurrenceButton = typeRecurrenceButton;
     }
 
-
     /**
      * @return the priorityCombo
      */
@@ -1380,20 +1374,23 @@ public class CadastroTarefaView extends Window {
 
     /**
      * Oculta/Exibe o status da tarefa
-     * @param visible 
+     *
+     * @param visible
      */
     public void setStatusVisible(boolean visible) {
         taskStatusPopUpButton.setVisible(visible);
     }
-    
 
     /**
-     * Static method that builds a link button, that when clicked open a window with the given task to edit
-     * @param callback the callback listener that must be called when the update were done
+     * Static method that builds a link button, that when clicked open a window
+     * with the given task to edit
+     *
+     * @param callback the callback listener that must be called when the update
+     * were done
      * @param table the view table (used to auto select the row)
      * @param task the task that will be openned
      * @param caption the button caption
-     * @return 
+     * @return
      */
     public static Button buildButtonOpenTask(TaskCreationCallBackListener callback, Table table, Tarefa task, String caption) {
         Button link = new Button(caption);
@@ -1405,10 +1402,11 @@ public class CadastroTarefaView extends Window {
             presenter.editar(task);
         });
         return link;
-    }    
+    }
 
     /**
-     * Builds a pop up painel to in which the user can set the status and/or the progress of the task
+     * Builds a pop up painel to in which the user can set the status and/or the
+     * progress of the task
      *
      * @param task the task tha will have the status/progress updated
      * @param table the view table (used to auto select the row)
@@ -1436,11 +1434,12 @@ public class CadastroTarefaView extends Window {
 
     /**
      * Configure behavior for add/remove followers
-     * @param allowAddRemoveFollowers 
+     *
+     * @param allowAddRemoveFollowers
      */
     public void setAllowAddRemoveFollowers(boolean allowAddRemoveFollowers) {
         this.allowAddRemoveFollowers = allowAddRemoveFollowers;
         followersCombo.setEnabled(allowAddRemoveFollowers);
     }
-    
+
 }

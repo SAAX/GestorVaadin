@@ -3,6 +3,7 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -25,6 +26,7 @@ import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
@@ -33,8 +35,8 @@ import javax.persistence.EntityManager;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
- * MVP View tier of the Dashboard.
- * Static struture with vaadin visual components
+ * MVP View tier of the Dashboard. Static struture with vaadin visual components
+ *
  * @author Rodrigo
  */
 public class DashboardView extends VerticalLayout {
@@ -45,6 +47,7 @@ public class DashboardView extends VerticalLayout {
     private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     // listener interface (presenter in MVP)
     private DashboardViewListenter listener;
+
     public void setListener(DashboardViewListenter listener) {
         this.listener = listener;
     }
@@ -120,7 +123,6 @@ public class DashboardView extends VerticalLayout {
         setHeight(null);
 
         // adds each components (other containers):
-        
         addComponent(buildSwitchUserCombo()); // in test only
         addComponent(buildTopContainer());
         addComponent(buildAutoFiltersContainer());
@@ -133,6 +135,7 @@ public class DashboardView extends VerticalLayout {
     /**
      * Builds a container with a special combo to change the logged user
      * Obviously its is only for test purpose
+     *
      * @return the switchUserContainer
      */
     private Component buildSwitchUserCombo() {
@@ -164,9 +167,10 @@ public class DashboardView extends VerticalLayout {
         return switchUserContainer;
 
     }
-    
+
     /**
      * Build the topContainer with the inner menu bar
+     *
      * @return the topContainer
      */
     private Component buildTopContainer() {
@@ -180,15 +184,15 @@ public class DashboardView extends VerticalLayout {
         topMenu.setHeight("100%");
         topMenu.setHtmlContentAllowed(true);
 
-        createNewByCategoryMenuItem = topMenu.addItem("<h3>"+messages.getString("DashboardView.createNewByCategoryMenuItem")+"</h3>", null, null);
+        createNewByCategoryMenuItem = topMenu.addItem("<h3>" + messages.getString("DashboardView.createNewByCategoryMenuItem") + "</h3>", null, null);
 
         createNewByTemplate = createNewByCategoryMenuItem.addItem(messages.getString("DashboardView.createNewByTemplate"), (MenuBar.MenuItem selectedItem) -> {
             listener.createsNewTaskByTemplate();
         });
 
-        MenuBar.MenuItem publicationsMenuItem = topMenu.addItem("<h3>"+messages.getString("DashboardView.publicationsMenuItem")+"</h3>", null, null);
+        MenuBar.MenuItem publicationsMenuItem = topMenu.addItem("<h3>" + messages.getString("DashboardView.publicationsMenuItem") + "</h3>", null, null);
 
-        MenuBar.MenuItem reportsMenuItem = topMenu.addItem("<h3>"+messages.getString("DashboardView.reportsMenuItem")+"</h3>", null, null);
+        MenuBar.MenuItem reportsMenuItem = topMenu.addItem("<h3>" + messages.getString("DashboardView.reportsMenuItem") + "</h3>", null, null);
 
         MenuBar.MenuItem config = topMenu.addItem("<h3>Config</h3>", null, null);
         MenuBar.MenuItem themeMenuItem = config.addItem("Tema", null, null);
@@ -199,7 +203,7 @@ public class DashboardView extends VerticalLayout {
                 UI.getCurrent().setTheme("valo-light");
             }
         });
-        
+
         themeMenuItem.addItem("Dark", new MenuBar.Command() {
 
             @Override
@@ -207,7 +211,7 @@ public class DashboardView extends VerticalLayout {
                 UI.getCurrent().setTheme("valo-dark");
             }
         });
-        
+
         themeMenuItem.addItem("Blueprint", new MenuBar.Command() {
 
             @Override
@@ -215,7 +219,7 @@ public class DashboardView extends VerticalLayout {
                 UI.getCurrent().setTheme("valo-blueprint");
             }
         });
-        
+
         themeMenuItem.addItem("Metro", new MenuBar.Command() {
 
             @Override
@@ -223,7 +227,7 @@ public class DashboardView extends VerticalLayout {
                 UI.getCurrent().setTheme("valo-metro");
             }
         });
-        
+
         themeMenuItem.addItem("Flat", new MenuBar.Command() {
 
             @Override
@@ -231,7 +235,7 @@ public class DashboardView extends VerticalLayout {
                 UI.getCurrent().setTheme("valo-flat");
             }
         });
-        
+
         themeMenuItem.addItem("Flat (Dark)", new MenuBar.Command() {
 
             @Override
@@ -239,7 +243,7 @@ public class DashboardView extends VerticalLayout {
                 UI.getCurrent().setTheme("valo-flat-dark");
             }
         });
-        
+
         themeMenuItem.addItem("Reindeer", new MenuBar.Command() {
 
             @Override
@@ -247,11 +251,11 @@ public class DashboardView extends VerticalLayout {
                 UI.getCurrent().setTheme("reindeer");
             }
         });
-        
+
         config.addItem("Config 2", null, null);
         config.addItem("Config 3", null, null);
 
-        topMenu.addItem("<h3>"+messages.getString("DashboardView.logoutMenuItem")+"</h3>", null, (MenuBar.MenuItem selectedItem) -> {
+        topMenu.addItem("<h3>" + messages.getString("DashboardView.logoutMenuItem") + "</h3>", null, (MenuBar.MenuItem selectedItem) -> {
             listener.logout();
         });
 
@@ -263,6 +267,7 @@ public class DashboardView extends VerticalLayout {
 
     /**
      * Builds the autoFiltersContainer with the options for autofilter
+     *
      * @return the autoFiltersContainer
      */
     private Component buildAutoFiltersContainer() {
@@ -392,16 +397,17 @@ public class DashboardView extends VerticalLayout {
 
     /**
      * Builds the currentDateContainer with an inner label with the current date
+     *
      * @return the currentDateContainer
      */
     private Component buildCurrentDateContainer() {
-    
+
         currentDateContainer = new HorizontalLayout();
         currentDateContainer.setSpacing(true);
         currentDateContainer.setWidth("100%");
         currentDateContainer.setHeight(null);
 
-        currentDateLabel = new Label("<h1>"+LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))+"</h1>");
+        currentDateLabel = new Label("<h1>" + LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) + "</h1>");
         currentDateLabel.setContentMode(ContentMode.HTML);
 
         currentDateContainer.addComponent(currentDateLabel);
@@ -411,6 +417,7 @@ public class DashboardView extends VerticalLayout {
 
     /**
      * Builds the tabSheetContainer with all inner tables (task and target)
+     *
      * @return the tabSheetContainer
      */
     private Component buildTabSheetContainer() {
@@ -431,9 +438,10 @@ public class DashboardView extends VerticalLayout {
 
         return tabSheetContainer;
     }
-    
+
     /**
      * Build the task table with its columns and initial parameters
+     *
      * @return the task table
      */
     private Table buildTaskTable() {
@@ -472,16 +480,17 @@ public class DashboardView extends VerticalLayout {
         return taskTable;
 
     }
-    
+
     /**
      * Build the target table with its columns and initial parameters
+     *
      * @return the target table
      */
     private Table buildTargetTable() {
 
         targetTable = new TreeTable();
         targetTable.setWidth("100%");
-        
+
         targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.cod"), Button.class, "");
         targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.cod"), 70);
         targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.title"), Button.class, "");
@@ -502,9 +511,7 @@ public class DashboardView extends VerticalLayout {
         targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.forecast"), 30);
         targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.email"), Button.class, "");
         targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.email"), 30);
-        
-        
-        
+
         targetTable.setPageLength(0);
         targetTable.setSelectable(true);
         targetTable.setImmediate(true);
@@ -514,7 +521,9 @@ public class DashboardView extends VerticalLayout {
     }
 
     /**
-     * Builds the bottom container with its 3 inner components (tasks, forecasts, invites)
+     * Builds the bottom container with its 3 inner components (tasks,
+     * forecasts, invites)
+     *
      * @return the bottom container
      */
     private Component buildBottomContainer() {
@@ -555,11 +564,9 @@ public class DashboardView extends VerticalLayout {
         return bottomContainer;
     }
 
-    
     // ------------------------------------------------------------------------------------------------
     // GETTERS TO EXTERNAL ACCESS
     // ------------------------------------------------------------------------------------------------
-    
     public MenuBar.MenuItem getCreateNewByCategoryMenuItem() {
         return createNewByCategoryMenuItem;
     }
@@ -611,7 +618,5 @@ public class DashboardView extends VerticalLayout {
     public Button getCleanFiltersButton() {
         return cleanFiltersButton;
     }
-    
-    
 
 }

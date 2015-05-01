@@ -123,7 +123,7 @@ public class GestorMDI extends UI {
 
         
         // obtém o arquivo de mensagens de acordo com o locale do usuário
-        mensagens = (ResourceBundle.getBundle("ResourceBundles.Mensagens.Mensagens", request.getLocale()));
+        mensagens = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", request.getLocale()));
 
         application = new Properties();
 

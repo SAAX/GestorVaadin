@@ -129,11 +129,10 @@ public class CadastroTarefaModel {
                 if (firstRecurrentTask != null) {
                     // if it is a recurrent set, only commit on the first 
                     if (task == firstRecurrentTask){
-                        em.getTransaction().commit();
+                    em.getTransaction().commit();
                     }
                 } else {
                     em.getTransaction().commit();
-
                 }
             }
 

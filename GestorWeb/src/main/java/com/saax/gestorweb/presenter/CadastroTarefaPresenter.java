@@ -5,7 +5,7 @@ import com.saax.gestorweb.model.CadastroTarefaModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
-import com.saax.gestorweb.model.RecorrenciaModel;
+import com.saax.gestorweb.model.RecorrencyModel;
 import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
@@ -32,7 +32,7 @@ import com.saax.gestorweb.view.CadastroTarefaView;
 import com.saax.gestorweb.view.CadastroTarefaViewListener;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
-import com.saax.gestorweb.view.RecorrenciaView;
+import com.saax.gestorweb.view.RecorrencyView;
 import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -75,7 +75,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     private final Usuario loggedUser;
     private PopUpEvolucaoStatusPresenter presenterPopUpStatus;
     private List<LocalDate> recurrentDates;
-    private RecorrenciaPresenter recorrenciaPresenter;
+    private RecorrencyPresenter RecorrencyPresenter;
 
     /**
      * Cria o presenterPopUpStatus ligando o Model ao View
@@ -703,7 +703,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
          */
         if (task.getMeta() == null && task.getTarefaPai() == null) {
             if (recurrentDates != null){
-                RecorrenciaModel recorrenciaModel = new RecorrenciaModel();
+                RecorrencyModel recorrenciaModel = new RecorrencyModel();
                 task = recorrenciaModel.createRecurrentTasks(task,recurrentDates);
             }
             task = model.saveTask(task);
@@ -997,17 +997,17 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
         
         //Cria o pop up para registrar a conta (model e view)
-        RecorrenciaModel recorrenciaModel = new RecorrenciaModel();
+        RecorrencyModel recorrenciaModel = new RecorrencyModel();
         boolean isRecurrent = view.getTarefa().getTipoRecorrencia() == TipoTarefa.RECORRENTE;
-        RecorrenciaView recorrenciaView = new RecorrenciaView(isRecurrent);
+        RecorrencyView RecorrencyView = new RecorrencyView(isRecurrent);
 
         //o presenter liga model e view
-        recorrenciaPresenter = new RecorrenciaPresenter(recorrenciaModel, recorrenciaView);
-        recorrenciaPresenter.setTask(view.getTarefa());
-        recorrenciaPresenter.setCallBackListener(this);
+        RecorrencyPresenter = new RecorrencyPresenter(recorrenciaModel, RecorrencyView);
+        RecorrencyPresenter.setTask(view.getTarefa());
+        RecorrencyPresenter.setCallBackListener(this);
         
         //adiciona a visualização à UI
-        UI.getCurrent().addWindow(recorrenciaView);
+        UI.getCurrent().addWindow(RecorrencyView);
         
         
     }
@@ -1018,6 +1018,13 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         view.getStartDateDateField().setValue(DateTimeConverters.toDate(recurrentDates.get(0)));
       
     }
+
+    @Override
+    public void recurrencyRemoved(Tarefa task) {
+        view.close();
+        callbackListener.taskUpdateDone(task);
+    }
+
 
 
 

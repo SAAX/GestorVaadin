@@ -45,6 +45,7 @@ import org.apache.commons.beanutils.BeanUtils;
     @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.nome = :nome AND NOT t.removida"),
     @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND NOT t.removida"),
     @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.prioridade = :prioridade AND NOT t.removida"),
+    @NamedQuery(name = "Tarefa.findByRecurrencyID", query = "SELECT t FROM Tarefa t WHERE t.recurrencyID = :recurrencyID AND NOT t.removida ORDER BY t.dataInicio"),
     @NamedQuery(name = "Tarefa.findByDataInicio", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataInicio = :dataInicio AND NOT t.removida"),
     @NamedQuery(name = "Tarefa.findByDataFim", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataFim = :dataFim AND NOT t.removida"),
     @NamedQuery(name = "Tarefa.findByDataTermino", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataTermino = :dataTermino AND NOT t.removida"),
@@ -157,6 +158,8 @@ public class Tarefa implements Serializable {
     @JoinColumn(name = "idproximatarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = true)
     private Tarefa proximaTarefa;
+
+    private int recurrencyID;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Informe se a tarefa é recorrente ou única")
@@ -531,6 +534,14 @@ public class Tarefa implements Serializable {
 
     public void setProximaTarefa(Tarefa proximaTarefa) {
         this.proximaTarefa = proximaTarefa;
+    }
+
+    public int getRecurrencyID() {
+        return recurrencyID;
+    }
+
+    public void setRecurrencyID(int recurrencyID) {
+        this.recurrencyID = recurrencyID;
     }
 
     public TipoTarefa getTipoRecorrencia() {

@@ -317,6 +317,7 @@ CREATE TABLE Tarefa (
     prioridade CHARACTER VARYING (10) NOT NULL,
     tipo  CHARACTER VARYING (20) NOT NULL,
     idProximaTarefa BIGINT, 
+    recurrencyID BIGINT, 
     status CHARACTER VARYING (50) NOT NULL,
     projecao CHARACTER VARYING (50),
     andamento INTEGER NOT NULL,
@@ -354,6 +355,7 @@ CREATE TABLE Tarefa (
     FOREIGN KEY (idCentroCusto) REFERENCES CentroCusto(idCentroCusto)	
 );
 
+CREATE SEQUENCE RecurrencySequence;
 
 -- Participante tarefa
 DROP TABLE IF EXISTS ParticipanteTarefa CASCADE;

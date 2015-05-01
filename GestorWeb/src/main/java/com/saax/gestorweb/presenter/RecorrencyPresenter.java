@@ -1,13 +1,13 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.RecorrenciaModel;
+import com.saax.gestorweb.model.RecorrencyModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.view.RecorrenciaView;
-import com.saax.gestorweb.view.RecorrenciaViewListener;
+import com.saax.gestorweb.view.RecorrencyView;
+import com.saax.gestorweb.view.RecorrencyViewListener;
 import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Property;
 import com.vaadin.ui.UI;
@@ -21,23 +21,46 @@ import java.util.Set;
 import org.vaadin.dialogs.ConfirmDialog;
 
 /**
- * Presenter:
- * <p>
- * Listener de eventos da view das recorrências
+ * Presenter class of Recurrency component
  *
  * @author rodrigo
  */
-public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListener {
+public class RecorrencyPresenter implements Serializable, RecorrencyViewListener {
 
-    // Todo presenterPopUpStatus mantem acesso à view e ao model
-    private final transient RecorrenciaView view;
-    private final transient RecorrenciaModel model;
+    /**
+     * View tier
+     */
+    private final transient RecorrencyView view;
+    
+    /**
+     * Model tier
+     */
+    private final transient RecorrencyModel model;
 
-    // Referencia ao recurso das mensagens:
+    /**
+     * Messages resource bundle
+     */
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
+    
+    /**
+     * Images resource
+     */
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+
+
+    /**
+     * The logged user reference
+     */
     private final Usuario loggedUser;
-    private Tarefa tarefa;
+
+    /**
+     * The task being created or edited
+     */
+    private Tarefa task;
+    
+    /**
+     * Listener to be called back when the recurrency task creation is done
+     */
     private RecurrencyDoneCallBackListener callBackListener;
 
     public void setCallBackListener(RecurrencyDoneCallBackListener callBackListener) {
@@ -52,8 +75,8 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
      * @param model
      * @param view
      */
-    public RecorrenciaPresenter(RecorrenciaModel model,
-            RecorrenciaView view) {
+    public RecorrencyPresenter(RecorrencyModel model,
+            RecorrencyView view) {
 
         this.model = model;
         this.view = view;
@@ -64,9 +87,12 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
 
     }
     
-    
+   /**
+    * Handles the event thrown when the user checks the weekly recurrency checkbox
+    * @param event 
+    */
     @Override
-    public void recorrenciaSemanal(Property.ValueChangeEvent event) {
+    public void weeklyRecurrencyChecked(Property.ValueChangeEvent event) {
         view.setValidatorsVisible(false);
         view.setAbaSemanalVisible((boolean) event.getProperty().getValue());
         view.setAbaMensalVisible(false);
@@ -75,8 +101,12 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
         view.getAnnualCheckBox().setValue(Boolean.FALSE);
     }
 
+   /**
+    * Handles the event thrown when the user checks the monthly recurrency checkbox
+    * @param event 
+    */
     @Override
-    public void recorrenciaMensal(Property.ValueChangeEvent event) {
+    public void monthlyRecurrencyChecked(Property.ValueChangeEvent event) {
         view.setValidatorsVisible(false);
         view.setAbaMensalVisible((boolean) event.getProperty().getValue());
         view.setAbaSemanalVisible(false);
@@ -85,8 +115,12 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
         view.getAnnualCheckBox().setValue(Boolean.FALSE);
     }
 
+   /**
+    * Handles the event thrown when the user checks the yearly recurrency checkbox
+    * @param event 
+    */
     @Override
-    public void recorrenciaAnual(Property.ValueChangeEvent event) {
+    public void yearlyRecurrencyChecked(Property.ValueChangeEvent event) {
         view.setValidatorsVisible(false);
         view.setAbaAnualVisible((boolean) event.getProperty().getValue());
         view.setAbaSemanalVisible(false);
@@ -231,12 +265,14 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
     @Override
     public void removeAllRecurrency() {
 
-        ConfirmDialog.show(UI.getCurrent(), messages.getString("RecorrenciaPresenter.removeAllRecurrency.title"), 
-                messages.getString("RecorrenciaPresenter.removeAllRecurrency.text"),
-                messages.getString("RecorrenciaPresenter.removeAllRecurrency.OKButton"), 
-                messages.getString("RecorrenciaPresenter.removeAllRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
+        ConfirmDialog.show(UI.getCurrent(), messages.getString("RecorrencyPresenter.removeAllRecurrency.title"), 
+                messages.getString("RecorrencyPresenter.removeAllRecurrency.text"),
+                messages.getString("RecorrencyPresenter.removeAllRecurrency.OKButton"), 
+                messages.getString("RecorrencyPresenter.removeAllRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
-                        model.removeAllRecurrency(tarefa);
+                        task = model.removeAllRecurrency(task, loggedUser);
+                        UI.getCurrent().removeWindow(view);
+                        callBackListener.recurrencyRemoved(task);
                     }
                 });
     }
@@ -248,20 +284,21 @@ public class RecorrenciaPresenter implements Serializable, RecorrenciaViewListen
     @Override
     public void removeAllNextRecurrency() {
         ConfirmDialog.show(UI.getCurrent(), 
-                messages.getString("RecorrenciaPresenter.removeAllNextRecurrency.title"), 
-                messages.getString("RecorrenciaPresenter.removeAllNextRecurrency.text"), 
-                messages.getString("RecorrenciaPresenter.removeAllNextRecurrency.OKButton"), 
-                messages.getString("RecorrenciaPresenter.removeAllNextRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
+                messages.getString("RecorrencyPresenter.removeAllNextRecurrency.title"), 
+                messages.getString("RecorrencyPresenter.removeAllNextRecurrency.text"), 
+                messages.getString("RecorrencyPresenter.removeAllNextRecurrency.OKButton"), 
+                messages.getString("RecorrencyPresenter.removeAllNextRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
-                        model.removeAllNextRecurrency(tarefa);
+                        task = model.removeAllNextRecurrency(task, loggedUser);
                         UI.getCurrent().removeWindow(view);
+                        callBackListener.recurrencyRemoved(task);
                     }
                 });
         
     }
 
     public void setTask(Tarefa tarefa) {
-        this.tarefa = tarefa;
+        this.task = tarefa;
     }
     
     

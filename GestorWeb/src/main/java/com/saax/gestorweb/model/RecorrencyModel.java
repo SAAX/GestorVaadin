@@ -1,9 +1,11 @@
 package com.saax.gestorweb.model;
 
+import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
-import java.text.SimpleDateFormat;
+import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -16,12 +18,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  *
  * @author Fernando/Rodrigo
  */
-public class RecorrenciaModel {
+public class RecorrencyModel {
 
     /**
      * Compute the parameters for a weekly recurrence to obtain a list of its
@@ -93,8 +97,8 @@ public class RecorrenciaModel {
 
     }
 
-    public List<LocalDate>  createAnnualRecurrence(String diaAnual, String util, String mesAnual, String anoTermino) {
-        
+    public List<LocalDate> createAnnualRecurrence(String diaAnual, String util, String mesAnual, String anoTermino) {
+
         int anoInicial = GregorianCalendar.getInstance().get(Calendar.YEAR);
 
         // lista das datas das tarefas recorrentes
@@ -109,8 +113,8 @@ public class RecorrenciaModel {
         for (int ano = anoInicial; ano <= anoFinal; ano++) {
 
             int diaDoMes = tratarDiaDoMes(diaAnual, mesDoAno, ano, util);
-            
-            GregorianCalendar dataObrigacao = new GregorianCalendar(ano,mesDoAno, diaDoMes);
+
+            GregorianCalendar dataObrigacao = new GregorianCalendar(ano, mesDoAno, diaDoMes);
 
             if (dataObrigacao.getTime().after(new Date())) {
                 dataTarefas.add(DateTimeConverters.toLocalDate(dataObrigacao.getTime()));
@@ -362,6 +366,22 @@ public class RecorrenciaModel {
         return datasObrigacoes;
     }
 
+    private int getRecurrencySequenceNextValue() {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        Query query = em.createNativeQuery("SELECT NEXTVAL('RecurrencySequence')");
+        List<Long> results = query.getResultList();
+        Long nextValue = results.get(0);
+
+        if (nextValue == 0) {
+            throw new IllegalStateException("Recurrency sequency not set");
+        }
+
+        return nextValue.intValue();
+
+    }
+
     /**
      * Creates a list of tasks based on a main task an a list of dates
      *
@@ -375,6 +395,10 @@ public class RecorrenciaModel {
 
         Collections.sort(recurrentDates);
 
+        final int FIRST_INDEX = 0;
+        final int RECURRENCY_ID = getRecurrencySequenceNextValue();
+        Tarefa firstTaskOfTheRecurrentSet = null;
+
         for (LocalDate taskDate : recurrentDates) {
 
             try {
@@ -386,7 +410,16 @@ public class RecorrenciaModel {
                 recurrentTask.setUsuarioSolicitante(task.getUsuarioSolicitante());
                 recurrentTask.setDataHoraInclusao(LocalDateTime.now());
 
+                // if it is the first task of a recurrent set
+                if (taskDate.equals(recurrentDates.get(FIRST_INDEX))) {
+
+                    // configures the first task var return later
+                    firstTaskOfTheRecurrentSet = recurrentTask;
+
+                }
+                recurrentTask.setRecurrencyID(RECURRENCY_ID);
                 recurrentTask.setDataInicio(taskDate);
+
                 if (task.getDataFim() != null) {
                     Period p = Period.between(task.getDataInicio(), task.getDataFim());
                     task.setDataFim(taskDate.plus(p));
@@ -395,7 +428,7 @@ public class RecorrenciaModel {
                 recurrentTasks.add(recurrentTask);
 
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(RecorrenciaModel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RecorrencyModel.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -407,23 +440,105 @@ public class RecorrenciaModel {
             previousTask.setProximaTarefa(nextTask);
         }
 
-        return recurrentTasks.get(0);
+        return firstTaskOfTheRecurrentSet;
     }
 
-    public void removeAllRecurrency(Tarefa tarefa) {
-
-        // TODO: remove all predecent
-        // remove all next
-        removeAllNextRecurrency(tarefa);
+    private void removeTask(Tarefa task, Usuario loggedUser) {
+        task.setRemovida(true);
+        task.addHistorico(new HistoricoTarefa("Tarefa removida.", null, loggedUser, task, LocalDateTime.now()));
 
     }
 
-    public void removeAllNextRecurrency(Tarefa tarefa) {
-        Tarefa tarefaIterator = tarefa.getProximaTarefa();
-        while (tarefaIterator != null) {
-            tarefaIterator.setRemovida(true);
-            tarefaIterator = tarefaIterator.getProximaTarefa();
+    /**
+     * Removes all recurrent tasks, given any task of the set
+     *
+     * @param task any task of the set
+     * @param loggedUser the logged user
+     * @return 
+     */
+    public Tarefa removeAllRecurrency(Tarefa task, Usuario loggedUser) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        Tarefa firstTaskOfRecurrentSet = null;
+        List<Tarefa> recurrenTasks;
+
+        try {
+            em.getTransaction().begin();
+
+            // retrieves all the tasks in the set
+            recurrenTasks = em.createNamedQuery("Tarefa.findByRecurrencyID").setParameter("recurrencyID", task.getRecurrencyID()).getResultList();
+
+            // iterates over all the tasks in the recurrent set, marking as removed
+            for (Tarefa recurrentTask : recurrenTasks) {
+                
+                if (firstTaskOfRecurrentSet == null){
+                    firstTaskOfRecurrentSet = recurrentTask;
+                }
+                
+                removeTask(recurrentTask, loggedUser);
+                em.merge(recurrentTask);
+            }
+            
+            firstTaskOfRecurrentSet = em.find(Tarefa.class, firstTaskOfRecurrentSet.getId());
+            
+            em.getTransaction().commit();
+            
+            return firstTaskOfRecurrentSet;
+            
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            // propaga a exceção pra cima
+            throw ex;
+
         }
+
+    }
+
+    /**
+     * Removes all next recurrent task, given any task of the recurrent set
+     *
+     * @param task
+     * @param loggedUser
+     * @return 
+     */
+    public Tarefa removeAllNextRecurrency(Tarefa task, Usuario loggedUser) {
+
+        Tarefa editingTask = task;
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        try {
+            
+            em.getTransaction().begin();
+            
+            Tarefa taskIterator = em.find(Tarefa.class, task.getProximaTarefa().getId());
+            while (taskIterator != null) {
+
+                removeTask(taskIterator, loggedUser);
+                em.merge(taskIterator);
+                if (taskIterator.getProximaTarefa()!=null){
+                    taskIterator = em.find(Tarefa.class, taskIterator.getProximaTarefa().getId());
+                } else {
+                    taskIterator = null;
+                    
+                }
+
+            }
+            
+            em.getTransaction().commit();
+            
+            editingTask = em.find(Tarefa.class, editingTask.getId());
+            
+            return editingTask;
+            
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            // propaga a exceção pra cima
+            throw ex;
+
+        }
+
     }
 
 }

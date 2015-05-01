@@ -13,13 +13,13 @@ import java.util.List;
  *
  * @author Fernando
  */
-public interface RecorrenciaViewListener {
+public interface RecorrencyViewListener {
 
-    public void recorrenciaSemanal(Property.ValueChangeEvent event);
+    public void weeklyRecurrencyChecked(Property.ValueChangeEvent event);
 
-    public void recorrenciaMensal(Property.ValueChangeEvent event);
+    public void monthlyRecurrencyChecked(Property.ValueChangeEvent event);
 
-    public void recorrenciaAnual(Property.ValueChangeEvent event);
+    public void yearlyRecurrencyChecked(Property.ValueChangeEvent event);
 
     public void okButtonClicked();
 

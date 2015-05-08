@@ -3,9 +3,9 @@ package com.saax.gestorweb.model;
 import java.io.Serializable;
 
 /**
- * Classe de negócios da Página Inicial
+ * Bussiness class of Start Page
  * @author Rodrigo
  */
-public class PaginaInicialModel implements Serializable {
+public class StartPageModel implements Serializable {
     
 }

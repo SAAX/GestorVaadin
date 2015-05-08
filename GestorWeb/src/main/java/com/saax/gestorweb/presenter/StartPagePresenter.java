@@ -2,12 +2,12 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
-import com.saax.gestorweb.model.PaginaInicialModel;
+import com.saax.gestorweb.model.StartPageModel;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.LoginView;
-import com.saax.gestorweb.view.PaginaInicialView;
-import com.saax.gestorweb.view.PaginaInicialViewListener;
+import com.saax.gestorweb.view.StartPageView;
+import com.saax.gestorweb.view.StartPageViewListener;
 import com.saax.gestorweb.view.SignupView;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
@@ -20,11 +20,11 @@ import java.util.ResourceBundle;
  *
  * @author Rodrigo
  */
-public class PaginaInicialPresenter implements PaginaInicialViewListener, Serializable {
+public class StartPagePresenter implements StartPageViewListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
-    private final transient PaginaInicialView view;
-    private final transient PaginaInicialModel model;
+    private final transient StartPageView view;
+    private final transient StartPageModel model;
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -36,8 +36,8 @@ public class PaginaInicialPresenter implements PaginaInicialViewListener, Serial
      * @param model
      * @param view
      */
-    public PaginaInicialPresenter(PaginaInicialModel model,
-            PaginaInicialView view) {
+    public StartPagePresenter(StartPageModel model,
+            StartPageView view) {
 
         this.model = model;
         this.view = view;

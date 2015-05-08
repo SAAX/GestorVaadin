@@ -510,6 +510,11 @@ public class RecorrencyModel {
 
         try {
             
+            // verify if there is a next recurrent task to remove
+            if (task.getProximaTarefa()==null){
+                return editingTask;
+            }
+            
             em.getTransaction().begin();
             
             Tarefa taskIterator = em.find(Tarefa.class, task.getProximaTarefa().getId());

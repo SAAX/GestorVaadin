@@ -1,11 +1,11 @@
 package com.saax.gestorweb.view;
 
 /**
- * Interface com todos os eventos disparados pela Pagina Inicial View
+ * Interface for handling all the events thrown in the view
  * 
  * @author Rodrigo
  */
-public interface PaginaInicialViewListener {
+public interface StartPageViewListener {
    
     void loginButtonClicked();
     void signUpButtonClicked();

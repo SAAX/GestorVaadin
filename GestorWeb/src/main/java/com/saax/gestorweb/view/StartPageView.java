@@ -17,12 +17,11 @@ import com.vaadin.ui.VerticalLayout;
 import java.util.ResourceBundle;
 
 /**
- * Pagina Incial View Esta classe é responsável por construir os componentes
- * visuais da tela incial
+ * This class is responsible for show the visual components of the start page
  *
  * @author Rodrigo
  */
-public class PaginaInicialView extends HorizontalLayout {
+public class StartPageView extends HorizontalLayout {
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -30,9 +29,9 @@ public class PaginaInicialView extends HorizontalLayout {
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
-    private PaginaInicialViewListener listener;
+    private StartPageViewListener listener;
 
-    public void setListener(PaginaInicialViewListener listener) {
+    public void setListener(StartPageViewListener listener) {
         this.listener = listener;
     }
 
@@ -47,7 +46,7 @@ public class PaginaInicialView extends HorizontalLayout {
      * containers dentro, um para a imagem de fundo e outro para a caixa com os
      * botões de login / sign-up
      */
-    public PaginaInicialView() {
+    public StartPageView() {
 
         setSizeFull();
 
@@ -65,12 +64,12 @@ public class PaginaInicialView extends HorizontalLayout {
         containerEsquerdo.setComponentAlignment(logo, Alignment.MIDDLE_CENTER);
 
         // botão para SignUP
-        final Button signUpButton = new Button(mensagens.getString("PaginaInicialView.signUpButton.label"), (Button.ClickEvent event) -> {
+        final Button signUpButton = new Button(mensagens.getString("startPageView.signUpButton.label"), (Button.ClickEvent event) -> {
             listener.signUpButtonClicked();
         });
 
         // botão para Login
-        final Button loginButton = new Button(mensagens.getString("PaginaInicialView.loginButton.label"), (Button.ClickEvent event) -> {
+        final Button loginButton = new Button(mensagens.getString("startPageView.loginButton.label"), (Button.ClickEvent event) -> {
             listener.loginButtonClicked();
         });
 

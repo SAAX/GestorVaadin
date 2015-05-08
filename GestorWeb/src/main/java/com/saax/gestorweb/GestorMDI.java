@@ -1,18 +1,15 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.DashboardModel;
-import com.saax.gestorweb.model.PaginaInicialModel;
+import com.saax.gestorweb.model.StartPageModel;
 import com.saax.gestorweb.presenter.DashboardPresenter;
-import com.saax.gestorweb.presenter.PaginaInicialPresenter;
+import com.saax.gestorweb.presenter.StartPagePresenter;
 import com.saax.gestorweb.util.CookiesManager;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
-
 import com.saax.gestorweb.view.DashboardView;
-import com.saax.gestorweb.view.PaginaInicialView;
-import com.vaadin.annotations.PreserveOnRefresh;
-import com.vaadin.annotations.Push;
+import com.saax.gestorweb.view.StartPageView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.Page;
@@ -20,43 +17,33 @@ import com.vaadin.server.Page.Styles;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Classe de acesso inicial da aplicação Esta é a 1a. classe que é executada ao
- * ser acessada a aplicação Ela é responsavél por efetuar todas as configurações
- * iniciais necessárias ao funcionamento do sistema e carregar a aplicação.
+ * Main access point of application <br>
+ * This class is responsible for all app's initial configuration
  *
  * @author Rodrigo
  */
 @Theme("valo-light")
 public class GestorMDI extends UI {
 
-    private transient PaginaInicialModel paginaInicialModel;
-    private transient PaginaInicialView paginaInicialView;
-    private transient PaginaInicialPresenter paginaInicialPresenter;
+    private transient StartPageModel startPageModel;
+    private transient StartPageView startPageView;
     private transient ResourceBundle mensagens;
     private transient Properties application;
     private transient GestorWebImagens gestorWebImagens;
 
-    
-    @WebServlet(value = "/*", asyncSupported = true, initParams = {
-        /*@WebInitParam(name = "org.atmosphere.cpr.AtmosphereInterceptor", value = "com.saax.gestorweb.util.AtmosphereFilter")*/
-    })
+    @WebServlet(value = "/*", asyncSupported = true, initParams = { /*@WebInitParam(name = "org.atmosphere.cpr.AtmosphereInterceptor", value = "com.saax.gestorweb.util.AtmosphereFilter")*/})
     @VaadinServletConfiguration(productionMode = true, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
     public static class Servlet extends VaadinServlet {
 
@@ -70,9 +57,8 @@ public class GestorMDI extends UI {
             } finally {
                 // Fecha o entity manger ao fim da requisição
                 if (GestorEntityManagerProvider.getEntityManager() != null) {
-                    Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Fechando EM no service");
+                    Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Closing EM on service method");
                     GestorEntityManagerProvider.getEntityManager().close();
-                    // Libera a variável da thread
                     GestorEntityManagerProvider.remove();
                 }
             }
@@ -80,16 +66,16 @@ public class GestorMDI extends UI {
 
     }
 
-    public void loadPaginaInicial() {
+    public void loadstartPage() {
         // Cria a pagina inical
-        paginaInicialModel = new PaginaInicialModel();
-        paginaInicialView = new PaginaInicialView();
+        startPageModel = new StartPageModel();
+        startPageView = new StartPageView();
 
         // O presenter liga model e view
-        paginaInicialPresenter = new PaginaInicialPresenter(paginaInicialModel, paginaInicialView);
+        new StartPagePresenter(startPageModel, startPageView);
 
         // adiciona a visualização à UI
-        setContent(paginaInicialView);
+        setContent(startPageView);
 
         Styles styles = Page.getCurrent().getStyles();
         // inject the new color as a style
@@ -113,15 +99,9 @@ public class GestorMDI extends UI {
         dashboardPresenter.init();
     }
 
-    /**
-     * Método disparado ao ser acessada a aplicação
-     *
-     * @param request
-     */
     @Override
     protected void init(VaadinRequest request) {
 
-        
         // obtém o arquivo de mensagens de acordo com o locale do usuário
         mensagens = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", request.getLocale()));
 
@@ -138,16 +118,14 @@ public class GestorMDI extends UI {
             throw new RuntimeException(ex);
         }
 
-        
         //obtém os cookies da sessão
         CookiesManager cookieManager = new CookiesManager();
         GestorSession.setAttribute("cookieManager", cookieManager);
-        
 
         // obtém e armazena as imagens
         gestorWebImagens = new GestorWebImagens();
 
-        loadPaginaInicial();
+        loadstartPage();
 
         setSizeFull();
 
@@ -177,6 +155,4 @@ public class GestorMDI extends UI {
         return application;
     }
 
-    
-    
 }

@@ -156,6 +156,56 @@ public class PopUpEvolucaoStatusModel {
 
         return null;
     }
+    
+    /**
+     * Registra a recusa de uma tarefa
+     *
+     * @param idTarefa
+     * @param motivoBloqueio
+     * @param loggedUser
+     * @return
+     */
+    public Tarefa recusarTarefa(Integer idTarefa, String motivoRecusa, Usuario loggedUser) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        try {
+
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+
+            BloqueioTarefa bloqueioTarefa = new BloqueioTarefa();
+            bloqueioTarefa.setTarefa(tarefa);
+            bloqueioTarefa.setMotivo(motivoRecusa);
+            bloqueioTarefa.setStatus(tarefa.getStatus());
+            bloqueioTarefa.setDataHoraInclusao(LocalDateTime.now());
+            bloqueioTarefa.setUsuarioInclusao(loggedUser);
+
+            tarefa.setStatus(StatusTarefa.NAO_ACEITA);
+
+            tarefa.addBloqueio(bloqueioTarefa);
+
+            StringBuilder historico = new StringBuilder();
+            historico.append("Tarefa RECUSADA!");
+
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), motivoRecusa, loggedUser, tarefa, LocalDateTime.now());
+
+            tarefa.addHistorico(historicoTarefa);
+
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
 
     /**
      * Registra o adiamento de uma tarefa
@@ -242,6 +292,54 @@ public class PopUpEvolucaoStatusModel {
             StringBuilder historico = new StringBuilder();
 
             historico.append("BLOQUEIO Removido!");
+            historico.append(" Tarefa voltou ao status: ");
+            historico.append(tarefa.getStatus());
+
+            HistoricoTarefa historicoTarefa = new HistoricoTarefa(historico.toString(), null, usuario, tarefa, LocalDateTime.now());
+
+            tarefa.addHistorico(historicoTarefa);
+
+            em.merge(tarefa);
+
+            em.getTransaction().commit();
+
+            return tarefa;
+
+        } catch (Exception ex) {
+            em.getTransaction().rollback();
+            Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+    
+    /**
+     * Libera uma tarefa recusada
+     *
+     * @param idTarefa
+     * @param usuario
+     * @return
+     */
+    public Tarefa removerRecusaTarefa(Integer idTarefa, Usuario usuario) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        try {
+
+            em.getTransaction().begin();
+
+            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+
+            BloqueioTarefa bloqueioAtivo = obterBloqueioAtivo(tarefa);
+
+            bloqueioAtivo.setDataHoraRemocao(LocalDateTime.now());
+            bloqueioAtivo.setUsuarioRemocao(usuario);
+
+            tarefa.setStatus(bloqueioAtivo.getStatus());
+
+            StringBuilder historico = new StringBuilder();
+
+            historico.append("Recusa Removida!");
             historico.append(" Tarefa voltou ao status: ");
             historico.append(tarefa.getStatus());
 

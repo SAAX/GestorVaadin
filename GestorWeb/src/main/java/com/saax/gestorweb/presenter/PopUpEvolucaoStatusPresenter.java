@@ -196,10 +196,9 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
                     break;
                 case NAO_ACEITA:
 
-                    // Se a tarefa ainda não estiver aceita, possibilita:
-                    // * aceitar a tarefa
-                    // * ver histórico
-                    view.apresentaPerfilUsuarioResponsavelTarefaNaoAceita();
+                    BloqueioTarefa ultimoRecusaTarefa = model.obterBloqueioAtivo(tarefa);
+                    String motivoRecusa = ultimoRecusaTarefa.getMotivo();
+                    view.apresentaPerfilUsuarioResponsavelTarefaRecusada(motivoRecusa);
 
                     break;
                 case NAO_INICIADA:
@@ -373,7 +372,19 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
         view.apresentaPopUpMotivoBloqueio();
 
     }
+    
+    /**
+     * Evento disparado ao ser solicitada a recusa da tarefa
+     */
+    @Override
+    public void recusarTarefaClicked() {
 
+        view.apresentaPopUpMotivoRecusa();
+
+    }
+
+    
+    
     /**
      * Evento disparado ao ser solicitado o histórico da tarefa
      */
@@ -393,6 +404,20 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
         String motivoBloqueio = view.getMotivoBloqueioTextArea().getValue();
 
         tarefa = model.bloquearTarefa(tarefa.getId(), motivoBloqueio, usuario);
+
+        closePopUpButton();
+
+    }
+    
+    /**
+     * Evento disparado ao ser confirmada a recusa da tarefa
+     */
+    @Override
+    public void confirmarRecusaClicked() {
+
+        String motivoRecusa = view.getMotivoRecusaTextArea().getValue();
+
+        tarefa = model.recusarTarefa(tarefa.getId(), motivoRecusa, usuario);
 
         closePopUpButton();
 
@@ -423,6 +448,15 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
     @Override
     public void removerBloqueioTarefaClicked() {
         tarefa = model.removerBloqueioTarefa(tarefa.getId(), usuario);
+        closePopUpButton();
+    }
+    
+    /**
+     * Evento disparado ao ser solicitado para remover a recusa da tarefa
+     */
+    @Override
+    public void removerRecusaTarefaClicked() {
+        tarefa = model.removerRecusaTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 

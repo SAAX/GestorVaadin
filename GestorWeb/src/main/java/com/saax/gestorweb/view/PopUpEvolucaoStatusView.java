@@ -51,10 +51,15 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     private PopUpEvolucaoStatusViewListener listener;
     private ComboBox andamentoTarefaCombo;
     private Button bloquearTarefaButton;
+    private Button recusarTarefaButton;
     private Button historicoTarefaButton;
     private TextArea motivoBloqueioTextArea;
     private Button confirmarBloqueio;
     private Button cancelarBloqueio;
+    private TextArea motivoRecusaTextArea;
+    private Button confirmarRecusa;
+    private Button cancelarRecusa;
+    private Button removerRecusaTarefaButton;
     private Button adiarTarefaButton;
     private Button cancelarTarefaButton;
     private Button removerBloqueioTarefaButton;
@@ -181,6 +186,12 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
             listener.bloquearTarefaClicked();
         });
         alterarStatusContainer.addComponent(bloquearTarefaButton);
+        
+        recusarTarefaButton = new Button(mensagens.getString("PopUpEvolucaoStatusView.recusarTarefaButton.label"));
+        recusarTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.recusarTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(recusarTarefaButton);
 
         alterarStatusContainer.addComponent(buildHistoricoTarefaButton());
 
@@ -222,6 +233,47 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
             listener.removerBloqueioTarefaClicked();
         });
         alterarStatusContainer.addComponent(removerBloqueioTarefaButton);
+
+        alterarStatusContainer.addComponent(buildHistoricoTarefaButton());
+
+        main.addComponent(alterarStatusContainer);
+
+    }
+    
+    /**
+     * Carrega o modo de visualização onde o usuário responsável pode alterar
+     * uma tarefa bloqueada <br>
+     * São apresentados: <br>
+     * <br>
+     * <ol>
+     * <li>O combo de andamento preenchido e desabilitado</li>
+     * <li>Botão para desbloquear a tarefa</li>
+     * <li>Botão para listar historico</li>
+     * </ol>
+     *
+     */
+    public void apresentaPerfilUsuarioResponsavelTarefaRecusada(String motivoBloqueio) {
+
+        main.removeAllComponents();
+
+        main.setSpacing(true);
+
+        
+        main.addComponent(new Label("<h2>Tarefa RECUSADA.</h2>", ContentMode.HTML));
+        main.addComponent(new Label("<p>Motivo: " + motivoBloqueio + "</p>", ContentMode.HTML));
+        
+        // ---------------------------------------------------------------------
+        // Campos para alterar status / Historico
+        // ---------------------------------------------------------------------
+        HorizontalLayout alterarStatusContainer = new HorizontalLayout();
+
+        alterarStatusContainer.setSpacing(true);
+
+        removerRecusaTarefaButton = new Button("Remover Recusa");
+        removerRecusaTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.removerRecusaTarefaClicked();
+        });
+        alterarStatusContainer.addComponent(removerRecusaTarefaButton);
 
         alterarStatusContainer.addComponent(buildHistoricoTarefaButton());
 
@@ -297,6 +349,49 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         });
         barraDeBotoesContainer.addComponent(confirmarBloqueio);
         barraDeBotoesContainer.setComponentAlignment(confirmarBloqueio, Alignment.BOTTOM_RIGHT);
+
+        subContent.addComponent(barraDeBotoesContainer);
+        
+        // Center it in the browser window
+        subWindow.center();
+
+        // Open it in the UI
+        UI.getCurrent().addWindow(subWindow);
+
+    }
+    
+    public void apresentaPopUpMotivoRecusa() {
+
+        Window subWindow = new Window("Informe o motivo da recusa");
+        subWindow.setWidth("400px");
+        subWindow.setHeight("200px");
+
+        VerticalLayout subContent = new VerticalLayout();
+        subContent.setMargin(true);
+        subWindow.setContent(subContent);
+
+        motivoRecusaTextArea = new TextArea();
+        
+
+        subContent.addComponent(motivoRecusaTextArea);
+        motivoRecusaTextArea.setSizeFull();
+
+        HorizontalLayout barraDeBotoesContainer = new HorizontalLayout();
+        barraDeBotoesContainer.setWidth("100%");
+        barraDeBotoesContainer.setSpacing(true);
+
+        cancelarRecusa = new Button("Cancelar Recusa", (Button.ClickEvent event) -> {
+            subWindow.close();
+        });
+        barraDeBotoesContainer.addComponent(cancelarRecusa);
+        barraDeBotoesContainer.setComponentAlignment(cancelarRecusa, Alignment.BOTTOM_LEFT);
+
+        confirmarRecusa = new Button("Confirmar Recusa", (Button.ClickEvent event) -> {
+            listener.confirmarRecusaClicked();
+            subWindow.close();
+        });
+        barraDeBotoesContainer.addComponent(confirmarRecusa);
+        barraDeBotoesContainer.setComponentAlignment(confirmarRecusa, Alignment.BOTTOM_RIGHT);
 
         subContent.addComponent(barraDeBotoesContainer);
         
@@ -391,6 +486,10 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     public TextArea getMotivoBloqueioTextArea() {
         return motivoBloqueioTextArea;
     }
+    
+    public TextArea getMotivoRecusaTextArea() {
+        return motivoRecusaTextArea;
+    }
 
     /**
      * Carrega o modo de visualização onde o usuário solicitante pode visualizar
@@ -436,7 +535,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
             main.addComponent(new Label("<p>Motivo: " + motivoBloqueio + "</p>", ContentMode.HTML));
 
         }
-
+        
         // ---------------------------------------------------------------------
         // Campos para alterar status / Historico
         // ---------------------------------------------------------------------
@@ -754,6 +853,12 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         });
         barraDeBotoesContainer.addComponent(cancelarBloqueio);
         barraDeBotoesContainer.setComponentAlignment(cancelarBloqueio, Alignment.BOTTOM_LEFT);
+        
+        cancelarRecusa = new Button("Cancelar", (Button.ClickEvent event) -> {
+            subWindow.close();
+        });
+        barraDeBotoesContainer.addComponent(cancelarRecusa);
+        barraDeBotoesContainer.setComponentAlignment(cancelarRecusa, Alignment.BOTTOM_LEFT);
 
         confirmarBloqueio = new Button("Confirmar", (Button.ClickEvent event) -> {
             listener.confirmarAlteracaoHistoricoClicked(historicoTarefa);
@@ -761,6 +866,13 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         });
         barraDeBotoesContainer.addComponent(confirmarBloqueio);
         barraDeBotoesContainer.setComponentAlignment(confirmarBloqueio, Alignment.BOTTOM_RIGHT);
+        
+        confirmarRecusa = new Button("Confirmar", (Button.ClickEvent event) -> {
+            listener.confirmarAlteracaoHistoricoClicked(historicoTarefa);
+            subWindow.close();
+        });
+        barraDeBotoesContainer.addComponent(confirmarRecusa);
+        barraDeBotoesContainer.setComponentAlignment(confirmarRecusa, Alignment.BOTTOM_RIGHT);
 
         subContent.addComponent(barraDeBotoesContainer);
         

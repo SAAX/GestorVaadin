@@ -275,6 +275,7 @@ INSERT INTO statustarefa VALUES ('BLOQUEADA');
 INSERT INTO statustarefa VALUES ('CONCLUIDA');
 INSERT INTO statustarefa VALUES ('AVALIADA');
 INSERT INTO statustarefa VALUES ('CANCELADA');
+INSERT INTO statustarefa VALUES ('RECUSADA');
 
 -- Projecao Tarefa
 DROP TABLE IF EXISTS ProjecaoTarefa CASCADE;

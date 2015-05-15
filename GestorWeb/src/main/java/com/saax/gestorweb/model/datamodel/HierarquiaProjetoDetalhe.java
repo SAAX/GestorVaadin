@@ -67,7 +67,7 @@ public class HierarquiaProjetoDetalhe implements Serializable, Comparable<Hierar
 
     
     @OneToMany(mappedBy = "hierarquia")
-    private List<Tarefa> tarefas;
+    private List<Task> tarefas;
     
     public HierarquiaProjetoDetalhe() {
     }
@@ -124,11 +124,11 @@ public class HierarquiaProjetoDetalhe implements Serializable, Comparable<Hierar
         return dataHoraInclusao;
     }
 
-    public void setTarefas(List<Tarefa> tarefas) {
+    public void setTarefas(List<Task> tarefas) {
         this.tarefas = tarefas;
     }
 
-    public List<Tarefa> getTarefas() {
+    public List<Task> getTarefas() {
         return tarefas;
     }
 

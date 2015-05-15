@@ -1,7 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
@@ -9,9 +9,9 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
+import com.saax.gestorweb.presenter.TaskPresenter;
 import com.saax.gestorweb.presenter.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.ErrorUtils;
 import com.saax.gestorweb.util.FormatterUtil;
@@ -69,8 +69,8 @@ import java.util.logging.Logger;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
- * Pop-up Window task master. The display will be in a accordion structure with
- * three tabs:
+ * Pop-up Window task manager.<br>
+ * The display will be in a accordion structure with three tabs:
  * <br>
  * <ol>
  * <li>Initial task data</li>
@@ -83,7 +83,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author rodrigo
  */
-public class CadastroTarefaView extends Window {
+public class TaskView extends Window {
 
     // Reference to the use of the messages:
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -91,7 +91,7 @@ public class CadastroTarefaView extends Window {
 
     // The view maintains access to the listener (Presenter) to notify events
     // This access is through an interface to maintain the abstraction layers
-    private CadastroTarefaViewListener listener;
+    private TaskViewListener listener;
 
     // List of all the fields that have validation
     private final List<AbstractField> requiredFields;
@@ -118,7 +118,7 @@ public class CadastroTarefaView extends Window {
     // -----------------------------------------------------------------------------------
     // Bean Biding
     // -----------------------------------------------------------------------------------
-    private BeanItem<Tarefa> taskBeanItem;
+    private BeanItem<Task> taskBeanItem;
     private FieldGroup taskFieldGroup;
 
     // -------------------------------------------------------------------------
@@ -222,7 +222,7 @@ public class CadastroTarefaView extends Window {
      * Create a view and all components
      *
      */
-    public CadastroTarefaView() {
+    public TaskView() {
         super();
 
         requiredFields = new ArrayList();
@@ -232,9 +232,9 @@ public class CadastroTarefaView extends Window {
         setHeight(600, Unit.PIXELS);
 
         // Main Container, which will store all other containers
-        VerticalLayout containerPrincipal = buildContainerPrincipal();
-        containerPrincipal.setSpacing(true);
-        setContent(containerPrincipal);
+        VerticalLayout mainContainer = buildMainContainer();
+        mainContainer.setSpacing(true);
+        setContent(mainContainer);
 
         center();
 
@@ -247,7 +247,7 @@ public class CadastroTarefaView extends Window {
      *
      * @param listener
      */
-    public void setListener(CadastroTarefaViewListener listener) {
+    public void setListener(TaskViewListener listener) {
         this.listener = listener;
     }
 
@@ -256,7 +256,7 @@ public class CadastroTarefaView extends Window {
      *
      * @param task
      */
-    public void setTarefa(Tarefa task) {
+    public void setTarefa(Task task) {
 
         taskBeanItem = new BeanItem<>(task);
         taskFieldGroup = new FieldGroup(taskBeanItem);
@@ -271,7 +271,7 @@ public class CadastroTarefaView extends Window {
      *
      * @return
      */
-    public Tarefa getTarefa() {
+    public Task getTarefa() {
         return taskBeanItem.getBean();
     }
 
@@ -280,7 +280,7 @@ public class CadastroTarefaView extends Window {
      *
      * @return
      */
-    private VerticalLayout buildContainerPrincipal() {
+    private VerticalLayout buildMainContainer() {
 
         VerticalLayout principalContainer = new VerticalLayout();
         principalContainer.setMargin(true);
@@ -299,25 +299,25 @@ public class CadastroTarefaView extends Window {
         accordion = new Accordion();
         accordion.setWidth("100%");
         // Add the tab of initial data
-        accordion.addTab(buildAbaDadosIniciais(), messages.getString("CadastroTarefaView.AbaDadosIniciais.titulo"), null);
+        accordion.addTab(buildInitialTaskDataSheet(), messages.getString("TaskView.InitialTaskData.title"), null);
         // Add the description tab and responsible
-        accordion.addTab(buildAbaDescricaoEResponsaveis(), messages.getString("CadastroTarefaView.AbaDescricaoEResponsaveis.titulo"), null);
+        accordion.addTab(buildDescriptionAndAssigneeSheet(), messages.getString("TaskView.DescriptionAndAssignee.title"), null);
         // Add the task detail tab
-        accordion.addTab(buildAbaDetalhes(), messages.getString("CadastroTarefaView.AbaDetalhes.titulo"), null);
+        accordion.addTab(buildDetailsSheet(), messages.getString("TaskView.DetailsSheet.title"), null);
         // Add the optional tab hours control
-        accordion.addTab(buildAbaControleHoras(), messages.getString("CadastroTarefaView.AbaControleHoras.titulo"), null);
+        accordion.addTab(buildPointingHoursSheet(), messages.getString("TaskView.PointingHours.title"), null);
         // Add the optional tab budget control
-        accordion.addTab(buildAbaOrcamento(), messages.getString("CadastroTarefaView.AbaOrcamento.titulo"), null);
+        accordion.addTab(buildBudgetSheet(), messages.getString("TaskView.BudgetSheet.title"), null);
         // adiciona a aba sub tarefas
-        accordion.addTab(buildAbaSubTarefas(), messages.getString("CadastroTarefaView.AbaSubTarefas.titulo"), null);
+        accordion.addTab(buildSubTasksSheet(), messages.getString("TaskView.SubTasks.tittle"), null);
 
         principalContainer.addComponent(accordion);
         principalContainer.setExpandRatio(accordion, 1);
 
         // Add the lower buttons bar with buttons to save and gates
-        Component barraInferior = buildBarraBotoesInferior();
-        principalContainer.addComponent(barraInferior);
-        principalContainer.setComponentAlignment(barraInferior, Alignment.MIDDLE_CENTER);
+        Component bottonBar = buildBarraBotoesInferior();
+        principalContainer.addComponent(bottonBar);
+        principalContainer.setComponentAlignment(bottonBar, Alignment.MIDDLE_CENTER);
 
         return principalContainer;
 
@@ -339,51 +339,51 @@ public class CadastroTarefaView extends Window {
      *
      * @return
      */
-    private Component buildAbaDadosIniciais() {
+    private Component buildInitialTaskDataSheet() {
 
         // Combo: Company
-        companyCombo = new ComboBox(messages.getString("CadastroTarefaView.empresaCombo.label"));
+        companyCombo = new ComboBox(messages.getString("TaskView.companyCombo.label"));
         companyCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.empresaSelecionada((Empresa) event.getProperty().getValue());
         });
         companyCombo.setWidth("100%");
-        companyCombo.addValidator(new BeanValidator(Tarefa.class, "empresa"));
+        companyCombo.addValidator(new BeanValidator(Task.class, "empresa"));
         requiredFields.add(companyCombo);
 
         // Combo: Hierarchy
-        hierarchyCombo = new ComboBox(messages.getString("CadastroTarefaView.hierarquiaCombo.label"));
+        hierarchyCombo = new ComboBox(messages.getString("TaskView.hierarchyCombo.label"));
         hierarchyCombo.setWidth("140px");
-        hierarchyCombo.addValidator(new BeanValidator(Tarefa.class, "hierarquia"));
+        hierarchyCombo.addValidator(new BeanValidator(Task.class, "hierarquia"));
         hierarchyCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.hierarquiaSelecionada((HierarquiaProjetoDetalhe) event.getProperty().getValue());
         });
         requiredFields.add(hierarchyCombo);
 
         // TextField: task Name
-        taskNameTextField = new TextField(messages.getString("CadastroTarefaView.nomeTarefaTextField.label"));
+        taskNameTextField = new TextField(messages.getString("TaskView.nomeTarefaTextField.label"));
         taskNameTextField.setWidth("100%");
-        taskNameTextField.setInputPrompt(messages.getString("CadastroTarefaView.nomeTarefaTextField.inputPrompt"));
+        taskNameTextField.setInputPrompt(messages.getString("TaskView.nomeTarefaTextField.inputPrompt"));
         taskNameTextField.setNullRepresentation("");
-        taskNameTextField.addValidator(new BeanValidator(Tarefa.class, "nome"));
+        taskNameTextField.addValidator(new BeanValidator(Task.class, "nome"));
         requiredFields.add(taskNameTextField);
 
         // TextField: Start Date
-        startDateDateField = new PopupDateField(messages.getString("CadastroTarefaView.dataInicioTextField.label"));
+        startDateDateField = new PopupDateField(messages.getString("TaskView.startDateTextField.label"));
         startDateDateField.setWidth("100%");
-        startDateDateField.setInputPrompt(messages.getString("CadastroTarefaView.dataInicioDateField.inputPrompt"));
+        startDateDateField.setInputPrompt(messages.getString("TaskView.dataInicioDateField.inputPrompt"));
         startDateDateField.setConverter(new DateToLocalDateConverter());
-        startDateDateField.addValidator(new BeanValidator(Tarefa.class, "dataInicio"));
+        startDateDateField.addValidator(new BeanValidator(Task.class, "dataInicio"));
         //dataInicioDateField.addValidator(new DataFuturaValidator(true, "Data de Início"));
         requiredFields.add(startDateDateField);
 
         // Button Recurrence
-        typeRecurrenceButton = new Button(messages.getString("CadastroTarefaView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
+        typeRecurrenceButton = new Button(messages.getString("TaskView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
             listener.recurrenceClicked();
         });
         typeRecurrenceButton.setWidth("100%");
 
         // Combo Priority
-        priorityCombo = new ComboBox(messages.getString("CadastroTarefaView.prioridadeCombo.label"));
+        priorityCombo = new ComboBox(messages.getString("TaskView.prioridadeCombo.label"));
         priorityCombo.setWidth("100%");
 
         // task status pop-up
@@ -391,7 +391,7 @@ public class CadastroTarefaView extends Window {
         taskStatusPopUpButton.setWidth("100%");
 
         // TextField: End Date
-        endDateDateField = new PopupDateField(messages.getString("CadastroTarefaView.dataFimTextField.label"));
+        endDateDateField = new PopupDateField(messages.getString("TaskView.dataFimTextField.label"));
         endDateDateField.setWidth("100%");
         endDateDateField.setConverter(new DateToLocalDateConverter());
 
@@ -399,7 +399,7 @@ public class CadastroTarefaView extends Window {
         endDateDateField.addValidator(new DataFimValidator(startDateDateField, "Data Fim"));
 
         // Componente de aviso
-//        avisoButton = new Button(messages.getString("CadastroTarefaView.avisoButton.caption"), (Button.ClickEvent event) -> {
+//        avisoButton = new Button(messages.getString("TaskView.avisoButton.caption"), (Button.ClickEvent event) -> {
 //            listener.avisoButtonClicked();
 //        });
 //        avisoButton.setWidth("100%");
@@ -442,18 +442,18 @@ public class CadastroTarefaView extends Window {
         buttonsSuperiorBar.setSpacing(true);
         buttonsSuperiorBar.setSizeUndefined();
 
-        templateCheckBox = new CheckBox(messages.getString("CadastroTarefaView.templateCheckBox.caption"));
+        templateCheckBox = new CheckBox(messages.getString("TaskView.templateCheckBox.caption"));
 
         buttonsSuperiorBar.addComponent(templateCheckBox);
 
-        pointingHoursCheckBox = new CheckBox(messages.getString("CadastroTarefaView.apontamentoHorasCheckBox.caption"));
+        pointingHoursCheckBox = new CheckBox(messages.getString("TaskView.apontamentoHorasCheckBox.caption"));
         pointingHoursCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.apontamentoHorasSwitched(event);
         });
 
         buttonsSuperiorBar.addComponent(pointingHoursCheckBox);
 
-        budgetControlCheckBox = new CheckBox(messages.getString("CadastroTarefaView.orcamentoControladoCheckBox.caption"));
+        budgetControlCheckBox = new CheckBox(messages.getString("TaskView.orcamentoControladoCheckBox.caption"));
         budgetControlCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.controleOrcamentoSwitched(event);
         });
@@ -489,20 +489,20 @@ public class CadastroTarefaView extends Window {
         lowerButtonsBar.setSizeUndefined();
         lowerButtonsBar.setSpacing(true);
 
-        saveButton = new Button(messages.getString("CadastroTarefaView.gravarButton.caption"), (Button.ClickEvent event) -> {
+        saveButton = new Button(messages.getString("TaskView.gravarButton.caption"), (Button.ClickEvent event) -> {
             try {
                 setValidatorsVisible(true);
                 taskFieldGroup.commit();
                 listener.gravarButtonClicked();
             } catch (Exception ex) {
                 ErrorUtils.showComponentErrors(this.taskFieldGroup.getFields());
-                Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.WARNING, null, ex);
+                Logger.getLogger(TaskView.class.getName()).log(Level.WARNING, null, ex);
             }
         });
 
         lowerButtonsBar.addComponent(saveButton);
 
-        cancelButton = new Button(messages.getString("CadastroTarefaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
+        cancelButton = new Button(messages.getString("TaskView.cancelarButton.caption"), (Button.ClickEvent event) -> {
             listener.cancelarButtonClicked();
         });
         lowerButtonsBar.addComponent(cancelButton);
@@ -515,19 +515,19 @@ public class CadastroTarefaView extends Window {
      *
      * @return
      */
-    private Component buildAbaDescricaoEResponsaveis() {
+    private Component buildDescriptionAndAssigneeSheet() {
 
-        taskDescriptionTextArea = new RichTextArea(messages.getString("CadastroTarefaView.descricaoTarefaTextArea.caption"));
+        taskDescriptionTextArea = new RichTextArea(messages.getString("TaskView.descricaoTarefaTextArea.caption"));
         taskDescriptionTextArea.setNullRepresentation("");
 
-        assigneeUserCombo = new ComboBox(messages.getString("CadastroTarefaView.responsavelCombo.label"));
+        assigneeUserCombo = new ComboBox(messages.getString("TaskView.responsavelCombo.label"));
         assigneeUserCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.assigneeUserChanged((Usuario) event.getProperty().getValue());
         });
 
         requiredFields.add(assigneeUserCombo);
 
-        followersCombo = new ComboBox(messages.getString("CadastroTarefaView.participantesCombo.label"));
+        followersCombo = new ComboBox(messages.getString("TaskView.participantesCombo.label"));
 
         followersCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.adicionarParticipante((Usuario) event.getProperty().getValue());
@@ -553,13 +553,13 @@ public class CadastroTarefaView extends Window {
         followersTable.setContainerDataSource(followersContainer);
 
         followersTable.setColumnWidth("usuarioParticipante", 120);
-        followersTable.setColumnHeader("usuarioParticipante", messages.getString("CadastroTarefaView.participantesTable.colunaParticipante"));
+        followersTable.setColumnHeader("usuarioParticipante", messages.getString("TaskView.participantesTable.colunaParticipante"));
 
         followersTable.setVisibleColumns("usuarioParticipante");
 
         // Adicionar coluna do botão "remover"
-        followersTable.addGeneratedColumn(messages.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(messages.getString("CadastroTarefaView.participantesTable.colunaBotaoRemover"));
+        followersTable.addGeneratedColumn(messages.getString("TaskView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(messages.getString("TaskView.participantesTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerParticipante((ParticipanteTarefa) itemId);
             });
@@ -573,7 +573,7 @@ public class CadastroTarefaView extends Window {
         followersTable.setWidth("100%");
         followersTable.setPageLength(3);
 
-        Label labelCliente = new Label("<b>" + messages.getString("CadastroTarefaView.empresaClienteCombo.label") + "</b>", ContentMode.HTML);
+        Label labelCliente = new Label("<b>" + messages.getString("TaskView.empresaClienteCombo.label") + "</b>", ContentMode.HTML);
         customerCompanyCombo = new ComboBox();
 
         // do layout :
@@ -598,13 +598,13 @@ public class CadastroTarefaView extends Window {
      *
      * @return
      */
-    private Component buildAbaDetalhes() {
+    private Component buildDetailsSheet() {
 
         // department Combo
-        departamentCombo = new ComboBox(messages.getString("CadastroTarefaView.departamentoCombo.caption"));
+        departamentCombo = new ComboBox(messages.getString("TaskView.departamentoCombo.caption"));
 
         // Cost Center combo
-        costCenterCombo = new ComboBox(messages.getString("CadastroTarefaView.centroCustoCombo.caption"));
+        costCenterCombo = new ComboBox(messages.getString("TaskView.centroCustoCombo.caption"));
 
         // upload Progress Bar
         uploadHorizontalLayout = new HorizontalLayout();
@@ -613,7 +613,7 @@ public class CadastroTarefaView extends Window {
         attachProgressBar = new ProgressBar();
         attachProgressBar.setWidth("100%");
 
-        addAttach = new Upload(messages.getString("CadastroTarefaView.adicionarAnexoButton.filechooser.caption"), (String filename, String mimeType) -> {
+        addAttach = new Upload(messages.getString("TaskView.adicionarAnexoButton.filechooser.caption"), (String filename, String mimeType) -> {
             FileOutputStream fos = null;
             try {
                 File randomFolder = new File(System.getProperty("user.dir") + "/tmp/" + String.valueOf(Math.abs(new Random().nextInt())));
@@ -630,7 +630,7 @@ public class CadastroTarefaView extends Window {
             }
             return fos;
         });
-        addAttach.setButtonCaption(messages.getString("CadastroTarefaView.adicionarAnexoButton.caption"));
+        addAttach.setButtonCaption(messages.getString("TaskView.adicionarAnexoButton.caption"));
 
         addAttach.addSucceededListener((Upload.SucceededEvent event) -> {
             listener.anexoAdicionado((File) event.getUpload().getData());
@@ -643,7 +643,7 @@ public class CadastroTarefaView extends Window {
         });
         addAttach.addFinishedListener((Upload.FinishedEvent event) -> {
             uploadHorizontalLayout.removeComponent(attachProgressBar);
-            Notification.show(messages.getString("CadastroTarefaView.adicionarAnexoButton.uploadConcluido.mensagem"), Notification.Type.TRAY_NOTIFICATION);
+            Notification.show(messages.getString("TaskView.adicionarAnexoButton.uploadConcluido.mensagem"), Notification.Type.TRAY_NOTIFICATION);
         });
         addAttach.addStartedListener((Upload.StartedEvent event) -> {
             uploadHorizontalLayout.addComponent(attachProgressBar);
@@ -658,13 +658,13 @@ public class CadastroTarefaView extends Window {
 
         attachmentsAddedTable.setColumnWidth("nome", 350);
 
-        attachmentsAddedTable.setColumnHeader("nome", messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaNome"));
+        attachmentsAddedTable.setColumnHeader("nome", messages.getString("TaskView.anexosAdicionadosTable.colunaNome"));
 
         attachmentsAddedTable.setVisibleColumns("nome");
 
         // Adicionar coluna do botão "download"
-        attachmentsAddedTable.addGeneratedColumn(messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
-            Button downloadButton = new Button(messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"));
+        attachmentsAddedTable.addGeneratedColumn(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
+            Button downloadButton = new Button(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"));
             AnexoTarefa anexoTarefa = (AnexoTarefa) itemId;
             FileDownloader fd = new FileDownloader(new FileResource(anexoTarefa.getArquivo() == null ? anexoTarefa.getArquivoTemporario() : anexoTarefa.getArquivo()));
 
@@ -672,16 +672,16 @@ public class CadastroTarefaView extends Window {
 
             return downloadButton;
         });
-        attachmentsAddedTable.setColumnWidth(messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
+        attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
 
-        attachmentsAddedTable.addGeneratedColumn(messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"));
+        attachmentsAddedTable.addGeneratedColumn(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerAnexo((AnexoTarefa) itemId);
             });
             return removeButton;
         });
-        attachmentsAddedTable.setColumnWidth(messages.getString("CadastroTarefaView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
+        attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
         attachmentsAddedTable.setSelectable(true);
         attachmentsAddedTable.setImmediate(true);
         attachmentsAddedTable.setWidth("100%");
@@ -740,23 +740,23 @@ public class CadastroTarefaView extends Window {
      *
      * @return
      */
-    private Component buildAbaControleHoras() {
+    private Component buildPointingHoursSheet() {
 
         // Hours control fields
         hourCostTextField = new TextField();
-        hourCostTextField.setInputPrompt(messages.getString("CadastroTarefaView.custoHoraTextField.inputPrompt"));
+        hourCostTextField.setInputPrompt(messages.getString("TaskView.custoHoraTextField.inputPrompt"));
         hourCostTextField.setNullRepresentation("");
         hourCostTextField.setConverter(new StringToBigDecimalConverter());
 
         hoursAddTextField = new TextField();
-        hoursAddTextField.setInputPrompt(messages.getString("CadastroTarefaView.imputarHorasTextField.inputPrompt"));
+        hoursAddTextField.setInputPrompt(messages.getString("TaskView.imputarHorasTextField.inputPrompt"));
         hoursAddTextField.setNullRepresentation("");
 
         hoursObservationTextField = new TextField();
-        hoursObservationTextField.setInputPrompt(messages.getString("CadastroTarefaView.observacaoHorasTextField.inputPrompt"));
+        hoursObservationTextField.setInputPrompt(messages.getString("TaskView.observacaoHorasTextField.inputPrompt"));
         hoursObservationTextField.setNullRepresentation("");
 
-        hoursAddButton = new Button(messages.getString("CadastroTarefaView.imputarHorasButton.caption"));
+        hoursAddButton = new Button(messages.getString("TaskView.imputarHorasButton.caption"));
         hoursAddButton.addClickListener((Button.ClickEvent event) -> {
             listener.imputarHorasClicked();
         });
@@ -801,24 +801,24 @@ public class CadastroTarefaView extends Window {
         pointingTimeTable.setContainerDataSource(hoursControlContainer);
 
         pointingTimeTable.setColumnWidth("dataHoraInclusao", 150);
-        pointingTimeTable.setColumnHeader("dataHoraInclusao", messages.getString("CadastroTarefaView.controleHorasTable.colunaData"));
+        pointingTimeTable.setColumnHeader("dataHoraInclusao", messages.getString("TaskView.controleHorasTable.colunaData"));
         pointingTimeTable.setColumnWidth("observacoes", 150);
-        pointingTimeTable.setColumnHeader("observacoes", messages.getString("CadastroTarefaView.controleHorasTable.colunaObservacoes"));
+        pointingTimeTable.setColumnHeader("observacoes", messages.getString("TaskView.controleHorasTable.colunaObservacoes"));
         pointingTimeTable.setColumnWidth("creditoHoras", 80);
-        pointingTimeTable.setColumnHeader("creditoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaCreditoHoras"));
+        pointingTimeTable.setColumnHeader("creditoHoras", messages.getString("TaskView.controleHorasTable.colunaCreditoHoras"));
         pointingTimeTable.setColumnWidth("debitoHoras", 80);
-        pointingTimeTable.setColumnHeader("debitoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaDebitoHoras"));
+        pointingTimeTable.setColumnHeader("debitoHoras", messages.getString("TaskView.controleHorasTable.colunaDebitoHoras"));
         pointingTimeTable.setColumnWidth("saldoHoras", 80);
-        pointingTimeTable.setColumnHeader("saldoHoras", messages.getString("CadastroTarefaView.controleHorasTable.colunaSaldoHoras"));
+        pointingTimeTable.setColumnHeader("saldoHoras", messages.getString("TaskView.controleHorasTable.colunaSaldoHoras"));
         pointingTimeTable.setColumnWidth("creditoValor", 80);
         pointingTimeTable.setColumnAlignment("creditoValor", Table.Align.RIGHT);
-        pointingTimeTable.setColumnHeader("creditoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaCreditoValor"));
+        pointingTimeTable.setColumnHeader("creditoValor", messages.getString("TaskView.controleHorasTable.colunaCreditoValor"));
         pointingTimeTable.setColumnWidth("debitoValor", 80);
         pointingTimeTable.setColumnAlignment("debitoValor", Table.Align.RIGHT);
-        pointingTimeTable.setColumnHeader("debitoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaDebitoValor"));
+        pointingTimeTable.setColumnHeader("debitoValor", messages.getString("TaskView.controleHorasTable.colunaDebitoValor"));
         pointingTimeTable.setColumnWidth("saldoValor", 80);
         pointingTimeTable.setColumnAlignment("saldoValor", Table.Align.RIGHT);
-        pointingTimeTable.setColumnHeader("saldoValor", messages.getString("CadastroTarefaView.controleHorasTable.colunaSaldoValor"));
+        pointingTimeTable.setColumnHeader("saldoValor", messages.getString("TaskView.controleHorasTable.colunaSaldoValor"));
 
         pointingTimeTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor");
         // Adicionar coluna do botão "remover"
@@ -885,18 +885,18 @@ public class CadastroTarefaView extends Window {
      *
      * @return
      */
-    private Component buildAbaOrcamento() {
+    private Component buildBudgetSheet() {
 
         budgetAddTextField = new TextField();
-        budgetAddTextField.setInputPrompt(messages.getString("CadastroTarefaView.imputarOrcamentoTextField.inputPrompt"));
+        budgetAddTextField.setInputPrompt(messages.getString("TaskView.imputarOrcamentoTextField.inputPrompt"));
         budgetAddTextField.setNullRepresentation("");
         budgetAddTextField.setConverter(new StringToBigDecimalConverter());
 
         observationBudgetTextField = new TextField();
-        observationBudgetTextField.setInputPrompt(messages.getString("CadastroTarefaView.observacaoOrcamentoTextField.inputPrompt"));
+        observationBudgetTextField.setInputPrompt(messages.getString("TaskView.observacaoOrcamentoTextField.inputPrompt"));
         observationBudgetTextField.setNullRepresentation("");
 
-        budgetAddButton = new Button(messages.getString("CadastroTarefaView.imputarOrcamentoButton.caption"), (Button.ClickEvent event) -> {
+        budgetAddButton = new Button(messages.getString("TaskView.imputarOrcamentoButton.caption"), (Button.ClickEvent event) -> {
             listener.imputarOrcamentoClicked();
         });
 
@@ -949,23 +949,23 @@ public class CadastroTarefaView extends Window {
         };
         budgetControlTable.setContainerDataSource(budgetContainer);
         budgetControlTable.setColumnWidth("dataHoraInclusao", 150);
-        budgetControlTable.setColumnHeader("dataHoraInclusao", messages.getString("CadastroTarefaView.controleOrcamentoTable.colunaData"));
+        budgetControlTable.setColumnHeader("dataHoraInclusao", messages.getString("TaskView.controleOrcamentoTable.colunaData"));
         budgetControlTable.setColumnWidth("observacoes", 150);
-        budgetControlTable.setColumnHeader("observacoes", messages.getString("CadastroTarefaView.controleOrcamentoTable.colunaObservacoes"));
+        budgetControlTable.setColumnHeader("observacoes", messages.getString("TaskView.controleOrcamentoTable.colunaObservacoes"));
         budgetControlTable.setColumnWidth("credito", 80);
-        budgetControlTable.setColumnHeader("credito", messages.getString("CadastroTarefaView.controleOrcamentoTable.colunaCredito"));
+        budgetControlTable.setColumnHeader("credito", messages.getString("TaskView.controleOrcamentoTable.colunaCredito"));
         budgetControlTable.setColumnAlignment("credito", Table.Align.RIGHT);
         budgetControlTable.setColumnWidth("debito", 80);
-        budgetControlTable.setColumnHeader("debito", messages.getString("CadastroTarefaView.controleOrcamentoTable.colunaDebito"));
+        budgetControlTable.setColumnHeader("debito", messages.getString("TaskView.controleOrcamentoTable.colunaDebito"));
         budgetControlTable.setColumnAlignment("debito", Table.Align.RIGHT);
         budgetControlTable.setColumnWidth("saldo", 80);
-        budgetControlTable.setColumnHeader("saldo", messages.getString("CadastroTarefaView.controleOrcamentoTable.colunaSaldo"));
+        budgetControlTable.setColumnHeader("saldo", messages.getString("TaskView.controleOrcamentoTable.colunaSaldo"));
         budgetControlTable.setColumnAlignment("saldo", Table.Align.RIGHT);
 
         budgetControlTable.setVisibleColumns("dataHoraInclusao", "credito", "debito", "saldo", "observacoes");
 
-        budgetControlTable.addGeneratedColumn(messages.getString("CadastroTarefaView.controleOrcamentoTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(messages.getString("CadastroTarefaView.controleOrcamentoTable.colunaBotaoRemover"));
+        budgetControlTable.addGeneratedColumn(messages.getString("TaskView.controleOrcamentoTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(messages.getString("TaskView.controleOrcamentoTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerRegistroOrcamento((OrcamentoTarefa) itemId);
             });
@@ -1023,30 +1023,30 @@ public class CadastroTarefaView extends Window {
      *
      * @return
      */
-    private Component buildAbaSubTarefas() {
+    private Component buildSubTasksSheet() {
 
         subTasksTable = new TreeTable();
         subTasksTable.setWidth("100%");
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaCod"), Button.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaCod"), 70);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaTitulo"), Button.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaTitulo"), 50);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaNome"), Button.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaNome"), 250);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaEmpresaFilial"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaEmpresaFilial"), 200);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaSolicitante"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaSolicitante"), 80);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaResponsavel"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaResponsavel"), 80);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaDataInicio"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaDataInicio"), 80);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaDataFim"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaDataFim"), 80);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaStatus"), PopupButton.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaStatus"), 200);
-        subTasksTable.addContainerProperty(messages.getString("CadastroTarefaView.subTarefasTable.colunaProjecao"), Character.class, "");
-        subTasksTable.setColumnWidth(messages.getString("CadastroTarefaView.subTarefasTable.colunaProjecao"), 30);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaCod"), Button.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaCod"), 70);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaTitulo"), Button.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaTitulo"), 50);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaNome"), Button.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaNome"), 250);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaEmpresaFilial"), String.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaEmpresaFilial"), 200);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaSolicitante"), String.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaSolicitante"), 80);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaResponsavel"), String.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaResponsavel"), 80);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaDataInicio"), String.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaDataInicio"), 80);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaDataFim"), String.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaDataFim"), 80);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaStatus"), PopupButton.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaStatus"), 200);
+        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaProjecao"), Character.class, "");
+        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaProjecao"), 30);
         subTasksTable.addContainerProperty("[E]", Button.class, "");
         subTasksTable.setColumnWidth("[E]", 30);
         subTasksTable.addContainerProperty("[C]", Button.class, "");
@@ -1076,7 +1076,7 @@ public class CadastroTarefaView extends Window {
     /**
      * @return the listener
      */
-    public CadastroTarefaViewListener getListener() {
+    public TaskViewListener getListener() {
         return listener;
     }
 
@@ -1308,7 +1308,7 @@ public class CadastroTarefaView extends Window {
         taskStatusPopUpButton.setVisible(false);
     }
 
-    private String getCaminhoTarefa(Tarefa tarefa) {
+    private String getCaminhoTarefa(Task tarefa) {
         if (tarefa.getTarefaPai() != null) {
             return getCaminhoTarefa(tarefa.getTarefaPai()) + " >> " + tarefa.getNome() == null ? "[NOVA]" : tarefa.getNome();
         } else {
@@ -1392,12 +1392,12 @@ public class CadastroTarefaView extends Window {
      * @param caption the button caption
      * @return
      */
-    public static Button buildButtonOpenTask(TaskCreationCallBackListener callback, Table table, Tarefa task, String caption) {
+    public static Button buildButtonOpenTask(TaskCreationCallBackListener callback, Table table, Task task, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
         link.addClickListener((Button.ClickEvent event) -> {
             table.setValue(task);
-            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
             presenter.setCallBackListener(callback);
             presenter.editar(task);
         });
@@ -1412,7 +1412,7 @@ public class CadastroTarefaView extends Window {
      * @param table the view table (used to auto select the row)
      * @return a popup button
      */
-    public static PopupButton buildPopUpStatusProgressTask(Table table, Tarefa task) {
+    public static PopupButton buildPopUpStatusProgressTask(Table table, Task task) {
 
         PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
         PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
@@ -1424,7 +1424,7 @@ public class CadastroTarefaView extends Window {
         // Event fired when the pop-up becomes visible:
         presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
             if (event.isPopupVisible()) {
-                Tarefa tarefaEditada = (Tarefa) event.getPopupButton().getData();
+                Task tarefaEditada = (Task) event.getPopupButton().getData();
                 table.setValue(tarefaEditada);
             }
         });

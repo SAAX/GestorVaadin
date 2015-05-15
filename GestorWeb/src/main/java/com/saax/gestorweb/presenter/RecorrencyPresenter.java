@@ -2,7 +2,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.RecorrencyModel;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -56,7 +56,7 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
     /**
      * The task being created or edited
      */
-    private Tarefa task;
+    private Task task;
     
     /**
      * Listener to be called back when the recurrency task creation is done
@@ -297,7 +297,7 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
         
     }
 
-    public void setTask(Tarefa tarefa) {
+    public void setTask(Task tarefa) {
         this.task = tarefa;
     }
     

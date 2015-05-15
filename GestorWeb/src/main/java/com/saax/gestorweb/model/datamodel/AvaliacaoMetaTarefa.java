@@ -18,8 +18,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * Entity bean da tabela Avaliacao Meta - Tarefa com as namequerys
- * configuradas.<br><br>
+ * Entity bean da tabela Avaliacao Meta - Task com as namequerys
+ configuradas.<br><br>
  *
  * O objetivo desta entidade e armazenar as avaliações feitas pelos solicitantes
  * de metas e tarefas <br><br>
@@ -64,7 +64,7 @@ public class AvaliacaoMetaTarefa implements Serializable {
 
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = true)
-    private Tarefa tarefa;
+    private Task tarefa;
 
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -132,11 +132,11 @@ public class AvaliacaoMetaTarefa implements Serializable {
         this.meta = meta;
     }
 
-    public Tarefa getTarefa() {
+    public Task getTarefa() {
         return tarefa;
     }
 
-    public void setTarefa(Tarefa tarefa) {
+    public void setTarefa(Task tarefa) {
         this.tarefa = tarefa;
     }
 

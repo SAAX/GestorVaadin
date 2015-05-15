@@ -5,7 +5,7 @@ import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -96,7 +96,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
     }
 
-    public void apresentaMensagemComStatus(Tarefa tarefa) {
+    public void apresentaMensagemComStatus(Task tarefa) {
 
         HorizontalLayout linhaUmContainer = new HorizontalLayout();
 
@@ -594,6 +594,14 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         alterarStatusContainer.addComponent(aceitarTarefaButton);
 
         historicoTarefaButton = new Button("Histórico");
+    
+        recusarTarefaButton = new Button("Recusar Tarefa");
+        recusarTarefaButton.addClickListener((Button.ClickEvent event) -> {
+            listener.recusarTarefaClicked();;
+        });
+        alterarStatusContainer.addComponent(recusarTarefaButton);
+
+        historicoTarefaButton = new Button("Histórico");
         historicoTarefaButton.addClickListener((Button.ClickEvent event) -> {
             listener.historicoTarefaClicked();
         });
@@ -779,7 +787,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
      * </ol>
      * @param status
      */
-    public void apresentaPerfilUsuarioSolicitanteTarefaNaoAceitaOuNaoIniciada(StatusTarefa status) {
+    public void apresentaPerfilUsuarioSolicitanteTarefaParada(StatusTarefa status, String motivoBloqueio) {
         
         main.removeAllComponents();
 
@@ -788,8 +796,15 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         // ---------------------------------------------------------------------
         // exibe o status
         // ---------------------------------------------------------------------
+        String statusString =  "<h3> Tarefa: " + status.toString() + "</h3>";
+        
+        if (status == StatusTarefa.RECUSADA){
+            statusString += "<p> Motivo: " + motivoBloqueio + "</p>";
+        }
+            
+        
         main.addComponent(new Label(
-                "<h3> Tarefa: " + status.toString() + "</h3>",
+                statusString,
                 ContentMode.HTML
         ));
 
@@ -888,7 +903,5 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         return comentarioTextArea;
     }
 
-
-    
     
 }

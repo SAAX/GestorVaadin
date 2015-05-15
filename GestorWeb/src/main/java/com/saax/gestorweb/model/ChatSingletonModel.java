@@ -1,7 +1,7 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.model.datamodel.ChatTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -45,7 +45,7 @@ public class ChatSingletonModel implements SharedChat.ChatListener {
         return instance;
     }
 
-    public SharedChat getChat(Tarefa task) {
+    public SharedChat getChat(Task task) {
         if (!chats.containsKey(task.getId())) {
             SharedChat chat = new SharedChat();
             loadHistory(chat, task);
@@ -54,11 +54,11 @@ public class ChatSingletonModel implements SharedChat.ChatListener {
         return chats.get(task.getId());
     }
 
-    public String buildID(Usuario user, Tarefa task, boolean history) {
+    public String buildID(Usuario user, Task task, boolean history) {
         return task.getId() + ":" + user.getId() + ":" + history;
     }
 
-    private void loadHistory(SharedChat chat, Tarefa task) {
+    private void loadHistory(SharedChat chat, Task task) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
         List<ChatTarefa> history = em.createNamedQuery("ChatTarefa.findByTarefa")
@@ -74,10 +74,10 @@ public class ChatSingletonModel implements SharedChat.ChatListener {
 
     }
 
-    private Tarefa getTask(String chatID) {
+    private Task getTask(String chatID) {
         Integer idTask = Integer.parseInt(chatID.split(":")[0]);
             EntityManager em = GestorEntityManagerProvider.getEntityManager();
-            Tarefa task = em.find(Tarefa.class, idTask);
+            Task task = em.find(Task.class, idTask);
             return task;
     }
 

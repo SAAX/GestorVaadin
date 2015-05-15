@@ -6,7 +6,7 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.CadastroMetaModel;
-import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
@@ -14,17 +14,17 @@ import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.CadastroMetaPresenter;
-import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
+import com.saax.gestorweb.presenter.TaskPresenter;
 import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.view.CadastroMetaView;
-import com.saax.gestorweb.view.CadastroTarefaView;
+import com.saax.gestorweb.view.TaskView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
 import java.util.ArrayList;
@@ -184,9 +184,9 @@ public class CadastroMetaTest {
         }
         
         // open a presenter to create a task under the target
-        CadastroTarefaView taskView = new CadastroTarefaView();
-        CadastroTarefaModel taskModel = new CadastroTarefaModel();
-        CadastroTarefaPresenter taskPresenter = new CadastroTarefaPresenter(taskModel, taskView);
+        TaskView taskView = new TaskView();
+        TaskModel taskModel = new TaskModel();
+        TaskPresenter taskPresenter = new TaskPresenter(taskModel, taskView);
         
         // sets the taskPresenter's call back to the targetPresenter
         taskPresenter.setCallBackListener(presenter);
@@ -237,7 +237,7 @@ public class CadastroMetaTest {
         Assert.assertNotNull(m.getDataHoraInclusao());
 //
 //        // asserts over the task under the target
-        Tarefa task = m.getTarefas().get(0);
+        Task task = m.getTarefas().get(0);
         Assert.assertEquals(1, m.getTarefas().size());
         Assert.assertEquals("Task under a target", task.getNome());
         Assert.assertEquals(StatusTarefa.NAO_ACEITA, task.getStatus());

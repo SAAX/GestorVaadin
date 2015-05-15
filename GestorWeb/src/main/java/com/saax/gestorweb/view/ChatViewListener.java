@@ -5,7 +5,7 @@
  */
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import java.io.File;
 import org.vaadin.chatbox.client.ChatLine;
 

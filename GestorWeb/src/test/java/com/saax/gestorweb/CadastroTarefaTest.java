@@ -5,7 +5,7 @@
  */
 package com.saax.gestorweb;
 
-import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
@@ -18,10 +18,10 @@ import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.CadastroTarefaPresenter;
+import com.saax.gestorweb.presenter.TaskPresenter;
 import com.saax.gestorweb.presenter.PopUpEvolucaoStatusPresenter;
 import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.DAOAleatorio;
@@ -29,7 +29,7 @@ import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.PostgresConnection;
-import com.saax.gestorweb.view.CadastroTarefaView;
+import com.saax.gestorweb.view.TaskView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
 import java.io.File;
@@ -56,11 +56,11 @@ import org.junit.Test;
  */
 public class CadastroTarefaTest {
 
-    CadastroTarefaView view;
-    CadastroTarefaModel model;
-    CadastroTarefaPresenter presenter;
+    TaskView view;
+    TaskModel model;
+    TaskPresenter presenter;
     private EntityManager em;
-    private static List<Tarefa> tarefasCadastradas;
+    private static List<Task> tarefasCadastradas;
     private static ResourceBundle mensagens = null;
 
     @BeforeClass
@@ -86,17 +86,17 @@ public class CadastroTarefaTest {
         // se assegura que nao existem tarefas ja cadastradas
         Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
         GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
-        List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findAll")
+        List<Task> tarefas = em.createNamedQuery("Task.findAll")
                 .setParameter("empresa", loggedUser.getEmpresaAtiva()).getResultList();
-        for (Tarefa tarefa : tarefas) {
-            tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
+        for (Task tarefa : tarefas) {
+            tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Task.class, tarefa.getId());
             GestorEntityManagerProvider.getEntityManager().remove(tarefa);
         }
         for (Empresa sub : loggedUser.getEmpresaAtiva().getSubEmpresas()) {
-            tarefas = em.createNamedQuery("Tarefa.findAll")
+            tarefas = em.createNamedQuery("Task.findAll")
                     .setParameter("empresa", sub).getResultList();
-            for (Tarefa tarefa : tarefas) {
-                tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
+            for (Task tarefa : tarefas) {
+                tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Task.class, tarefa.getId());
                 GestorEntityManagerProvider.getEntityManager().remove(tarefa);
             }
 
@@ -111,10 +111,10 @@ public class CadastroTarefaTest {
     public static void tearDownClass() {
 
         // limpar tarefas cadastradas
-        List<Tarefa> tarefas = tarefasCadastradas;
+        List<Task> tarefas = tarefasCadastradas;
         GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
-        for (Tarefa tarefa : tarefas) {
-            tarefa = GestorEntityManagerProvider.getEntityManager().find(Tarefa.class, tarefa.getId());
+        for (Task tarefa : tarefas) {
+            tarefa = GestorEntityManagerProvider.getEntityManager().find(Task.class, tarefa.getId());
             GestorEntityManagerProvider.getEntityManager().remove(tarefa);
         }
         GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
@@ -127,9 +127,9 @@ public class CadastroTarefaTest {
     @Before
     public void setUp() {
 
-        view = new CadastroTarefaView();
-        model = new CadastroTarefaModel();
-        presenter = new CadastroTarefaPresenter(model, view);
+        view = new TaskView();
+        model = new TaskModel();
+        presenter = new TaskPresenter(model, view);
 
         em = GestorEntityManagerProvider.getEntityManager();
     }
@@ -167,7 +167,7 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Task t = (Task) em.createNamedQuery("Task.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
@@ -218,7 +218,7 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Task t = (Task) em.createNamedQuery("Task.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
@@ -289,11 +289,11 @@ public class CadastroTarefaTest {
         EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
         view.getCustomerCompanyCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
-        //        private Tarefa proximaTarefa;
+        //        private Task proximaTarefa;
         //        private TipoTarefa tipoRecorrencia;
         view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        //        private Tarefa tarefaPai;
+        //        private Task tarefaPai;
         //        private LocalDate dataInicio;
         Date dataInicio = DAOAleatorio.getDataByOffset(20, true); // hoje + 20 dias
         view.getStartDateDateField().setValue(dataInicio);
@@ -363,7 +363,7 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Task t = (Task) em.createNamedQuery("Task.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
@@ -403,10 +403,10 @@ public class CadastroTarefaTest {
         //        private EmpresaCliente empresaCliente;
         Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
         //        private List<Tarefa> subTarefas;
-        //        private Tarefa proximaTarefa;
+        //        private Task proximaTarefa;
         //        private TipoTarefa tipoRecorrencia;
         Assert.assertEquals(TipoTarefa.RECORRENTE, t.getTipoRecorrencia());
-        //        private Tarefa tarefaPai;
+        //        private Task tarefaPai;
         Assert.assertNull(t.getTarefaPai());
         //        private LocalDate dataTermino;
         //        private LocalDate dataInicio;
@@ -452,7 +452,7 @@ public class CadastroTarefaTest {
         Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
         // -------------------------------------------------------------------------------------
-        // Tarefa:  Teste Multiplos Niveis
+        // Task:  Teste Multiplos Niveis
         // -------------------------------------------------------------------------------------
         HierarquiaProjetoDetalhe categoriaDefaultTarefa = null;
         HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
@@ -476,17 +476,17 @@ public class CadastroTarefaTest {
         view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
 
         // -------------------------------------------------------------------------------------
-        // Tarefa:  Teste Multiplos Niveis -> Sub 1
+        // Task:  Teste Multiplos Niveis -> Sub 1
         // -------------------------------------------------------------------------------------
         try {
             view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        CadastroTarefaView view_sub1 = new CadastroTarefaView();
-        CadastroTarefaModel model_sub1 = new CadastroTarefaModel();
+        TaskView view_sub1 = new TaskView();
+        TaskModel model_sub1 = new TaskModel();
 
-        CadastroTarefaPresenter presenter_sub1 = new CadastroTarefaPresenter(model_sub1, view_sub1);
+        TaskPresenter presenter_sub1 = new TaskPresenter(model_sub1, view_sub1);
         presenter_sub1.setCallBackListener(presenter);
 
         presenter_sub1.criarNovaSubTarefa(view.getTarefa());
@@ -500,17 +500,17 @@ public class CadastroTarefaTest {
         view_sub1.getHierarchyCombo().setValue(view_sub1.getHierarchyCombo().getItemIds().toArray()[0]);
 
         // -------------------------------------------------------------------------------------
-        // Tarefa:  Teste Multiplos Niveis -> Sub 1 -> Sub 2
+        // Task:  Teste Multiplos Niveis -> Sub 1 -> Sub 2
         // -------------------------------------------------------------------------------------
         try {
             view_sub1.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        CadastroTarefaView view_sub2 = new CadastroTarefaView();
-        CadastroTarefaModel model_sub2 = new CadastroTarefaModel();
+        TaskView view_sub2 = new TaskView();
+        TaskModel model_sub2 = new TaskModel();
 
-        CadastroTarefaPresenter presenter_sub2 = new CadastroTarefaPresenter(model_sub2, view_sub2);
+        TaskPresenter presenter_sub2 = new TaskPresenter(model_sub2, view_sub2);
         presenter_sub2.setCallBackListener(presenter_sub1);
 
         presenter_sub2.criarNovaSubTarefa(view_sub1.getTarefa());
@@ -547,15 +547,15 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Task t = (Task) em.createNamedQuery("Task.findByNome")
                 .setParameter("nome", nome_principal)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         tarefasCadastradas.add(t);
-        Tarefa sub1 = t.getSubTarefas().get(0);
+        Task sub1 = t.getSubTarefas().get(0);
         tarefasCadastradas.add(sub1);
-        Tarefa sub2 = sub1.getSubTarefas().get(0);
+        Task sub2 = sub1.getSubTarefas().get(0);
         tarefasCadastradas.add(sub2);
 
         // Valida resultados da principal
@@ -592,7 +592,7 @@ public class CadastroTarefaTest {
         String nome = "Teste Cadastro Tarefa #2";
         String novonome = "Teste Cadastro Tarefa #2 - Alterada";
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Task t = (Task) em.createNamedQuery("Task.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
@@ -608,7 +608,7 @@ public class CadastroTarefaTest {
         //        private StatusTarefa status;
         view.getTaskStatusPopUpButton().click();
         PopUpEvolucaoStatusPresenter presenterPopUP = presenter.getPresenterPopUpStatus();
-        presenterPopUP.aceitarTarefaClicked(); // Tarefa ficará com status = aceita
+        presenterPopUP.aceitarTarefaClicked(); // Task ficará com status = aceita
         //        private ProjecaoTarefa projecao;
         //        private int andamento;
         //        private String descricao;
@@ -630,11 +630,11 @@ public class CadastroTarefaTest {
         EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
         view.getCustomerCompanyCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
-        //        private Tarefa proximaTarefa;
+        //        private Task proximaTarefa;
         //        private TipoTarefa tipoRecorrencia;
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.UNICA);
         view.getTypeRecurrenceButton().getCaption().equals("ÚNICA");
-        //        private Tarefa tarefaPai;
+        //        private Task tarefaPai;
         //        private LocalDate dataInicio;
         Date dataInicio = DAOAleatorio.getDataByOffset(10, true); // hoje + 10 dias
         view.getStartDateDateField().setValue(dataInicio);
@@ -698,7 +698,7 @@ public class CadastroTarefaTest {
         view.getSaveButton().click();
 
         // obtem novamente a tarefa do banco
-        t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        t = (Task) em.createNamedQuery("Task.findByNome")
                 .setParameter("nome", novonome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
@@ -736,10 +736,10 @@ public class CadastroTarefaTest {
         //        private EmpresaCliente empresaCliente;
         Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
         //        private List<Tarefa> subTarefas;
-        //        private Tarefa proximaTarefa;
+        //        private Task proximaTarefa;
         //        private TipoTarefa tipoRecorrencia;
         Assert.assertEquals(TipoTarefa.UNICA, t.getTipoRecorrencia());
-        //        private Tarefa tarefaPai;
+        //        private Task tarefaPai;
         Assert.assertNull(t.getTarefaPai());
         //        private LocalDate dataTermino;
         //        private LocalDate dataInicio;
@@ -803,7 +803,7 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Task t = (Task) em.createNamedQuery("Task.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
@@ -813,7 +813,7 @@ public class CadastroTarefaTest {
         em.persist(t);
         
 
-        t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        t = (Task) em.createNamedQuery("Task.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();

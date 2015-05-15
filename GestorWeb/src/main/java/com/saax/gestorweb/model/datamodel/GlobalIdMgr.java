@@ -27,10 +27,10 @@ public class GlobalIdMgr {
         mapaClasseID = new HashMap<>();
       //  mapaIDClasse = new HashMap<>();
 
-        mapaClasseID.put(Tarefa.class.getCanonicalName(), "TSK");
+        mapaClasseID.put(Task.class.getCanonicalName(), "TSK");
 
         mapaClasseID.put(Meta.class.getCanonicalName(), "TGT");
-        //mapaIDClasse.put("T",Tarefa.class);
+        //mapaIDClasse.put("T",Task.class);
                 
         mapaClasseID.put(Usuario.class.getCanonicalName(), "USR");
         //mapaIDClasse.put("U",Usuario.class);

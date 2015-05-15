@@ -501,7 +501,7 @@ public class CadastroMetaView  extends Window implements Serializable {
                 String mensagem = FormatterUtil.extrairMensagemValidacao(ex);
                 
                 Notification.show(mensagem, Notification.Type.WARNING_MESSAGE);
-                Logger.getLogger(CadastroTarefaView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TaskView.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 
@@ -596,7 +596,7 @@ public class CadastroMetaView  extends Window implements Serializable {
     }
 
     public void exibeTituloEdicao(Meta metapai) {
-        setCaption(message.getString("CadastroTarefaView.titulo.edicao"));
+        setCaption(message.getString("TaskView.titulo.edicao"));
     }
     
 

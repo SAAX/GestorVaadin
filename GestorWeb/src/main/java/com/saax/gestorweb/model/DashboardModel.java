@@ -6,7 +6,7 @@ import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -47,11 +47,11 @@ public class DashboardModel {
      * @param loggedUser
      * @return
      */
-    public List<Tarefa> listarTarefas(Usuario loggedUser) {
+    public List<Task> listarTarefas(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findByUsuarioResponsavelDashboard")
+        List<Task> tarefas = em.createNamedQuery("Task.findByUsuarioResponsavelDashboard")
                 .setParameter("usuarioResponsavel", loggedUser)
                 //.setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
@@ -101,12 +101,12 @@ public class DashboardModel {
      * @param projecoes
      * @return
      */
-    public List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis,
+    public List<Task> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis,
             List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        final List<Tarefa> tarefasUsuarioResponsavel = new ArrayList<>();
+        final List<Task> tarefasUsuarioResponsavel = new ArrayList<>();
         usuariosResponsaveis.stream().forEach((usuario) -> {
             // refresh
             usuario = em.find(Usuario.class, usuario.getId());
@@ -114,13 +114,13 @@ public class DashboardModel {
 
         });
 
-        List<Tarefa> tarefasUsuarioSolicitante = new ArrayList<>();
+        List<Task> tarefasUsuarioSolicitante = new ArrayList<>();
         usuariosSolicitantes.stream().forEach((usuario) -> {
             usuario = em.find(Usuario.class, usuario.getId());
             tarefasUsuarioSolicitante.addAll(usuario.getTarefasSolicitadas());
         });
 
-        List<Tarefa> tarefasUsuariosParticipantes = new ArrayList<>();
+        List<Task> tarefasUsuariosParticipantes = new ArrayList<>();
         for (Usuario usuario : usuariosParticipantes) {
             usuario = em.find(Usuario.class, usuario.getId());
             usuario.getTarefasParticipantes().stream().forEach((participanteTarefa) -> {
@@ -128,35 +128,35 @@ public class DashboardModel {
             });
         }
 
-        List<Tarefa> tarefasEmpresa = new ArrayList<>();
+        List<Task> tarefasEmpresa = new ArrayList<>();
         empresas.stream().forEach((empresa) -> {
             empresa = em.find(Empresa.class, empresa.getId());
             tarefasEmpresa.addAll(empresa.getTarefas());
         });
 
-        List<Tarefa> tarefasFiliais = new ArrayList<>();
+        List<Task> tarefasFiliais = new ArrayList<>();
         filiais.stream().forEach((filial) -> {
             filial = em.find(FilialEmpresa.class, filial.getId());
             tarefasFiliais.addAll(filial.getTarefas());
         });
 
-        List<Tarefa> tarefasDataFim = new ArrayList<>();
+        List<Task> tarefasDataFim = new ArrayList<>();
         if (dataFim != null) {
 
-            tarefasDataFim.addAll(em.createNamedQuery("Tarefa.findByDataFim")
+            tarefasDataFim.addAll(em.createNamedQuery("Task.findByDataFim")
                     .setParameter("dataFim", dataFim)
                     .getResultList());
         }
 
-        List<Tarefa> tarefasProjecao = new ArrayList<>();
+        List<Task> tarefasProjecao = new ArrayList<>();
         projecoes.stream().forEach((projecao) -> {
             tarefasProjecao.addAll(
-                    em.createNamedQuery("Tarefa.findByProjecao")
+                    em.createNamedQuery("Task.findByProjecao")
                     .setParameter("projecao", projecao)
                     .getResultList());
         });
 
-        List<Tarefa> tarefas = new ArrayList<>();
+        List<Task> tarefas = new ArrayList<>();
         if (tipoPesquisa == DashboardPresenter.TipoPesquisa.INCLUSIVA_OU) {
 
             tarefas.addAll(tarefasUsuarioResponsavel);
@@ -175,7 +175,7 @@ public class DashboardModel {
 
         } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
 
-            tarefas.addAll(em.createNamedQuery("Tarefa.findAll")
+            tarefas.addAll(em.createNamedQuery("Task.findAll")
                     .setParameter("empresa",loggedUser.getEmpresaAtiva())
                     .getResultList());
 
@@ -212,34 +212,33 @@ public class DashboardModel {
      * @param loggedUser
      * @return
      */
-    public List<Tarefa> listarTarefasPrincipais(Usuario loggedUser) {
+    public List<Task> listarTarefasPrincipais(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         Empresa empresa = loggedUser.getEmpresaAtiva();
 
-        String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante ORDER BY t.dataFim DESC";
+        String sql = "SELECT t FROM Task t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante ORDER BY t.dataFim DESC";
 
         Query q = em.createQuery(sql)
                 .setParameter("empresa", empresa)
                 .setParameter("usuarioSolicitante", loggedUser);
 
-        List<Tarefa> tarefas = q.getResultList();
+        List<Task> tarefas = q.getResultList();
 
         return tarefas;
 
     }
 
-    public List<Tarefa> getTarefasTemplate() {
+    public List<Task> getTarefasTemplate() {
         Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
-        List<Tarefa> templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
+        List<Task> templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Task.findByTemplate", Task.class)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .setParameter("template", true)
                 .getResultList();
 
         for (Empresa subEmpresa : loggedUser.getEmpresaAtiva().getSubEmpresas()) {
-            templates.addAll(
-                    GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
+            templates.addAll(GestorEntityManagerProvider.getEntityManager().createNamedQuery("Task.findByTemplate", Task.class)
                     .setParameter("empresa", subEmpresa)
                     .setParameter("template", true)
                     .getResultList());

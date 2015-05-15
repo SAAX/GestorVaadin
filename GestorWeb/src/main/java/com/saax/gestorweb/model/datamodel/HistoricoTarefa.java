@@ -60,7 +60,7 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
 
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa tarefa;
+    private Task tarefa;
     
     @Basic(optional = false)
     @NotNull
@@ -76,7 +76,7 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
         this.id = idhistoricotarefa;
     }
 
-    public HistoricoTarefa(String evento, String comentario, Usuario usuario, Tarefa tarefa, LocalDateTime datahora) {
+    public HistoricoTarefa(String evento, String comentario, Usuario usuario, Task tarefa, LocalDateTime datahora) {
         this.evento = evento;
         this.comentario = comentario;
         this.usuario = usuario;
@@ -117,11 +117,11 @@ public class HistoricoTarefa implements Serializable, Comparable<HistoricoTarefa
         this.usuario = usuario;
     }
 
-    public void setTarefa(Tarefa tarefa) {
+    public void setTarefa(Task tarefa) {
         this.tarefa = tarefa;
     }
 
-    public Tarefa getTarefa() {
+    public Task getTarefa() {
         return tarefa;
     }
 

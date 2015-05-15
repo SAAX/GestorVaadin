@@ -2,7 +2,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -11,9 +11,9 @@ import org.vaadin.hene.popupbutton.PopupButton;
  */
 public interface PopUpEvolucaoStatusViewListener {
 
-    public void load(Tarefa tarefa, PopupButton statusButton);
+    public void load(Task tarefa, PopupButton statusButton);
     
-    public void load(Tarefa tarefa);
+    public void load(Task tarefa);
 
     public void processarAlteracaoAndamento();
 

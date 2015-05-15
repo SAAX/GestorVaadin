@@ -1,6 +1,6 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,7 +17,7 @@ public interface RecurrencyDoneCallBackListener {
      */
     public void recurrencyCreationDone(List<LocalDate> tarefasRecorrentes);
 
-    public void recurrencyRemoved(Tarefa task);
+    public void recurrencyRemoved(Task task);
 
 
 }

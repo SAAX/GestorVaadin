@@ -20,7 +20,7 @@ import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
@@ -47,7 +47,7 @@ import javax.persistence.EntityManager;
  *
  * @author rodrigo
  */
-public class CadastroTarefaModel {
+public class TaskModel {
 
     // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
@@ -55,9 +55,9 @@ public class CadastroTarefaModel {
 
     // Reference to the use of the messages:
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private Tarefa firstRecurrentTask;
+    private Task firstRecurrentTask;
 
-    public CadastroTarefaModel() {
+    public TaskModel() {
         usuarioModel = new UsuarioModel();
         empresaModel = new EmpresaModel();
 
@@ -89,7 +89,7 @@ public class CadastroTarefaModel {
      * @return the saved task if success, null otherwise
      *
      */
-    public Tarefa saveTask(Tarefa task) {
+    public Task saveTask(Task task) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -155,7 +155,7 @@ public class CadastroTarefaModel {
 
     /**
      * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ
-     * e do ID Tarefa.
+ e do ID Task.
      *
      * @param anexoTarefa anexo a ser movido
      */
@@ -165,7 +165,7 @@ public class CadastroTarefaModel {
             throw new IllegalArgumentException("Parametro inválido: AnexoTarefa");
         }
 
-        Tarefa tarefa = anexoTarefa.getTarefa();
+        Task tarefa = anexoTarefa.getTarefa();
 
         String relativePath = ((GestorMDI) UI.getCurrent()).getApplication().getProperty("anexos.relative.path");
 
@@ -572,7 +572,7 @@ public class CadastroTarefaModel {
         recalculaSaldoOrcamento(orcamentos);
     }
 
-    public ParticipanteTarefa criarParticipante(Usuario usuario, Tarefa tarefa) {
+    public ParticipanteTarefa criarParticipante(Usuario usuario, Task tarefa) {
 
         Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
@@ -615,7 +615,7 @@ public class CadastroTarefaModel {
         return null;
     }
 
-    public List<HierarquiaProjetoDetalhe> getProximasCategorias(Tarefa tarefaPai) {
+    public List<HierarquiaProjetoDetalhe> getProximasCategorias(Task tarefaPai) {
 
         List<HierarquiaProjetoDetalhe> categoriasPossiveis = new ArrayList<>();
 
@@ -670,7 +670,7 @@ public class CadastroTarefaModel {
      * @param task
      * @param target
      */
-    public void attachTaskToTarget(Tarefa task, Meta target) {
+    public void attachTaskToTarget(Task task, Meta target) {
         if (task != null && target != null) {
             task.setMeta(target);
             target.addTask(task);

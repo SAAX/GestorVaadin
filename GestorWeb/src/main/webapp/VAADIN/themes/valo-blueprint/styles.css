@@ -911,7 +911,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.4.4";
+	content: "7.4.5";
 }
 
 .v-widget {
@@ -4232,6 +4232,8 @@ div.v-layout.v-horizontal.v-widget {
 	left: 0;
 	right: 0;
 	border: 1px solid #6b96cb;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	margin-top: -1px;
 	-webkit-box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
@@ -8228,6 +8230,7 @@ div.v-layout.v-horizontal.v-widget {
 	position: relative;
 	background: #1a61b7;
 	color: #c1d3e9;
+	overflow: hidden;
 }
 
 .valo-blueprint .v-table-header table, .valo-blueprint .v-table-footer table, .valo-blueprint .v-table-table {
@@ -8442,7 +8445,7 @@ div.v-layout.v-horizontal.v-widget {
 .valo-blueprint .v-table-focus-slot-right {
 	border-right: 3px solid #fff;
 	right: -2px;
-	margin-left: -9px;
+	margin-left: -9px !important;
 }
 
 .valo-blueprint .v-table-focus-slot-left {
@@ -8468,20 +8471,22 @@ div.v-layout.v-horizontal.v-widget {
 	
 	position: absolute;
 	z-index: 2;
-	top: -6px;
-	right: -6px;
+	top: 0;
+	right: 0;
+	width: 13px;
 	height: 13px;
 	line-height: 13px;
-	width: 13px;
 	padding: 0;
-	border-radius: 50%;
+	border-top-width: 0;
+	border-right-width: 0;
+	border-radius: 0 0 0 4px;
 	cursor: pointer;
 	text-align: center;
 	opacity: 0;
 	filter: alpha(opacity=0) ;
-	-webkit-transition: opacity 200ms 1s;
-	-moz-transition: opacity 200ms 1s;
-	transition: opacity 200ms 1s;
+	-webkit-transition: opacity 200ms 2s;
+	-moz-transition: opacity 200ms 2s;
+	transition: opacity 200ms 2s;
 }
 
 .valo-blueprint .v-table-column-selector:after {
@@ -8509,11 +8514,11 @@ div.v-layout.v-horizontal.v-widget {
 .valo-blueprint .v-table-column-selector:after {
 	content: "";
 	position: absolute;
-	top: -1px;
-	right: -1px;
-	bottom: -1px;
-	left: -1px;
-	border-radius: inherit;
+	border: none;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
 }
 
 .valo-blueprint .v-table-column-selector:active:after {
@@ -8525,25 +8530,12 @@ div.v-layout.v-horizontal.v-widget {
 	content: "\f013";
 }
 
-.valo-blueprint .v-scrollable > .v-table .v-table-column-selector {
-	right: 0;
-	top: 0;
-	border-top: none;
-	border-right: none;
-	border-radius: 0 0 0 50%;
-}
-
-.valo-blueprint .v-scrollable > .v-table .v-table-column-selector:after {
-	top: 0;
-	right: 0;
-}
-
 .valo-blueprint .v-table-header-wrap:hover .v-table-column-selector {
 	opacity: 1;
 	filter: none ;
-	-webkit-transition-delay: 100ms;
-	-moz-transition-delay: 100ms;
-	transition-delay: 100ms;
+	-webkit-transition-delay: 200ms;
+	-moz-transition-delay: 200ms;
+	transition-delay: 200ms;
 }
 
 .valo-blueprint .v-on:before, .valo-blueprint .v-off:before {
@@ -8597,6 +8589,10 @@ div.v-layout.v-horizontal.v-widget {
 	line-height: 25px;
 	margin: -13px 0 0 !important;
 	text-align: center;
+}
+
+.valo-blueprint .v-table-drag {
+	overflow: visible;
 }
 
 .valo-blueprint .v-table-drag .v-table-body {

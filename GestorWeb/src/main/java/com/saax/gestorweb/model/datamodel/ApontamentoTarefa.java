@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 /**
- * Entity bean da tabela Apontamento Tarefa com as namequerys configuradas.<br><br>
+ * Entity bean da tabela Apontamento Task com as namequerys configuradas.<br><br>
  
  O objetivo desta entidade e armazenar os apontamentos de creditoHoras das tarefas / subs <br><br>
  *
@@ -72,7 +72,7 @@ public class ApontamentoTarefa implements Serializable {
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa tarefa;
+    private Task tarefa;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -85,7 +85,7 @@ public class ApontamentoTarefa implements Serializable {
         this.id = idapontamentotarefa;
     }
 
-    public ApontamentoTarefa(Tarefa tarefa, Usuario usuarioInclusao) {
+    public ApontamentoTarefa(Task tarefa, Usuario usuarioInclusao) {
         this.tarefa = tarefa;
         this.usuarioInclusao = usuarioInclusao;
         this.dataHoraInclusao = LocalDateTime.now();
@@ -174,11 +174,11 @@ public class ApontamentoTarefa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Tarefa getTarefa() {
+    public Task getTarefa() {
         return tarefa;
     }
 
-    public void setTarefa(Tarefa tarefa) {
+    public void setTarefa(Task tarefa) {
         this.tarefa = tarefa;
     }
 

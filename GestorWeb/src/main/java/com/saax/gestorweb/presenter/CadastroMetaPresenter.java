@@ -2,7 +2,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroMetaModel;
-import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
@@ -11,7 +11,7 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
@@ -20,7 +20,7 @@ import com.saax.gestorweb.view.CadastroMetaCallBackListener;
 import com.saax.gestorweb.view.CadastroMetaView;
 import com.saax.gestorweb.view.CadastroMetaViewListener;
 import com.saax.gestorweb.view.TaskCreationCallBackListener;
-import com.saax.gestorweb.view.CadastroTarefaView;
+import com.saax.gestorweb.view.TaskView;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -302,7 +302,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
         // inits the UI
         init(targetToEdit);
         
-        for (Tarefa task : targetToEdit.getTarefas()) {
+        for (Task task : targetToEdit.getTarefas()) {
             addTaskInTable(task);
         }
         organizeTree(null, targetToEdit.getTarefas());
@@ -324,7 +324,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
             view.getMetaFieldGroup().commit();
             
             // Creates the presenter that will handle the new task creation
-            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
             
             // Configure this as the object to be called when the task creation was done
             presenter.setCallBackListener(this);
@@ -363,16 +363,16 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
      * @see TaskCreationCallBackListener
      */
     @Override
-    public void taskCreationDone(Tarefa createdTask) {
+    public void taskCreationDone(Task createdTask) {
 
         addTaskInTable(createdTask);
         organizeTree(createdTask, createdTask.getSubTarefas());
     }
 
-    private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
+    private void organizeTree(Task parentTask, List<Task> subTasks) {
 
         
-        for (Tarefa subTask : subTasks) {
+        for (Task subTask : subTasks) {
             view.getTarefasTable().setParent(subTask, parentTask);
             if (subTask.getSubTarefas()!=null && !subTask.getSubTarefas().isEmpty()){
                 organizeTree(subTask, subTask.getSubTarefas());
@@ -380,18 +380,18 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
         }
     }
 
-    private void addTaskInTable(Tarefa task){
+    private void addTaskInTable(Task task){
         Object[] gridRow = new Object[]{
-            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
-            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
-            CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()),
+            TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
+            TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
+            TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()),
             task.getEmpresa().getNome()
             + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""),
             task.getUsuarioSolicitante().getNome(),
             task.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(task.getDataInicio()),
             FormatterUtil.formatDate(task.getDataFim()),
-            CadastroTarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), task),
+            TaskView.buildPopUpStatusProgressTask(view.getTarefasTable(), task),
             task.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -400,7 +400,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
         view.getTarefasTable().addItem(gridRow, task);
         
         
-        for (Tarefa subTarefa : task.getSubTarefas()) {
+        for (Task subTarefa : task.getSubTarefas()) {
             addTaskInTable(subTarefa);
         }
         
@@ -411,31 +411,31 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
      * @see TaskCreationCallBackListener
      */
     @Override
-    public void taskUpdateDone(Tarefa updatedTask) {
+    public void taskUpdateDone(Task updatedTask) {
         
         atualizarTarefaTable(updatedTask);
         organizeTree(updatedTask, updatedTask.getSubTarefas());
 
     }
     
-    private void atualizarTarefaTable(Tarefa task) {
+    private void atualizarTarefaTable(Task task) {
         Item it = view.getTarefasTable().getItem(task);
 
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(CadastroTarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial")).setValue(task.getEmpresa().getNome()
                 + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante")).setValue(task.getUsuarioSolicitante().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel")).setValue(task.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(CadastroTarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), task));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(TaskView.buildPopUpStatusProgressTask(view.getTarefasTable(), task));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao")).setValue(task.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
 
-        for (Tarefa subTarefa : task.getSubTarefas()) {
+        for (Task subTarefa : task.getSubTarefas()) {
             addTaskInTable(subTarefa);
         }
 

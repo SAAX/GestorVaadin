@@ -68,7 +68,7 @@ public class Departamento implements Serializable {
     private LocalDateTime dataHoraInclusao;
 
     @OneToMany(mappedBy = "departamento")
-    private List<Tarefa> tarefas;
+    private List<Task> tarefas;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -162,11 +162,11 @@ public class Departamento implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<Tarefa> getTarefas() {
+    public List<Task> getTarefas() {
         return tarefas;
     }
 
-    public void setTarefas(List<Tarefa> tarefas) {
+    public void setTarefas(List<Task> tarefas) {
         this.tarefas = tarefas;
     }
 

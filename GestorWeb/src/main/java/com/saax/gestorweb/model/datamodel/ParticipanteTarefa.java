@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * Entity bean da tabela Participante Tarefa com as namequerys configuradas.<br><br>
+ * Entity bean da tabela Participante Task com as namequerys configuradas.<br><br>
  * 
  * O objetivo desta entidade é armazenar os usuários Participantes das tarefas/subs <br><br>
  *
@@ -45,7 +45,7 @@ public class ParticipanteTarefa implements Serializable {
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa tarefa;
+    private Task tarefa;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -83,11 +83,11 @@ public class ParticipanteTarefa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Tarefa getTarefa() {
+    public Task getTarefa() {
         return tarefa;
     }
 
-    public void setTarefa(Tarefa tarefa) {
+    public void setTarefa(Task tarefa) {
         this.tarefa = tarefa;
     }
 

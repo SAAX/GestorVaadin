@@ -6,7 +6,7 @@
 
 package com.saax.gestorweb.util;
 
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import java.text.SimpleDateFormat;
 import org.junit.After;
 import org.junit.AfterClass;

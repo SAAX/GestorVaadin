@@ -64,7 +64,7 @@ public class AndamentoTarefa implements Serializable {
 
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa tarefa;
+    private Task tarefa;
 
     
     public AndamentoTarefa() {
@@ -116,11 +116,11 @@ public class AndamentoTarefa implements Serializable {
         return usuarioInclusao;
     }
 
-    public Tarefa getTarefa() {
+    public Task getTarefa() {
         return tarefa;
     }
 
-    public void setTarefa(Tarefa tarefa) {
+    public void setTarefa(Task tarefa) {
         this.tarefa = tarefa;
     }
 

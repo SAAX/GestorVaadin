@@ -935,7 +935,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.4.4";
+	content: "7.4.5";
 }
 
 .v-widget {
@@ -4225,6 +4225,8 @@ div.v-layout.v-horizontal.v-widget {
 	left: 0;
 	right: 0;
 	border: 0 solid #b8b8b8;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	margin-top: 0;
 	-webkit-box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
@@ -8199,6 +8201,7 @@ div.v-layout.v-horizontal.v-widget {
 	position: relative;
 	background: #eee;
 	color: #434343;
+	overflow: hidden;
 }
 
 .valo-metro .v-table-header table, .valo-metro .v-table-footer table, .valo-metro .v-table-table {
@@ -8419,7 +8422,7 @@ div.v-layout.v-horizontal.v-widget {
 .valo-metro .v-table-focus-slot-right {
 	border-right: 2px solid #0072C6;
 	right: -1px;
-	margin-left: -8px;
+	margin-left: -8px !important;
 }
 
 .valo-metro .v-table-focus-slot-left {
@@ -8445,20 +8448,22 @@ div.v-layout.v-horizontal.v-widget {
 	
 	position: absolute;
 	z-index: 2;
-	top: -6px;
-	right: -6px;
+	top: 0;
+	right: 0;
+	width: 13px;
 	height: 13px;
 	line-height: 13px;
-	width: 13px;
 	padding: 0;
-	border-radius: 50%;
+	border-top-width: 0;
+	border-right-width: 0;
+	border-radius: 0 0 0 0px;
 	cursor: pointer;
 	text-align: center;
 	opacity: 0;
 	filter: alpha(opacity=0) ;
-	-webkit-transition: opacity 200ms 1s;
-	-moz-transition: opacity 200ms 1s;
-	transition: opacity 200ms 1s;
+	-webkit-transition: opacity 200ms 2s;
+	-moz-transition: opacity 200ms 2s;
+	transition: opacity 200ms 2s;
 }
 
 .valo-metro .v-table-column-selector:after {
@@ -8486,11 +8491,11 @@ div.v-layout.v-horizontal.v-widget {
 .valo-metro .v-table-column-selector:after {
 	content: "";
 	position: absolute;
+	border: none;
 	top: 0;
 	right: 0;
 	bottom: 0;
 	left: 0;
-	border-radius: inherit;
 }
 
 .valo-metro .v-table-column-selector:active:after {
@@ -8502,25 +8507,12 @@ div.v-layout.v-horizontal.v-widget {
 	content: "\f013";
 }
 
-.valo-metro .v-scrollable > .v-table .v-table-column-selector {
-	right: 0;
-	top: 0;
-	border-top: none;
-	border-right: none;
-	border-radius: 0 0 0 50%;
-}
-
-.valo-metro .v-scrollable > .v-table .v-table-column-selector:after {
-	top: 0;
-	right: 0;
-}
-
 .valo-metro .v-table-header-wrap:hover .v-table-column-selector {
 	opacity: 1;
 	filter: none ;
-	-webkit-transition-delay: 100ms;
-	-moz-transition-delay: 100ms;
-	transition-delay: 100ms;
+	-webkit-transition-delay: 200ms;
+	-moz-transition-delay: 200ms;
+	transition-delay: 200ms;
 }
 
 .valo-metro .v-on:before, .valo-metro .v-off:before {
@@ -8574,6 +8566,10 @@ div.v-layout.v-horizontal.v-widget {
 	line-height: 25px;
 	margin: -13px 0 0 !important;
 	text-align: center;
+}
+
+.valo-metro .v-table-drag {
+	overflow: visible;
 }
 
 .valo-metro .v-table-drag .v-table-body {

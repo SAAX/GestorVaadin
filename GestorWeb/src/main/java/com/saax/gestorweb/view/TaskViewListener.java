@@ -6,7 +6,7 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.vaadin.data.Property;
 import com.vaadin.ui.Upload;
@@ -16,7 +16,7 @@ import java.io.File;
  *
  * @author rodrigo
  */
-public interface CadastroTarefaViewListener {
+public interface TaskViewListener {
 
     public void avisoButtonClicked();
 
@@ -34,7 +34,7 @@ public interface CadastroTarefaViewListener {
 
     public void imputarOrcamentoClicked();
 
-    public void editar(Tarefa tarefaToEdit);   
+    public void editar(Task tarefaToEdit);   
     
     public void solicitacaoParaAdicionarAnexo(Upload.StartedEvent event);
 
@@ -44,7 +44,7 @@ public interface CadastroTarefaViewListener {
     
     public void setCallBackListener(TaskCreationCallBackListener presenter);
     
-    public void criarNovaSubTarefa(Tarefa tarefaPai);
+    public void criarNovaSubTarefa(Task tarefaPai);
 
     public void removePointingTime(ApontamentoTarefa apontamentoTarefa);
 

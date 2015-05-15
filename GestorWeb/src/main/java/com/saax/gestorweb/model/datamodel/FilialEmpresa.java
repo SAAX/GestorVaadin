@@ -75,7 +75,7 @@ public class FilialEmpresa implements Serializable {
     private Empresa matriz;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "filialEmpresa")
-    private List<Tarefa> tarefas;
+    private List<Task> tarefas;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "filialEmpresa")
     private List<Meta> metas;
@@ -190,11 +190,11 @@ public class FilialEmpresa implements Serializable {
         this.usuarioInclusao = usuarioInclusao;
     }
 
-    public void setTarefas(List<Tarefa> tarefas) {
+    public void setTarefas(List<Task> tarefas) {
         this.tarefas = tarefas;
     }
 
-    public List<Tarefa> getTarefas() {
+    public List<Task> getTarefas() {
         return tarefas;
     }
 

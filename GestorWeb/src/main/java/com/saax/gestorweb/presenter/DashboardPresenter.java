@@ -2,7 +2,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.CadastroMetaModel;
-import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 
 import com.saax.gestorweb.model.DashboardModel;
@@ -14,13 +14,13 @@ import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.TaskCreationCallBackListener;
-import com.saax.gestorweb.view.CadastroTarefaView;
+import com.saax.gestorweb.view.TaskView;
 import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.data.Item;
@@ -114,14 +114,14 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
      * @param tarefaCriada
      */
     @Override
-    public void taskCreationDone(Tarefa tarefaCriada) {
+    public void taskCreationDone(Task tarefaCriada) {
 
         adicionarTarefaTable(tarefaCriada);
         organizeTree(view.getTaskTable(), tarefaCriada, tarefaCriada.getSubTarefas());
 
         if (tarefaCriada.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
 
-            Tarefa next = tarefaCriada.getProximaTarefa();
+            Task next = tarefaCriada.getProximaTarefa();
             while (next != null) {
                 adicionarTarefaTable(next);
                 next = next.getProximaTarefa();
@@ -131,9 +131,9 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         }
     }
 
-    private void organizeTree(TreeTable table, Object parentTaskOrTarget, List<Tarefa> subTasks) {
+    private void organizeTree(TreeTable table, Object parentTaskOrTarget, List<Task> subTasks) {
 
-        for (Tarefa subTask : subTasks) {
+        for (Task subTask : subTasks) {
             table.setParent(subTask, parentTaskOrTarget);
             if (subTask.getSubTarefas() != null && !subTask.getSubTarefas().isEmpty()) {
                 organizeTree(table, subTask, subTask.getSubTarefas());
@@ -141,20 +141,20 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         }
     }
 
-    private Button buildButtonEditarTarefa(Tarefa tarefa, String caption) {
+    private Button buildButtonEditarTarefa(Task tarefa, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
         TaskCreationCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTaskTable().setValue(tarefa);
-            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
             presenter.setCallBackListener(callback);
             presenter.editar(tarefa);
         });
         return link;
     }
 
-    private void atualizarTarefaTable(Tarefa tarefa) {
+    private void atualizarTarefaTable(Task tarefa) {
         Item it = view.getTaskTable().getItem(tarefa);
 
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.cod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
@@ -172,7 +172,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.chat")).setValue(new Button("C"));
 
         // se a tarefa possui subs, chama recursivamente
-        for (Tarefa subTarefa : tarefa.getSubTarefas()) {
+        for (Task subTarefa : tarefa.getSubTarefas()) {
             if (view.getTaskTable().getItemIds().contains(subTarefa)) {
                 atualizarTarefaTable(subTarefa);
             } else {
@@ -198,20 +198,20 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         it.getItemProperty(mensagens.getString("DashboardView.targetTable.email")).setValue(new Button("E"));
 
         // se a meta possui tarefas, chama recursivamente
-        for (Tarefa subTarefa : target.getTarefas()) {
+        for (Task subTarefa : target.getTarefas()) {
             addTaskInTargetTable(subTarefa);
         }
 
     }
 
     @Override
-    public void taskUpdateDone(Tarefa tarefa) {
+    public void taskUpdateDone(Task tarefa) {
 
         atualizarTarefaTable(tarefa);
 
         if (tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
 
-            Tarefa task = tarefa;
+            Task task = tarefa;
             do {
 
                 if (task.isRemovida()){
@@ -238,9 +238,9 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         listaTemplates.setMultiSelect(false);
         listaTemplates.setWidth("300px");
 
-        List<Tarefa> templates = model.getTarefasTemplate();
+        List<Task> templates = model.getTarefasTemplate();
 
-        for (Tarefa template : templates) {
+        for (Task template : templates) {
             listaTemplates.addItem(template);
             listaTemplates.setItemCaption(template, template.getNome());
         }
@@ -256,12 +256,12 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         });
         DashboardPresenter callback = this;
         Button criar = new Button("Criar Tarefa", (Button.ClickEvent event) -> {
-            Tarefa template = (Tarefa) listaTemplates.getValue();
+            Task template = (Task) listaTemplates.getValue();
             if (template != null) {
-                CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+                TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
                 presenter.setCallBackListener(callback);
 
-                Tarefa novaTarefa;
+                Task novaTarefa;
                 try {
                     novaTarefa = template.clone();
                     novaTarefa.setTarefaPai(null);
@@ -299,7 +299,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
             presenter.setCallBackListener(this);
             presenter.criarNovaMeta(categoria);
         } else if (categoria.getNivel() == 2) {
-            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
             presenter.setCallBackListener(this);
             presenter.createTask(categoria);
         }
@@ -421,7 +421,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     @Override
     public void carregarListaTarefasUsuarioLogado() {
 
-        List<Tarefa> listaTarefas = model.listarTarefas(loggedUser);
+        List<Task> listaTarefas = model.listarTarefas(loggedUser);
 
         exibirListaTarefas(listaTarefas);
 
@@ -432,11 +432,11 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
      */
     private void carregarListaTarefasPrincipais() {
 
-        List<Tarefa> tarefasPrincipais = model.listarTarefasPrincipais(loggedUser);
+        List<Task> tarefasPrincipais = model.listarTarefasPrincipais(loggedUser);
 
         view.getBottomTasksContainer().removeAllComponents();
         for (int i = 0; i < tarefasPrincipais.size() && i < 5; i++) {
-            Tarefa tarefa = tarefasPrincipais.get(i);
+            Task tarefa = tarefasPrincipais.get(i);
 
             Button tarefaButton = buildButtonEditarTarefa(tarefa, tarefa.getNome().length() > 25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
             tarefaButton.setStyleName("v-button-link");
@@ -453,7 +453,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
      * @param tarefa
      * @return
      */
-    private PopupButton buildPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
+    private PopupButton buildPopUpEvolucaoStatusEAndamento(Task tarefa) {
 
         // comportmento e regras:
         PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
@@ -468,7 +468,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
             if (event.isPopupVisible()) {
                 // selecionar a linha clicada:
-                Tarefa tarefaEditada = (Tarefa) event.getPopupButton().getData();
+                Task tarefaEditada = (Task) event.getPopupButton().getData();
                 this.view.getTaskTable().setValue(tarefa);
             }
         });
@@ -481,7 +481,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
      *
      * @param listaTarefas
      */
-    public void exibirListaTarefas(List<Tarefa> listaTarefas) {
+    public void exibirListaTarefas(List<Task> listaTarefas) {
 
         view.getTaskTable().removeAllItems();
 
@@ -498,7 +498,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
      *
      * @param tarefa
      */
-    private void adicionarTarefaTable(Tarefa tarefa) {
+    private void adicionarTarefaTable(Task tarefa) {
 
         Object[] linha = new Object[]{
             buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()),
@@ -521,7 +521,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         view.getTaskTable().addItem(linha, tarefa);
 
         // se a tarefa possui subs, chama recursivamente
-        for (Tarefa subTarefa : tarefa.getSubTarefas()) {
+        for (Task subTarefa : tarefa.getSubTarefas()) {
             adicionarTarefaTable(subTarefa);
         }
 
@@ -550,13 +550,13 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         view.getTargetTable().addItem(linha, meta);
 
         // se a meta possui tarefas, chama recursivamente
-        for (Tarefa subTarefa : meta.getTarefas()) {
+        for (Task subTarefa : meta.getTarefas()) {
             addTaskInTargetTable(subTarefa);
         }
 
     }
 
-    private void addTaskInTargetTable(Tarefa taskToInsert) {
+    private void addTaskInTargetTable(Task taskToInsert) {
 
         Object[] linha = new Object[]{
             buildButtonEditarTarefa(taskToInsert, taskToInsert.getGlobalID()),
@@ -576,7 +576,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         view.getTargetTable().addItem(linha, taskToInsert);
 
         // se a meta possui tarefas, chama recursivamente
-        for (Tarefa subTarefa : taskToInsert.getSubTarefas()) {
+        for (Task subTarefa : taskToInsert.getSubTarefas()) {
             addTaskInTargetTable(subTarefa);
         }
 
@@ -642,7 +642,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         List<ProjecaoTarefa> projecoes = new ArrayList<>((Collection<ProjecaoTarefa>) view.getForecastFilterOptionGroup().getValue());
 
         // recarrega a visualizacao
-        List<Tarefa> listaTarefas = model.filtrarTarefas(tipoPesquisa, usuariosResponsaveis,
+        List<Task> listaTarefas = model.filtrarTarefas(tipoPesquisa, usuariosResponsaveis,
                 usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
 
         exibirListaTarefas(listaTarefas);
@@ -723,7 +723,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
 
     }
 
-    public void chatButtonClicked(Tarefa tarefa) {
+    public void chatButtonClicked(Task tarefa) {
         //Cria o pop up para registrar a conta (model e viw)
         ChatSingletonModel chatModel = ChatSingletonModel.getInstance();
         ChatView chatView = new ChatView();

@@ -1,7 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.CadastroTarefaModel;
+import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
@@ -20,7 +20,7 @@ import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
@@ -28,8 +28,8 @@ import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.TaskCreationCallBackListener;
-import com.saax.gestorweb.view.CadastroTarefaView;
-import com.saax.gestorweb.view.CadastroTarefaViewListener;
+import com.saax.gestorweb.view.TaskView;
+import com.saax.gestorweb.view.TaskViewListener;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
 import com.saax.gestorweb.view.RecorrencyView;
@@ -62,11 +62,11 @@ import java.util.logging.Logger;
  *
  * @author rodrigo
  */
-public class CadastroTarefaPresenter implements Serializable, CadastroTarefaViewListener, TaskCreationCallBackListener, RecurrencyDoneCallBackListener {
+public class TaskPresenter implements Serializable, TaskViewListener, TaskCreationCallBackListener, RecurrencyDoneCallBackListener {
 
     // Todo presenterPopUpStatus mantem acesso à view e ao model
-    private final transient CadastroTarefaView view;
-    private final transient CadastroTarefaModel model;
+    private final transient TaskView view;
+    private final transient TaskModel model;
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -83,8 +83,8 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      * @param model
      * @param view
      */
-    public CadastroTarefaPresenter(CadastroTarefaModel model,
-            CadastroTarefaView view) {
+    public TaskPresenter(TaskModel model,
+            TaskView view) {
 
         this.model = model;
         this.view = view;
@@ -101,12 +101,12 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      * @param tarefaPai
      */
     @Override
-    public void criarNovaSubTarefa(Tarefa tarefaPai) {
+    public void criarNovaSubTarefa(Task tarefaPai) {
 
-        Tarefa tarefa;
+        Task tarefa;
 
         // Cria uma nova tarefa com valores default
-        tarefa = new Tarefa();
+        tarefa = new Task();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
         tarefa.setEmpresa(loggedUser.getEmpresaAtiva());
         tarefa.setUsuarioInclusao(loggedUser);
@@ -144,7 +144,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
         view.ocultaPopUpEvolucaoStatusEAndamento();
 
-        view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + nomesProximasCategorias);
+        view.setCaption(mensagens.getString("TaskView.titulo.cadastro") + nomesProximasCategorias);
 
         init(tarefa);
 
@@ -173,10 +173,10 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      */
     public void createTask(Meta target, List<HierarquiaProjetoDetalhe> possibleCategories) {
 
-        Tarefa tarefa;
+        Task tarefa;
 
         // Cria uma nova tarefa com valores default
-        tarefa = new Tarefa();
+        tarefa = new Task();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
         tarefa.setEmpresa(loggedUser.getEmpresaAtiva());
         tarefa.setUsuarioInclusao(loggedUser);
@@ -202,7 +202,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         view.ocultaPopUpEvolucaoStatusEAndamento();
 
         if (possibleCategories.size() == 1) {
-            view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
+            view.setCaption(mensagens.getString("TaskView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
             view.getHierarchyCombo().setEnabled(false);
         }
         
@@ -219,11 +219,11 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      * @param tarefaToEdit
      */
     @Override
-    public void editar(Tarefa tarefaToEdit) {
+    public void editar(Task tarefaToEdit) {
 
         init(tarefaToEdit);
 
-        for (Tarefa sub : tarefaToEdit.getSubTarefas()) {
+        for (Task sub : tarefaToEdit.getSubTarefas()) {
             adicionarSubTarefa(sub);
         }
         
@@ -245,7 +245,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         
         configPermissions(tarefaToEdit);
                 
-        view.setCaption(mensagens.getString("CadastroTarefaView.titulo.edicao") + tarefaToEdit.getHierarquia().getCategoria());
+        view.setCaption(mensagens.getString("TaskView.titulo.edicao") + tarefaToEdit.getHierarquia().getCategoria());
         
         
     }
@@ -271,7 +271,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      * Config the view with the access permissions
      * @param tarefaToEdit 
      */
-    private void configPermissions(Tarefa tarefaToEdit) {
+    private void configPermissions(Task tarefaToEdit) {
         
         configurePermissionToChangeFollowers(loggedUser, tarefaToEdit.getUsuarioResponsavel(), tarefaToEdit.getUsuarioSolicitante());
     
@@ -288,7 +288,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     /**
      * inicializa a gui
      */
-    private void init(Tarefa tarefa) {
+    private void init(Task tarefa) {
         // Carrega os combos de seleção
         carregaComboEmpresa();
 //        carregaComboTipoRecorrenciaTarefa();
@@ -317,7 +317,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     /**
      * Carrega os apontamentos e executa o método para o cálculo da projeção
      */
-    private void carregaApontamento(Tarefa tarefa) {
+    private void carregaApontamento(Task tarefa) {
         List<AndamentoTarefa> andamentos = tarefa.getAndamentos();
         if(andamentos.size() != 0){
         //Buscando o andamento da tarefa    
@@ -472,10 +472,10 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     /**
      * 
      */
-    private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
+    private void organizeTree(Task parentTask, List<Task> subTasks) {
 
         
-        for (Tarefa subTask : subTasks) {
+        for (Task subTask : subTasks) {
             view.getSubTasksTable().setParent(subTask, parentTask);
             if (subTask.getSubTarefas()!=null && !subTask.getSubTarefas().isEmpty()){
                 organizeTree(subTask, subTask.getSubTarefas());
@@ -503,7 +503,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      *
      * @return
      */
-    private void setPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
+    private void setPopUpEvolucaoStatusEAndamento(Task tarefa) {
 
         // comportmento e regras:
         PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
@@ -624,7 +624,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
         try {
             view.getTaskFieldGroup().commit();
-            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
             presenter.setCallBackListener(this);
             presenter.criarNovaSubTarefa(view.getTarefa());
         } catch (FieldGroup.CommitException ex) {
@@ -659,7 +659,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     @Override
     public void gravarButtonClicked() {
 
-        Tarefa task = (Tarefa) view.getTarefa();
+        Task task = (Task) view.getTarefa();
 
         boolean novaTarefa = task.getId() == null;
 
@@ -750,7 +750,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
             
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TaskPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -789,7 +789,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(CadastroTarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TaskPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -804,7 +804,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     @Override
     public void removerAnexo(AnexoTarefa anexoTarefa) {
         view.getAttachmentsAddedTable().removeItem(anexoTarefa);
-        Tarefa tarefa = view.getTarefa();
+        Task tarefa = view.getTarefa();
         tarefa.getAnexos().remove(anexoTarefa);
     }
 
@@ -828,7 +828,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
 
         } catch (FileNotFoundException | RuntimeException ex) {
             // caso alguma exceção ocorra, loga:
-            Logger.getLogger(CadastroTarefaPresenter.class
+            Logger.getLogger(TaskPresenter.class
                     .getName()).log(Level.SEVERE, null, ex);
             // e exibe ao usuario:
             Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
@@ -856,20 +856,20 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         this.callbackListener = callback;
     }
 
-    private Button buildButtonEditarTarefa(Tarefa subTarefa, String caption) {
+    private Button buildButtonEditarTarefa(Task subTarefa, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
         TaskCreationCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getSubTasksTable().setValue(subTarefa);
-            CadastroTarefaPresenter presenter = new CadastroTarefaPresenter(new CadastroTarefaModel(), new CadastroTarefaView());
+            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
             presenter.setCallBackListener(callback);
             presenter.editar(subTarefa);
         });
         return link;
     }
 
-    private void adicionarSubTarefa(Tarefa sub) {
+    private void adicionarSubTarefa(Task sub) {
 
         // monta os dados para adicionar na grid
         Object[] linha = new Object[]{
@@ -882,7 +882,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
             sub.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(sub.getDataInicio()),
             FormatterUtil.formatDate(sub.getDataFim()),
-            CadastroTarefaView.buildPopUpStatusProgressTask(view.getSubTasksTable(), sub),
+            TaskView.buildPopUpStatusProgressTask(view.getSubTasksTable(), sub),
             sub.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -890,7 +890,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         };
         view.getSubTasksTable().addItem(linha, sub);
     
-        for (Tarefa subTarefa : sub.getSubTarefas()) {
+        for (Task subTarefa : sub.getSubTarefas()) {
             adicionarSubTarefa(subTarefa);
         }
 
@@ -902,7 +902,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
      * @param tarefa
      */
     @Override
-    public void taskCreationDone(Tarefa tarefa) {
+    public void taskCreationDone(Task tarefa) {
 
         adicionarSubTarefa(tarefa);
         organizeTree(tarefa, tarefa.getSubTarefas());
@@ -910,21 +910,21 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     }
 
     @Override
-    public void taskUpdateDone(Tarefa tarefa) {
+    public void taskUpdateDone(Task tarefa) {
 
         Item it = view.getSubTasksTable().getItem(tarefa);
 
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaCod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaTitulo")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaNome")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaEmpresaFilial")).setValue(tarefa.getEmpresa().getNome()
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaCod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaTitulo")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaNome")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaEmpresaFilial")).setValue(tarefa.getEmpresa().getNome()
                 + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaSolicitante")).setValue(tarefa.getUsuarioSolicitante().getNome());
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaStatus")).setValue(CadastroTarefaView.buildPopUpStatusProgressTask(view.getSubTasksTable(), tarefa));
-        it.getItemProperty(mensagens.getString("CadastroTarefaView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaSolicitante")).setValue(tarefa.getUsuarioSolicitante().getNome());
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaStatus")).setValue(TaskView.buildPopUpStatusProgressTask(view.getSubTasksTable(), tarefa));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
 
@@ -933,7 +933,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     @Override
     public void removerParticipante(ParticipanteTarefa participanteTarefa) {
         view.getFollowersTable().removeItem(participanteTarefa);
-        Tarefa tarefa = view.getTarefa();
+        Task tarefa = view.getTarefa();
         tarefa.getParticipantes().remove(participanteTarefa);
     }
 
@@ -945,7 +945,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
         } else {
             ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
             view.getFollowersContainer().addBean(participanteTarefa);
-            Tarefa tarefa = view.getTarefa();
+            Task tarefa = view.getTarefa();
 
             if (tarefa.getParticipantes() == null) {
                 tarefa.setParticipantes(new ArrayList<>());
@@ -982,7 +982,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
                 view.getAddSubButton().setEnabled(false);
             }
 
-            view.setCaption(mensagens.getString("CadastroTarefaView.titulo.cadastro") + hierarquiaProjetoDetalhe.getCategoria());
+            view.setCaption(mensagens.getString("TaskView.titulo.cadastro") + hierarquiaProjetoDetalhe.getCategoria());
         }
     }
 
@@ -1020,7 +1020,7 @@ public class CadastroTarefaPresenter implements Serializable, CadastroTarefaView
     }
 
     @Override
-    public void recurrencyRemoved(Tarefa task) {
+    public void recurrencyRemoved(Task task) {
         view.close();
         callbackListener.taskUpdateDone(task);
     }

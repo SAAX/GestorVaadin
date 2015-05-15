@@ -106,13 +106,13 @@ public class Usuario implements Serializable {
     private List<Endereco> enderecosIncluidos;
     
     @OneToMany(mappedBy = "usuarioInclusao")
-    private List<Tarefa> tarefasIncluidas;
+    private List<Task> tarefasIncluidas;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioSolicitante")
-    private List<Tarefa> tarefasSolicitadas;
+    private List<Task> tarefasSolicitadas;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioResponsavel")
-    private List<Tarefa> tarefasSobResponsabilidade;
+    private List<Task> tarefasSobResponsabilidade;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<ParticipanteTarefa> paricipacoesIncluidas;
@@ -293,27 +293,27 @@ public class Usuario implements Serializable {
         this.enderecosIncluidos = enderecosIncluidos;
     }
 
-    public List<Tarefa> getTarefasIncluidas() {
+    public List<Task> getTarefasIncluidas() {
         return tarefasIncluidas;
     }
 
-    public void setTarefasIncluidas(List<Tarefa> tarefasIncluidas) {
+    public void setTarefasIncluidas(List<Task> tarefasIncluidas) {
         this.tarefasIncluidas = tarefasIncluidas;
     }
 
-    public List<Tarefa> getTarefasSolicitadas() {
+    public List<Task> getTarefasSolicitadas() {
         return tarefasSolicitadas;
     }
 
-    public void setTarefasSolicitadas(List<Tarefa> tarefasSolicitadas) {
+    public void setTarefasSolicitadas(List<Task> tarefasSolicitadas) {
         this.tarefasSolicitadas = tarefasSolicitadas;
     }
 
-    public List<Tarefa> getTarefasSobResponsabilidade() {
+    public List<Task> getTarefasSobResponsabilidade() {
         return tarefasSobResponsabilidade;
     }
 
-    public void setTarefasSobResponsabilidade(List<Tarefa> tarefasSobResponsabilidade) {
+    public void setTarefasSobResponsabilidade(List<Task> tarefasSobResponsabilidade) {
         this.tarefasSobResponsabilidade = tarefasSobResponsabilidade;
     }
 

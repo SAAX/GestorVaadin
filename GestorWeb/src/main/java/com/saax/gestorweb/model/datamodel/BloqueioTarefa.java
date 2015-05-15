@@ -76,7 +76,7 @@ public class BloqueioTarefa implements Serializable {
 
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Tarefa tarefa;
+    private Task tarefa;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne
@@ -111,11 +111,11 @@ public class BloqueioTarefa implements Serializable {
     }
 
 
-    public Tarefa getTarefa() {
+    public Task getTarefa() {
         return tarefa;
     }
 
-    public void setTarefa(Tarefa tarefa) {
+    public void setTarefa(Task tarefa) {
         this.tarefa = tarefa;
     }
 

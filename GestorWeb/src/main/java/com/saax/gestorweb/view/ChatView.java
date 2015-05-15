@@ -8,7 +8,7 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -109,7 +109,7 @@ public class ChatView extends Window{
         
     }
 
-    public void chatConfigure(Tarefa task, SharedChat chat){
+    public void chatConfigure(Task task, SharedChat chat){
         
         ChatBox cb = new ChatBox(chat);
         

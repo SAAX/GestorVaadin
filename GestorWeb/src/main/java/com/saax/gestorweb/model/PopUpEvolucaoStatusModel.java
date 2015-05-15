@@ -6,7 +6,7 @@ import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import java.time.LocalDate;
@@ -33,7 +33,7 @@ public class PopUpEvolucaoStatusModel {
      * @param comentarioAndamento
      * @return
      */
-    public Tarefa atualizarAndamentoTarefa(Usuario loggedUser, Integer idTarefa, Integer andamento, String comentarioAndamento) {
+    public Task atualizarAndamentoTarefa(Usuario loggedUser, Integer idTarefa, Integer andamento, String comentarioAndamento) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -41,7 +41,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             tarefa.setAndamento(andamento);
 
@@ -68,7 +68,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().commit();
 
-            return em.find(Tarefa.class, idTarefa);
+            return em.find(Task.class, idTarefa);
 
         } catch (Exception ex) {
             GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
@@ -84,14 +84,14 @@ public class PopUpEvolucaoStatusModel {
      * @param idTarefa
      * @return
      */
-    public Tarefa concluirTarefa(Integer idTarefa) {
+    public Task concluirTarefa(Integer idTarefa) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         try {
 
             em.getTransaction().begin();
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.CONCLUIDA);
             tarefa.setDataTermino(LocalDate.now());
@@ -115,7 +115,7 @@ public class PopUpEvolucaoStatusModel {
      * @param loggedUser
      * @return
      */
-    public Tarefa bloquearTarefa(Integer idTarefa, String motivoBloqueio, Usuario loggedUser) {
+    public Task bloquearTarefa(Integer idTarefa, String motivoBloqueio, Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -123,7 +123,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             BloqueioTarefa bloqueioTarefa = new BloqueioTarefa();
             bloqueioTarefa.setTarefa(tarefa);
@@ -165,7 +165,7 @@ public class PopUpEvolucaoStatusModel {
      * @param loggedUser
      * @return
      */
-    public Tarefa recusarTarefa(Integer idTarefa, String motivoRecusa, Usuario loggedUser) {
+    public Task recusarTarefa(Integer idTarefa, String motivoRecusa, Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -173,7 +173,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             BloqueioTarefa bloqueioTarefa = new BloqueioTarefa();
             bloqueioTarefa.setTarefa(tarefa);
@@ -182,7 +182,7 @@ public class PopUpEvolucaoStatusModel {
             bloqueioTarefa.setDataHoraInclusao(LocalDateTime.now());
             bloqueioTarefa.setUsuarioInclusao(loggedUser);
 
-            tarefa.setStatus(StatusTarefa.NAO_ACEITA);
+            tarefa.setStatus(StatusTarefa.RECUSADA);
 
             tarefa.addBloqueio(bloqueioTarefa);
 
@@ -214,14 +214,14 @@ public class PopUpEvolucaoStatusModel {
      * @param usuario
      * @return
      */
-    public Tarefa adiarTarefa(Integer id, Usuario usuario) {
+    public Task adiarTarefa(Integer id, Usuario usuario) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         try {
         em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, id);
+            Task tarefa = em.find(Task.class, id);
 
             tarefa.setStatus(StatusTarefa.ADIADA);
             tarefa.setDataTermino(LocalDate.now());
@@ -249,7 +249,7 @@ public class PopUpEvolucaoStatusModel {
      * @param tarefa
      * @return
      */
-    public BloqueioTarefa obterBloqueioAtivo(Tarefa tarefa) {
+    public BloqueioTarefa obterBloqueioAtivo(Task tarefa) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -272,7 +272,7 @@ public class PopUpEvolucaoStatusModel {
      * @param usuario
      * @return
      */
-    public Tarefa removerBloqueioTarefa(Integer idTarefa, Usuario usuario) {
+    public Task removerBloqueioTarefa(Integer idTarefa, Usuario usuario) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -280,7 +280,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             BloqueioTarefa bloqueioAtivo = obterBloqueioAtivo(tarefa);
 
@@ -320,7 +320,7 @@ public class PopUpEvolucaoStatusModel {
      * @param usuario
      * @return
      */
-    public Tarefa removerRecusaTarefa(Integer idTarefa, Usuario usuario) {
+    public Task removerRecusaTarefa(Integer idTarefa, Usuario usuario) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -328,7 +328,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             BloqueioTarefa bloqueioAtivo = obterBloqueioAtivo(tarefa);
 
@@ -367,7 +367,7 @@ public class PopUpEvolucaoStatusModel {
      * @param usuario
      * @return
      */
-    public Tarefa aceitarTarefa(Integer idTarefa, Usuario usuario) {
+    public Task aceitarTarefa(Integer idTarefa, Usuario usuario) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -375,7 +375,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.NAO_INICIADA);
 
@@ -405,7 +405,7 @@ public class PopUpEvolucaoStatusModel {
      * @param usuario
      * @return
      */
-    public Tarefa reabrirTarefa(Integer idTarefa, Usuario usuario) {
+    public Task reabrirTarefa(Integer idTarefa, Usuario usuario) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -413,7 +413,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.NAO_INICIADA);
 
@@ -449,7 +449,7 @@ public class PopUpEvolucaoStatusModel {
      * @param usuario
      * @return
      */
-    public Tarefa reativarTarefa(Integer idTarefa, Usuario usuario) {
+    public Task reativarTarefa(Integer idTarefa, Usuario usuario) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -457,7 +457,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.NAO_ACEITA);
 
@@ -495,7 +495,7 @@ public class PopUpEvolucaoStatusModel {
      * @param usuario
      * @return
      */
-    public Tarefa avaliarTarefa(Integer idTarefa, Integer avaliacao, String observacaoAvaliacao, Usuario usuario) {
+    public Task avaliarTarefa(Integer idTarefa, Integer avaliacao, String observacaoAvaliacao, Usuario usuario) {
 
         boolean reavaliacao;
 
@@ -505,7 +505,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             AvaliacaoMetaTarefa avaliacaoTarefa;
             reavaliacao = tarefa.getStatus() == StatusTarefa.AVALIADA;
@@ -562,7 +562,7 @@ public class PopUpEvolucaoStatusModel {
      * @param comentarioAndamento
      * @return
      */
-    public Tarefa iniciarTarefa(Usuario usuario, Integer idTarefa, Integer andamento, String comentarioAndamento) {
+    public Task iniciarTarefa(Usuario usuario, Integer idTarefa, Integer andamento, String comentarioAndamento) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -570,7 +570,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.EM_ANDAMENTO);
             tarefa.setAndamento(andamento);
@@ -615,7 +615,7 @@ public class PopUpEvolucaoStatusModel {
      * @param usuario
      * @return
      */
-    public Tarefa cancelarTarefa(Integer idTarefa, Usuario usuario) {
+    public Task cancelarTarefa(Integer idTarefa, Usuario usuario) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -623,7 +623,7 @@ public class PopUpEvolucaoStatusModel {
 
             em.getTransaction().begin();
 
-            Tarefa tarefa = em.find(Tarefa.class, idTarefa);
+            Task tarefa = em.find(Task.class, idTarefa);
 
             tarefa.setStatus(StatusTarefa.CANCELADA);
             tarefa.setDataTermino(LocalDate.now());

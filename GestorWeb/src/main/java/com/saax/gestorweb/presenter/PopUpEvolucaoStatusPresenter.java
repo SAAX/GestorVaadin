@@ -2,12 +2,11 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
-import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Tarefa;
+import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
@@ -15,8 +14,6 @@ import com.saax.gestorweb.view.PopUpEvolucaoStatusViewListener;
 import com.saax.gestorweb.util.GestorSession;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -36,7 +33,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
-    private Tarefa tarefa = null;
+    private Task tarefa = null;
     private PopupButton statusButton = null;
     private final Usuario usuario;
 
@@ -61,7 +58,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
      * @param tarefa
      */
     @Override
-    public void load(Tarefa tarefa) {
+    public void load(Task tarefa) {
 
         this.tarefa = tarefa;
 
@@ -86,7 +83,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
      * @param statusButton
      */
     @Override
-    public void load(Tarefa tarefa, PopupButton statusButton) {
+    public void load(Task tarefa, PopupButton statusButton) {
 
         this.tarefa = tarefa;
 
@@ -144,7 +141,10 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
      * automaticamente e gravará a informação.
      */
     private void configurarView() {
-
+        
+        BloqueioTarefa ultimoBloqueioTarefa;
+        String motivo;
+        
         // Avalia se o usuario eh responsavel ou o solicitante e abre o perfil de acordo
         if (usuario.equals(tarefa.getUsuarioResponsavel())) {
 
@@ -160,8 +160,8 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
                     // Se a tarefa estiver bloqueada, possibilita:
                     // * remover bloqueio
                     // * ver histórico
-                    BloqueioTarefa ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
-                    String motivo = ultimoBloqueioTarefa.getMotivo();
+                    ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
+                    motivo = ultimoBloqueioTarefa.getMotivo();
                     view.apresentaPerfilUsuarioResponsavelTarefaBloqueada(motivo);
 
                     break;
@@ -194,12 +194,24 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
                     view.selecionaComboAndamento(tarefa.getAndamento());
 
                     break;
+                    
+                case RECUSADA:
+
+                    // Se a tarefa estiver recusada, possibilita:
+                    // * remover o bloqueio de recusa
+                    // * ver histórico
+                    ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
+                    motivo = ultimoBloqueioTarefa.getMotivo();
+                    view.apresentaPerfilUsuarioResponsavelTarefaRecusada(motivo);
+                    
+                    break;
                 case NAO_ACEITA:
 
-                    BloqueioTarefa ultimoRecusaTarefa = model.obterBloqueioAtivo(tarefa);
-                    String motivoRecusa = ultimoRecusaTarefa.getMotivo();
-                    view.apresentaPerfilUsuarioResponsavelTarefaRecusada(motivoRecusa);
-
+                    // Se a tarefa ainda não estiver aceita, possibilita:
+                    // * aceitar a tarefa
+                    // * recusar a tarefa
+                    // * ver histórico
+                    view.apresentaPerfilUsuarioResponsavelTarefaNaoAceita();
                     break;
                 case NAO_INICIADA:
 
@@ -231,8 +243,8 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
                     // Se a tarefa estiver bloqueada, possibilita:
                     // * visualizar o motivo do bloqueio
                     // * ver histórico
-                    BloqueioTarefa ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
-                    String motivo = ultimoBloqueioTarefa.getMotivo();
+                    ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
+                    motivo = ultimoBloqueioTarefa.getMotivo();
 
                     view.apresentaPerfilUsuarioSolicitanteTarefaEmAndamento(tarefa.getAndamento(), motivo);
 
@@ -277,12 +289,23 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
                     break;
                 case NAO_ACEITA:
 
-                    view.apresentaPerfilUsuarioSolicitanteTarefaNaoAceitaOuNaoIniciada(StatusTarefa.NAO_ACEITA);
+                    view.apresentaPerfilUsuarioSolicitanteTarefaParada(StatusTarefa.NAO_ACEITA, null);
 
+                    break;
+
+                case RECUSADA:
+
+                    // Se a tarefa estiver recusada, possibilita:
+                    // * ver histórico
+                    ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
+                    motivo = ultimoBloqueioTarefa.getMotivo();
+                    view.apresentaPerfilUsuarioSolicitanteTarefaParada(StatusTarefa.RECUSADA,motivo);
+                    
                     break;
                 case NAO_INICIADA:
 
-                    view.apresentaPerfilUsuarioSolicitanteTarefaNaoAceitaOuNaoIniciada(StatusTarefa.NAO_INICIADA);
+                    view.apresentaPerfilUsuarioSolicitanteTarefaParada(StatusTarefa.NAO_INICIADA, null);
+                    
                     break;
                 default:
                     throw new AssertionError();
@@ -332,7 +355,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
      * @param tarefa
      * @return
      */
-    private String getStatusTarefaDescription(Tarefa tarefa) {
+    private String getStatusTarefaDescription(Task tarefa) {
 
         StatusTarefa statusTarefa = tarefa.getStatus();
 
@@ -347,6 +370,8 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
                 return mensagens.getString("StatusTarefa.ADIADA");
             case BLOQUEADA:
                 return mensagens.getString("StatusTarefa.BLOQUEADA");
+            case RECUSADA:
+                return mensagens.getString("StatusTarefa.RECUSADA");
             case AVALIADA:
                 return mensagens.getString("StatusTarefa.AVALIADA");
             case CONCLUIDA:
@@ -372,7 +397,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
         view.apresentaPopUpMotivoBloqueio();
 
     }
-    
+
     /**
      * Evento disparado ao ser solicitada a recusa da tarefa
      */
@@ -383,8 +408,6 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
 
     }
 
-    
-    
     /**
      * Evento disparado ao ser solicitado o histórico da tarefa
      */
@@ -408,7 +431,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
         closePopUpButton();
 
     }
-    
+
     /**
      * Evento disparado ao ser confirmada a recusa da tarefa
      */
@@ -450,7 +473,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
         tarefa = model.removerBloqueioTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
-    
+
     /**
      * Evento disparado ao ser solicitado para remover a recusa da tarefa
      */
@@ -526,8 +549,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
         model.atualizarHistorico(historicoTarefa.getId(), novoComentario);
         view.getHistoricoContainer().removeAllItems();
         view.getHistoricoContainer().addAll(historicoTarefa.getTarefa().getHistorico());
-        
-        
+
     }
 
 }

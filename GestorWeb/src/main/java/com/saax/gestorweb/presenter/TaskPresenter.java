@@ -740,7 +740,6 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             apontamentoTarefa = model.configuraApontamento(apontamentoTarefa);
             
             view.getHoursControlContainer().addItem(apontamentoTarefa);
-
             // se o usuário informou um custo / hora, congela este custo para todos os futuros apontamentos
             if (apontamentoTarefa.getCustoHora() != null) {
                 view.getTarefa().setCustoHoraApontamento(apontamentoTarefa.getCustoHora());
@@ -763,7 +762,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     public void removePointingTime(ApontamentoTarefa taskPointingTime) {
 
         if (!taskPointingTime.getUsuarioInclusao().equals(loggedUser)) {
-            Notification.show("Ops, apenas " + taskPointingTime.getUsuarioInclusao() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
+            Notification.show("Ops, apenas " + taskPointingTime.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
         } else {
             view.getPointingTimeTable().removeItem(taskPointingTime);
             model.removerApontamentoHoras(taskPointingTime);
@@ -795,10 +794,15 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
     @Override
     public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa) {
+        
+        if (!orcamentoTarefa.getUsuarioInclusao().equals(loggedUser)) {
+            Notification.show("Ops, apenas " + orcamentoTarefa.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
+        } else {
         view.getBudgetControlTable().removeItem(orcamentoTarefa);
         model.removerOrcamentoTarefa(orcamentoTarefa);
         model.recalculaSaldoOrcamento(view.getTarefa().getOrcamentos());
         view.getBudgetControlTable().refreshRowCache();
+        }
     }
 
     @Override

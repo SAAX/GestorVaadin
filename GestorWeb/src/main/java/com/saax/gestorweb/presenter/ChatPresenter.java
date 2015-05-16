@@ -20,6 +20,7 @@ import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
@@ -71,11 +72,14 @@ public class ChatPresenter implements Serializable, ChatViewListener {
         loadingTable(task);
         this.task = task;
 
-        for (int i = 0; i < task.getAnexos().size(); i++) {
-            view.getAttachmentsAddedTable().addItem(task.getAnexos().get(i).getId());
-            view.getAttachmentsAddedTable().getContainerProperty(task.getAnexos().get(i).getId(), "Arquivo:").setValue(task.getAnexos().get(i).getNome());
-            view.getAttachmentsAddedTable().getContainerProperty(task.getAnexos().get(i).getId(), "Enviado em:").setValue(task.getAnexos().get(i).getUsuarioInclusao().getNome() + " às " + (FormatterUtil.formatDateTime(task.getAnexos().get(i).getDataHoraInclusao())));
-            view.getAttachmentsAddedTable().getContainerProperty(task.getAnexos().get(i).getId(), "Download:").setValue(buildButtonDownload(task.getAnexos().get(i)));
+        Table attachmentsTable = view.getAttachmentsAddedTable();
+        List<AnexoTarefa> anexosTarefa = task.getAnexos();
+        for (AnexoTarefa anexo : anexosTarefa) {
+
+            attachmentsTable.addItem(anexo);
+            attachmentsTable.getContainerProperty(anexo, "Arquivo:").setValue(anexo.getNome());
+            attachmentsTable.getContainerProperty(anexo, "Enviado em:").setValue(anexo.getUsuarioInclusao().getNome() + " às " + (FormatterUtil.formatDateTime(anexo.getDataHoraInclusao())));
+            attachmentsTable.getContainerProperty(anexo, "Download:").setValue(buildButtonDownload(anexo));    
         }
         
             

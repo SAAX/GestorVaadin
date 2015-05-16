@@ -109,10 +109,10 @@ public class TaskModel {
 
             // persiste as tarefas recorrentes:
             if (task.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
-                if (firstRecurrentTask == null){
+                if (firstRecurrentTask == null) {
                     firstRecurrentTask = task; // save the first of the recurrency set
                 }
-                if (task.getProximaTarefa() != null){
+                if (task.getProximaTarefa() != null) {
                     saveTask(task.getProximaTarefa());
                 }
             }
@@ -128,8 +128,8 @@ public class TaskModel {
                 // verify if it is a recurrent set of tasks
                 if (firstRecurrentTask != null) {
                     // if it is a recurrent set, only commit on the first 
-                    if (task == firstRecurrentTask){
-                    em.getTransaction().commit();
+                    if (task == firstRecurrentTask) {
+                        em.getTransaction().commit();
                     }
                 } else {
                     em.getTransaction().commit();
@@ -155,7 +155,7 @@ public class TaskModel {
 
     /**
      * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ
- e do ID Task.
+     * e do ID Task.
      *
      * @param anexoTarefa anexo a ser movido
      */
@@ -675,6 +675,31 @@ public class TaskModel {
             task.setMeta(target);
             target.addTask(task);
         }
+    }
+
+    public boolean userHasAccessToTask(Usuario loggedUser, Task tarefaToEdit) {
+
+        if (tarefaToEdit.getUsuarioInclusao().equals(loggedUser)) {
+            return true;
+        }
+        if (tarefaToEdit.getUsuarioResponsavel().equals(loggedUser)) {
+            return true;
+        }
+        if (tarefaToEdit.getUsuarioSolicitante().equals(loggedUser)) {
+            return true;
+        }
+
+        List<Usuario> followers = new ArrayList<>();
+
+        for (ParticipanteTarefa pt : tarefaToEdit.getParticipantes()) {
+            followers.add(pt.getUsuarioParticipante());
+        }
+        if (followers.contains(loggedUser)) {
+            return true;
+        }
+
+        return false;
+
     }
 
 }

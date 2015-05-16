@@ -666,7 +666,7 @@ public class TaskView extends Window {
         attachmentsAddedTable.addGeneratedColumn(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
             Button downloadButton = new Button(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"));
             AnexoTarefa anexoTarefa = (AnexoTarefa) itemId;
-            FileDownloader fd = new FileDownloader(new FileResource(anexoTarefa.getArquivo() == null ? anexoTarefa.getArquivoTemporario() : anexoTarefa.getArquivo()));
+            FileDownloader fd = new FileDownloader(new FileResource(new File(anexoTarefa.getCaminhoCompleto())));
 
             fd.extend(downloadButton);
 

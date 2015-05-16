@@ -492,7 +492,7 @@ public class TaskModel {
 
         BigDecimal inputValor = null;
         try {
-            inputValor = new BigDecimal(orcamentoTarefa.getInputValor());
+            inputValor = new BigDecimal(orcamentoTarefa.getInputValor().replaceAll(",", "."));
             inputValor.setScale(2);
             inputValor.doubleValue();
 
@@ -502,7 +502,6 @@ public class TaskModel {
 
         // se o usuário for o responsavel os valores inputadas são "debito"
         if (usuarioApontamento.equals(usuarioResponsavel)) {
-
             orcamentoTarefa.setDebito(inputValor);
         } else if (usuarioApontamento.equals(usuarioSolicitante)) {
             // se o usuário for o solicitante as horas inputadas são "credito"

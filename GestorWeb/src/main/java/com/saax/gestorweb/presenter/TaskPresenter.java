@@ -222,7 +222,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     public void editar(Task tarefaToEdit) {
 
         if (!model.userHasAccessToTask(loggedUser, tarefaToEdit)){
-            Notification.show("User has no accesso to the task", Notification.Type.WARNING_MESSAGE);
+            Notification.show(mensagens.getString("TaskView.accessDenied"), Notification.Type.WARNING_MESSAGE);
+            return ;
         }
         
         init(tarefaToEdit);

@@ -245,7 +245,7 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
 
     @Override
     public void cancelButtonClicked() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        UI.getCurrent().removeWindow(view);
     }
 
     /**

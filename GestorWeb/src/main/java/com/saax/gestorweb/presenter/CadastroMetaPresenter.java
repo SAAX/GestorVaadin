@@ -1,9 +1,9 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.CadastroMetaModel;
+import com.saax.gestorweb.model.GoalModel;
 import com.saax.gestorweb.model.TaskModel;
-import com.saax.gestorweb.model.EmpresaModel;
+import com.saax.gestorweb.model.CompanyModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
@@ -41,7 +41,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
 
     // Todo presenter mantem acesso à view e ao model
     private final transient CadastroMetaView view;
-    private final transient CadastroMetaModel model;
+    private final transient GoalModel model;
 
     // recursos de aplicação
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -58,7 +58,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
      * @param model
      * @param view
      */
-    public CadastroMetaPresenter(CadastroMetaModel model,
+    public CadastroMetaPresenter(GoalModel model,
             CadastroMetaView view) {
 
         this.model = model;
@@ -118,7 +118,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
     private void carregaComboEmpresa() {
         ComboBox empresaCombo = view.getEmpresaCombo();
 
-        EmpresaModel empresaModel = new EmpresaModel();
+        CompanyModel empresaModel = new CompanyModel();
 
         List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(loggedUser);
         for (Empresa empresa : empresas) {

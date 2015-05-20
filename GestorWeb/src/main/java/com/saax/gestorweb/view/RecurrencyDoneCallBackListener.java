@@ -14,8 +14,9 @@ public interface RecurrencyDoneCallBackListener {
     /**
      * Handles the event thrown when the sub windows with all recurrency parameters is closed
      * @param tarefasRecorrentes
+     * @param recurrencyMessage
      */
-    public void recurrencyCreationDone(List<LocalDate> tarefasRecorrentes);
+    public void recurrencyCreationDone(List<LocalDate> tarefasRecorrentes, String recurrencyMessage);
 
     public void recurrencyRemoved(Task task);
 

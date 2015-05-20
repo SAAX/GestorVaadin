@@ -1,6 +1,8 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
@@ -138,11 +140,12 @@ public class RecorrencyView extends Window {
     /**
      * Create a view and all components
      *
-     * @param isRecurrent true if the task is already a recurrent task.
      */
-    public RecorrencyView(boolean isRecurrent) {
+    public RecorrencyView(Task task) {
         super();
 
+        boolean isRecurrent = task.getTipoRecorrencia() == TipoTarefa.RECORRENTE;
+        
         setModal(true);
         setWidth("710px");
         setHeight("220px");
@@ -151,7 +154,7 @@ public class RecorrencyView extends Window {
         VerticalLayout containerPrincipal = null;
         
         if (isRecurrent){
-            containerPrincipal = buildRemoveRecurrencyContainer();
+            containerPrincipal = buildRemoveRecurrencyContainer(task.getRecurrencyMessage());
             
         } else {
             containerPrincipal = buildRecurrencyParametersContainer();
@@ -171,14 +174,14 @@ public class RecorrencyView extends Window {
      * It is called when the task is already a recurrent task
      * @return
      */
-    private VerticalLayout buildRemoveRecurrencyContainer() {
+    private VerticalLayout buildRemoveRecurrencyContainer(String recurrencyMessage) {
 
         VerticalLayout mainContainer = new VerticalLayout();
         mainContainer.setMargin(true);
         mainContainer.setSpacing(true);
         mainContainer.setSizeFull();
 
-        titleLabel = new Label(messages.getString("RecorrencyView.ConfirmationPopUp.title"));
+        titleLabel = new Label(recurrencyMessage);
         mainContainer.addComponent(titleLabel);
 
         // options
@@ -887,10 +890,13 @@ public class RecorrencyView extends Window {
      * confirm: the listener is called to creat the tasks
      *
      * @param tarefasRecorrentes
+     * @param recurrencyMessage
      */
-    public void showConfirmCreateRecurrentTasks(List<LocalDate> tarefasRecorrentes) {
+    public void showConfirmCreateRecurrentTasks(List<LocalDate> tarefasRecorrentes, String recurrencyMessage) {
 
-        StringBuilder dates = new StringBuilder(messages.getString("RecorrencyView.showConfirmCreateRecurrentTasks.text"));
+        StringBuilder dates = new StringBuilder(recurrencyMessage);
+        dates.append("\n");
+        dates.append(messages.getString("RecorrencyView.showConfirmCreateRecurrentTasks.text"));
         dates.append("\n");
         for (LocalDate tarefasRecorrente : tarefasRecorrentes) {
             dates.append("\n\t * ");
@@ -901,9 +907,9 @@ public class RecorrencyView extends Window {
                 messages.getString("RecorrencyView.showConfirmCreateRecurrentTasks.OKButton"), 
                 messages.getString("RecorrencyView.showConfirmCreateRecurrentTasks.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
-                        listener.confirmRecurrencyCreation(tarefasRecorrentes);
+                        listener.confirmRecurrencyCreation(tarefasRecorrentes, recurrencyMessage);
                     } else {
-                        listener.confirmRecurrencyCreation(null);
+                        listener.confirmRecurrencyCreation(null, null);
                     }
                 });
     }

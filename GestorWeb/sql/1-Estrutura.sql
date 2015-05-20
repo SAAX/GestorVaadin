@@ -320,6 +320,7 @@ CREATE TABLE Tarefa (
     idProximaTarefa BIGINT, 
     recurrencyID BIGINT, 
     status CHARACTER VARYING (50) NOT NULL,
+    recurrencyMessage CHARACTER VARYING (250),
     projecao CHARACTER VARYING (50),
     andamento INTEGER NOT NULL,
     dataInicio DATE NOT NULL,

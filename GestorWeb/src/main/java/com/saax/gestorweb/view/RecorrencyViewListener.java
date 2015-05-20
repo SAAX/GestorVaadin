@@ -25,7 +25,7 @@ public interface RecorrencyViewListener {
 
     public void cancelButtonClicked();
 
-    public void confirmRecurrencyCreation(List<LocalDate> tarefasRecorrentes);
+    public void confirmRecurrencyCreation(List<LocalDate> tarefasRecorrentes, String recurrencyMessage);
 
     public void removeAllRecurrency();
 

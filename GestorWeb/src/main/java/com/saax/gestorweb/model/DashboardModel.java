@@ -5,6 +5,7 @@ import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -29,17 +30,15 @@ import org.apache.commons.beanutils.BeanUtils;
  */
 public class DashboardModel {
 
-    
-        // Classes do modelo acessórias acessadas por este model
+    // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
-    private final EmpresaModel empresaModel;
+    private final CompanyModel empresaModel;
 
     public DashboardModel() {
         usuarioModel = new UsuarioModel();
-        empresaModel = new EmpresaModel();
-        
-    }
+        empresaModel = new CompanyModel();
 
+    }
 
     /**
      * Obtém as tarefas sob responsabilidade do usuário logado
@@ -59,7 +58,7 @@ public class DashboardModel {
         return tarefas;
 
     }
-    
+
     /**
      * Obtém as metas sob responsabilidade do usuário logado
      *
@@ -107,38 +106,40 @@ public class DashboardModel {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         final List<Task> tarefasUsuarioResponsavel = new ArrayList<>();
-        usuariosResponsaveis.stream().forEach((usuario) -> {
-            // refresh
-            usuario = em.find(Usuario.class, usuario.getId());
-            tarefasUsuarioResponsavel.addAll(usuario.getTarefasSobResponsabilidade());
 
-        });
+        for (Usuario usuarioResponsavel : usuariosResponsaveis) {
+
+            usuarioResponsavel = em.find(Usuario.class, usuarioResponsavel.getId());
+            tarefasUsuarioResponsavel.addAll(usuarioResponsavel.getTarefasSobResponsabilidade());
+
+        };
 
         List<Task> tarefasUsuarioSolicitante = new ArrayList<>();
-        usuariosSolicitantes.stream().forEach((usuario) -> {
-            usuario = em.find(Usuario.class, usuario.getId());
-            tarefasUsuarioSolicitante.addAll(usuario.getTarefasSolicitadas());
-        });
+        for (Usuario usuariosSolicitante : usuariosSolicitantes) {
+            usuariosSolicitante = em.find(Usuario.class, usuariosSolicitante.getId());
+            tarefasUsuarioSolicitante.addAll(usuariosSolicitante.getTarefasSolicitadas());
+        };
 
         List<Task> tarefasUsuariosParticipantes = new ArrayList<>();
-        for (Usuario usuario : usuariosParticipantes) {
-            usuario = em.find(Usuario.class, usuario.getId());
-            usuario.getTarefasParticipantes().stream().forEach((participanteTarefa) -> {
+        for (Usuario usuarioParticipante : usuariosParticipantes) {
+            usuarioParticipante = em.find(Usuario.class, usuarioParticipante.getId());
+
+            for (ParticipanteTarefa participanteTarefa : usuarioParticipante.getTarefasParticipantes()) {
                 tarefasUsuariosParticipantes.add(participanteTarefa.getTarefa());
-            });
+            }
         }
 
         List<Task> tarefasEmpresa = new ArrayList<>();
-        empresas.stream().forEach((empresa) -> {
+        for (Empresa empresa : empresas) {
             empresa = em.find(Empresa.class, empresa.getId());
             tarefasEmpresa.addAll(empresa.getTarefas());
-        });
+        }
 
         List<Task> tarefasFiliais = new ArrayList<>();
-        filiais.stream().forEach((filial) -> {
+        for (FilialEmpresa filial : filiais) {
             filial = em.find(FilialEmpresa.class, filial.getId());
             tarefasFiliais.addAll(filial.getTarefas());
-        });
+        }
 
         List<Task> tarefasDataFim = new ArrayList<>();
         if (dataFim != null) {
@@ -149,12 +150,12 @@ public class DashboardModel {
         }
 
         List<Task> tarefasProjecao = new ArrayList<>();
-        projecoes.stream().forEach((projecao) -> {
+        for (ProjecaoTarefa projecao : projecoes) {
             tarefasProjecao.addAll(
                     em.createNamedQuery("Task.findByProjecao")
                     .setParameter("projecao", projecao)
                     .getResultList());
-        });
+        }
 
         List<Task> tarefas = new ArrayList<>();
         if (tipoPesquisa == DashboardPresenter.TipoPesquisa.INCLUSIVA_OU) {
@@ -176,7 +177,7 @@ public class DashboardModel {
         } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
 
             tarefas.addAll(em.createNamedQuery("Task.findAll")
-                    .setParameter("empresa",loggedUser.getEmpresaAtiva())
+                    .setParameter("empresa", loggedUser.getEmpresaAtiva())
                     .getResultList());
 
             if (!tarefasUsuarioResponsavel.isEmpty()) {
@@ -203,7 +204,15 @@ public class DashboardModel {
 
         }
 
-        return tarefas;
+        List<Task> result = new ArrayList<>();
+        TaskModel taskModel = new TaskModel();
+        for (Task task : tarefas) {
+            if (taskModel.userHasAccessToTask(loggedUser, task)) {
+                result.add(task);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -248,15 +257,15 @@ public class DashboardModel {
     }
 
     /**
-     * Obtem as hierarquias que podem ser selecionadas pelo usuário (até nível 2)
-     * @return 
+     * Obtem as hierarquias que podem ser selecionadas pelo usuário (até nível
+     * 2)
+     *
+     * @return
      */
     public List<HierarquiaProjeto> getHierarquiasProjeto() {
-        
-        
+
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        
         // Obtem as hiearquias genericas (de todas as empresas)
         List<HierarquiaProjeto> hierarquiasGenericas = em.createNamedQuery("HierarquiaProjeto.findAllDefault")
                 .getResultList();
@@ -266,11 +275,11 @@ public class DashboardModel {
         List<HierarquiaProjeto> hierarquiasEmpresa = em.createNamedQuery("HierarquiaProjeto.findByEmpresa")
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
-        
+
         List<HierarquiaProjeto> hierarquiasCadastradas = new ArrayList<>();
         hierarquiasCadastradas.addAll(hierarquiasGenericas);
         hierarquiasCadastradas.addAll(hierarquiasEmpresa);
-        
+
         List<HierarquiaProjeto> hierarquiasParaSelecao = new ArrayList<>();
 
         // Remove os detalhes de nivel maior que 2, pois não podem ser criados diretamente
@@ -278,16 +287,16 @@ public class DashboardModel {
             try {
                 HierarquiaProjeto hierarquiaParaSelecao = (HierarquiaProjeto) BeanUtils.cloneBean(hierarquiasCadastrada);
                 hierarquiaParaSelecao.setCategorias(new ArrayList<>());
-                
+
                 for (HierarquiaProjetoDetalhe hierarquiaProjetoDetalhe : hierarquiasCadastrada.getCategorias()) {
-                    if (hierarquiaProjetoDetalhe.getNivel() <= 2){
+                    if (hierarquiaProjetoDetalhe.getNivel() <= 2) {
                         hierarquiaParaSelecao.getCategorias().add(hierarquiaProjetoDetalhe);
                     }
-                    
+
                 }
-                
+
                 hierarquiasParaSelecao.add(hierarquiaParaSelecao);
-                
+
             } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
                 Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
@@ -297,23 +306,23 @@ public class DashboardModel {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public HierarquiaProjetoDetalhe getCategoriaDefaultTarefa() {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        
+
         HierarquiaProjeto hierarquiaDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
                 .setParameter("nome", "Meta")
                 .getSingleResult();
-        
+
         for (HierarquiaProjetoDetalhe categoria : hierarquiaDefault.getCategorias()) {
-            if (categoria.getNivel()==2){
+            if (categoria.getNivel() == 2) {
                 return categoria;
             }
         }
-        
+
         return null;
     }
 
@@ -370,7 +379,7 @@ public class DashboardModel {
         } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
 
             metas.addAll(em.createNamedQuery("Meta.findAll")
-                    .setParameter("empresa",loggedUser.getEmpresaAtiva())
+                    .setParameter("empresa", loggedUser.getEmpresaAtiva())
                     .getResultList());
 
             if (!metasUsuarioResponsavel.isEmpty()) {

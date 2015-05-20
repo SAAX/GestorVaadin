@@ -5,7 +5,7 @@
  */
 package com.saax.gestorweb;
 
-import com.saax.gestorweb.model.CadastroMetaModel;
+import com.saax.gestorweb.model.GoalModel;
 import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.Departamento;
@@ -49,7 +49,7 @@ public class CadastroMetaTest {
     private static ResourceBundle mensagens;
     private static Usuario loggedUser;
     private CadastroMetaView view;
-    private CadastroMetaModel model;
+    private GoalModel model;
     private CadastroMetaPresenter presenter;
     private EntityManager em;
     private static List<Meta> persistedTargets;
@@ -89,7 +89,7 @@ public class CadastroMetaTest {
     public void setUp() {
 
         view = new CadastroMetaView();
-        model = new CadastroMetaModel();
+        model = new GoalModel();
         presenter = new CadastroMetaPresenter(model, view);
 
         

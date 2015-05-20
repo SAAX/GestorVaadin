@@ -3,7 +3,7 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
-import com.saax.gestorweb.model.EmpresaModel;
+import com.saax.gestorweb.model.CompanyModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.RecorrencyModel;
 import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
@@ -76,6 +76,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     private PopUpEvolucaoStatusPresenter presenterPopUpStatus;
     private List<LocalDate> recurrentDates;
     private RecorrencyPresenter RecorrencyPresenter;
+    private String recurrencyMessage;
 
     /**
      * Cria o presenterPopUpStatus ligando o Model ao View
@@ -205,7 +206,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             view.setCaption(mensagens.getString("TaskView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
             view.getHierarchyCombo().setEnabled(false);
         }
-        
+
         view.getChatButton().setVisible(false);
         view.getProjectionButton().setVisible(false);
 
@@ -216,79 +217,95 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     /**
      * Abre o pop window do cadastro de tarefas para edição da tarefa informada
      *
-     * @param tarefaToEdit
+     * @param taskToEdit
      */
     @Override
-    public void editar(Task tarefaToEdit) {
+    public void editar(Task taskToEdit) {
 
-        if (!model.userHasAccessToTask(loggedUser, tarefaToEdit)){
+        if (!model.userHasAccessToTask(loggedUser, taskToEdit)){
             Notification.show(mensagens.getString("TaskView.accessDenied"), Notification.Type.WARNING_MESSAGE);
             return ;
         }
-        
-        init(tarefaToEdit);
 
-        for (Task sub : tarefaToEdit.getSubTarefas()) {
+        for (Task sub : taskToEdit.getSubTarefas()) {
             adicionarSubTarefa(sub);
         }
-        
-        if(tarefaToEdit.getUsuarioResponsavel().equals(tarefaToEdit.getUsuarioSolicitante())){
+
+        if (taskToEdit.getUsuarioResponsavel().equals(taskToEdit.getUsuarioSolicitante())) {
             view.getChatButton().setEnabled(false);
         }
-        
-        organizeTree(tarefaToEdit, tarefaToEdit.getSubTarefas());
+
+        organizeTree(taskToEdit, taskToEdit.getSubTarefas());
 
         // configura a categoria
         ComboBox combo = view.getHierarchyCombo();
-        combo.addItem(tarefaToEdit.getHierarquia());
-        combo.setItemCaption(tarefaToEdit.getHierarquia(), tarefaToEdit.getHierarquia().getCategoria());
+        combo.addItem(taskToEdit.getHierarquia());
+        combo.setItemCaption(taskToEdit.getHierarquia(), taskToEdit.getHierarquia().getCategoria());
 
-        view.getFollowersContainer().addAll(tarefaToEdit.getParticipantes());
-        view.getTaskAttachContainer().addAll(tarefaToEdit.getAnexos());
-        view.getHoursControlContainer().addAll(tarefaToEdit.getApontamentos());
-        view.getBudgetContainer().addAll(tarefaToEdit.getOrcamentos());
-        
-        configPermissions(tarefaToEdit);
-                
-        view.setCaption(mensagens.getString("TaskView.titulo.edicao") + tarefaToEdit.getHierarquia().getCategoria());
-        
-        
+        view.getFollowersContainer().addAll(taskToEdit.getParticipantes());
+        view.getTaskAttachContainer().addAll(taskToEdit.getAnexos());
+        view.getHoursControlContainer().addAll(taskToEdit.getApontamentos());
+        view.getBudgetContainer().addAll(taskToEdit.getOrcamentos());
+
+        configPermissions(taskToEdit);
+
+        view.setCaption(mensagens.getString("TaskView.titulo.edicao") + taskToEdit.getHierarquia().getCategoria());
+
     }
 
-   
-    /**
-     * Sets the permission to add/remove participants
-     * @param assignee
-     * @param requestor 
-     */
-    private void configurePermissionToChangeFollowers(Usuario loggedInUser, Usuario assignee, Usuario requestor){
-        
-        boolean loggedUserIsTheAssignee = assignee != null && assignee.equals(loggedInUser);
-        boolean AssigneeIsNull = assignee == null;
-        boolean loggedUserIsTheRequestor = requestor != null && requestor.equals(loggedInUser);
-        boolean RequestorIsNull = requestor == null;
-        
-        view.setAllowAddRemoveFollowers(loggedUserIsTheAssignee || AssigneeIsNull || loggedUserIsTheRequestor || RequestorIsNull);
-        
-    }
-    
     /**
      * Config the view with the access permissions
-     * @param tarefaToEdit 
+     *
+     * @param tarefaToEdit
      */
-    private void configPermissions(Task tarefaToEdit) {
-        
-        configurePermissionToChangeFollowers(loggedUser, tarefaToEdit.getUsuarioResponsavel(), tarefaToEdit.getUsuarioSolicitante());
-    
-    }
-    
-    @Override
-    public void assigneeUserChanged(Usuario assigneeUser) {
+    private void configPermissions(Task task) {
 
-        configurePermissionToChangeFollowers(loggedUser, assigneeUser, view.getTarefa().getUsuarioSolicitante());        
-        
-    }
+        boolean loggedUserIsTheAssignee = task.getUsuarioResponsavel() != null && task.getUsuarioResponsavel().equals(loggedUser);
+        boolean loggedUserIsTheRequestor = task.getUsuarioSolicitante() != null && task.getUsuarioSolicitante().equals(loggedUser);
 
+        switch (task.getStatus()) {
+            case ADIADA:
+                view.setEditAllowed(false);
+
+                break;
+
+            case AVALIADA:
+
+                break;
+
+            case BLOQUEADA:
+
+                break;
+
+            case CANCELADA:
+
+                break;
+
+            case CONCLUIDA:
+
+                break;
+
+            case EM_ANDAMENTO:
+
+                break;
+
+            case NAO_ACEITA:
+                view.setEditAllowed(loggedUserIsTheRequestor);
+
+                break;
+
+            case NAO_INICIADA:
+
+                break;
+
+            case RECUSADA:
+
+                break;
+
+            default:
+                throw new RuntimeException("Falha ao identificar status.");
+        }
+    }
 
     /**
      * inicializa a gui
@@ -315,84 +332,83 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
         view.setTarefa(tarefa);
 
-        
-        
     }
-    
+
     /**
      * Carrega os apontamentos e executa o método para o cálculo da projeção
      */
     private void carregaApontamento(Task tarefa) {
         List<AndamentoTarefa> andamentos = tarefa.getAndamentos();
-        if(andamentos.size() != 0){
-        //Buscando o andamento da tarefa    
-        int andamento = tarefa.getAndamento();  
-        System.out.println("Andamento Atual "+tarefa.getAndamento());
+        if (andamentos.size() != 0) {
+            //Buscando o andamento da tarefa    
+            int andamento = tarefa.getAndamento();
+            System.out.println("Andamento Atual " + tarefa.getAndamento());
 
-        Date inicio = DateTimeConverters.toDate(tarefa.getDataInicio());
-        Date fim = DateTimeConverters.toDate(tarefa.getDataFim());
-        Date hoje = DateTimeConverters.toDate(LocalDate.now());
-        
-        int diasRealizar = contarDias(inicio,fim);
-        System.out.println("Dias para realizar :"+diasRealizar);
-        
-        int diasCorridos = contarDias(inicio,hoje);
-        System.out.println("Dias corridos :"+diasCorridos);
-        
-        //Porcentagem ideal até o momento
-        Double porcIdeal = ((100.00/diasRealizar)*(diasCorridos));
-        System.out.println("Porcentagem ideal é: "+ porcIdeal);
-        
-        if (andamento == 0){
-            System.out.println("Não Iniciada");
-            view.getProjectionButton().setCaption("Não Iniciada");
-        } else if(andamento < porcIdeal){
-            System.out.println("Andamento Baixo");
-            view.getProjectionButton().setCaption("Andamento Baixo");
-        } else if(andamento == porcIdeal){
-            System.out.println("Ideal");
-            view.getProjectionButton().setCaption("Ideal");
-        } else if(andamento > porcIdeal){
-            System.out.println("Andamento Alto");
-            view.getProjectionButton().setCaption("Andamento Alto");
-        } else if(andamento == 100){
-            System.out.println("Finalizado");
-            view.getProjectionButton().setCaption("Finalizado");
+            Date inicio = DateTimeConverters.toDate(tarefa.getDataInicio());
+            Date fim = DateTimeConverters.toDate(tarefa.getDataFim());
+            Date hoje = DateTimeConverters.toDate(LocalDate.now());
+
+            int diasRealizar = contarDias(inicio, fim);
+            System.out.println("Dias para realizar :" + diasRealizar);
+
+            int diasCorridos = contarDias(inicio, hoje);
+            System.out.println("Dias corridos :" + diasCorridos);
+
+            //Porcentagem ideal até o momento
+            Double porcIdeal = ((100.00 / diasRealizar) * (diasCorridos));
+            System.out.println("Porcentagem ideal é: " + porcIdeal);
+
+            if (andamento == 0) {
+                System.out.println("Não Iniciada");
+                view.getProjectionButton().setCaption("Não Iniciada");
+            } else if (andamento < porcIdeal) {
+                System.out.println("Andamento Baixo");
+                view.getProjectionButton().setCaption("Andamento Baixo");
+            } else if (andamento == porcIdeal) {
+                System.out.println("Ideal");
+                view.getProjectionButton().setCaption("Ideal");
+            } else if (andamento > porcIdeal) {
+                System.out.println("Andamento Alto");
+                view.getProjectionButton().setCaption("Andamento Alto");
+            } else if (andamento == 100) {
+                System.out.println("Finalizado");
+                view.getProjectionButton().setCaption("Finalizado");
+            }
+
         }
-        
     }
+
+    public int contarDias(Date anterior, Date prox) {
+
+        if (anterior == null || prox == null) {
+            return 0;
+        }
+
+        Calendar ant = Calendar.getInstance();
+        Calendar dep = Calendar.getInstance();
+        int dias = 0;
+        int resultado = 0;
+
+        ant.setTime(anterior);
+        dep.setTime(prox);
+
+        if (ant.before(dep)) {
+            while (ant.before(dep)) {
+                dias++;
+                ant.add(Calendar.DATE, 1);
+            }
+            dias = dias;
+        }
+        if (dep.before(ant)) {
+            while (dep.before(ant)) {
+                dias++;
+                dep.add(Calendar.DATE, 1);
+            }
+            dias = (dias * -1);
+        }
+        resultado = dias;
+        return resultado;
     }
-    
-    
-    public int contarDias(Date anterior, Date prox){ 
-    
-        if (anterior == null || prox == null) return 0;
-        
-           Calendar ant = Calendar.getInstance();  
-           Calendar dep = Calendar.getInstance();  
-           int dias = 0;  
-           int resultado = 0;  
-             
-           ant.setTime(anterior);  
-           dep.setTime(prox);  
-           
-           if (ant.before(dep)){
-           while(ant.before(dep)){  
-               dias++;  
-               ant.add(Calendar.DATE, 1);  
-           }
-           dias = dias;
-           }
-           if (dep.before(ant)){
-           while(dep.before(ant)){  
-               dias++;  
-               dep.add(Calendar.DATE, 1);  
-           }
-           dias = (dias * -1);
-           }
-           resultado = dias;
-           return resultado;
-     }  
 
     /**
      * Carrega o combo de seleçao com os status possiveis para a tarefa
@@ -405,7 +421,6 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 //            tipo.setItemCaption(tipoTarefaValue, tipoTarefaValue.getLocalizedString());
 //        }
 //    }
-
     /**
      * Carrega o combo de seleção da empresa com todas as empresas relacionadas
      * ao usuário logado
@@ -413,7 +428,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     private void carregaComboEmpresa() {
         ComboBox empresaCombo = view.getCompanyCombo();
 
-        EmpresaModel empresaModel = new EmpresaModel();
+        CompanyModel empresaModel = new CompanyModel();
 
         List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(loggedUser);
         for (Empresa empresa : empresas) {
@@ -473,16 +488,14 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         }
     }
 
-    
     /**
-     * 
+     *
      */
     private void organizeTree(Task parentTask, List<Task> subTasks) {
 
-        
         for (Task subTask : subTasks) {
             view.getSubTasksTable().setParent(subTask, parentTask);
-            if (subTask.getSubTarefas()!=null && !subTask.getSubTarefas().isEmpty()){
+            if (subTask.getSubTarefas() != null && !subTask.getSubTarefas().isEmpty()) {
                 organizeTree(subTask, subTask.getSubTarefas());
             }
         }
@@ -694,7 +707,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         }
 
         if (task.getUsuarioResponsavel().equals(task.getUsuarioSolicitante())) {
-        
+
             // if it is an own task auto accept the task (switches from NOT ACCEPTED to NOT STARTED)
             if (task.getStatus() == StatusTarefa.NAO_ACEITA) {
                 task.setStatus(StatusTarefa.NAO_INICIADA);
@@ -702,18 +715,18 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         }
 
         /**
-         * only persist if this is the parent task. if it is a child (sub task), the
-         * persistence will occour on the parent. if it is a task attached to a
-         * target, the persistence will occour on the target
+         * only persist if this is the parent task. if it is a child (sub task),
+         * the persistence will occour on the parent. if it is a task attached
+         * to a target, the persistence will occour on the target
          */
         if (task.getMeta() == null && task.getTarefaPai() == null) {
-            if (recurrentDates != null){
+            if (recurrentDates != null) {
                 RecorrencyModel recorrenciaModel = new RecorrencyModel();
-                task = recorrenciaModel.createRecurrentTasks(task,recurrentDates);
+                task = recorrenciaModel.createRecurrentTasks(task, recurrentDates, recurrencyMessage);
             }
             task = model.saveTask(task);
         }
-        
+
         // Notifies the call back listener that the create/update is done
         if (callbackListener != null) {
             if (novaTarefa) {
@@ -723,7 +736,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             }
         }
         view.close();
-        
+
     }
 
     @Override
@@ -741,9 +754,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         try {
             ApontamentoTarefa apontamentoTarefa = view.getApontamentoTarefa();
 
-            
             apontamentoTarefa = model.configuraApontamento(apontamentoTarefa);
-            
+
             view.getHoursControlContainer().addItem(apontamentoTarefa);
             // se o usuário informou um custo / hora, congela este custo para todos os futuros apontamentos
             if (apontamentoTarefa.getCustoHora() != null) {
@@ -751,7 +763,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             }
             // criar um novo apontamento em branco para o usuario adicionar um novo:
             view.setApontamentoTarefa(new ApontamentoTarefa(view.getTarefa(), loggedUser));
-            
+
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
             Logger.getLogger(TaskPresenter.class.getName()).log(Level.SEVERE, null, ex);
@@ -761,7 +773,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
     /**
      * Remove a pointing time
-     * @param taskPointingTime 
+     *
+     * @param taskPointingTime
      */
     @Override
     public void removePointingTime(ApontamentoTarefa taskPointingTime) {
@@ -799,14 +812,14 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
     @Override
     public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa) {
-        
+
         if (!orcamentoTarefa.getUsuarioInclusao().equals(loggedUser)) {
             Notification.show("Ops, apenas " + orcamentoTarefa.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
         } else {
-        view.getBudgetControlTable().removeItem(orcamentoTarefa);
-        model.removerOrcamentoTarefa(orcamentoTarefa);
-        model.recalculaSaldoOrcamento(view.getTarefa().getOrcamentos());
-        view.getBudgetControlTable().refreshRowCache();
+            view.getBudgetControlTable().removeItem(orcamentoTarefa);
+            model.removerOrcamentoTarefa(orcamentoTarefa);
+            model.recalculaSaldoOrcamento(view.getTarefa().getOrcamentos());
+            view.getBudgetControlTable().refreshRowCache();
         }
     }
 
@@ -898,7 +911,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
         };
         view.getSubTasksTable().addItem(linha, sub);
-    
+
         for (Task subTarefa : sub.getSubTarefas()) {
             adicionarSubTarefa(subTarefa);
         }
@@ -1004,28 +1017,27 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     @Override
     public void recurrenceClicked() {
 
-        
         //Cria o pop up para registrar a conta (model e view)
         RecorrencyModel recorrenciaModel = new RecorrencyModel();
-        boolean isRecurrent = view.getTarefa().getTipoRecorrencia() == TipoTarefa.RECORRENTE;
-        RecorrencyView RecorrencyView = new RecorrencyView(isRecurrent);
+
+        RecorrencyView RecorrencyView = new RecorrencyView(view.getTarefa());
 
         //o presenter liga model e view
         RecorrencyPresenter = new RecorrencyPresenter(recorrenciaModel, RecorrencyView);
         RecorrencyPresenter.setTask(view.getTarefa());
         RecorrencyPresenter.setCallBackListener(this);
-        
+
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(RecorrencyView);
-        
-        
+
     }
 
     @Override
-    public void recurrencyCreationDone(List<LocalDate> tarefasRecorrentes) {
-        recurrentDates = tarefasRecorrentes;
+    public void recurrencyCreationDone(List<LocalDate> tarefasRecorrentes, String recurrencyMessage) {
+        this.recurrentDates = tarefasRecorrentes;
+        this.recurrencyMessage = recurrencyMessage;
         view.getStartDateDateField().setValue(DateTimeConverters.toDate(recurrentDates.get(0)));
-      
+
     }
 
     @Override
@@ -1034,7 +1046,11 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         callbackListener.taskUpdateDone(task);
     }
 
+    @Override
+    public void assigneeUserChanged(Task task, Usuario assignee) {
+        task.setUsuarioResponsavel(assignee);
+        configPermissions(task);
 
-
+    }
 
 }

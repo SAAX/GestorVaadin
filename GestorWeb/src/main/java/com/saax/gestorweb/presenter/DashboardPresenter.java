@@ -1,12 +1,12 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.CadastroMetaModel;
+import com.saax.gestorweb.model.GoalModel;
 import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 
 import com.saax.gestorweb.model.DashboardModel;
-import com.saax.gestorweb.model.EmpresaModel;
+import com.saax.gestorweb.model.CompanyModel;
 import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
@@ -295,7 +295,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     private void criarNova(HierarquiaProjetoDetalhe categoria) {
 
         if (categoria.getNivel() == 1) {
-            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new CadastroMetaModel(), new CadastroMetaView());
+            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new GoalModel(), new CadastroMetaView());
             presenter.setCallBackListener(this);
             presenter.criarNovaMeta(categoria);
         } else if (categoria.getNivel() == 2) {
@@ -389,7 +389,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
 
         }
 
-        EmpresaModel empresaModel = new EmpresaModel();
+        CompanyModel empresaModel = new CompanyModel();
         List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(loggedUser);
         for (Empresa empresa : empresas) {
 
@@ -684,7 +684,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         CadastroMetaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTargetTable().setValue(meta);
-            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new CadastroMetaModel(), new CadastroMetaView());
+            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new GoalModel(), new CadastroMetaView());
             presenter.setCallBackListener(callback);
             presenter.edit(meta);
         });

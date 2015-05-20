@@ -5,6 +5,7 @@ import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
+import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +29,37 @@ import javax.persistence.Query;
  */
 public class RecorrencyModel {
 
+    
+    /**
+     * Creates a user friendly message summarizing the recurrency configuration set
+     * @param weekDays
+     * @param numberWeeks
+     * @param startDate
+     * @param endDate
+     * @return 
+     */
+    public String formatRecurrencyWeeklyMessage(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate){
+        
+        StringBuilder recurrencyMessage = new StringBuilder();
+        
+        recurrencyMessage.append("Tarefa recorrente: semanal, a cada ");
+        recurrencyMessage.append(numberWeeks);
+        recurrencyMessage.append(" semana(s), em toda: ");
+        
+        for (Integer weekDay : weekDays) {
+            recurrencyMessage.append(weekDay);
+            recurrencyMessage.append("a., ");
+            
+        }
+        
+        recurrencyMessage.append("de: ");
+        recurrencyMessage.append(FormatterUtil.formatDate(DateTimeConverters.toLocalDate(startDate)));
+        recurrencyMessage.append(" até: ");
+        recurrencyMessage.append(FormatterUtil.formatDate(DateTimeConverters.toLocalDate(endDate)));
+
+        return recurrencyMessage.toString();
+    }
+    
     /**
      * Compute the parameters for a weekly recurrence to obtain a list of its
      * dates
@@ -97,6 +130,27 @@ public class RecorrencyModel {
 
     }
 
+    
+    /**
+     * Creates a user friendly message summarizing the recurrency configuration set
+     * @return 
+     */
+    public String formatRecurrencyAnnualMessage(String diaAnual, String util, String mesAnual, String anoTermino){
+        
+        StringBuilder recurrencyMessage = new StringBuilder();
+        
+        recurrencyMessage.append("Tarefa recorrente: anual, todo dia: ");
+        recurrencyMessage.append(diaAnual);
+        recurrencyMessage.append(" do mês ");
+        recurrencyMessage.append(mesAnual);
+        recurrencyMessage.append(", considerando: ");
+        recurrencyMessage.append(util);
+        recurrencyMessage.append(" até ");
+        recurrencyMessage.append(anoTermino);
+
+        return recurrencyMessage.toString();
+    }
+
     public List<LocalDate> createAnnualRecurrence(String diaAnual, String util, String mesAnual, String anoTermino) {
 
         int anoInicial = GregorianCalendar.getInstance().get(Calendar.YEAR);
@@ -109,7 +163,6 @@ public class RecorrencyModel {
         int mesDoAno = Integer.parseInt(mesAnual);
         mesDoAno -= 1; // no java janeiro é o mês Zero
 
-        System.out.println("util: " + util);
         for (int ano = anoInicial; ano <= anoFinal; ano++) {
 
             int diaDoMes = tratarDiaDoMes(diaAnual, mesDoAno, ano, util);
@@ -291,6 +344,29 @@ public class RecorrencyModel {
         return 0;
     }
 
+    /**
+     * Creates a user friendly message summarizing the recurrency configuration set
+     * @return 
+     */
+    public String formatRecurrencyMonthlyMessage(String dayMonth, Integer numberOfMonths, String typeMonth, Date startDate, Date endDate){
+        
+        StringBuilder recurrencyMessage = new StringBuilder();
+        
+        recurrencyMessage.append("Tarefa recorrente: mensal, todo dia: ");
+        recurrencyMessage.append(dayMonth);
+        recurrencyMessage.append(" a cada ");
+        recurrencyMessage.append(numberOfMonths);
+        recurrencyMessage.append(" mes(es), considerando dia ");
+        recurrencyMessage.append(typeMonth);
+        recurrencyMessage.append(" de: ");
+        recurrencyMessage.append(FormatterUtil.formatDate(DateTimeConverters.toLocalDate(startDate)));
+        recurrencyMessage.append(" até: ");
+        recurrencyMessage.append(FormatterUtil.formatDate(DateTimeConverters.toLocalDate(endDate)));
+
+
+        return recurrencyMessage.toString();
+    }
+
     public List<LocalDate> createMonthlyRecurrence(String dayMonth, Integer numberOfMonths, String typeMonth, Date startDate, Date endDate) {
 
         // lista das datas das tarefas recorrentes
@@ -389,7 +465,7 @@ public class RecorrencyModel {
      * @param recurrentDates the list of dates
      * @return the first task of the recuurrency set
      */
-    public Task createRecurrentTasks(Task task, List<LocalDate> recurrentDates) {
+    public Task createRecurrentTasks(Task task, List<LocalDate> recurrentDates, String recurrencyMessage) {
 
         List<Task> recurrentTasks = new ArrayList<>();
 
@@ -405,6 +481,7 @@ public class RecorrencyModel {
 
                 Task recurrentTask = task.clone();
 
+                recurrentTask.setRecurrencyMessage(recurrencyMessage);
                 recurrentTask.setTipoRecorrencia(TipoTarefa.RECORRENTE);
                 recurrentTask.setUsuarioInclusao(task.getUsuarioInclusao());
                 recurrentTask.setUsuarioSolicitante(task.getUsuarioSolicitante());

@@ -51,7 +51,7 @@ public class TaskModel {
 
     // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
-    private final EmpresaModel empresaModel;
+    private final CompanyModel empresaModel;
 
     // Reference to the use of the messages:
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -59,7 +59,7 @@ public class TaskModel {
 
     public TaskModel() {
         usuarioModel = new UsuarioModel();
-        empresaModel = new EmpresaModel();
+        empresaModel = new CompanyModel();
 
     }
 
@@ -654,7 +654,7 @@ public class TaskModel {
     }
 
     /**
-     * Delega chamada ao model responsavel (EmpresaModel)
+     * Delega chamada ao model responsavel (CompanyModel)
      *
      * @param empresa
      * @return
@@ -701,4 +701,5 @@ public class TaskModel {
 
     }
 
+    
 }

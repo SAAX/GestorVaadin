@@ -216,7 +216,8 @@ public class TaskView extends Window {
     // -------------------------------------------------------------------------
     private Button saveButton;
     private Button cancelButton;
-    private boolean allowAddRemoveFollowers = true;
+
+    private boolean editAllowed = true;
 
     /**
      * Create a view and all components
@@ -522,7 +523,7 @@ public class TaskView extends Window {
 
         assigneeUserCombo = new ComboBox(messages.getString("TaskView.responsavelCombo.label"));
         assigneeUserCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.assigneeUserChanged((Usuario) event.getProperty().getValue());
+            listener.assigneeUserChanged(getTarefa(), (Usuario) event.getProperty().getValue());
         });
 
         requiredFields.add(assigneeUserCombo);
@@ -564,7 +565,7 @@ public class TaskView extends Window {
                 listener.removerParticipante((ParticipanteTarefa) itemId);
             });
 
-            removeButton.setEnabled(allowAddRemoveFollowers);
+            removeButton.setEnabled(editAllowed);
             return removeButton;
         });
 
@@ -669,7 +670,7 @@ public class TaskView extends Window {
             FileDownloader fd = new FileDownloader(new FileResource(new File(anexoTarefa.getCaminhoCompleto())));
 
             fd.extend(downloadButton);
-
+            downloadButton.setEnabled(editAllowed);
             return downloadButton;
         });
         attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
@@ -679,6 +680,7 @@ public class TaskView extends Window {
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerAnexo((AnexoTarefa) itemId);
             });
+            removeButton.setEnabled(editAllowed);
             return removeButton;
         });
         attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
@@ -827,6 +829,7 @@ public class TaskView extends Window {
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removePointingTime((ApontamentoTarefa) itemId);
             });
+            removeButton.setEnabled(editAllowed);
             return removeButton;
         });
 
@@ -969,6 +972,7 @@ public class TaskView extends Window {
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerRegistroOrcamento((OrcamentoTarefa) itemId);
             });
+            removeButton.setEnabled(editAllowed);
             return removeButton;
         });
 
@@ -1432,14 +1436,46 @@ public class TaskView extends Window {
         return presenter.getStatusButton();
     }
 
-    /**
-     * Configure behavior for add/remove followers
-     *
-     * @param allowAddRemoveFollowers
-     */
-    public void setAllowAddRemoveFollowers(boolean allowAddRemoveFollowers) {
-        this.allowAddRemoveFollowers = allowAddRemoveFollowers;
-        followersCombo.setEnabled(allowAddRemoveFollowers);
+    public void setEditAllowed(boolean editAllowed) {
+
+        this.editAllowed = editAllowed;
+
+        // Header:
+        templateCheckBox.setEnabled(editAllowed);
+        pointingHoursCheckBox.setEnabled(editAllowed);
+        budgetControlCheckBox.setEnabled(editAllowed);
+
+        // Basic Data:
+        companyCombo.setEnabled(editAllowed);
+        hierarchyCombo.setEnabled(editAllowed);
+        taskNameTextField.setEnabled(editAllowed);
+        startDateDateField.setEnabled(editAllowed);
+        endDateDateField.setEnabled(editAllowed);
+        typeRecurrenceButton.setEnabled(editAllowed);
+        priorityCombo.setEnabled(editAllowed);
+
+        // Description tab of components and Responsible
+        assigneeUserCombo.setEnabled(editAllowed);
+        taskDescriptionTextArea.setEnabled(editAllowed);
+        followersCombo.setEnabled(editAllowed);
+        customerCompanyCombo.setEnabled(editAllowed);
+
+        // Componentes da Aba Detalhes
+        departamentCombo.setEnabled(editAllowed);
+        costCenterCombo.setEnabled(editAllowed);
+        addAttach.setEnabled(editAllowed);
+
+        // Tab Hours Control Components
+        hourCostTextField.setEnabled(editAllowed);
+        hoursAddTextField.setEnabled(editAllowed);
+        hoursObservationTextField.setEnabled(editAllowed);
+        hoursAddButton.setEnabled(editAllowed);
+
+        // Components of the budget tab
+        budgetAddTextField.setEnabled(editAllowed);
+        observationBudgetTextField.setEnabled(editAllowed);
+        budgetAddButton.setEnabled(editAllowed);
+
     }
 
 }

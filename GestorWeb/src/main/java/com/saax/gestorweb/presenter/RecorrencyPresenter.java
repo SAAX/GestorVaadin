@@ -168,6 +168,8 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
         
         List<LocalDate> tarefasRecorrentes = null;
         
+        String recurrencyMessage;
+        
         // if its is a WEEKLY recurrence:
         if (view.getWeeklyCheckBox().getValue()) {
 
@@ -179,7 +181,13 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
                     view.getStartDateWeeklyDateField().getValue(),
                     view.getEndDateWeeklyDateField().getValue());
             
-            view.showConfirmCreateRecurrentTasks(tarefasRecorrentes);
+            recurrencyMessage = model.formatRecurrencyWeeklyMessage(
+                    weekDays,
+                    Integer.parseInt(view.getNumberWeeksCombo().getValue().toString()),
+                    view.getStartDateWeeklyDateField().getValue(),
+                    view.getEndDateWeeklyDateField().getValue());
+            
+        
             
         } else if (view.getMonthlyCheckBox().getValue()) {
             // if its is a MONTHLY recurrence:
@@ -190,8 +198,14 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
                     view.getStartDateMonthlyDateField().getValue(),
                     view.getEndDateMonthlyDateField().getValue());
             
-            view.showConfirmCreateRecurrentTasks(tarefasRecorrentes);
-        
+
+            recurrencyMessage = model.formatRecurrencyMonthlyMessage(
+                    (String)view.getDaysMonthlyCombo().getValue(), 
+                    Integer.parseInt(view.getNumberMonthsCombo().getValue().toString()), 
+                    (String)view.getKindDayMonthlyCombo().getValue(),
+                    view.getStartDateMonthlyDateField().getValue(),
+                    view.getEndDateMonthlyDateField().getValue());
+
         } else if (view.getAnnualCheckBox().getValue()) {
             // if its is a ANNUAL recurrence:
             tarefasRecorrentes = model.createAnnualRecurrence(
@@ -201,12 +215,18 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
                     (String)view.getYearAnnualCombo().getValue()
             );
             
-            view.showConfirmCreateRecurrentTasks(tarefasRecorrentes);
+
+            recurrencyMessage = model.formatRecurrencyAnnualMessage(
+                    (String)view.getDayAnnualCombo().getValue(),
+                    (String)view.getKindDayAnnualCombo().getValue(),
+                    view.getMonthAnnualCombo().getValue().toString(),
+                    (String)view.getYearAnnualCombo().getValue());
             
         } else {
             throw new RuntimeException("Select the recurrence type.");
         }
         
+            view.showConfirmCreateRecurrentTasks(tarefasRecorrentes, recurrencyMessage);
         
     }
 
@@ -251,10 +271,11 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
     /**
      * Configure the recurrent dates where there will be created the recurrent tasks
      * @param recurrentDates 
+     * @param recurrencyMessage 
      */
     @Override
-    public void confirmRecurrencyCreation(List<LocalDate> recurrentDates) {
-        callBackListener.recurrencyCreationDone(recurrentDates);
+    public void confirmRecurrencyCreation(List<LocalDate> recurrentDates, String recurrencyMessage) {
+        callBackListener.recurrencyCreationDone(recurrentDates, recurrencyMessage);
         UI.getCurrent().removeWindow(view);
 }
 
@@ -300,6 +321,6 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
     public void setTask(Task tarefa) {
         this.task = tarefa;
     }
-    
+
     
 }

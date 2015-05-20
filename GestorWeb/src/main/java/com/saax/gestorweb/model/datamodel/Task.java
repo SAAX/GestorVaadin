@@ -106,6 +106,9 @@ public class Task implements Serializable {
     @Column(name = "andamento")
     private int andamento;
 
+    @Column(name = "recurrencyMessage")
+    private String  recurrencyMessage;
+
     @Column(name = "template")
     private boolean template;
 
@@ -675,6 +678,16 @@ public class Task implements Serializable {
         return removida;
     }
 
+    public void setRecurrencyMessage(String recurrencyMessage) {
+        this.recurrencyMessage = recurrencyMessage;
+    }
+
+    public String getRecurrencyMessage() {
+        return recurrencyMessage;
+    }
+
+    
+    
     // ----------------------------------------------------------------------------------------------------------------
     // EQUALS E HASCODE
     // ----------------------------------------------------------------------------------------------------------------

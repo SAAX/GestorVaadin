@@ -64,6 +64,6 @@ public interface TaskViewListener {
     
     public void recurrenceClicked();   
 
-    public void assigneeUserChanged(Usuario usuario);
+    public void assigneeUserChanged(Task task, Usuario usuario);
 
 }

@@ -33,11 +33,11 @@ public class GoalModel {
 
     // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
-    private final EmpresaModel empresaModel;
+    private final CompanyModel empresaModel;
 
     public GoalModel() {
         usuarioModel = new UsuarioModel();
-        empresaModel = new EmpresaModel();
+        empresaModel = new CompanyModel();
 
     }
 
@@ -71,7 +71,7 @@ public class GoalModel {
     }
 
     /**
-     * Delega chamada ao model responsavel (EmpresaModel)
+     * Delega chamada ao model responsavel (CompanyModel)
      *
      * @param loggedUser
      * @return lista de EmpresaCliente
@@ -81,7 +81,7 @@ public class GoalModel {
     }
 
     /**
-     * Delega chamada ao model responsavel (EmpresaModel)
+     * Delega chamada ao model responsavel (CompanyModel)
      *
      * @param empresa
      * @return
@@ -91,7 +91,7 @@ public class GoalModel {
     }
 
     /**
-     * Delega chamada ao model responsavel (EmpresaModel)
+     * Delega chamada ao model responsavel (CompanyModel)
      *
      * @param empresa
      * @return

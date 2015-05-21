@@ -1444,6 +1444,7 @@ public class TaskView extends Window {
         templateCheckBox.setEnabled(editAllowed);
         pointingHoursCheckBox.setEnabled(editAllowed);
         budgetControlCheckBox.setEnabled(editAllowed);
+        addSubButton.setEnabled(editAllowed);
 
         // Basic Data:
         companyCombo.setEnabled(editAllowed);

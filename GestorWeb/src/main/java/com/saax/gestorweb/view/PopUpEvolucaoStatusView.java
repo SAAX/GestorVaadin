@@ -187,12 +187,6 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
         });
         alterarStatusContainer.addComponent(bloquearTarefaButton);
         
-        recusarTarefaButton = new Button(mensagens.getString("PopUpEvolucaoStatusView.recusarTarefaButton.label"));
-        recusarTarefaButton.addClickListener((Button.ClickEvent event) -> {
-            listener.recusarTarefaClicked();
-        });
-        alterarStatusContainer.addComponent(recusarTarefaButton);
-
         alterarStatusContainer.addComponent(buildHistoricoTarefaButton());
 
         main.addComponent(alterarStatusContainer);

@@ -226,7 +226,9 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             Notification.show(mensagens.getString("TaskView.accessDenied"), Notification.Type.WARNING_MESSAGE);
             return ;
         }
-    
+
+        taskToEdit = model.refresh(taskToEdit);
+        
         init(taskToEdit);
         
         for (Task sub : taskToEdit.getSubTarefas()) {

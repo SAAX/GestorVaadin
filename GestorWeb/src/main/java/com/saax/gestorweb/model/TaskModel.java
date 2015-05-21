@@ -701,5 +701,11 @@ public class TaskModel {
 
     }
 
-    
+    public Task refresh(Task taskToEdit) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        return em.find(Task.class, taskToEdit.getId());
+
+    }
+
 }

@@ -226,7 +226,9 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             Notification.show(mensagens.getString("TaskView.accessDenied"), Notification.Type.WARNING_MESSAGE);
             return ;
         }
-
+    
+        init(taskToEdit);
+        
         for (Task sub : taskToEdit.getSubTarefas()) {
             adicionarSubTarefa(sub);
         }
@@ -264,28 +266,34 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         boolean loggedUserIsTheRequestor = task.getUsuarioSolicitante() != null && task.getUsuarioSolicitante().equals(loggedUser);
 
         switch (task.getStatus()) {
+            
             case ADIADA:
-                view.setEditAllowed(false);
+                view.setEditAllowed(loggedUserIsTheRequestor);
 
                 break;
 
             case AVALIADA:
+                view.setEditAllowed(false);
 
                 break;
 
             case BLOQUEADA:
+                view.setEditAllowed(false);
 
                 break;
 
             case CANCELADA:
+                view.setEditAllowed(false);
 
                 break;
 
             case CONCLUIDA:
+                view.setEditAllowed(false);
 
                 break;
 
             case EM_ANDAMENTO:
+                view.setEditAllowed(loggedUserIsTheRequestor || loggedUserIsTheAssignee);
 
                 break;
 
@@ -295,10 +303,12 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
                 break;
 
             case NAO_INICIADA:
+                view.setEditAllowed(loggedUserIsTheRequestor || loggedUserIsTheAssignee);
 
                 break;
 
             case RECUSADA:
+                view.setEditAllowed(false);
 
                 break;
 

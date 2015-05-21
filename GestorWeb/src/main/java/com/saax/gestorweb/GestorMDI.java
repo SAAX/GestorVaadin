@@ -44,7 +44,7 @@ public class GestorMDI extends UI {
     private transient GestorWebImagens gestorWebImagens;
 
     @WebServlet(value = "/*", asyncSupported = true, initParams = { /*@WebInitParam(name = "org.atmosphere.cpr.AtmosphereInterceptor", value = "com.saax.gestorweb.util.AtmosphereFilter")*/})
-    @VaadinServletConfiguration(productionMode = true, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
+    @VaadinServletConfiguration(productionMode = false, ui = GestorMDI.class, widgetset = "com.saax.gestorweb.AppWidgetSet")
     public static class Servlet extends VaadinServlet {
 
         @Override

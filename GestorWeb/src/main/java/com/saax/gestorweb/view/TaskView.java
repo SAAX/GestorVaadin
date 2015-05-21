@@ -399,11 +399,6 @@ public class TaskView extends Window {
         startDateDateField.addValidator(new DataInicioValidator(endDateDateField, "Data Inicio"));
         endDateDateField.addValidator(new DataFimValidator(startDateDateField, "Data Fim"));
 
-        // Componente de aviso
-//        avisoButton = new Button(messages.getString("TaskView.avisoButton.caption"), (Button.ClickEvent event) -> {
-//            listener.avisoButtonClicked();
-//        });
-//        avisoButton.setWidth("100%");
         // configura o layout usando uma grid
         GridLayout grid = new GridLayout(3, 3);
         grid.setSpacing(true);
@@ -523,7 +518,7 @@ public class TaskView extends Window {
 
         assigneeUserCombo = new ComboBox(messages.getString("TaskView.responsavelCombo.label"));
         assigneeUserCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.assigneeUserChanged(getTarefa(), (Usuario) event.getProperty().getValue());
+           listener.assigneeUserChanged(getTarefa(), (Usuario) event.getProperty().getValue());
         });
 
         requiredFields.add(assigneeUserCombo);
@@ -670,7 +665,7 @@ public class TaskView extends Window {
             FileDownloader fd = new FileDownloader(new FileResource(new File(anexoTarefa.getCaminhoCompleto())));
 
             fd.extend(downloadButton);
-            downloadButton.setEnabled(editAllowed);
+           downloadButton.setEnabled(editAllowed);
             return downloadButton;
         });
         attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
@@ -680,7 +675,7 @@ public class TaskView extends Window {
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerAnexo((AnexoTarefa) itemId);
             });
-            removeButton.setEnabled(editAllowed);
+           removeButton.setEnabled(editAllowed);
             return removeButton;
         });
         attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
@@ -829,7 +824,7 @@ public class TaskView extends Window {
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removePointingTime((ApontamentoTarefa) itemId);
             });
-            removeButton.setEnabled(editAllowed);
+           removeButton.setEnabled(editAllowed);
             return removeButton;
         });
 
@@ -1155,12 +1150,6 @@ public class TaskView extends Window {
         return priorityCombo;
     }
 
-    /**
-     * @return the avisoButton
-     */
-//    public Button getAvisoButton() {
-//        return avisoButton;
-//    }
     /**
      * @return the assigneeUserCombo
      */

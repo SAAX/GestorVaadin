@@ -238,6 +238,14 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         if (taskToEdit.getUsuarioResponsavel().equals(taskToEdit.getUsuarioSolicitante())) {
             view.getChatButton().setEnabled(false);
         }
+        
+        //Caso usuário logado não seja o solicitante, não deixar que ele clique nos controle de horas
+        //e apontamento da tarefa
+        if (!loggedUser.equals(taskToEdit.getUsuarioSolicitante())){
+            view.getApontamentoHorasCheckBox().setReadOnly(true);
+            view.getBudgetControlCheckBox().setReadOnly(true);
+            
+        }
 
         organizeTree(taskToEdit, taskToEdit.getSubTarefas());
 
@@ -837,9 +845,14 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
     @Override
     public void removerAnexo(AnexoTarefa anexoTarefa) {
-        view.getAttachmentsAddedTable().removeItem(anexoTarefa);
+        if(!(anexoTarefa.getUsuarioInclusao().equals(loggedUser))){
+          Notification.show("Ops, apenas " + anexoTarefa.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);  
+        }else{
+            view.getAttachmentsAddedTable().removeItem(anexoTarefa);
         Task tarefa = view.getTarefa();
         tarefa.getAnexos().remove(anexoTarefa);
+        }
+        
     }
 
     /**

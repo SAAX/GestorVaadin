@@ -4,7 +4,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.GoalModel;
 import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.CompanyModel;
-import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -19,9 +19,10 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
 import com.saax.gestorweb.view.CadastroMetaView;
 import com.saax.gestorweb.view.CadastroMetaViewListener;
+import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.view.TaskCreationCallBackListener;
 import com.saax.gestorweb.view.TaskView;
-import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
+import com.saax.gestorweb.view.PopUpStatusView;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.Button;
@@ -37,7 +38,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class CadastroMetaPresenter implements Serializable, CadastroMetaViewListener, TaskCreationCallBackListener {
+public class CadastroMetaPresenter implements Serializable, CadastroMetaViewListener, TaskCreationCallBackListener, PopUpStatusListener {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient CadastroMetaView view;
@@ -258,7 +259,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
 
     @Override
     public void gravarButtonClicked() {
-        Meta meta = (Meta) view.getMeta();
+        Meta meta = view.getMeta();
 
         if (meta.getUsuarioResponsavel() == null) {
             meta.setUsuarioResponsavel(meta.getUsuarioInclusao());
@@ -391,7 +392,6 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
             task.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(task.getDataInicio()),
             FormatterUtil.formatDate(task.getDataFim()),
-            TaskView.buildPopUpStatusProgressTask(view.getTarefasTable(), task),
             task.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -430,7 +430,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel")).setValue(task.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(TaskView.buildPopUpStatusProgressTask(view.getTarefasTable(), task));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(TaskView.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao")).setValue(task.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
@@ -439,6 +439,11 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
             addTaskInTable(subTarefa);
         }
 
+    }
+
+    @Override
+    public void taskStatusChanged(Task task) {
+        atualizarTarefaTable(task);
     }
 
 

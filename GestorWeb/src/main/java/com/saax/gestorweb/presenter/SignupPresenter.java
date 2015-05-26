@@ -82,7 +82,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
     private boolean validaDadosUsuarioPrincipal() {
 
         //String login = ""; // @TODO: get email the primary user
-        String login = (String) view.getUserEmailTextField().getValue(); // @TODO: get from view
+        String login = view.getUserEmailTextField().getValue(); // @TODO: get from view
 
         // Check if the user informed there (login)
         if (model.verificaLoginExistente(login)) {
@@ -362,7 +362,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             String nome = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.nome")).getValue();
             String sobreNome = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.sobrenome")).getValue();
             String email = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.email")).getValue();
-            boolean administrador = ((String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.administrador")).getValue()).equals("SIM");
+            boolean administrador = linha.getItemProperty(messages.getString("SignupView.usuariosTable.administrador")).getValue().equals("SIM");
 
             Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email, usuarioADM);
             model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador, usuarioADM);

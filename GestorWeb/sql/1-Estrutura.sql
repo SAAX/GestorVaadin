@@ -1,5 +1,37 @@
--- Usuário
 DROP TABLE IF EXISTS usuario CASCADE;
+DROP TABLE IF EXISTS ParametroAndamentoTarefa CASCADE;
+DROP TABLE IF EXISTS Estado CASCADE;
+DROP TABLE IF EXISTS Cidade CASCADE;
+DROP TABLE IF EXISTS Endereco CASCADE;
+DROP TABLE IF EXISTS Empresa CASCADE;
+DROP TABLE IF EXISTS FilialEmpresa CASCADE;
+DROP TABLE IF EXISTS EmpresaCliente CASCADE;
+DROP TABLE IF EXISTS FilialCliente CASCADE;
+DROP TABLE IF EXISTS UsuarioEmpresa CASCADE;
+DROP TABLE IF EXISTS Departamento CASCADE;
+DROP TABLE IF EXISTS CentroCusto CASCADE;
+DROP TABLE IF EXISTS HierarquiaProjeto CASCADE;
+DROP TABLE IF EXISTS HierarquiaProjetoDetalhe CASCADE;
+DROP TABLE IF EXISTS StatusMeta CASCADE;
+DROP TABLE IF EXISTS PrioridadeMeta CASCADE;
+DROP TABLE IF EXISTS meta CASCADE;
+DROP TABLE IF EXISTS StatusTarefa CASCADE;
+DROP TABLE IF EXISTS ProjecaoTarefa CASCADE;
+DROP TABLE IF EXISTS TipoTarefa CASCADE;
+DROP TABLE IF EXISTS PrioridadeTarefa CASCADE;
+DROP TABLE IF EXISTS Tarefa CASCADE;
+DROP TABLE IF EXISTS ParticipanteTarefa CASCADE;
+DROP TABLE IF EXISTS AndamentoTarefa CASCADE;
+DROP TABLE IF EXISTS BloqueioTarefa CASCADE;
+DROP TABLE IF EXISTS AnexoTarefa CASCADE;
+DROP TABLE IF EXISTS ApontamentoTarefa CASCADE;
+DROP TABLE IF EXISTS OrcamentoTarefa CASCADE;
+DROP TABLE IF EXISTS AvaliacaoMetaTarefa CASCADE;
+DROP TABLE IF EXISTS FavoritosTarefaMeta CASCADE;
+DROP TABLE IF EXISTS HistoricoTarefa CASCADE;
+DROP TABLE IF EXISTS ChatTarefa CASCADE;
+DROP SEQUENCE RecurrencySequence;
+-- Usuário
 CREATE TABLE usuario (
 	idUsuario SERIAL NOT NULL PRIMARY KEY,
 	nome CHARACTER VARYING (100) NOT NULL ,
@@ -14,7 +46,6 @@ CREATE TABLE usuario (
 
 
 -- Estado
-DROP TABLE IF EXISTS Estado CASCADE;
 CREATE TABLE Estado (
 	idEstado SERIAL NOT NULL PRIMARY KEY,
         nome CHARACTER VARYING (100) NOT NULL,
@@ -24,7 +55,6 @@ CREATE TABLE Estado (
 );
 
 -- Cidade
-DROP TABLE IF EXISTS Cidade CASCADE;
 CREATE TABLE Cidade (
 	idCidade SERIAL NOT NULL PRIMARY KEY,
         idEstado BIGINT NOT NULL,
@@ -36,7 +66,6 @@ CREATE TABLE Cidade (
 
 -- Endereco
 -- Tabela criada para armazenar todos os enderecos
-DROP TABLE IF EXISTS Endereco CASCADE;
 CREATE TABLE Endereco (
 	idEndereco SERIAL NOT NULL PRIMARY KEY,
         logradouro CHARACTER VARYING (255) NOT NULL ,
@@ -53,7 +82,6 @@ CREATE TABLE Endereco (
 
 -- Empresa
 -- Empresa que adquiriu o software: cliente da Saax
-DROP TABLE IF EXISTS Empresa CASCADE;
 CREATE TABLE Empresa (
 	idEmpresa SERIAL NOT NULL PRIMARY KEY,
         idEmpresaPrincipal BIGINT,
@@ -76,7 +104,6 @@ CREATE TABLE Empresa (
 
 
 -- FilialEmpresa
-DROP TABLE IF EXISTS FilialEmpresa CASCADE;
 CREATE TABLE FilialEmpresa (
 	idFilialEmpresa SERIAL NOT NULL PRIMARY KEY,
         idEmpresa BIGINT NOT NULL,
@@ -93,7 +120,6 @@ CREATE TABLE FilialEmpresa (
 
 -- EmpresaCliente
 -- Clientes dos nossos clientes: (Covabra, ... )
-DROP TABLE IF EXISTS EmpresaCliente CASCADE;
 CREATE TABLE EmpresaCliente (
 	idEmpresaCliente SERIAL NOT NULL PRIMARY KEY,
         idEmpresa BIGINT NOT NULL,
@@ -116,7 +142,6 @@ CREATE TABLE EmpresaCliente (
 );
 
 -- FilialEmpresa
-DROP TABLE IF EXISTS FilialCliente CASCADE;
 CREATE TABLE FilialCliente (
 	idFilialCliente SERIAL NOT NULL PRIMARY KEY,
         idEmpresaCliente BIGINT NOT NULL,
@@ -134,7 +159,6 @@ CREATE TABLE FilialCliente (
 
 -- Relacionamento: Usuario <-> Empresa 
 -- ( supondo que um usuário poderá migrar de empresa )
-DROP TABLE IF EXISTS UsuarioEmpresa CASCADE;
 CREATE TABLE UsuarioEmpresa (
 	idUsuarioEmpresa SERIAL NOT NULL PRIMARY KEY,
 	idUsuario BIGINT NOT NULL,
@@ -151,7 +175,6 @@ CREATE TABLE UsuarioEmpresa (
 );
 
 -- Departamento
-DROP TABLE IF EXISTS Departamento CASCADE;
 CREATE TABLE Departamento (
 	idDepartamento SERIAL NOT NULL PRIMARY KEY,
 	idEmpresa BIGINT NOT NULL, 
@@ -165,7 +188,6 @@ CREATE TABLE Departamento (
 ) ;
 
 -- Centro de Custo
-DROP TABLE IF EXISTS CentroCusto CASCADE;
 CREATE TABLE CentroCusto (
 	idCentroCusto SERIAL NOT NULL PRIMARY KEY,
 	idEmpresa BIGINT NOT NULL, 
@@ -180,8 +202,6 @@ CREATE TABLE CentroCusto (
 
 
 -- HierarquiaProjeto 
-DROP TABLE IF EXISTS HierarquiaProjeto CASCADE;
-DROP TABLE IF EXISTS HierarquiaProjetoDetalhe CASCADE;
 CREATE TABLE HierarquiaProjeto (
     idHierarquiaProjeto SERIAL NOT NULL PRIMARY KEY, 
     nome CHARACTER VARYING (50) NOT NULL,
@@ -205,7 +225,6 @@ CREATE TABLE HierarquiaProjetoDetalhe (
 );
 
 -- Status Meta
-DROP TABLE IF EXISTS StatusMeta CASCADE;
 CREATE TABLE StatusMeta (
     StatusMeta CHARACTER VARYING (50) NOT NULL PRIMARY KEY
 );
@@ -216,7 +235,6 @@ INSERT INTO statusMeta VALUES ('CONCLUIDA');
 INSERT INTO statusMeta VALUES ('CANCELADA');
 
 -- Prioridade Meta
-DROP TABLE IF EXISTS PrioridadeMeta CASCADE;
 CREATE TABLE PrioridadeMeta (
     PrioridadeMeta CHARACTER VARYING (10) NOT NULL PRIMARY KEY
 );
@@ -226,7 +244,6 @@ INSERT INTO PrioridadeMeta VALUES ('NORMAL');
 INSERT INTO PrioridadeMeta VALUES ('ALTA');
 
 -- Meta 
-DROP TABLE IF EXISTS meta CASCADE;
 CREATE TABLE Meta (
     idMeta SERIAL NOT NULL PRIMARY KEY, 
     idEmpresa BIGINT NOT NULL, 
@@ -262,7 +279,6 @@ CREATE TABLE Meta (
 
 
 -- Status Tarefa
-DROP TABLE IF EXISTS StatusTarefa CASCADE;
 CREATE TABLE StatusTarefa (
     StatusTarefa CHARACTER VARYING (50) NOT NULL PRIMARY KEY
 );
@@ -277,8 +293,17 @@ INSERT INTO statustarefa VALUES ('AVALIADA');
 INSERT INTO statustarefa VALUES ('CANCELADA');
 INSERT INTO statustarefa VALUES ('RECUSADA');
 
+-- Andamento
+CREATE TABLE ParametroAndamentoTarefa (
+    idParametroAndamentoTarefa SERIAL NOT NULL PRIMARY KEY,
+    idEmpresa INTEGER,
+    FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
+    percentualAndamento INTEGER NOT NULL,
+    descricaoAndamento VARCHAR(10) NOT NULL
+);
+
+
 -- Projecao Tarefa
-DROP TABLE IF EXISTS ProjecaoTarefa CASCADE;
 CREATE TABLE ProjecaoTarefa (
     ProjecaoTarefa CHARACTER VARYING (50) NOT NULL PRIMARY KEY
 );
@@ -288,7 +313,6 @@ INSERT INTO Projecaotarefa VALUES ('NORMAL');
 INSERT INTO Projecaotarefa VALUES ('DESCENDENTE');
 
 -- Tipo Tarefa
-DROP TABLE IF EXISTS TipoTarefa CASCADE;
 CREATE TABLE TipoTarefa (
     TipoTarefa CHARACTER VARYING (20) NOT NULL PRIMARY KEY
 );
@@ -297,7 +321,6 @@ INSERT INTO TipoTarefa VALUES ('UNICA');
 INSERT INTO TipoTarefa VALUES ('RECORRENTE');
 
 -- Prioridade Tarefa
-DROP TABLE IF EXISTS PrioridadeTarefa CASCADE;
 CREATE TABLE PrioridadeTarefa (
     PrioridadeTarefa CHARACTER VARYING (10) NOT NULL PRIMARY KEY
 );
@@ -307,7 +330,6 @@ INSERT INTO PrioridadeTarefa VALUES ('NORMAL');
 INSERT INTO PrioridadeTarefa VALUES ('ALTA');
 
 -- Tarefa 
-DROP TABLE IF EXISTS Tarefa CASCADE;
 CREATE TABLE Tarefa (
     idTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefaPai BIGINT, 
@@ -360,7 +382,6 @@ CREATE TABLE Tarefa (
 CREATE SEQUENCE RecurrencySequence;
 
 -- Participante tarefa
-DROP TABLE IF EXISTS ParticipanteTarefa CASCADE;
 CREATE TABLE ParticipanteTarefa (
     idParticipanteTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
@@ -374,7 +395,6 @@ CREATE TABLE ParticipanteTarefa (
 
 
 -- Andamento tarefa
-DROP TABLE IF EXISTS AndamentoTarefa CASCADE;
 CREATE TABLE AndamentoTarefa (
     idAndamentoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
@@ -387,7 +407,6 @@ CREATE TABLE AndamentoTarefa (
 );
 
 -- Bloqueio tarefa
-DROP TABLE IF EXISTS BloqueioTarefa CASCADE;
 CREATE TABLE BloqueioTarefa (
     idBloqueioTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
@@ -404,7 +423,6 @@ CREATE TABLE BloqueioTarefa (
 );
 
 -- Anexos Tarefa
-DROP TABLE IF EXISTS AnexoTarefa CASCADE;
 CREATE TABLE AnexoTarefa (
     idAnexoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
@@ -418,7 +436,6 @@ CREATE TABLE AnexoTarefa (
 
 
 -- Apontamento Tarefa
-DROP TABLE IF EXISTS ApontamentoTarefa CASCADE;
 CREATE TABLE ApontamentoTarefa (
     idApontamentoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
@@ -437,7 +454,6 @@ CREATE TABLE ApontamentoTarefa (
 );
 
 -- Orcamento Tarefa
-DROP TABLE IF EXISTS OrcamentoTarefa CASCADE;
 CREATE TABLE OrcamentoTarefa (
     idOrcamentoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
@@ -452,7 +468,6 @@ CREATE TABLE OrcamentoTarefa (
 );
 
 -- Avaliacao Meta Tarefa
-DROP TABLE IF EXISTS AvaliacaoMetaTarefa CASCADE;
 CREATE TABLE AvaliacaoMetaTarefa (
     idAvaliacaoMetaTarefa SERIAL NOT NULL PRIMARY KEY, 
     idMeta BIGINT, 
@@ -471,7 +486,6 @@ CREATE TABLE AvaliacaoMetaTarefa (
 );
 
 -- Favoritos Tarefa Meta
-DROP TABLE IF EXISTS FavoritosTarefaMeta CASCADE;
 CREATE TABLE FavoritosTarefaMeta  (
     idFavoritosTarefaMeta  SERIAL NOT NULL PRIMARY KEY, 
     idMeta BIGINT NOT NULL, 
@@ -485,7 +499,6 @@ CREATE TABLE FavoritosTarefaMeta  (
 
 
 -- Historico tarefa
-DROP TABLE IF EXISTS HistoricoTarefa CASCADE;
 CREATE TABLE HistoricoTarefa (
     idHistoricoTarefa SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT NOT NULL, 
@@ -498,7 +511,6 @@ CREATE TABLE HistoricoTarefa (
 );
 
 -- ChatTarefa
-DROP TABLE IF EXISTS ChatTarefa CASCADE;
 CREATE TABLE ChatTarefa (
     idChat SERIAL NOT NULL PRIMARY KEY, 
     idTarefa BIGINT, 

@@ -2,7 +2,7 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.TaskModel;
-import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -12,7 +12,7 @@ import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.TaskPresenter;
-import com.saax.gestorweb.presenter.PopUpEvolucaoStatusPresenter;
+import com.saax.gestorweb.presenter.PopUpStatusPresenter;
 import com.saax.gestorweb.util.ErrorUtils;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -788,7 +788,7 @@ public class TaskView extends Window {
 
                     DecimalFormat df = new DecimalFormat("¤ #,##0.00");
 
-                    return df.format(((BigDecimal) property.getValue()));
+                    return df.format(property.getValue());
                 }
 
                 return super.formatPropertyValue(rowId, colId, property);
@@ -928,7 +928,7 @@ public class TaskView extends Window {
 
                     DecimalFormat df = new DecimalFormat("¤ #,##0.00");
 
-                    return df.format(((BigDecimal) property.getValue()));
+                    return df.format(property.getValue());
                 }
 
                 return super.formatPropertyValue(rowId, colId, property);
@@ -1403,16 +1403,17 @@ public class TaskView extends Window {
      *
      * @param task the task tha will have the status/progress updated
      * @param table the view table (used to auto select the row)
+     * @param listener
      * @return a popup button
      */
-    public static PopupButton buildPopUpStatusProgressTask(Table table, Task task) {
+    public static PopupButton buildPopUpStatusProgressTask(Table table, Task task, PopUpStatusListener listener) {
 
-        PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
-        PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
+        PopUpStatusView viewPopUP = new PopUpStatusView();
+        PopUpStatusModel modelPopUP = new PopUpStatusModel();
 
-        PopUpEvolucaoStatusPresenter presenter = new PopUpEvolucaoStatusPresenter(viewPopUP, modelPopUP);
+        PopUpStatusPresenter presenter = new PopUpStatusPresenter(viewPopUP, modelPopUP);
 
-        presenter.load(task);
+        presenter.load(task, null, listener);
 
         // Event fired when the pop-up becomes visible:
         presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {

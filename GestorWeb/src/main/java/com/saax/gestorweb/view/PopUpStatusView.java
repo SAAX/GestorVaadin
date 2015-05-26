@@ -4,6 +4,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
+import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -40,7 +41,7 @@ import java.util.ResourceBundle;
  *
  * @author rodrigo
  */
-public class PopUpEvolucaoStatusView extends CustomComponent {
+public class PopUpStatusView extends CustomComponent {
 
     // Referencia ao recurso das mensagens e imagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -48,7 +49,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas
-    private PopUpEvolucaoStatusViewListener listener;
+    private PopUpStatusViewListener listener;
     private ComboBox andamentoTarefaCombo;
     private Button bloquearTarefaButton;
     private Button recusarTarefaButton;
@@ -72,13 +73,13 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     private BeanItemContainer<HistoricoTarefa> historicoContainer;
     private TextArea comentarioTextArea;
 
-    public void setListener(PopUpEvolucaoStatusViewListener listener) {
+    public void setListener(PopUpStatusViewListener listener) {
         this.listener = listener;
     }
 
     private final VerticalLayout main;
 
-    public PopUpEvolucaoStatusView() {
+    public PopUpStatusView() {
 
         main = new VerticalLayout();
 
@@ -204,6 +205,7 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
      * <li>Botão para listar historico</li>
      * </ol>
      *
+     * @param motivoBloqueio
      */
     public void apresentaPerfilUsuarioResponsavelTarefaBloqueada(String motivoBloqueio) {
 
@@ -278,22 +280,16 @@ public class PopUpEvolucaoStatusView extends CustomComponent {
     private ComboBox buildAndamentoTarefaCombo() {
 
         andamentoTarefaCombo = new ComboBox();
+        
+        List<ParametroAndamentoTarefa> parametros = listener.listAndamento();
+        
+        for (ParametroAndamentoTarefa parametro : parametros) {
+            andamentoTarefaCombo.addItem(parametro.getPercentualandamento());
+            andamentoTarefaCombo.setItemCaption(parametro.getPercentualandamento(), parametro.getDescricaoandamento());
+        }
 
-        andamentoTarefaCombo.addItem(0);
-        andamentoTarefaCombo.setItemCaption(0, "0%");
-
-        andamentoTarefaCombo.addItem(25);
-        andamentoTarefaCombo.setItemCaption(25, "25%");
-
-        andamentoTarefaCombo.addItem(50);
-        andamentoTarefaCombo.setItemCaption(50, "50%");
-
-        andamentoTarefaCombo.addItem(75);
-        andamentoTarefaCombo.setItemCaption(75, "75%");
-
-        andamentoTarefaCombo.addItem(100);
-        andamentoTarefaCombo.setItemCaption(100, "100%");
-
+        andamentoTarefaCombo.setPageLength(parametros.size());
+        andamentoTarefaCombo.setWidth("100px");
         andamentoTarefaCombo.setWidth("100px");
 
         andamentoTarefaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {

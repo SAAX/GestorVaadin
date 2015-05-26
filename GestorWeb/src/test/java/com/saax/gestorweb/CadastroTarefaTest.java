@@ -22,7 +22,7 @@ import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.TaskPresenter;
-import com.saax.gestorweb.presenter.PopUpEvolucaoStatusPresenter;
+import com.saax.gestorweb.presenter.PopUpStatusPresenter;
 import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.DAOAleatorio;
 import com.saax.gestorweb.util.DateTimeConverters;
@@ -607,7 +607,7 @@ public class CadastroTarefaTest {
         view.getPriorityCombo().setValue(PrioridadeTarefa.BAIXA);
         //        private StatusTarefa status;
         view.getTaskStatusPopUpButton().click();
-        PopUpEvolucaoStatusPresenter presenterPopUP = presenter.getPresenterPopUpStatus();
+        PopUpStatusPresenter presenterPopUP = presenter.getPresenterPopUpStatus();
         presenterPopUP.aceitarTarefaClicked(); // Task ficará com status = aceita
         //        private ProjecaoTarefa projecao;
         //        private int andamento;

@@ -7,7 +7,7 @@ import com.saax.gestorweb.model.ChatSingletonModel;
 
 import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.CompanyModel;
-import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
@@ -28,7 +28,8 @@ import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
 import com.saax.gestorweb.view.CadastroMetaView;
 import com.saax.gestorweb.view.ChatView;
-import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
+import com.saax.gestorweb.view.PopUpStatusListener;
+import com.saax.gestorweb.view.PopUpStatusView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
@@ -61,7 +62,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class DashboardPresenter implements DashboardViewListenter, TaskCreationCallBackListener, CadastroMetaCallBackListener, Serializable {
+public class DashboardPresenter implements DashboardViewListenter, TaskCreationCallBackListener, CadastroMetaCallBackListener, PopUpStatusListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient DashboardView view;
@@ -329,6 +330,11 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         carregaVisualizacaoInicial();
     }
 
+    @Override
+    public void taskStatusChanged(Task task) {
+        atualizarTarefaTable(task);
+    }
+
     // enumeracao do tipo de pesquisa
     public enum TipoPesquisa {
 
@@ -456,12 +462,12 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     private PopupButton buildPopUpEvolucaoStatusEAndamento(Task tarefa) {
 
         // comportmento e regras:
-        PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
-        PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
+        PopUpStatusView viewPopUP = new PopUpStatusView();
+        PopUpStatusModel modelPopUP = new PopUpStatusModel();
 
-        PopUpEvolucaoStatusPresenter presenter = new PopUpEvolucaoStatusPresenter(viewPopUP, modelPopUP);
+        PopUpStatusPresenter presenter = new PopUpStatusPresenter(viewPopUP, modelPopUP);
 
-        presenter.load(tarefa);
+        presenter.load(tarefa, null, this);
 
         // evento disparado quando o pop-up se torna visivel:
         // seleciona a linha correta na tabela
@@ -617,7 +623,7 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
         List<Empresa> empresas = new ArrayList<>();
         List<FilialEmpresa> filiais = new ArrayList<>();
 
-        for (Object empresaFilial : (Collection<Object>) view.getCompanyFilterOptionGroup().getValue()) {
+        for (Object empresaFilial : (Iterable<? extends Object>) view.getCompanyFilterOptionGroup().getValue()) {
             if (empresaFilial instanceof Empresa) {
                 Empresa e = (Empresa) empresaFilial;
                 empresas.add(e);

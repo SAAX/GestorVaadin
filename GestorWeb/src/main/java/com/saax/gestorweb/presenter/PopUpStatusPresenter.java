@@ -1,19 +1,22 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
+import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
-import com.saax.gestorweb.view.PopUpEvolucaoStatusViewListener;
+import com.saax.gestorweb.view.PopUpStatusView;
+import com.saax.gestorweb.view.PopUpStatusViewListener;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.view.PopUpStatusListener;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -23,11 +26,11 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author rodrigo
  */
-public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucaoStatusViewListener {
+public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListener {
 
     // Todo presenter mantem acesso à view e ao model
-    private final transient PopUpEvolucaoStatusView view;
-    private final transient PopUpEvolucaoStatusModel model;
+    private final transient PopUpStatusView view;
+    private final transient PopUpStatusModel model;
 
     // Referencia ao recurso das mensagens e imagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -36,6 +39,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
     private Task tarefa = null;
     private PopupButton statusButton = null;
     private final Usuario usuario;
+    private PopUpStatusListener listener;
 
     /**
      * Cria o pop-up ligando view e presenter
@@ -43,7 +47,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
      * @param view
      * @param model
      */
-    public PopUpEvolucaoStatusPresenter(PopUpEvolucaoStatusView view, PopUpEvolucaoStatusModel model) {
+    public PopUpStatusPresenter(PopUpStatusView view, PopUpStatusModel model) {
         this.view = view;
         this.model = model;
         usuario = (Usuario) GestorSession.getAttribute("loggedUser");
@@ -53,46 +57,31 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
 
     /**
      * Carrega o pop-up configurando a visualização de acordo com o
-     * relacionamento entre o usuario e a tarefa, e o status da mesma
-     *
-     * @param tarefa
-     */
-    @Override
-    public void load(Task tarefa) {
-
-        this.tarefa = tarefa;
-
-        statusButton = new PopupButton(getStatusTarefaDescription(tarefa));
-
-        // vincula o botão a tarefa
-        statusButton.setData(tarefa);
-
-        configurarView();
-
-        // configura o conteudo
-        statusButton.setContent(view);
-
-    }
-
-    /**
-     * Carrega o pop-up configurando a visualização de acordo com o
-     * relacionamento entre o usuario e a tarefa, e o status da mesma Sobrecarga
-     * com opçao de ja definir o status button
+     * relacionamento entre o usuario e a tarefa, e o status da mesma 
      *
      * @param tarefa
      * @param statusButton
+     * @param listener
      */
     @Override
-    public void load(Task tarefa, PopupButton statusButton) {
+    public void load(Task tarefa, PopupButton statusButton, PopUpStatusListener listener) {
 
+        this.listener = listener;
+        
         this.tarefa = tarefa;
 
-        this.statusButton = statusButton;
+        if (statusButton != null){
+            this.statusButton = statusButton;
+            this.statusButton.setCaption(getStatusTarefaDescription(tarefa));
+            
+        } else {
+            this.statusButton = new PopupButton(getStatusTarefaDescription(tarefa));
+        }
 
-        this.statusButton.setCaption(getStatusTarefaDescription(tarefa));
 
         // vincula o botão a tarefa
         this.statusButton.setId(tarefa.getGlobalID());
+        this.statusButton.setData(tarefa);
 
         configurarView();
 
@@ -110,6 +99,7 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
         statusButton.setCaption(getStatusTarefaDescription(tarefa));
         configurarView();
         statusButton.setContent(view);
+        listener.taskStatusChanged(tarefa);
 
     }
 
@@ -318,6 +308,8 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
 
     }
 
+    
+    
     /**
      * Trata o evento disparado quando o usuario informa o andamento da tarefa
      * <br>
@@ -550,6 +542,11 @@ public class PopUpEvolucaoStatusPresenter implements Serializable, PopUpEvolucao
         view.getHistoricoContainer().removeAllItems();
         view.getHistoricoContainer().addAll(historicoTarefa.getTarefa().getHistorico());
 
+    }
+
+    @Override
+    public List<ParametroAndamentoTarefa> listAndamento() {
+        return model.listParametroAndamentoTarefa(usuario.getEmpresaAtiva());
     }
 
 }

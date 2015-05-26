@@ -4,7 +4,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.CompanyModel;
-import com.saax.gestorweb.model.PopUpEvolucaoStatusModel;
+import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.RecorrencyModel;
 import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
@@ -31,7 +31,8 @@ import com.saax.gestorweb.view.TaskCreationCallBackListener;
 import com.saax.gestorweb.view.TaskView;
 import com.saax.gestorweb.view.TaskViewListener;
 import com.saax.gestorweb.view.ChatView;
-import com.saax.gestorweb.view.PopUpEvolucaoStatusView;
+import com.saax.gestorweb.view.PopUpStatusListener;
+import com.saax.gestorweb.view.PopUpStatusView;
 import com.saax.gestorweb.view.RecorrencyView;
 import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Item;
@@ -62,7 +63,7 @@ import java.util.logging.Logger;
  *
  * @author rodrigo
  */
-public class TaskPresenter implements Serializable, TaskViewListener, TaskCreationCallBackListener, RecurrencyDoneCallBackListener {
+public class TaskPresenter implements Serializable, TaskViewListener, TaskCreationCallBackListener, RecurrencyDoneCallBackListener, PopUpStatusListener {
 
     // Todo presenterPopUpStatus mantem acesso à view e ao model
     private final transient TaskView view;
@@ -73,7 +74,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private TaskCreationCallBackListener callbackListener;
     private final Usuario loggedUser;
-    private PopUpEvolucaoStatusPresenter presenterPopUpStatus;
+    private PopUpStatusPresenter presenterPopUpStatus;
     private List<LocalDate> recurrentDates;
     private RecorrencyPresenter RecorrencyPresenter;
     private String recurrencyMessage;
@@ -544,16 +545,16 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     private void setPopUpEvolucaoStatusEAndamento(Task tarefa) {
 
         // comportmento e regras:
-        PopUpEvolucaoStatusView viewPopUP = new PopUpEvolucaoStatusView();
-        PopUpEvolucaoStatusModel modelPopUP = new PopUpEvolucaoStatusModel();
+        PopUpStatusView viewPopUP = new PopUpStatusView();
+        PopUpStatusModel modelPopUP = new PopUpStatusModel();
 
-        presenterPopUpStatus = new PopUpEvolucaoStatusPresenter(viewPopUP, modelPopUP);
+        presenterPopUpStatus = new PopUpStatusPresenter(viewPopUP, modelPopUP);
 
-        presenterPopUpStatus.load(tarefa, view.getTaskStatusPopUpButton());
+        presenterPopUpStatus.load(tarefa, view.getTaskStatusPopUpButton(), this);
 
     }
 
-    public PopUpEvolucaoStatusPresenter getPresenterPopUpStatus() {
+    public PopUpStatusPresenter getPresenterPopUpStatus() {
         return presenterPopUpStatus;
     }
 
@@ -697,7 +698,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     @Override
     public void gravarButtonClicked() {
 
-        Task task = (Task) view.getTarefa();
+        Task task = view.getTarefa();
 
         boolean novaTarefa = task.getId() == null;
 
@@ -929,7 +930,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             sub.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(sub.getDataInicio()),
             FormatterUtil.formatDate(sub.getDataFim()),
-            TaskView.buildPopUpStatusProgressTask(view.getSubTasksTable(), sub),
+            TaskView.buildPopUpStatusProgressTask(view.getSubTasksTable(), sub, this),
             sub.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -970,7 +971,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
         it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaStatus")).setValue(TaskView.buildPopUpStatusProgressTask(view.getSubTasksTable(), tarefa));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaStatus")).setValue(TaskView.buildPopUpStatusProgressTask(view.getSubTasksTable(), tarefa, this));
         it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
@@ -1076,6 +1077,11 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         task.setUsuarioResponsavel(assignee);
         configPermissions(task);
 
+    }
+
+    @Override
+    public void taskStatusChanged(Task task) {
+        view.setTarefa(task);
     }
 
 }

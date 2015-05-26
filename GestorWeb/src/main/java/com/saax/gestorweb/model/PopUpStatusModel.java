@@ -1,10 +1,11 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
-import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
+import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
+import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -22,7 +23,7 @@ import javax.persistence.EntityManager;
  *
  * @author rodrigo
  */
-public class PopUpEvolucaoStatusModel {
+public class PopUpStatusModel {
 
     /**
      * Registra o andamento de uma tarefa
@@ -102,7 +103,7 @@ public class PopUpEvolucaoStatusModel {
             return tarefa;
 
         } catch (Exception ex) {
-            Logger.getLogger(PopUpEvolucaoStatusModel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PopUpStatusModel.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -660,4 +661,18 @@ public class PopUpEvolucaoStatusModel {
         em.getTransaction().commit();
     }
 
+    public List<ParametroAndamentoTarefa> listParametroAndamentoTarefa(Empresa empresa){
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        List<ParametroAndamentoTarefa> list = em.createNamedQuery("ParametroAndamentoTarefa.findByEmpresa")
+                .setParameter("empresa", empresa)
+                .getResultList();
+        
+        if (list.isEmpty()){
+            list = em.createNamedQuery("ParametroAndamentoTarefa.findDefault")
+                .getResultList();
+        }
+        
+        return list;
+    }
+    
 }

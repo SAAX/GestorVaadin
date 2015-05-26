@@ -2,19 +2,19 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
+import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Task;
+import java.util.List;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  *
  * @author rodrigo
  */
-public interface PopUpEvolucaoStatusViewListener {
+public interface PopUpStatusViewListener {
 
-    public void load(Task tarefa, PopupButton statusButton);
+    public void load(Task tarefa, PopupButton statusButton, PopUpStatusListener listener);
     
-    public void load(Task tarefa);
-
     public void processarAlteracaoAndamento();
 
     public void bloquearTarefaClicked();
@@ -48,5 +48,7 @@ public interface PopUpEvolucaoStatusViewListener {
     public boolean historicoEditavel(HistoricoTarefa historicoTarefa);
 
     public void confirmarAlteracaoHistoricoClicked(HistoricoTarefa historicoTarefa);
+
+    public List<ParametroAndamentoTarefa> listAndamento();
     
 }

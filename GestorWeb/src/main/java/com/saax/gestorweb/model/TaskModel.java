@@ -123,8 +123,15 @@ public class TaskModel {
                 em.merge(task);
             }
 
-            // so comita na gravação da tarefa pai e na 1a. ( no caso de uma recorrencia ) 
-            if (task.getTarefaPai() == null) {
+            /**
+             * when creating a new task only commit in the parent task or
+             * target when editing an existing task, save anyway
+             */
+            boolean itIsANewTask = task.getId() == null;
+            boolean itIsAParentTask = task.getMeta() == null && task.getTarefaPai() == null;
+
+            if (itIsANewTask && itIsAParentTask || !itIsANewTask) {
+
                 // verify if it is a recurrent set of tasks
                 if (firstRecurrentTask != null) {
                     // if it is a recurrent set, only commit on the first 

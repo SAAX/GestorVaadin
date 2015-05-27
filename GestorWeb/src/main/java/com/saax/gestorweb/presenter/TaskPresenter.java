@@ -223,15 +223,15 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     @Override
     public void editar(Task taskToEdit) {
 
-        if (!model.userHasAccessToTask(loggedUser, taskToEdit)){
+        if (!model.userHasAccessToTask(loggedUser, taskToEdit)) {
             Notification.show(mensagens.getString("TaskView.accessDenied"), Notification.Type.WARNING_MESSAGE);
-            return ;
+            return;
         }
 
         taskToEdit = model.refresh(taskToEdit);
-        
+
         init(taskToEdit);
-        
+
         for (Task sub : taskToEdit.getSubTarefas()) {
             adicionarSubTarefa(sub);
         }
@@ -239,13 +239,13 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         if (taskToEdit.getUsuarioResponsavel().equals(taskToEdit.getUsuarioSolicitante())) {
             view.getChatButton().setEnabled(false);
         }
-        
+
         //Caso usuário logado não seja o solicitante, não deixar que ele clique nos controle de horas
         //e apontamento da tarefa
-        if (!loggedUser.equals(taskToEdit.getUsuarioSolicitante())){
+        if (!loggedUser.equals(taskToEdit.getUsuarioSolicitante())) {
             view.getApontamentoHorasCheckBox().setReadOnly(true);
             view.getBudgetControlCheckBox().setReadOnly(true);
-            
+
         }
 
         organizeTree(taskToEdit, taskToEdit.getSubTarefas());
@@ -277,7 +277,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         boolean loggedUserIsTheRequestor = task.getUsuarioSolicitante() != null && task.getUsuarioSolicitante().equals(loggedUser);
 
         switch (task.getStatus()) {
-            
+
             case ADIADA:
                 view.setEditAllowed(loggedUserIsTheRequestor);
 
@@ -700,7 +700,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
         Task task = view.getTarefa();
 
-        boolean novaTarefa = task.getId() == null;
+        boolean itIsANewTask = task.getId() == null;
 
         // if there is not an specified responsible user, the logged user will be the responsible
         if (task.getUsuarioResponsavel() == null) {
@@ -736,21 +736,22 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         }
 
         /**
-         * only persist if this is the parent task. if it is a child (sub task),
-         * the persistence will occour on the parent. if it is a task attached
-         * to a target, the persistence will occour on the target
+         * when creating a new task only persist in the parent task or target
+         * when editing an existing task, save anyway
          */
-        if (task.getMeta() == null && task.getTarefaPai() == null) {
-            if (recurrentDates != null) {
-                RecorrencyModel recorrenciaModel = new RecorrencyModel();
-                task = recorrenciaModel.createRecurrentTasks(task, recurrentDates, recurrencyMessage);
-            }
-            task = model.saveTask(task);
-        }
-
+        boolean itIsAParentTask = task.getMeta() == null && task.getTarefaPai() == null;
+        
+        if ( itIsANewTask && itIsAParentTask || !itIsANewTask ) {
+                if (recurrentDates != null) {
+                    RecorrencyModel recorrenciaModel = new RecorrencyModel();
+                    task = recorrenciaModel.createRecurrentTasks(task, recurrentDates, recurrencyMessage);
+                }
+                task = model.saveTask(task);
+        } 
+        
         // Notifies the call back listener that the create/update is done
         if (callbackListener != null) {
-            if (novaTarefa) {
+            if (itIsANewTask) {
                 callbackListener.taskCreationDone(task);
             } else {
                 callbackListener.taskUpdateDone(task);
@@ -846,14 +847,14 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
     @Override
     public void removerAnexo(AnexoTarefa anexoTarefa) {
-        if(!(anexoTarefa.getUsuarioInclusao().equals(loggedUser))){
-          Notification.show("Ops, apenas " + anexoTarefa.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);  
-        }else{
+        if (!(anexoTarefa.getUsuarioInclusao().equals(loggedUser))) {
+            Notification.show("Ops, apenas " + anexoTarefa.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
+        } else {
             view.getAttachmentsAddedTable().removeItem(anexoTarefa);
-        Task tarefa = view.getTarefa();
-        tarefa.getAnexos().remove(anexoTarefa);
+            Task tarefa = view.getTarefa();
+            tarefa.getAnexos().remove(anexoTarefa);
         }
-        
+
     }
 
     /**

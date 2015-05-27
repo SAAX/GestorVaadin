@@ -665,7 +665,7 @@ public class TaskView extends Window {
             FileDownloader fd = new FileDownloader(new FileResource(new File(anexoTarefa.getCaminhoCompleto())));
 
             fd.extend(downloadButton);
-           downloadButton.setEnabled(editAllowed);
+           downloadButton.setEnabled(true);
             return downloadButton;
         });
         attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
@@ -675,7 +675,7 @@ public class TaskView extends Window {
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerAnexo((AnexoTarefa) itemId);
             });
-           removeButton.setEnabled(editAllowed);
+           removeButton.setEnabled(true);
             return removeButton;
         });
         attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
@@ -1454,7 +1454,10 @@ public class TaskView extends Window {
         // Componentes da Aba Detalhes
         departamentCombo.setEnabled(editAllowed);
         costCenterCombo.setEnabled(editAllowed);
-        addAttach.setEnabled(editAllowed);
+        addAttach.setEnabled(true);
+        attachmentsAddedTable.setEnabled(true);
+        
+        
 
         // Tab Hours Control Components
         hourCostTextField.setEnabled(editAllowed);

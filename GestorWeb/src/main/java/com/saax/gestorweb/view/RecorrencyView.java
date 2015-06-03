@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.util.FormatterUtil;
@@ -78,7 +79,6 @@ public class RecorrencyView extends Window {
     private CheckBox saturdayCheckBox;
     private CheckBox sundayCheckBox;
     private ComboBox numberWeeksCombo;
-    private PopupDateField startDateWeeklyDateField;
     private PopupDateField endDateWeeklyDateField;
 
 // -------------------------------------------------------------------------
@@ -88,7 +88,6 @@ public class RecorrencyView extends Window {
     private ComboBox daysMonthlyCombo;
     private ComboBox numberMonthsCombo;
     private ComboBox kindDayMonthlyCombo;
-    private PopupDateField startDateMonthlyDateField;
     private PopupDateField endDateMonthlyDateField;
 
 // -------------------------------------------------------------------------
@@ -350,15 +349,9 @@ public class RecorrencyView extends Window {
         numberWeeksCombo.addItem("3");
         numberWeeksCombo.addItem("4");
 
-        startDateWeeklyDateField = new PopupDateField(messages.getString("RecorrencyView.dataInicioSemanalDateField.label"));
-        startDateWeeklyDateField.setConverter(new DateToLocalDateConverter());
-
         endDateWeeklyDateField = new PopupDateField(messages.getString("RecorrencyView.dataFimSemanalDateField.label"));
         endDateWeeklyDateField.setConverter(new DateToLocalDateConverter());
 
-        startDateWeeklyDateField.addValidator(new DataInicioValidator(endDateWeeklyDateField, messages.getString("RecorrencyView.dataInicioSemanalDateField.label")));
-        endDateWeeklyDateField.addValidator(new DataFimValidator(startDateWeeklyDateField, messages.getString("RecorrencyView.dataFimSemanalDateField.label")));
-        startDateWeeklyDateField.addValidator(new NullValidator(messages.getString("RecorrencyView.startDateWeeklyDateField.erroMessage"), false));
         endDateWeeklyDateField.addValidator(new NullValidator(messages.getString("RecorrencyView.dataFimSemanalDateField.erroMessage"), false));
 
         HorizontalLayout diasContainer = new HorizontalLayout();
@@ -378,7 +371,6 @@ public class RecorrencyView extends Window {
         datasContainer.setSizeFull();
 
         datasContainer.addComponent(numberWeeksCombo);
-        datasContainer.addComponent(startDateWeeklyDateField);
         datasContainer.addComponent(endDateWeeklyDateField);
 
         weeklyTab = new VerticalLayout();
@@ -400,8 +392,12 @@ public class RecorrencyView extends Window {
     private Component buildAbaMensal() {
 
         daysMonthlyCombo = new ComboBox(messages.getString("RecorrencyView.diaMesCombo.label"));
-        daysMonthlyCombo.addItem(messages.getString("RecorrencyView.primeiroDiaUtil"));
-        daysMonthlyCombo.addItem(messages.getString("RecorrencyView.ultimoDiaMes"));
+        daysMonthlyCombo.addItem(RecurrencyEnums.DayType.FIRST_WORKING_DAY);
+        daysMonthlyCombo.setItemCaption(RecurrencyEnums.DayType.FIRST_WORKING_DAY, messages.getString("RecorrencyView.primeiroDiaUtil"));
+
+        daysMonthlyCombo.addItem(RecurrencyEnums.DayType.LAST_MONTH_DAY);
+        daysMonthlyCombo.setItemCaption(RecurrencyEnums.DayType.LAST_MONTH_DAY, messages.getString("RecorrencyView.ultimoDiaMes"));
+
         daysMonthlyCombo.addValidator(new NullValidator(messages.getString("RecorrencyView.daysMonthlyCombo.inputValidatorMessage"), false));
 
         for (int i = 1; i <= 31; i++) {
@@ -416,19 +412,22 @@ public class RecorrencyView extends Window {
         }
 
         kindDayMonthlyCombo = new ComboBox(messages.getString("RecorrencyView.tipoDiaMensalCombo.label"));
+        
         kindDayMonthlyCombo.addValidator(new NullValidator(messages.getString("RecorrencyView.kindDayMonthlyCombo.inputValidatorMessage"), false));
-        kindDayMonthlyCombo.addItem(messages.getString("RecorrencyView.diaCorrido"));
-        kindDayMonthlyCombo.addItem(messages.getString("RecorrencyView.diaUtil"));
-        kindDayMonthlyCombo.addItem(messages.getString("RecorrencyView.diaUtilSabado"));
 
-        startDateMonthlyDateField = new PopupDateField(messages.getString("RecorrencyView.dataInicioSemanalDateField.label"));
-        startDateMonthlyDateField.setConverter(new DateToLocalDateConverter());
+        kindDayMonthlyCombo.addItem(RecurrencyEnums.WorkingDayType.CALENDAR_DAY);
+        kindDayMonthlyCombo.setItemCaption(RecurrencyEnums.WorkingDayType.CALENDAR_DAY, messages.getString("RecorrencyView.diaCorrido"));
+        
+        kindDayMonthlyCombo.addItem(RecurrencyEnums.WorkingDayType.BUSINESS_DAY);
+        kindDayMonthlyCombo.setItemCaption(RecurrencyEnums.WorkingDayType.BUSINESS_DAY, messages.getString("RecorrencyView.diaUtil"));
+        
+        kindDayMonthlyCombo.addItem(RecurrencyEnums.WorkingDayType.BUSINESS_DAY_INCLUDING_SATURDAY);
+        kindDayMonthlyCombo.setItemCaption(RecurrencyEnums.WorkingDayType.BUSINESS_DAY_INCLUDING_SATURDAY, messages.getString("RecorrencyView.diaUtilSabado"));
+
+
         endDateMonthlyDateField = new PopupDateField(messages.getString("RecorrencyView.dataFimSemanalDateField.label"));
         endDateMonthlyDateField.setConverter(new DateToLocalDateConverter());
 
-        startDateMonthlyDateField.addValidator(new DataInicioValidator(endDateMonthlyDateField, messages.getString("RecorrencyView.dataInicioSemanalDateField.label")));
-        endDateMonthlyDateField.addValidator(new DataFimValidator(startDateMonthlyDateField, messages.getString("RecorrencyView.dataFimSemanalDateField.label")));
-        startDateMonthlyDateField.addValidator(new NullValidator(messages.getString("RecorrencyView.startDateWeeklyDateField.erroMessage"), false));
         endDateMonthlyDateField.addValidator(new NullValidator(messages.getString("RecorrencyView.dataFimSemanalDateField.erroMessage"), false));
 
         monthlyTab = new GridLayout(3, 2);
@@ -440,7 +439,6 @@ public class RecorrencyView extends Window {
         monthlyTab.addComponent(daysMonthlyCombo, 0, 0);
         monthlyTab.addComponent(numberMonthsCombo, 1, 0);
         monthlyTab.addComponent(kindDayMonthlyCombo, 2, 0);
-        monthlyTab.addComponent(startDateMonthlyDateField, 0, 1);
         monthlyTab.addComponent(endDateMonthlyDateField, 1, 1);
 
 
@@ -455,8 +453,14 @@ public class RecorrencyView extends Window {
     private Component buildAbaAnual() {
 
         dayAnnualCombo = new ComboBox(messages.getString("RecorrencyView.diaAnualCombo.label"));
-        dayAnnualCombo.addItem(messages.getString("RecorrencyView.primeiroDiaUtil"));
-        dayAnnualCombo.addItem(messages.getString("RecorrencyView.ultimoDiaMes"));
+
+        dayAnnualCombo.addItem(RecurrencyEnums.DayType.FIRST_WORKING_DAY);
+        dayAnnualCombo.setItemCaption(RecurrencyEnums.DayType.FIRST_WORKING_DAY, messages.getString("RecorrencyView.primeiroDiaUtil"));
+
+        dayAnnualCombo.addItem(RecurrencyEnums.DayType.LAST_MONTH_DAY);
+        dayAnnualCombo.setItemCaption(RecurrencyEnums.DayType.LAST_MONTH_DAY, messages.getString("RecorrencyView.ultimoDiaMes"));
+        
+        
         dayAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrencyView.dayAnnualCombo.inputValidatorMessage"), false));
 
         for (int i = 1; i <= 31; i++) {
@@ -464,9 +468,16 @@ public class RecorrencyView extends Window {
         }
 
         kindDayAnnualCombo = new ComboBox(messages.getString("RecorrencyView.tipoDiaAnualCombo.label"));
-        kindDayAnnualCombo.addItem(messages.getString("RecorrencyView.diaCorrido"));
-        kindDayAnnualCombo.addItem(messages.getString("RecorrencyView.diaUtil"));
-        kindDayAnnualCombo.addItem(messages.getString("RecorrencyView.diaUtilSabado"));
+
+        kindDayAnnualCombo.addItem(RecurrencyEnums.WorkingDayType.CALENDAR_DAY);
+        kindDayAnnualCombo.setItemCaption(RecurrencyEnums.WorkingDayType.CALENDAR_DAY, messages.getString("RecorrencyView.diaCorrido"));
+        
+        kindDayAnnualCombo.addItem(RecurrencyEnums.WorkingDayType.BUSINESS_DAY);
+        kindDayAnnualCombo.setItemCaption(RecurrencyEnums.WorkingDayType.BUSINESS_DAY, messages.getString("RecorrencyView.diaUtil"));
+        
+        kindDayAnnualCombo.addItem(RecurrencyEnums.WorkingDayType.BUSINESS_DAY_INCLUDING_SATURDAY);
+        kindDayAnnualCombo.setItemCaption(RecurrencyEnums.WorkingDayType.BUSINESS_DAY_INCLUDING_SATURDAY, messages.getString("RecorrencyView.diaUtilSabado"));
+        
         kindDayAnnualCombo.addValidator(new NullValidator(messages.getString("RecorrencyView.kindDayMonthlyCombo.inputValidatorMessage"), false));
 
         monthAnnualCombo = new ComboBox(messages.getString("RecorrencyView.mesAnualCombo.label"));
@@ -734,13 +745,6 @@ public class RecorrencyView extends Window {
     }
 
     /**
-     * @return the startDateWeeklyDateField
-     */
-    public PopupDateField getStartDateWeeklyDateField() {
-        return startDateWeeklyDateField;
-    }
-
-    /**
      * @return the endDateWeeklyDateField
      */
     public PopupDateField getEndDateWeeklyDateField() {
@@ -759,13 +763,6 @@ public class RecorrencyView extends Window {
      */
     public ComboBox getDaysMonthlyCombo() {
         return daysMonthlyCombo;
-    }
-
-    /**
-     * @return the startDateMonthlyDateField
-     */
-    public PopupDateField getStartDateMonthlyDateField() {
-        return startDateMonthlyDateField;
     }
 
     /**
@@ -822,13 +819,11 @@ public class RecorrencyView extends Window {
         sundayCheckBox.setValidationVisible(visible);
 
         numberWeeksCombo.setValidationVisible(visible);
-        startDateWeeklyDateField.setValidationVisible(visible);
         endDateWeeklyDateField.setValidationVisible(visible);
         daysMonthlyCombo.setValidationVisible(visible);
 
         numberMonthsCombo.setValidationVisible(visible);
         kindDayMonthlyCombo.setValidationVisible(visible);
-        startDateMonthlyDateField.setValidationVisible(visible);
         endDateMonthlyDateField.setValidationVisible(visible);
         dayAnnualCombo.setValidationVisible(visible);
         kindDayAnnualCombo.setValidationVisible(visible);
@@ -853,7 +848,6 @@ public class RecorrencyView extends Window {
                 && saturdayCheckBox.isValid()
                 && sundayCheckBox.isValid()
                 && numberWeeksCombo.isValid()
-                && startDateWeeklyDateField.isValid()
                 && endDateWeeklyDateField.isValid();
 
     }
@@ -867,7 +861,6 @@ public class RecorrencyView extends Window {
         return daysMonthlyCombo.isValid()
                 && numberMonthsCombo.isValid()
                 && kindDayMonthlyCombo.isValid()
-                && startDateMonthlyDateField.isValid()
                 && endDateMonthlyDateField.isValid();
 
     }

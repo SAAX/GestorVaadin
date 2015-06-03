@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
+import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -29,29 +30,30 @@ import javax.persistence.Query;
  */
 public class RecorrencyModel {
 
-    
     /**
-     * Creates a user friendly message summarizing the recurrency configuration set
+     * Creates a user friendly message summarizing the recurrency configuration
+     * set
+     *
      * @param weekDays
      * @param numberWeeks
      * @param startDate
      * @param endDate
-     * @return 
+     * @return
      */
-    public String formatRecurrencyWeeklyMessage(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate){
-        
+    public String formatRecurrencyWeeklyMessage(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
+
         StringBuilder recurrencyMessage = new StringBuilder();
-        
+
         recurrencyMessage.append("Tarefa recorrente: semanal, a cada ");
         recurrencyMessage.append(numberWeeks);
         recurrencyMessage.append(" semana(s), em toda: ");
-        
+
         for (Integer weekDay : weekDays) {
             recurrencyMessage.append(weekDay);
             recurrencyMessage.append("a., ");
-            
+
         }
-        
+
         recurrencyMessage.append("de: ");
         recurrencyMessage.append(FormatterUtil.formatDate(DateTimeConverters.toLocalDate(startDate)));
         recurrencyMessage.append(" até: ");
@@ -59,7 +61,7 @@ public class RecorrencyModel {
 
         return recurrencyMessage.toString();
     }
-    
+
     /**
      * Compute the parameters for a weekly recurrence to obtain a list of its
      * dates
@@ -130,28 +132,29 @@ public class RecorrencyModel {
 
     }
 
-    
     /**
-     * Creates a user friendly message summarizing the recurrency configuration set
-     * @return 
+     * Creates a user friendly message summarizing the recurrency configuration
+     * set
+     *
+     * @return
      */
-    public String formatRecurrencyAnnualMessage(String diaAnual, String util, String mesAnual, String anoTermino){
-        
+    public String formatRecurrencyAnnualMessage(String diaAnual, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
+
         StringBuilder recurrencyMessage = new StringBuilder();
-        
+
         recurrencyMessage.append("Tarefa recorrente: anual, todo dia: ");
         recurrencyMessage.append(diaAnual);
         recurrencyMessage.append(" do mês ");
         recurrencyMessage.append(mesAnual);
         recurrencyMessage.append(", considerando: ");
-        recurrencyMessage.append(util);
+        recurrencyMessage.append(workingDayType);
         recurrencyMessage.append(" até ");
         recurrencyMessage.append(anoTermino);
 
         return recurrencyMessage.toString();
     }
 
-    public List<LocalDate> createAnnualRecurrence(String diaAnual, String util, String mesAnual, String anoTermino) {
+    public List<LocalDate> createAnnualRecurrence(String diaAnual, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
 
         int anoInicial = GregorianCalendar.getInstance().get(Calendar.YEAR);
 
@@ -165,7 +168,7 @@ public class RecorrencyModel {
 
         for (int ano = anoInicial; ano <= anoFinal; ano++) {
 
-            int diaDoMes = tratarDiaDoMes(diaAnual, mesDoAno, ano, util);
+            int diaDoMes = tratarDiaDoMes(diaAnual, mesDoAno, ano, workingDayType);
 
             GregorianCalendar dataObrigacao = new GregorianCalendar(ano, mesDoAno, diaDoMes);
 
@@ -196,23 +199,23 @@ public class RecorrencyModel {
      * @param util
      * @return
      */
-    public int tratarDiaDoMes(Object diaAnual, int mes, int ano, String util) {
+    public int tratarDiaDoMes(Object diaAnual, int mes, int ano, RecurrencyEnums.WorkingDayType util) {
 
         // no caso de 1o. dia útil do mês
-        if (diaAnual instanceof String && diaAnual.equals("pri")) {
+        if (diaAnual instanceof RecurrencyEnums.DayType && diaAnual == RecurrencyEnums.DayType.FIRST_WORKING_DAY) {
             System.out.println("verificou que é primeiro dia");
 
             // cria a data do 1o. dia do mes
             GregorianCalendar dia = new GregorianCalendar(ano, mes, 1);
             System.out.println("que tipo de dia: " + util);
             // testa se o primeiro dia do mes eh sabado ou domingo
-            if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && util.equals("util")) {
+            if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && util == RecurrencyEnums.WorkingDayType.BUSINESS_DAY) {
                 System.out.println("verificou que é sabado");
                 // coloca para proxima segunda
                 dia.roll(Calendar.DAY_OF_MONTH, true);
                 dia.roll(Calendar.DAY_OF_MONTH, true);
             }
-            if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && util.equals("utilSabado")) {
+            if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && util == RecurrencyEnums.WorkingDayType.BUSINESS_DAY_INCLUDING_SATURDAY) {
                 System.out.println("verificou que é sabado");
                 // coloca para proxima segunda
                 //dia.roll(Calendar.DAY_OF_MONTH, true);
@@ -226,7 +229,7 @@ public class RecorrencyModel {
         }
 
         // no caso de ultimo dia útil do mês
-        if (diaAnual instanceof String && diaAnual.equals("ult")) {
+        if (diaAnual instanceof RecurrencyEnums.DayType && diaAnual == RecurrencyEnums.DayType.LAST_MONTH_DAY) {
 
             // cria a data como ultimo dia do mes
             GregorianCalendar dia = new GregorianCalendar(ano, mes, 1);
@@ -234,12 +237,12 @@ public class RecorrencyModel {
                     dia.getActualMaximum(Calendar.DAY_OF_MONTH));
 
             // testa se o ultimo dia do mes eh sabado ou domingo
-            if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && util.equals("util")) {
+            if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && util == RecurrencyEnums.WorkingDayType.BUSINESS_DAY) {
                 // coloca para sexta anterior
                 dia.roll(Calendar.DAY_OF_MONTH, false);
                 dia.roll(Calendar.DAY_OF_MONTH, false);
             }
-            if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && util.equals("utilSabado")) {
+            if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && util == RecurrencyEnums.WorkingDayType.BUSINESS_DAY_INCLUDING_SATURDAY) {
                 // coloca para sexta anterior
                 dia.roll(Calendar.DAY_OF_MONTH, false);
             } else if (dia.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
@@ -262,7 +265,7 @@ public class RecorrencyModel {
         // se não é nem o 1o. nem o último, é um dia simples
         if (diaAnual instanceof Integer || ehInteiro) {
 
-            if (util.equals("util")) {
+            if (util == RecurrencyEnums.WorkingDayType.BUSINESS_DAY) {
                 System.out.println("entrou no método para verificar dias normais úteis");
                 GregorianCalendar primeiroDia = new GregorianCalendar(ano, mes,
                         1);
@@ -291,12 +294,10 @@ public class RecorrencyModel {
 
                 return primeiroDia.get(Calendar.DAY_OF_MONTH);
 
-            } //precisa retir
-            else if (util.equals("utilSabado")) {
+            } else if (util == RecurrencyEnums.WorkingDayType.BUSINESS_DAY_INCLUDING_SATURDAY) {
                 System.out.println("entrou no método para verificar dias úteis com sabado");
 
-                GregorianCalendar primeiroDia = new GregorianCalendar(ano, mes,
-                        1);
+                GregorianCalendar primeiroDia = new GregorianCalendar(ano, mes, 1);
                 int quantidadeAvancos;
                 if (primeiroDia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                     quantidadeAvancos = diaAnualInt;
@@ -333,9 +334,6 @@ public class RecorrencyModel {
                 System.out.println("entrou no método para verificar dias normais corridos");
                 GregorianCalendar primeiroDia = new GregorianCalendar(ano, mes,
                         diaAnualInt);
-                if ((primeiroDia.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) || (primeiroDia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)) {
-                    primeiroDia.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
-                }
                 return primeiroDia.get(Calendar.DAY_OF_MONTH);
             }
 
@@ -345,29 +343,30 @@ public class RecorrencyModel {
     }
 
     /**
-     * Creates a user friendly message summarizing the recurrency configuration set
-     * @return 
+     * Creates a user friendly message summarizing the recurrency configuration
+     * set
+     *
+     * @return
      */
-    public String formatRecurrencyMonthlyMessage(String dayMonth, Integer numberOfMonths, String typeMonth, Date startDate, Date endDate){
-        
+    public String formatRecurrencyMonthlyMessage(String dayMonth, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
+
         StringBuilder recurrencyMessage = new StringBuilder();
-        
+
         recurrencyMessage.append("Tarefa recorrente: mensal, todo dia: ");
         recurrencyMessage.append(dayMonth);
         recurrencyMessage.append(" a cada ");
         recurrencyMessage.append(numberOfMonths);
         recurrencyMessage.append(" mes(es), considerando dia ");
-        recurrencyMessage.append(typeMonth);
+        recurrencyMessage.append(workingDayType.toString());
         recurrencyMessage.append(" de: ");
         recurrencyMessage.append(FormatterUtil.formatDate(DateTimeConverters.toLocalDate(startDate)));
         recurrencyMessage.append(" até: ");
         recurrencyMessage.append(FormatterUtil.formatDate(DateTimeConverters.toLocalDate(endDate)));
 
-
         return recurrencyMessage.toString();
     }
 
-    public List<LocalDate> createMonthlyRecurrence(String dayMonth, Integer numberOfMonths, String typeMonth, Date startDate, Date endDate) {
+    public List<LocalDate> createMonthlyRecurrence(Object dayMonth, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
 
         // lista das datas das tarefas recorrentes
         List<LocalDate> datasObrigacoes = new ArrayList<>();
@@ -383,7 +382,7 @@ public class RecorrencyModel {
         // Tratar dia do Mês
         int diaDoMes = tratarDiaDoMes(dayMonth,
                 dataIteracao.get(Calendar.MONTH),
-                dataIteracao.get(Calendar.YEAR), typeMonth);
+                dataIteracao.get(Calendar.YEAR), workingDayType);
 
         // avança dia-a-dia até p 1o. dia apos (ou igual) a da inicial indicada
         // pelo usuario que corresponda a este dia da semana
@@ -395,7 +394,7 @@ public class RecorrencyModel {
 
             diaDoMes = tratarDiaDoMes(dayMonth,
                     dataIteracao.get(Calendar.MONTH),
-                    dataIteracao.get(Calendar.YEAR), typeMonth);
+                    dataIteracao.get(Calendar.YEAR), workingDayType);
 
             if ((dataIteracao.get(Calendar.DAY_OF_YEAR) == dataIteracao
                     .getActualMinimum(Calendar.DAY_OF_YEAR))) {
@@ -428,7 +427,7 @@ public class RecorrencyModel {
                 // Tratar dia do Mês
                 diaDoMes = tratarDiaDoMes(dayMonth,
                         dataIteracao.get(Calendar.MONTH),
-                        dataIteracao.get(Calendar.YEAR), typeMonth);
+                        dataIteracao.get(Calendar.YEAR), workingDayType);
                 dataIteracao.set(Calendar.DAY_OF_MONTH, diaDoMes);
 
                 datasObrigacoes.add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
@@ -531,7 +530,7 @@ public class RecorrencyModel {
      *
      * @param task any task of the set
      * @param loggedUser the logged user
-     * @return 
+     * @return
      */
     public Task removeAllRecurrency(Task task, Usuario loggedUser) {
 
@@ -548,21 +547,21 @@ public class RecorrencyModel {
 
             // iterates over all the tasks in the recurrent set, marking as removed
             for (Task recurrentTask : recurrenTasks) {
-                
-                if (firstTaskOfRecurrentSet == null){
+
+                if (firstTaskOfRecurrentSet == null) {
                     firstTaskOfRecurrentSet = recurrentTask;
                 }
-                
+
                 removeTask(recurrentTask, loggedUser);
                 em.merge(recurrentTask);
             }
-            
+
             firstTaskOfRecurrentSet = em.find(Task.class, firstTaskOfRecurrentSet.getId());
-            
+
             em.getTransaction().commit();
-            
+
             return firstTaskOfRecurrentSet;
-            
+
         } catch (Exception ex) {
             em.getTransaction().rollback();
             // propaga a exceção pra cima
@@ -577,7 +576,7 @@ public class RecorrencyModel {
      *
      * @param task
      * @param loggedUser
-     * @return 
+     * @return
      */
     public Task removeAllNextRecurrency(Task task, Usuario loggedUser) {
 
@@ -586,34 +585,34 @@ public class RecorrencyModel {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         try {
-            
+
             // verify if there is a next recurrent task to remove
-            if (task.getProximaTarefa()==null){
+            if (task.getProximaTarefa() == null) {
                 return editingTask;
             }
-            
+
             em.getTransaction().begin();
-            
+
             Task taskIterator = em.find(Task.class, task.getProximaTarefa().getId());
             while (taskIterator != null) {
 
                 removeTask(taskIterator, loggedUser);
                 em.merge(taskIterator);
-                if (taskIterator.getProximaTarefa()!=null){
+                if (taskIterator.getProximaTarefa() != null) {
                     taskIterator = em.find(Task.class, taskIterator.getProximaTarefa().getId());
                 } else {
                     taskIterator = null;
-                    
+
                 }
 
             }
-            
+
             em.getTransaction().commit();
-            
+
             editingTask = em.find(Task.class, editingTask.getId());
-            
+
             return editingTask;
-            
+
         } catch (Exception ex) {
             em.getTransaction().rollback();
             // propaga a exceção pra cima

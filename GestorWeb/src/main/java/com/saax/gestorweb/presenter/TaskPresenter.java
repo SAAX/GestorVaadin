@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.beanutils.converters.DateTimeConverter;
 
 /**
  * Presenter:
@@ -743,6 +744,9 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         
         if ( itIsANewTask && itIsAParentTask || !itIsANewTask ) {
                 if (recurrentDates != null) {
+                    if (task.getDataFim()==null){
+                        throw new RuntimeException("Informe a data de término.");
+                    }
                     RecorrencyModel recorrenciaModel = new RecorrencyModel();
                     task = recorrenciaModel.createRecurrentTasks(task, recurrentDates, recurrencyMessage);
                 }
@@ -1041,17 +1045,43 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         loadCostCenterCombo(empresa);
     }
 
+    
+    private boolean isStartAndEndDateValidForRecurrency(){
+        
+        // validates the initial and end date
+        Date startDate = view.getStartDateDateField().getValue();
+        Date endDate = view.getEndDateDateField().getValue();
+        
+        if (startDate == null || endDate == null){
+            Notification.show("Informe as datas de início e término da tarefa para recorrencia");
+            return false;
+        }
+
+        if (startDate.after(endDate)){
+            Notification.show("A data de término deve ser maior que a data de início");
+            return false;
+        }
+
+    
+        return true;
+    }
+    
     @Override
     public void recurrenceClicked() {
 
+        if (!isStartAndEndDateValidForRecurrency()){
+            return ;
+        }
+        
+        
         //Cria o pop up para registrar a conta (model e view)
         RecorrencyModel recorrenciaModel = new RecorrencyModel();
 
         RecorrencyView RecorrencyView = new RecorrencyView(view.getTarefa());
 
         //o presenter liga model e view
-        RecorrencyPresenter = new RecorrencyPresenter(recorrenciaModel, RecorrencyView);
-        RecorrencyPresenter.setTask(view.getTarefa());
+        RecorrencyPresenter = new RecorrencyPresenter(recorrenciaModel, RecorrencyView, view.getTarefa(), 
+                DateTimeConverters.toLocalDate(view.getStartDateDateField().getValue()));
         RecorrencyPresenter.setCallBackListener(this);
 
         //adiciona a visualização à UI

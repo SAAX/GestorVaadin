@@ -55,7 +55,7 @@ import org.apache.commons.beanutils.BeanUtils;
     @NamedQuery(name = "Task.findByTemplate", query = "SELECT t FROM Task t WHERE t.empresa = :empresa AND  t.template = :template AND NOT t.removida"),
     @NamedQuery(name = "Task.findByApontamentohoras", query = "SELECT t FROM Task t WHERE t.empresa = :empresa AND  t.apontamentoHoras = :apontamentohoras AND NOT t.removida"),
     @NamedQuery(name = "Task.findByUsuarioResponsavel", query = "SELECT t FROM Task t WHERE t.empresa = :empresa AND  t.usuarioResponsavel = :usuarioResponsavel AND NOT t.removida"),
-    @NamedQuery(name = "Task.findByUsuarioResponsavelDashboard", query = "SELECT t FROM Task t WHERE t.usuarioResponsavel = :usuarioResponsavel AND NOT t.removida"),
+    @NamedQuery(name = "Task.findByUsuarioResponsavelDashboard", query = "SELECT t FROM Task t WHERE t.usuarioResponsavel = :usuarioResponsavel AND NOT t.removida ORDER BY t.dataInicio"),
     @NamedQuery(name = "Task.findByUsuarioSolicitante", query = "SELECT t FROM Task t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante AND NOT t.removida"),
     @NamedQuery(name = "Task.findByOrcamentocontrolado", query = "SELECT t FROM Task t WHERE t.empresa = :empresa AND  t.orcamentoControlado = :orcamentocontrolado AND NOT t.removida"),
     @NamedQuery(name = "Task.findByDatahorainclusao", query = "SELECT t FROM Task t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao AND NOT t.removida")})

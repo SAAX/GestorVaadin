@@ -5,9 +5,8 @@
  */
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.vaadin.data.Property;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  *
@@ -25,7 +24,7 @@ public interface RecorrencyViewListener {
 
     public void cancelButtonClicked();
 
-    public void confirmRecurrencyCreation(List<LocalDate> tarefasRecorrentes, String recurrencyMessage);
+    public void confirmRecurrencyCreation(RecurrencySet recurrencySet);
 
     public void removeAllRecurrency();
 

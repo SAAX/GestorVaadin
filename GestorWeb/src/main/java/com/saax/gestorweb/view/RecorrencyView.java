@@ -2,6 +2,7 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
+import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.util.FormatterUtil;
@@ -885,13 +886,13 @@ public class RecorrencyView extends Window {
      * @param tarefasRecorrentes
      * @param recurrencyMessage
      */
-    public void showConfirmCreateRecurrentTasks(List<LocalDate> tarefasRecorrentes, String recurrencyMessage) {
+    public void showConfirmCreateRecurrentTasks(RecurrencySet recurrencySet) {
 
-        StringBuilder dates = new StringBuilder(recurrencyMessage);
+        StringBuilder dates = new StringBuilder(recurrencySet.getRecurrencyMessage());
         dates.append("\n");
         dates.append(messages.getString("RecorrencyView.showConfirmCreateRecurrentTasks.text"));
         dates.append("\n");
-        for (LocalDate tarefasRecorrente : tarefasRecorrentes) {
+        for (LocalDate tarefasRecorrente : recurrencySet.getRecurrentDates()) {
             dates.append("\n\t * ");
             dates.append(FormatterUtil.formatDate(tarefasRecorrente));
         }
@@ -900,9 +901,9 @@ public class RecorrencyView extends Window {
                 messages.getString("RecorrencyView.showConfirmCreateRecurrentTasks.OKButton"), 
                 messages.getString("RecorrencyView.showConfirmCreateRecurrentTasks.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
-                        listener.confirmRecurrencyCreation(tarefasRecorrentes, recurrencyMessage);
+                        listener.confirmRecurrencyCreation(recurrencySet);
                     } else {
-                        listener.confirmRecurrencyCreation(null, null);
+                        UI.getCurrent().removeWindow(this);
                     }
                 });
     }

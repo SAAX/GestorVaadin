@@ -47,6 +47,7 @@ import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
@@ -139,9 +140,11 @@ public class TaskView extends Window {
     @PropertyId("dataFim")
     private PopupDateField endDateDateField;
 
-    @PropertyId("tipoRecorrencia")
-    private Button typeRecurrenceButton;
-
+    private Button recurrencyButton;
+    
+    @PropertyId("recurrencyMessage")
+    private TextArea recurrencyMessage;
+    
     @PropertyId("prioridade")
     private ComboBox priorityCombo;
 
@@ -378,10 +381,10 @@ public class TaskView extends Window {
         requiredFields.add(startDateDateField);
 
         // Button Recurrence
-        typeRecurrenceButton = new Button(messages.getString("TaskView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
+        recurrencyButton = new Button(messages.getString("TaskView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
             listener.recurrenceClicked();
         });
-        typeRecurrenceButton.setWidth("100%");
+        recurrencyButton.setWidth("100%");
 
         // Combo Priority
         priorityCombo = new ComboBox(messages.getString("TaskView.prioridadeCombo.label"));
@@ -399,6 +402,12 @@ public class TaskView extends Window {
         startDateDateField.addValidator(new DataInicioValidator(endDateDateField, "Data Inicio"));
         endDateDateField.addValidator(new DataFimValidator(startDateDateField, "Data Fim"));
 
+        recurrencyMessage = new TextArea();
+        
+        recurrencyMessage.setEnabled(false);
+        recurrencyMessage.setSizeFull();
+        
+        
         // configura o layout usando uma grid
         GridLayout grid = new GridLayout(3, 3);
         grid.setSpacing(true);
@@ -417,12 +426,13 @@ public class TaskView extends Window {
         grid.addComponent(companyCombo);
         grid.addComponent(categoriaENomeContainer, 1, 0, 2, 0);
         grid.addComponent(startDateDateField);
-        grid.addComponent(typeRecurrenceButton);
-        grid.setComponentAlignment(typeRecurrenceButton, Alignment.BOTTOM_CENTER);
+        grid.addComponent(recurrencyButton);
+        grid.setComponentAlignment(recurrencyButton, Alignment.BOTTOM_CENTER);
         grid.addComponent(priorityCombo);
         grid.addComponent(endDateDateField);
         grid.addComponent(taskStatusPopUpButton);
         grid.setComponentAlignment(taskStatusPopUpButton, Alignment.BOTTOM_CENTER);
+        grid.addComponent(recurrencyMessage);
 
         return grid;
     }
@@ -1138,12 +1148,12 @@ public class TaskView extends Window {
         return endDateDateField;
     }
 
-    public Button getTypeRecurrenceButton() {
-        return typeRecurrenceButton;
+    public Button getRecurrencyButton() {
+        return recurrencyButton;
     }
 
-    public void setTypeRecurrenceButton(Button typeRecurrenceButton) {
-        this.typeRecurrenceButton = typeRecurrenceButton;
+    public void setRecurrencyButton(Button recurrencyButton) {
+        this.recurrencyButton = recurrencyButton;
     }
 
     /**
@@ -1445,7 +1455,7 @@ public class TaskView extends Window {
         taskNameTextField.setEnabled(editAllowed);
         startDateDateField.setEnabled(editAllowed);
         endDateDateField.setEnabled(editAllowed);
-        typeRecurrenceButton.setEnabled(editAllowed);
+        recurrencyButton.setEnabled(editAllowed);
         priorityCombo.setEnabled(editAllowed);
 
         // Description tab of components and Responsible

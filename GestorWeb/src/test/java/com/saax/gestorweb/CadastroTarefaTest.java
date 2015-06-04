@@ -156,7 +156,7 @@ public class CadastroTarefaTest {
         String nome = "Teste Cadastro Tarefa #1";
         view.getTaskNameTextField().setValue(nome);
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
         view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
@@ -198,7 +198,7 @@ public class CadastroTarefaTest {
         String nome = "Teste Cadastro Tarefa com Anexo";
         view.getTaskNameTextField().setValue(nome);
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
         view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
@@ -291,7 +291,7 @@ public class CadastroTarefaTest {
         //        private List<Tarefa> subTarefas;
         //        private Task proximaTarefa;
         //        private TipoTarefa tipoRecorrencia;
-        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
         //        private Task tarefaPai;
         //        private LocalDate dataInicio;
@@ -470,7 +470,7 @@ public class CadastroTarefaTest {
         String nome_principal = "Teste Multiplos Niveis";
         view.getTaskNameTextField().setValue(nome_principal);
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
         view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
@@ -494,7 +494,7 @@ public class CadastroTarefaTest {
         String nome_sub1 = "Sub 1";
         view_sub1.getTaskNameTextField().setValue(nome_sub1);
         //view_sub1.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view_sub1.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view_sub1.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view_sub1.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view_sub1.getStartDateDateField().setValue(new Date());
         view_sub1.getHierarchyCombo().setValue(view_sub1.getHierarchyCombo().getItemIds().toArray()[0]);
@@ -518,7 +518,7 @@ public class CadastroTarefaTest {
         String nome_sub2 = "Sub 2";
         view_sub2.getTaskNameTextField().setValue(nome_sub2);
         //view_sub2.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view_sub2.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view_sub2.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view_sub2.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view_sub2.getStartDateDateField().setValue(new Date());
         view_sub2.getHierarchyCombo().setValue(view_sub2.getHierarchyCombo().getItemIds().toArray()[0]);
@@ -633,7 +633,7 @@ public class CadastroTarefaTest {
         //        private Task proximaTarefa;
         //        private TipoTarefa tipoRecorrencia;
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.UNICA);
-        view.getTypeRecurrenceButton().getCaption().equals("ÚNICA");
+        view.getRecurrencyButton().getCaption().equals("ÚNICA");
         //        private Task tarefaPai;
         //        private LocalDate dataInicio;
         Date dataInicio = DAOAleatorio.getDataByOffset(10, true); // hoje + 10 dias
@@ -792,7 +792,7 @@ public class CadastroTarefaTest {
         String nome = "Teste Cadastro Tarefa Com Historico";
         view.getTaskNameTextField().setValue(nome);
         //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        view.getTypeRecurrenceButton().getCaption().equals("RECORRENTE");
+        view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
         view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());

@@ -19,6 +19,7 @@ import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
+import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
@@ -335,13 +336,13 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     private void init(Task tarefa) {
         // Carrega os combos de seleção
         carregaComboEmpresa();
-//        carregaComboTipoRecorrenciaTarefa();
         carregaComboPrioridade();
         carregaComboResponsavel();
         carregaComboParticipante();
         carregaComboEmpresaCliente();
         setPopUpEvolucaoStatusEAndamento(tarefa);
         carregaApontamento(tarefa);
+        
 
         // Configuras os beans de 1-N
         view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, loggedUser));
@@ -1081,7 +1082,9 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
         //o presenter liga model e view
         RecorrencyPresenter = new RecorrencyPresenter(recorrenciaModel, RecorrencyView, view.getTarefa(), 
-                DateTimeConverters.toLocalDate(view.getStartDateDateField().getValue()));
+                DateTimeConverters.toLocalDate(view.getStartDateDateField().getValue()),
+                DateTimeConverters.toLocalDate(view.getEndDateDateField().getValue())
+        );
         RecorrencyPresenter.setCallBackListener(this);
 
         //adiciona a visualização à UI
@@ -1090,10 +1093,11 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     }
 
     @Override
-    public void recurrencyCreationDone(List<LocalDate> tarefasRecorrentes, String recurrencyMessage) {
-        this.recurrentDates = tarefasRecorrentes;
-        this.recurrencyMessage = recurrencyMessage;
-        view.getStartDateDateField().setValue(DateTimeConverters.toDate(recurrentDates.get(0)));
+    public void recurrencyCreationDone(RecurrencySet recurrencySet) {
+        this.recurrentDates = recurrencySet.getRecurrentDates();
+        this.recurrencyMessage = recurrencySet.getRecurrencyMessage();
+        view.getStartDateDateField().setValue(DateTimeConverters.toDate(recurrencySet.getFirstTaskStartDate()));
+        view.getEndDateDateField().setValue(DateTimeConverters.toDate(recurrencySet.getFirstTaskEndDate()));
 
     }
 

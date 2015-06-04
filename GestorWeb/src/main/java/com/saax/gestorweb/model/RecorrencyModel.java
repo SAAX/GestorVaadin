@@ -2,6 +2,7 @@ package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
+import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Formatter;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +40,7 @@ public class RecorrencyModel {
      * @param endDate
      * @return
      */
-    public String formatRecurrencyWeeklyMessage(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
+    private String formatRecurrencyWeeklyMessage(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
 
         StringBuilder recurrencyMessage = new StringBuilder();
 
@@ -72,10 +72,12 @@ public class RecorrencyModel {
      * @param endDate
      * @return a list of dates
      */
-    public List<LocalDate> createWeeklyRecurrence(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
+    public RecurrencySet createWeeklyRecurrence(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
+
+        RecurrencySet recurrencySet = new RecurrencySet();
 
         // lista das datas das tarefas recorrentes
-        List<LocalDate> dataTarefas = new ArrayList<>();
+        recurrencySet.setRecurrentDates(new ArrayList<>());
 
         // percorre todos os dias da semana marcados pelo usuario para geraçao
         // da obrigaçao
@@ -98,7 +100,8 @@ public class RecorrencyModel {
             }
 
             // este será o 1o. dia da obrigação
-            dataTarefas.add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
+            recurrencySet.getRecurrentDates().add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
+            recurrencySet.setFirstTaskStartDate(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
 
             // vai avancando, semana a semana, até a data final
             do {
@@ -118,7 +121,7 @@ public class RecorrencyModel {
                 // verifica se ainda é menor ou igual que a data de termino
                 if (dataIteracao.compareTo(terminoSemanalCalendar) <= 0) {
                     // configura a data como dia da orbigação
-                    dataTarefas.add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
+                    recurrencySet.getRecurrentDates().add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
                 }
 
             } while (dataIteracao.compareTo(terminoSemanalCalendar) <= 0);
@@ -126,9 +129,11 @@ public class RecorrencyModel {
         }
 
         // ordena pela data
-        Collections.sort(dataTarefas);
+        Collections.sort(recurrencySet.getRecurrentDates());
 
-        return dataTarefas;
+        recurrencySet.setRecurrencyMessage(formatRecurrencyWeeklyMessage(weekDays, numberWeeks, startDate, endDate));
+
+        return recurrencySet;
 
     }
 
@@ -138,28 +143,56 @@ public class RecorrencyModel {
      *
      * @return
      */
-    public String formatRecurrencyAnnualMessage(String diaAnual, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
+    private String formatRecurrencyAnnualMessage(RecurrencyEnums.DayType dayType, Integer annualDay, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
 
         StringBuilder recurrencyMessage = new StringBuilder();
 
-        recurrencyMessage.append("Tarefa recorrente: anual, todo dia: ");
-        recurrencyMessage.append(diaAnual);
+        recurrencyMessage.append("Tarefa recorrente: anual, todo ");
+        
+        if (dayType == RecurrencyEnums.DayType.FIRST_WORKING_DAY) {
+            recurrencyMessage.append("1o. dia útil");
+
+        } else if (dayType == RecurrencyEnums.DayType.LAST_MONTH_DAY) {
+            recurrencyMessage.append("últim dia do mês");
+
+        } else {
+            recurrencyMessage.append("dia ").append(annualDay.toString());
+
+        }
         recurrencyMessage.append(" do mês ");
         recurrencyMessage.append(mesAnual);
-        recurrencyMessage.append(", considerando: ");
-        recurrencyMessage.append(workingDayType);
+        
+        switch (workingDayType) {
+            case BUSINESS_DAY:
+                recurrencyMessage.append(", considerando apenas dias úteis,");
+
+                break;
+            case BUSINESS_DAY_INCLUDING_SATURDAY:
+                recurrencyMessage.append(", considerando dias úteis, incluindo sábados, ");
+
+                break;
+            case CALENDAR_DAY:
+
+                break;
+            default:
+                throw new AssertionError();
+        }
+
+        
         recurrencyMessage.append(" até ");
         recurrencyMessage.append(anoTermino);
 
         return recurrencyMessage.toString();
     }
 
-    public List<LocalDate> createAnnualRecurrence(String diaAnual, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
+    public RecurrencySet createAnnualRecurrence(RecurrencyEnums.DayType dayType, Integer annualDay, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
 
-        int anoInicial = GregorianCalendar.getInstance().get(Calendar.YEAR);
+        RecurrencySet recurrencySet = new RecurrencySet();
 
         // lista das datas das tarefas recorrentes
-        List<LocalDate> dataTarefas = new ArrayList<>();
+        recurrencySet.setRecurrentDates(new ArrayList<>());
+
+        int anoInicial = GregorianCalendar.getInstance().get(Calendar.YEAR);
 
         int anoFinal = Integer.parseInt(anoTermino);
 
@@ -168,20 +201,25 @@ public class RecorrencyModel {
 
         for (int ano = anoInicial; ano <= anoFinal; ano++) {
 
-            int diaDoMes = tratarDiaDoMes(diaAnual, mesDoAno, ano, workingDayType);
+            int diaDoMes = tratarDiaDoMes(dayType, annualDay, mesDoAno, ano, workingDayType);
 
             GregorianCalendar dataObrigacao = new GregorianCalendar(ano, mesDoAno, diaDoMes);
 
             if (dataObrigacao.getTime().after(new Date())) {
-                dataTarefas.add(DateTimeConverters.toLocalDate(dataObrigacao.getTime()));
+                recurrencySet.getRecurrentDates().add(DateTimeConverters.toLocalDate(dataObrigacao.getTime()));
+                if (recurrencySet.getFirstTaskStartDate() == null) {
+                    recurrencySet.setFirstTaskStartDate(DateTimeConverters.toLocalDate(dataObrigacao.getTime()));
+                }
 
             }
         }
 
         // ordena pela data
-        Collections.sort(dataTarefas);
+        Collections.sort(recurrencySet.getRecurrentDates());
 
-        return dataTarefas;
+        recurrencySet.setRecurrencyMessage(formatRecurrencyAnnualMessage(dayType, annualDay, workingDayType, mesAnual, anoTermino));
+
+        return recurrencySet;
 
     }
 
@@ -193,16 +231,17 @@ public class RecorrencyModel {
      * COMENTÁRIO: tive de mudar o método do util, pois não é mais boolean
      * porque temos 3 opções: util, util com sábado e corrido
      *
-     * @param diaAnual
+     * @param dayType
+     * @param day
      * @param mes
      * @param ano
      * @param util
      * @return
      */
-    public int tratarDiaDoMes(Object diaAnual, int mes, int ano, RecurrencyEnums.WorkingDayType util) {
+    public int tratarDiaDoMes(RecurrencyEnums.DayType dayType, Integer day, int mes, int ano, RecurrencyEnums.WorkingDayType util) {
 
         // no caso de 1o. dia útil do mês
-        if (diaAnual instanceof RecurrencyEnums.DayType && diaAnual == RecurrencyEnums.DayType.FIRST_WORKING_DAY) {
+        if (dayType == RecurrencyEnums.DayType.FIRST_WORKING_DAY) {
             System.out.println("verificou que é primeiro dia");
 
             // cria a data do 1o. dia do mes
@@ -229,7 +268,7 @@ public class RecorrencyModel {
         }
 
         // no caso de ultimo dia útil do mês
-        if (diaAnual instanceof RecurrencyEnums.DayType && diaAnual == RecurrencyEnums.DayType.LAST_MONTH_DAY) {
+        if (dayType == RecurrencyEnums.DayType.LAST_MONTH_DAY) {
 
             // cria a data como ultimo dia do mes
             GregorianCalendar dia = new GregorianCalendar(ano, mes, 1);
@@ -253,17 +292,7 @@ public class RecorrencyModel {
             return dia.get(Calendar.DAY_OF_MONTH);
         }
 
-        boolean ehInteiro = true;
-
-        int diaAnualInt = 0;
-        try {
-            diaAnualInt = Integer.parseInt((String) diaAnual);
-        } catch (NumberFormatException numberFormatException) {
-            ehInteiro = false;
-        }
-
-        // se não é nem o 1o. nem o último, é um dia simples
-        if (diaAnual instanceof Integer || ehInteiro) {
+        if (day != null) {
 
             if (util == RecurrencyEnums.WorkingDayType.BUSINESS_DAY) {
                 System.out.println("entrou no método para verificar dias normais úteis");
@@ -271,9 +300,9 @@ public class RecorrencyModel {
                         1);
                 int quantidadeAvancos;
                 if (primeiroDia.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || primeiroDia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                    quantidadeAvancos = diaAnualInt;
+                    quantidadeAvancos = day;
                 } else {
-                    quantidadeAvancos = diaAnualInt - 1;
+                    quantidadeAvancos = day - 1;
                 }
                 for (int a = 0; a < quantidadeAvancos; a++) {
 
@@ -300,15 +329,9 @@ public class RecorrencyModel {
                 GregorianCalendar primeiroDia = new GregorianCalendar(ano, mes, 1);
                 int quantidadeAvancos;
                 if (primeiroDia.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-                    quantidadeAvancos = diaAnualInt;
-                } // else if (primeiroDia.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY){
-                //	quantidadeAvancos = diaAnualInt -1;
-                //} 
-                //else if (primeiroDia.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY){
-                //	quantidadeAvancos = diaAnualInt -1;
-                //}
-                else {
-                    quantidadeAvancos = diaAnualInt - 1;
+                    quantidadeAvancos = day;
+                } else {
+                    quantidadeAvancos = day - 1;
                 }
                 for (int a = 0; a < quantidadeAvancos; a++) {
 
@@ -332,8 +355,7 @@ public class RecorrencyModel {
             } //precisa retirar se der errado
             else {
                 System.out.println("entrou no método para verificar dias normais corridos");
-                GregorianCalendar primeiroDia = new GregorianCalendar(ano, mes,
-                        diaAnualInt);
+                GregorianCalendar primeiroDia = new GregorianCalendar(ano, mes, day);
                 return primeiroDia.get(Calendar.DAY_OF_MONTH);
             }
 
@@ -348,16 +370,41 @@ public class RecorrencyModel {
      *
      * @return
      */
-    public String formatRecurrencyMonthlyMessage(String dayMonth, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
+    private String formatRecurrencyMonthlyMessage(RecurrencyEnums.DayType dayType, Integer monthDay, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
 
         StringBuilder recurrencyMessage = new StringBuilder();
+        recurrencyMessage.append("Tarefa recorrente: mensal, todo ");
 
-        recurrencyMessage.append("Tarefa recorrente: mensal, todo dia: ");
-        recurrencyMessage.append(dayMonth);
+        if (dayType == RecurrencyEnums.DayType.FIRST_WORKING_DAY) {
+            recurrencyMessage.append("1o. dia útil");
+
+        } else if (dayType == RecurrencyEnums.DayType.LAST_MONTH_DAY) {
+            recurrencyMessage.append("últim dia do mês");
+
+        } else {
+            recurrencyMessage.append("dia ").append(monthDay.toString());
+
+        }
+
         recurrencyMessage.append(" a cada ");
         recurrencyMessage.append(numberOfMonths);
-        recurrencyMessage.append(" mes(es), considerando dia ");
-        recurrencyMessage.append(workingDayType.toString());
+        recurrencyMessage.append(" mes(es), ");
+        switch (workingDayType) {
+            case BUSINESS_DAY:
+                recurrencyMessage.append("considerando apenas dias úteis,");
+
+                break;
+            case BUSINESS_DAY_INCLUDING_SATURDAY:
+                recurrencyMessage.append("considerando dias úteis, incluindo sábados, ");
+
+                break;
+            case CALENDAR_DAY:
+
+                break;
+            default:
+                throw new AssertionError();
+        }
+
         recurrencyMessage.append(" de: ");
         recurrencyMessage.append(FormatterUtil.formatDate(DateTimeConverters.toLocalDate(startDate)));
         recurrencyMessage.append(" até: ");
@@ -366,10 +413,12 @@ public class RecorrencyModel {
         return recurrencyMessage.toString();
     }
 
-    public List<LocalDate> createMonthlyRecurrence(Object dayMonth, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
+    public RecurrencySet createMonthlyRecurrence(RecurrencyEnums.DayType dayType, Integer monthDay, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
+
+        RecurrencySet recurrencySet = new RecurrencySet();
 
         // lista das datas das tarefas recorrentes
-        List<LocalDate> datasObrigacoes = new ArrayList<>();
+        recurrencySet.setRecurrentDates(new ArrayList<>());
 
         // Calendarios para a data final
         Calendar terminoMensalCalendar = GregorianCalendar.getInstance();
@@ -380,7 +429,7 @@ public class RecorrencyModel {
         dataIteracao.setTime(startDate);
 
         // Tratar dia do Mês
-        int diaDoMes = tratarDiaDoMes(dayMonth,
+        int diaDoMes = tratarDiaDoMes(dayType, monthDay,
                 dataIteracao.get(Calendar.MONTH),
                 dataIteracao.get(Calendar.YEAR), workingDayType);
 
@@ -392,7 +441,8 @@ public class RecorrencyModel {
 
             dataIteracao.roll(Calendar.DAY_OF_YEAR, true);
 
-            diaDoMes = tratarDiaDoMes(dayMonth,
+            diaDoMes = tratarDiaDoMes(dayType,
+                    monthDay,
                     dataIteracao.get(Calendar.MONTH),
                     dataIteracao.get(Calendar.YEAR), workingDayType);
 
@@ -404,7 +454,8 @@ public class RecorrencyModel {
         }
 
         // este será o 1o. dia da obrigação
-        datasObrigacoes.add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
+        recurrencySet.getRecurrentDates().add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
+        recurrencySet.setFirstTaskStartDate(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
 
         // vai avancando, semana a semana, até a data final
         do {
@@ -425,20 +476,23 @@ public class RecorrencyModel {
             if (dataIteracao.compareTo(terminoMensalCalendar) <= 0) {
                 // configura a data como dia da orbigação
                 // Tratar dia do Mês
-                diaDoMes = tratarDiaDoMes(dayMonth,
+                diaDoMes = tratarDiaDoMes(dayType,
+                        monthDay,
                         dataIteracao.get(Calendar.MONTH),
                         dataIteracao.get(Calendar.YEAR), workingDayType);
                 dataIteracao.set(Calendar.DAY_OF_MONTH, diaDoMes);
 
-                datasObrigacoes.add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
+                recurrencySet.getRecurrentDates().add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
             }
 
         } while (dataIteracao.compareTo(terminoMensalCalendar) <= 0);
 
         // ordena pela data
-        Collections.sort(datasObrigacoes);
+        Collections.sort(recurrencySet.getRecurrentDates());
 
-        return datasObrigacoes;
+        recurrencySet.setRecurrencyMessage(formatRecurrencyMonthlyMessage(dayType, monthDay, numberOfMonths, workingDayType, startDate, endDate));
+
+        return recurrencySet;
     }
 
     private int getRecurrencySequenceNextValue() {
@@ -498,7 +552,7 @@ public class RecorrencyModel {
 
                 if (task.getDataFim() != null) {
                     Period p = Period.between(task.getDataInicio(), task.getDataFim());
-                    task.setDataFim(taskDate.plus(p));
+                    recurrentTask.setDataFim(taskDate.plus(p));
                 }
 
                 recurrentTasks.add(recurrentTask);

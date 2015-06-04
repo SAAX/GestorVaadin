@@ -3,6 +3,7 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.RecorrencyModel;
 import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
+import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
@@ -15,6 +16,7 @@ import com.vaadin.data.Property;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -64,6 +66,7 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
      */
     private RecurrencyDoneCallBackListener callBackListener;
     private final LocalDate startDate;
+    private LocalDate endDate;
 
     public void setCallBackListener(RecurrencyDoneCallBackListener callBackListener) {
         this.callBackListener = callBackListener;
@@ -76,11 +79,13 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
      * @param view
      * @param task
      * @param startDate
+     * @param endDate
      */
     public RecorrencyPresenter(RecorrencyModel model,
             RecorrencyView view,
             Task task,
-            LocalDate startDate) {
+            LocalDate startDate,
+            LocalDate endDate) {
 
         this.model = model;
         this.view = view;
@@ -90,6 +95,7 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
         view.setListener(this);
 
         loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        this.endDate = endDate;
 
     }
 
@@ -166,6 +172,8 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
 
     }
 
+    
+    
     /**
      * Handles the event OK.
      */
@@ -181,62 +189,68 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
             return;
         }
 
-        List<LocalDate> tarefasRecorrentes = null;
+        RecurrencySet recurrencySet;
 
-        String recurrencyMessage;
 
         // if its is a WEEKLY recurrence:
         if (view.getWeeklyCheckBox().getValue()) {
 
             Set<Integer> weekDays = getSelectedWeekDays();
 
-            tarefasRecorrentes = model.createWeeklyRecurrence(
+            recurrencySet = model.createWeeklyRecurrence(
                     weekDays,
                     Integer.parseInt(view.getNumberWeeksCombo().getValue().toString()),
-                    DateTimeConverters.toDate(task.getDataInicio()),
-                    view.getEndDateWeeklyDateField().getValue());
-
-            recurrencyMessage = model.formatRecurrencyWeeklyMessage(
-                    weekDays,
-                    Integer.parseInt(view.getNumberWeeksCombo().getValue().toString()),
-                    DateTimeConverters.toDate(task.getDataInicio()),
+                    DateTimeConverters.toDate(startDate),
                     view.getEndDateWeeklyDateField().getValue());
 
         } else if (view.getMonthlyCheckBox().getValue()) {
+
+            RecurrencyEnums.DayType dayType = null;
+            Integer monthDay = null;
+            if (view.getDaysMonthlyCombo().getValue() instanceof RecurrencyEnums.DayType){
+                dayType = (RecurrencyEnums.DayType) view.getDaysMonthlyCombo().getValue();
+            } else {
+                monthDay = Integer.parseInt((String) view.getDaysMonthlyCombo().getValue());
+            }
+            
             // if its is a MONTHLY recurrence:
-            tarefasRecorrentes = model.createMonthlyRecurrence(view.getDaysMonthlyCombo().getValue(),
+            recurrencySet = model.createMonthlyRecurrence(dayType,
+                    monthDay,
                     Integer.parseInt(view.getNumberMonthsCombo().getValue().toString()),
                     (RecurrencyEnums.WorkingDayType) view.getKindDayMonthlyCombo().getValue(),
-                    DateTimeConverters.toDate(task.getDataInicio()),
+                    DateTimeConverters.toDate(startDate),
                     view.getEndDateMonthlyDateField().getValue());
 
-            recurrencyMessage = model.formatRecurrencyMonthlyMessage(
-                    (String) view.getDaysMonthlyCombo().getValue(),
-                    Integer.parseInt(view.getNumberMonthsCombo().getValue().toString()),
-                    (RecurrencyEnums.WorkingDayType) view.getKindDayMonthlyCombo().getValue(),
-                    DateTimeConverters.toDate(task.getDataInicio()),
-                    view.getEndDateMonthlyDateField().getValue());
-
+            
         } else if (view.getAnnualCheckBox().getValue()) {
             // if its is a ANNUAL recurrence:
-            tarefasRecorrentes = model.createAnnualRecurrence(
-                    (String) view.getDayAnnualCombo().getValue(),
+            
+            RecurrencyEnums.DayType dayType = null;
+            Integer annualDay = null;
+            if (view.getDayAnnualCombo().getValue() instanceof RecurrencyEnums.DayType){
+                dayType = (RecurrencyEnums.DayType) view.getDayAnnualCombo().getValue();
+            } else {
+                annualDay = Integer.parseInt((String) view.getDayAnnualCombo().getValue());
+            }
+            
+            
+            recurrencySet = model.createAnnualRecurrence(
+                    dayType,
+                    annualDay,
                     (RecurrencyEnums.WorkingDayType) view.getKindDayAnnualCombo().getValue(),
                     view.getMonthAnnualCombo().getValue().toString(),
                     (String) view.getYearAnnualCombo().getValue()
             );
 
-            recurrencyMessage = model.formatRecurrencyAnnualMessage(
-                    (String) view.getDayAnnualCombo().getValue(),
-                    (RecurrencyEnums.WorkingDayType) view.getKindDayAnnualCombo().getValue(),
-                    view.getMonthAnnualCombo().getValue().toString(),
-                    (String) view.getYearAnnualCombo().getValue());
-
         } else {
             throw new RuntimeException("Select the recurrence type.");
         }
 
-        view.showConfirmCreateRecurrentTasks(tarefasRecorrentes, recurrencyMessage);
+            Period p = Period.between(startDate, endDate);
+            recurrencySet.setFirstTaskEndDate(recurrencySet.getFirstTaskStartDate().plus(p));
+
+        
+        view.showConfirmCreateRecurrentTasks(recurrencySet);
 
     }
 
@@ -282,12 +296,11 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
      * Configure the recurrent dates where there will be created the recurrent
      * tasks
      *
-     * @param recurrentDates
-     * @param recurrencyMessage
      */
     @Override
-    public void confirmRecurrencyCreation(List<LocalDate> recurrentDates, String recurrencyMessage) {
-        callBackListener.recurrencyCreationDone(recurrentDates, recurrencyMessage);
+    public void confirmRecurrencyCreation(RecurrencySet recurrencySet) {
+
+        callBackListener.recurrencyCreationDone(recurrencySet);
         UI.getCurrent().removeWindow(view);
     }
 

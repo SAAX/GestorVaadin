@@ -1,8 +1,7 @@
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.Task;
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * Call back listener interface. <br>
@@ -13,10 +12,9 @@ public interface RecurrencyDoneCallBackListener {
 
     /**
      * Handles the event thrown when the sub windows with all recurrency parameters is closed
-     * @param tarefasRecorrentes
-     * @param recurrencyMessage
+     * @param recurrencySet
      */
-    public void recurrencyCreationDone(List<LocalDate> tarefasRecorrentes, String recurrencyMessage);
+    public void recurrencyCreationDone(RecurrencySet recurrencySet);
 
     public void recurrencyRemoved(Task task);
 

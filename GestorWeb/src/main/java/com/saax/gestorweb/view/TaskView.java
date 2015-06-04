@@ -813,14 +813,14 @@ public class TaskView extends Window {
         pointingTimeTable.setColumnWidth("debitoValor", 80);
         pointingTimeTable.setColumnAlignment("debitoValor", Table.Align.RIGHT);
         pointingTimeTable.setColumnHeader("debitoValor", messages.getString("TaskView.controleHorasTable.colunaDebitoValor"));
-        pointingTimeTable.setColumnAlignment("custoHora", Table.Align.RIGHT);
-        pointingTimeTable.setColumnHeader("custoHora", messages.getString("TaskView.controleHorasTable.colunaCustoHora"));
-        pointingTimeTable.setColumnWidth("custoHora", 80);
         pointingTimeTable.setColumnWidth("saldoValor", 80);
         pointingTimeTable.setColumnAlignment("saldoValor", Table.Align.RIGHT);
         pointingTimeTable.setColumnHeader("saldoValor", messages.getString("TaskView.controleHorasTable.colunaSaldoValor"));
+        pointingTimeTable.setColumnAlignment("custoHora", Table.Align.RIGHT);
+        pointingTimeTable.setColumnHeader("custoHora", messages.getString("TaskView.controleHorasTable.colunaCustoHora"));
+        pointingTimeTable.setColumnWidth("custoHora", 80);
 
-        pointingTimeTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "custoHora", "saldoValor");
+        pointingTimeTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor","custoHora");
         // Adicionar coluna do botão "remover"
         pointingTimeTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("x");

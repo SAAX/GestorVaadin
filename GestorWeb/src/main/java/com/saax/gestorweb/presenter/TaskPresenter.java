@@ -342,7 +342,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         carregaComboEmpresaCliente();
         setPopUpEvolucaoStatusEAndamento(tarefa);
         carregaApontamento(tarefa);
-        
+        view.getRecurrencyMessage().setVisible(tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE);
+        view.getRecurrencyMessage().setEnabled(false);
 
         // Configuras os beans de 1-N
         view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, loggedUser));
@@ -742,18 +743,18 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
          * when editing an existing task, save anyway
          */
         boolean itIsAParentTask = task.getMeta() == null && task.getTarefaPai() == null;
-        
-        if ( itIsANewTask && itIsAParentTask || !itIsANewTask ) {
-                if (recurrentDates != null) {
-                    if (task.getDataFim()==null){
-                        throw new RuntimeException("Informe a data de término.");
-                    }
-                    RecorrencyModel recorrenciaModel = new RecorrencyModel();
-                    task = recorrenciaModel.createRecurrentTasks(task, recurrentDates, recurrencyMessage);
+
+        if (itIsANewTask && itIsAParentTask || !itIsANewTask) {
+            if (recurrentDates != null) {
+                if (task.getDataFim() == null) {
+                    throw new RuntimeException("Informe a data de término.");
                 }
-                task = model.saveTask(task);
-        } 
-        
+                RecorrencyModel recorrenciaModel = new RecorrencyModel();
+                task = recorrenciaModel.createRecurrentTasks(task, recurrentDates, recurrencyMessage);
+            }
+            task = model.saveTask(task);
+        }
+
         // Notifies the call back listener that the create/update is done
         if (callbackListener != null) {
             if (itIsANewTask) {
@@ -1046,42 +1047,39 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         loadCostCenterCombo(empresa);
     }
 
-    
-    private boolean isStartAndEndDateValidForRecurrency(){
-        
+    private boolean isStartAndEndDateValidForRecurrency() {
+
         // validates the initial and end date
         Date startDate = view.getStartDateDateField().getValue();
         Date endDate = view.getEndDateDateField().getValue();
-        
-        if (startDate == null || endDate == null){
+
+        if (startDate == null || endDate == null) {
             Notification.show("Informe as datas de início e término da tarefa para recorrencia");
             return false;
         }
 
-        if (startDate.after(endDate)){
+        if (startDate.after(endDate)) {
             Notification.show("A data de término deve ser maior que a data de início");
             return false;
         }
 
-    
         return true;
     }
-    
+
     @Override
     public void recurrenceClicked() {
 
-        if (!isStartAndEndDateValidForRecurrency()){
-            return ;
+        if (!isStartAndEndDateValidForRecurrency()) {
+            return;
         }
-        
-        
+
         //Cria o pop up para registrar a conta (model e view)
         RecorrencyModel recorrenciaModel = new RecorrencyModel();
 
         RecorrencyView RecorrencyView = new RecorrencyView(view.getTarefa());
 
         //o presenter liga model e view
-        RecorrencyPresenter = new RecorrencyPresenter(recorrenciaModel, RecorrencyView, view.getTarefa(), 
+        RecorrencyPresenter = new RecorrencyPresenter(recorrenciaModel, RecorrencyView, view.getTarefa(),
                 DateTimeConverters.toLocalDate(view.getStartDateDateField().getValue()),
                 DateTimeConverters.toLocalDate(view.getEndDateDateField().getValue())
         );
@@ -1098,7 +1096,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         this.recurrencyMessage = recurrencySet.getRecurrencyMessage();
         view.getStartDateDateField().setValue(DateTimeConverters.toDate(recurrencySet.getFirstTaskStartDate()));
         view.getEndDateDateField().setValue(DateTimeConverters.toDate(recurrencySet.getFirstTaskEndDate()));
-
+        view.getRecurrencyMessage().setVisible(true);
+        view.getRecurrencyMessage().setValue(recurrencyMessage);
     }
 
     @Override

@@ -403,13 +403,11 @@ public class TaskView extends Window {
         endDateDateField.addValidator(new DataFimValidator(startDateDateField, "Data Fim"));
 
         recurrencyMessage = new TextArea();
-        
-        recurrencyMessage.setEnabled(false);
-        recurrencyMessage.setSizeFull();
-        
+        recurrencyMessage.setEnabled(false);        
+        recurrencyMessage.setWidth("100%");
         
         // configura o layout usando uma grid
-        GridLayout grid = new GridLayout(3, 3);
+        GridLayout grid = new GridLayout(3, 4);
         grid.setSpacing(true);
         grid.setMargin(true);
         grid.setWidth("100%");
@@ -432,7 +430,8 @@ public class TaskView extends Window {
         grid.addComponent(endDateDateField);
         grid.addComponent(taskStatusPopUpButton);
         grid.setComponentAlignment(taskStatusPopUpButton, Alignment.BOTTOM_CENTER);
-        grid.addComponent(recurrencyMessage);
+        grid.addComponent(new Label()); // leave it empty
+        grid.addComponent(recurrencyMessage, 0, 3, 2, 3);
 
         return grid;
     }
@@ -1485,4 +1484,10 @@ public class TaskView extends Window {
 
     }
 
+    public TextArea getRecurrencyMessage() {
+        return recurrencyMessage;
+    }
+
+    
+    
 }

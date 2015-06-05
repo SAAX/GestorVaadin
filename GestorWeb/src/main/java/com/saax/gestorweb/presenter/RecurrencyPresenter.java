@@ -1,7 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.RecorrencyModel;
+import com.saax.gestorweb.model.RecurrencyModel;
 import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.Task;
@@ -9,8 +9,8 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.view.RecorrencyView;
-import com.saax.gestorweb.view.RecorrencyViewListener;
+import com.saax.gestorweb.view.RecurrencyView;
+import com.saax.gestorweb.view.RecurrencyViewListener;
 import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Property;
 import com.vaadin.ui.UI;
@@ -29,17 +29,17 @@ import org.vaadin.dialogs.ConfirmDialog;
  *
  * @author rodrigo
  */
-public class RecorrencyPresenter implements Serializable, RecorrencyViewListener {
+public class RecurrencyPresenter implements Serializable, RecurrencyViewListener {
 
     /**
      * View tier
      */
-    private final transient RecorrencyView view;
+    private final transient RecurrencyView view;
 
     /**
      * Model tier
      */
-    private final transient RecorrencyModel model;
+    private final transient RecurrencyModel model;
 
     /**
      * Messages resource bundle
@@ -81,8 +81,8 @@ public class RecorrencyPresenter implements Serializable, RecorrencyViewListener
      * @param startDate
      * @param endDate
      */
-    public RecorrencyPresenter(RecorrencyModel model,
-            RecorrencyView view,
+    public RecurrencyPresenter(RecurrencyModel model,
+            RecurrencyView view,
             Task task,
             LocalDate startDate,
             LocalDate endDate) {

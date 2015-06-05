@@ -12,7 +12,7 @@ import com.vaadin.data.Property;
  *
  * @author Fernando
  */
-public interface RecorrencyViewListener {
+public interface RecurrencyViewListener {
 
     public void weeklyRecurrencyChecked(Property.ValueChangeEvent event);
 

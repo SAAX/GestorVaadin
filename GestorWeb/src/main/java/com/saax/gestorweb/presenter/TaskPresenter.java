@@ -5,7 +5,7 @@ import com.saax.gestorweb.model.TaskModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.CompanyModel;
 import com.saax.gestorweb.model.PopUpStatusModel;
-import com.saax.gestorweb.model.RecorrencyModel;
+import com.saax.gestorweb.model.RecurrencyModel;
 import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
@@ -34,7 +34,7 @@ import com.saax.gestorweb.view.TaskViewListener;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.view.PopUpStatusView;
-import com.saax.gestorweb.view.RecorrencyView;
+import com.saax.gestorweb.view.RecurrencyView;
 import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -78,7 +78,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     private final Usuario loggedUser;
     private PopUpStatusPresenter presenterPopUpStatus;
     private List<LocalDate> recurrentDates;
-    private RecorrencyPresenter RecorrencyPresenter;
+    private RecurrencyPresenter RecorrencyPresenter;
     private String recurrencyMessage;
 
     /**
@@ -749,7 +749,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
                 if (task.getDataFim() == null) {
                     throw new RuntimeException("Informe a data de término.");
                 }
-                RecorrencyModel recorrenciaModel = new RecorrencyModel();
+                RecurrencyModel recorrenciaModel = new RecurrencyModel();
                 task = recorrenciaModel.createRecurrentTasks(task, recurrentDates, recurrencyMessage);
             }
             task = model.saveTask(task);
@@ -1074,12 +1074,12 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         }
 
         //Cria o pop up para registrar a conta (model e view)
-        RecorrencyModel recorrenciaModel = new RecorrencyModel();
+        RecurrencyModel recorrenciaModel = new RecurrencyModel();
 
-        RecorrencyView RecorrencyView = new RecorrencyView(view.getTarefa());
+        RecurrencyView RecorrencyView = new RecurrencyView(view.getTarefa());
 
         //o presenter liga model e view
-        RecorrencyPresenter = new RecorrencyPresenter(recorrenciaModel, RecorrencyView, view.getTarefa(),
+        RecorrencyPresenter = new RecurrencyPresenter(recorrenciaModel, RecorrencyView, view.getTarefa(),
                 DateTimeConverters.toLocalDate(view.getStartDateDateField().getValue()),
                 DateTimeConverters.toLocalDate(view.getEndDateDateField().getValue())
         );

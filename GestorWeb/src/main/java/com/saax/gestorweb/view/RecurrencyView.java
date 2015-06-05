@@ -46,7 +46,7 @@ import org.vaadin.dialogs.ConfirmDialog;
  *
  * @author fernando
  */
-public class RecorrencyView extends Window {
+public class RecurrencyView extends Window {
 
 // Reference to the use of messages:
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -54,7 +54,7 @@ public class RecorrencyView extends Window {
 
 // The view maintains access to the listener (Presenter) to notify events
 // This access is through an interface to maintain the abstraction layers
-    private RecorrencyViewListener listener;
+    private RecurrencyViewListener listener;
 
     private Accordion accordion;
 
@@ -141,7 +141,7 @@ public class RecorrencyView extends Window {
      * Create a view and all components
      *
      */
-    public RecorrencyView(Task task) {
+    public RecurrencyView(Task task) {
         super();
 
         boolean isRecurrent = task.getTipoRecorrencia() == TipoTarefa.RECORRENTE;
@@ -575,7 +575,7 @@ public class RecorrencyView extends Window {
      *
      * @param listener
      */
-    public void setListener(RecorrencyViewListener listener) {
+    public void setListener(RecurrencyViewListener listener) {
         this.listener = listener;
     }
 

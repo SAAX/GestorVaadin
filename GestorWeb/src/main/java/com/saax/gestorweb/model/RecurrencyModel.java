@@ -28,7 +28,7 @@ import javax.persistence.Query;
  *
  * @author Fernando/Rodrigo
  */
-public class RecorrencyModel {
+public class RecurrencyModel {
 
     /**
      * Creates a user friendly message summarizing the recurrency configuration
@@ -558,7 +558,7 @@ public class RecorrencyModel {
                 recurrentTasks.add(recurrentTask);
 
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(RecorrencyModel.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RecurrencyModel.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }

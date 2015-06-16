@@ -20,7 +20,6 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -47,6 +46,8 @@ public class SignupPresenter implements Serializable, SignupViewListener {
     // Every presenter keeps access to view and model
     private final transient SignupView view;
     private final transient SignupModel model;
+    
+    private final Usuario loggedUser;
 
     /**
      * Creates the presenter linking the Model View
@@ -58,6 +59,8 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
         this.model = model;
         this.view = view;
+        
+        loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
         view.setListener(this);
 
@@ -295,9 +298,9 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         String cpfCnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
         
         char tipoPessoa = '\0';
-        if (view.getPersonTypeOptionGroup().getValue() == messages.getString("SignupView.pessoaFisicaCheckBox.label")) { // @ATENCAO
+        if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaFisicaCheckBox.label"))) { // @ATENCAO
             tipoPessoa = 'F';
-        } else if (view.getPersonTypeOptionGroup().getValue() == messages.getString("SignupView.pessoaJuridicaCheckBox.label")) { // @ATENCAO
+        } else if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaJuridicaCheckBox.label"))) { // @ATENCAO
             tipoPessoa = 'J';
         } else {
             return null;
@@ -418,7 +421,8 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
         }
 
-        GestorSession.setAttribute("loggedUser", empresa.getUsuarioInclusao());
+        //fernando: Precisei comentar pq não há usuário logado até então
+        //GestorSession.setAttribute("loggedUser", empresa.getUsuarioInclusao());
 
     }
 
@@ -472,7 +476,6 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
         String nomeColigada = view.getAssociatedNameTextField().getValue();
         view.getNationalEntityRegistrationAssociatedTextField().commit();
-        view.getNationalEntityRegistrationAssociatedTextField().setValue("teste");
         String cnpjColigada = view.getNationalEntityRegistrationAssociatedTextField().getValue();
 
         System.out.println("cnpj: " + cnpjColigada);

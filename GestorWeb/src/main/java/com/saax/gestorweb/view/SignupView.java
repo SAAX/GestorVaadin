@@ -18,7 +18,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
-import org.vaadin.addons.maskedtextfield.MaskedTextField;
 
 /**
  * New account creation window, with user data, billing, business, etc.
@@ -55,14 +54,14 @@ public class SignupView extends Window {
      private TextField companyNameTextField;
      private TextField fancyNameTextField;
      private OptionGroup personTypeOptionGroup;
-     private MaskedTextField nationalEntityRegistrationCodeTextField;
+     private TextField nationalEntityRegistrationCodeTextField;
      private TextField adressTextField;
      private TextField numberTextField;
      private TextField complementTextField;
      private TextField neighborhoodTextField;
      private ComboBox cityComboBox;
      private ComboBox stateComboBox;
-     private MaskedTextField zipCodeTextField;
+     private TextField zipCodeTextField;
      private Table companiesTable;
      private CheckBox activeCompanyCheckBox;
      
@@ -77,13 +76,13 @@ public class SignupView extends Window {
      
     // Tab 5: Add Associated Companies
     private TextField associatedNameTextField;
-    private MaskedTextField nationalEntityRegistrationAssociatedTextField;
+    private TextField nationalEntityRegistrationAssociatedTextField;
     private CheckBox activeAssociatedCheckBox;
     private Table associatedTable;
     
     // Tab 6: Add Subsidiaries
     private TextField subsidiaryNameTextField;
-    private MaskedTextField nationalEntityRegistrationSubsidiaryTextField;
+    private TextField nationalEntityRegistrationSubsidiaryTextField;
     private CheckBox activeSubsidiaryCheckBox;
     private Table subsidiariesTable;
    
@@ -256,14 +255,15 @@ public class SignupView extends Window {
         getFancyNameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.nomeFantasiaTextField.erro.NomeFantasiaNaoInformado"),1, 100, false));
         fancyNameTextField.setValidationVisible(false);
         
-        setNationalEntityRegistrationCodeTextField(new MaskedTextField("", "##.###.###/####-##"));
+        setNationalEntityRegistrationCodeTextField(new TextField());
         containerHorizontal1.addComponent(getNationalEntityRegistrationCodeTextField());
         getNationalEntityRegistrationCodeTextField().setInputPrompt(getMessages().getString("SignupView.cnpjCpfTextField.label"));
         nationalEntityRegistrationCodeTextField.setWidth("180px");
         
+        
         nationalEntityRegistrationCodeTextField.setValidationVisible(false);
          
-        getNationalEntityRegistrationCodeTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.cnpjCpfTextField.erro.cnpjCpfNaoInformado"),1, 100, false));
+        //getNationalEntityRegistrationCodeTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.cnpjCpfTextField.erro.cnpjCpfNaoInformado"),1, 100, false));
         
         HorizontalLayout containerHorizontal = new HorizontalLayout();
         containerHorizontal.setSpacing(true);
@@ -319,7 +319,7 @@ public class SignupView extends Window {
         
         cityComboBox.setWidth("300px");
         
-        setZipCodeTextField(new MaskedTextField("", "##.###-###"));
+        setZipCodeTextField(new TextField());
         containerAba3.addComponent(getZipCodeTextField());
         getZipCodeTextField().setInputPrompt(getMessages().getString("SignupView.cepTextField.label"));
         zipCodeTextField.setWidth("300px");
@@ -344,7 +344,7 @@ public class SignupView extends Window {
         getAssociatedNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeColigadaTextField.label"));
         associatedNameTextField.setWidth("300px");
         
-        setNationalEntityRegistrationAssociatedTextField(new MaskedTextField("", "##.###.###/####-##"));
+        setNationalEntityRegistrationAssociatedTextField(new TextField());
         containerAba5.addComponent(getNationalEntityRegistrationAssociatedTextField());
         getNationalEntityRegistrationAssociatedTextField().setInputPrompt(getMessages().getString("SignupView.cnpjColigadaTextField.label"));
         nationalEntityRegistrationAssociatedTextField.setWidth("300px");
@@ -387,7 +387,7 @@ public class SignupView extends Window {
         getSubsidiaryNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeFilialTextField.label"));
         subsidiaryNameTextField.setWidth("300px");
         
-        setNationalEntityRegistrationSubsidiaryTextField(new MaskedTextField("", "##.###.###/####-##"));
+        setNationalEntityRegistrationSubsidiaryTextField(new TextField());
         containerAba6.addComponent(getNationalEntityRegistrationSubsidiaryTextField());
         getNationalEntityRegistrationSubsidiaryTextField().setInputPrompt(getMessages().getString("SignupView.cnpjFilialTextField.label"));
         nationalEntityRegistrationSubsidiaryTextField.setWidth("300px");
@@ -689,14 +689,14 @@ public class SignupView extends Window {
     /**
      * @return the cnpjTextField
      */
-    public MaskedTextField getNationalEntityRegistrationCodeTextField() {
+    public TextField getNationalEntityRegistrationCodeTextField() {
         return nationalEntityRegistrationCodeTextField;
     }
 
     /**
      * @param cnpjTextField the cnpjTextField to set
      */
-    public void setNationalEntityRegistrationCodeTextField(MaskedTextField cnpjTextField) {
+    public void setNationalEntityRegistrationCodeTextField(TextField cnpjTextField) {
         this.nationalEntityRegistrationCodeTextField = cnpjTextField;
     }
 
@@ -787,14 +787,14 @@ public class SignupView extends Window {
           /**
      * @return the zipCodeTextField
      */
-    public MaskedTextField getZipCodeTextField() {
+    public TextField getZipCodeTextField() {
         return zipCodeTextField;
     }
 
     /**
      * @param zipCodeTextField the zipCodeTextField to set
      */
-    public void setZipCodeTextField(MaskedTextField zipCodeTextField) {
+    public void setZipCodeTextField(TextField zipCodeTextField) {
         this.zipCodeTextField = zipCodeTextField;
     }
     
@@ -830,28 +830,28 @@ public class SignupView extends Window {
     /**
      * @return the nationalEntityRegistrationAssociatedTextField
      */
-    public MaskedTextField getNationalEntityRegistrationAssociatedTextField() {
+    public TextField getNationalEntityRegistrationAssociatedTextField() {
         return nationalEntityRegistrationAssociatedTextField;
     }
 
     /**
      * @param nationalEntityRegistrationAssociatedTextField the nationalEntityRegistrationAssociatedTextField to set
      */
-    public void setNationalEntityRegistrationAssociatedTextField(MaskedTextField nationalEntityRegistrationAssociatedTextField) {
+    public void setNationalEntityRegistrationAssociatedTextField(TextField nationalEntityRegistrationAssociatedTextField) {
         this.nationalEntityRegistrationAssociatedTextField = nationalEntityRegistrationAssociatedTextField;
     }
     
      /**
      * @return the nationalEntityRegistrationSubsidiaryTextField
      */
-    public MaskedTextField getNationalEntityRegistrationSubsidiaryTextField() {
+    public TextField getNationalEntityRegistrationSubsidiaryTextField() {
         return nationalEntityRegistrationSubsidiaryTextField;
     }
 
     /**
      * @param nationalEntityRegistrationSubsidiaryTextField the nationalEntityRegistrationSubsidiaryTextField to set
      */
-    public void setNationalEntityRegistrationSubsidiaryTextField(MaskedTextField nationalEntityRegistrationSubsidiaryTextField) {
+    public void setNationalEntityRegistrationSubsidiaryTextField(TextField nationalEntityRegistrationSubsidiaryTextField) {
         this.nationalEntityRegistrationSubsidiaryTextField = nationalEntityRegistrationSubsidiaryTextField;
     }
 

@@ -99,11 +99,16 @@ public class SignupModel {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        FilialEmpresa e = (FilialEmpresa) em.createNamedQuery("FilialEmpresa.findByCNPJ")
+        List<FilialEmpresa> e = em.createNamedQuery("FilialEmpresa.findByCNPJ")
                 .setParameter("cnpj", cnpj)
-                .getSingleResult();
+                .getResultList();
 
-        return (e != null);
+        if (e.isEmpty()){
+            return (false);
+        }else{
+            return (true);
+        }
+        
 
     }
 

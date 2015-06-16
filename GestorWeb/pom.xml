@@ -155,7 +155,12 @@
             <artifactId>maskedtextfield</artifactId>
             <version>0.1.6</version>
         </dependency>
-        
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+
 
         <dependency>
             <groupId>javax.el</groupId>
@@ -204,7 +209,6 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                     <archiveClasses>false</archiveClasses>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
@@ -255,67 +259,12 @@
                 </executions>
             </plugin>
             <!--
-            @Author: Rodrigo
-            Decidi remover a dependencia com o jetty uma vez que usamos o tomcat. 
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
+                <version></version>
                 <artifactId>jetty-maven-plugin</artifactId>
             </plugin>
-            --> 
-            <plugin>
-                <groupId>com.github.wvengen</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals><goal>proguard</goal></goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    
-            
-        <obfuscate>true</obfuscate>
-        
-        
-                    <injar>lib/${project.artifactId}-${project.version}.jar</injar>
-                    <outjar>lib/${project.artifactId}-${project.version}-obf.jar</outjar>
-                    
-                    
-                    <!-- Our application is so big that ProGuard had ran out of memory -->
-                    <maxMemory>1024m</maxMemory>
- 
-                    <!-- File with proguard configuration -->
-                    <proguardInclude>${basedir}/proguard.conf</proguardInclude>
- 
-                    <!-- Now exclude all modules that are embedded in the jar, so that
-                        ProGuard won't see redefinition of each single class.
-                        You don't have to write down your main module. -->
-                    <exclusions>
-                        <exclusion>
-                            <groupId>com.yourcompany</groupId>
-                            <artifactId>data</artifactId>
-                        </exclusion>
- 
-                        <!-- And so on -->
-                    </exclusions>
- 
-                    <!--
-                        List external jars your application depends on
-                        (that not listed in maven dependencies).
-                        You probably depend on jave runtime (rt.jar).
- 
-                        JCE stands for Java Cryptography Extension.
-                        You probably don't need it, but my application does.
-                    -->
-                    <libs>
-                        <lib>${java.home}/lib/rt.jar</lib>
-                        <lib>${java.home}/lib/jce.jar</lib>
-                        <lib>${java.home}/lib/ext/sunjce_provider.jar</lib>
-                        <lib>${basedir}/target/GestorWeb-1.0-SNAPSHOT/WEB-INF/lib/*</lib>
-                        
-                    </libs>
-                </configuration>
-            </plugin>
+            -->
         </plugins>
         <pluginManagement>
         </pluginManagement>

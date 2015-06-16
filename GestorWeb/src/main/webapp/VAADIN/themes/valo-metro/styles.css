@@ -935,7 +935,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.4.5";
+	content: "7.4.7";
 }
 
 .v-widget {
@@ -8343,10 +8343,16 @@ div.v-layout.v-horizontal.v-widget {
 
 .valo-metro .v-table-row {
 	background-color: #f3f3f3;
+	cursor: pointer;
 }
 
 .valo-metro .v-table-row-odd {
 	background-color: #e9e9e9;
+	cursor: pointer;
+}
+
+.valo-metro .v-table-body-noselection .v-table-row, .valo-metro .v-table-body-noselection .v-table-row-odd {
+	cursor: default;
 }
 
 .valo-metro .v-table [class*="-row"].v-selected {

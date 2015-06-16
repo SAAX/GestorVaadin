@@ -334,6 +334,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
             if (andamento == 100) {
 
                 model.concluirTarefa(tarefa.getId());
+                model.notifyRequestor(tarefa);
 
             }
             closePopUpButton();

@@ -10,6 +10,9 @@ import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Task;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
+import com.saax.gestorweb.util.MailSender;
+import com.vaadin.server.AbstractClientConnector;
+import com.vaadin.ui.UI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -673,6 +676,37 @@ public class PopUpStatusModel {
         }
         
         return list;
+    }
+
+    /**
+     * Notifies the requestor the task is done <br>
+     * An email is sent with a link to evaluate the task
+     * @param task
+     */
+    public void notifyRequestor(Task task) {
+        
+        String destinationAddresses = task.getUsuarioSolicitante().getLogin();
+        String subject = "Avalie a tarefa";
+        StringBuilder htmlBody = new StringBuilder();
+        htmlBody.append("<HTML>");
+        
+        htmlBody.append("<a href=\"http://www.w3schools.com\">Visit W3Schools</a>");
+        
+        htmlBody.append("<a href=\"");
+        htmlBody.append(UI.getCurrent().getPage().getLocation());
+        htmlBody.append("/?task=");
+        htmlBody.append(task.getId());
+        htmlBody.append("\">");
+        htmlBody.append(task.getNome());
+        htmlBody.append("</a>");
+        
+        
+        
+        htmlBody.append("</HTML>");
+        
+        MailSender mailSender = new MailSender();
+        mailSender.sendMail(destinationAddresses, subject, htmlBody.toString());
+        
     }
     
 }

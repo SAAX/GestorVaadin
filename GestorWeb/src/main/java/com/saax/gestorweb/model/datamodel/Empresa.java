@@ -245,14 +245,17 @@ public class Empresa implements Serializable {
         Empresa other = (Empresa) object;
 
         // se o ID estiver setado, compara por ele
-        if (this.getId() != null) {
+        if (this.getId() != null && other.getId() != null) {
             return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
 
-        } else {
-            // senao compara por campos setados na criação da tarefa
-            return this.getNome().equals(other.getNome())
-                    && this.getCnpj().equals(other.getCnpj());
+        } else if (this.getCnpj()!=null && other.getCnpj()!=null) {
+            // senao compara pelo cnpj
+            return this.getCnpj().equals(other.getCnpj());
 
+        } else {
+            
+            // senao compara pelo ponteiro
+            return super.equals(object);
         }
 
     }

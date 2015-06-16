@@ -156,6 +156,11 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     }
 
     private void atualizarTarefaTable(Task tarefa) {
+        
+        if (tarefa == null || tarefa.getGlobalID() == null ) {
+            throw new IllegalArgumentException("Tarefa nula");
+        }
+        
         Item it = view.getTaskTable().getItem(tarefa);
 
         it.getItemProperty(mensagens.getString("DashboardView.taskTable.cod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
@@ -333,6 +338,13 @@ public class DashboardPresenter implements DashboardViewListenter, TaskCreationC
     @Override
     public void taskStatusChanged(Task task) {
         atualizarTarefaTable(task);
+    }
+
+    public void openTask(Task taskToOpen) {
+            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
+            presenter.setCallBackListener(this);
+            presenter.editar(taskToOpen);
+        
     }
 
     // enumeracao do tipo de pesquisa

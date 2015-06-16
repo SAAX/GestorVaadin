@@ -911,7 +911,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.4.5";
+	content: "7.4.7";
 }
 
 .v-widget {
@@ -8366,10 +8366,16 @@ div.v-layout.v-horizontal.v-widget {
 
 .valo-blueprint .v-table-row {
 	background-color: #195cae;
+	cursor: pointer;
 }
 
 .valo-blueprint .v-table-row-odd {
 	background-color: #1859a7;
+	cursor: pointer;
+}
+
+.valo-blueprint .v-table-body-noselection .v-table-row, .valo-blueprint .v-table-body-noselection .v-table-row-odd {
+	cursor: default;
 }
 
 .valo-blueprint .v-table [class*="-row"].v-selected {

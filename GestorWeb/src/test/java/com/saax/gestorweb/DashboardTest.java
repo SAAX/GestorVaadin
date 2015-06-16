@@ -27,59 +27,59 @@ import org.junit.Test;
  */
 public class DashboardTest {
     
-
-    @BeforeClass
-    public static void setUpClass() {
-     
-        // connect to database
-        DBConnect.getInstance().assertConnection();
-        EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
-        GestorEntityManagerProvider.setCurrentEntityManager(em);
-        
-        // set logged user
-        Usuario usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "teste-user@gmail.com").getSingleResult();
-        GestorSession.setAttribute("loggedUser", usuario);
-        usuario.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
-        
-        // creates UI
-        GestorMDI gestor = new GestorMDI();
-        UI.setCurrent(gestor);
-        gestor.init(null);
-
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        // disconnect
-        GestorEntityManagerProvider.getEntityManager().close();
-    }
-
-    
-    @Before
-    public void setUp() {
-
-    }
-
-    @After
-    public void tearDown() {
-
-    }
-    
-    @Test
-    public void getHierarquiasProjetoTest(){
-        
-        DashboardModel model = new DashboardModel();
-        List<HierarquiaProjeto> l = model.getHierarquiasProjeto();
-        
-        Assert.assertFalse("l está vazio", l.isEmpty());
-
-        List<HierarquiaProjetoDetalhe> todasCatetorias = new ArrayList<>();
-        
-        for (HierarquiaProjeto h : l) {
-            todasCatetorias.addAll(h.getCategorias());
-        }
-        
-        
-    }
+//
+//    @BeforeClass
+//    public static void setUpClass() {
+//     
+//        // connect to database
+//        DBConnect.getInstance().assertConnection();
+//        EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
+//        GestorEntityManagerProvider.setCurrentEntityManager(em);
+//        
+//        // set logged user
+//        Usuario usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "teste-user@gmail.com").getSingleResult();
+//        GestorSession.setAttribute("loggedUser", usuario);
+//        usuario.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
+//        
+//        // creates UI
+//        GestorMDI gestor = new GestorMDI();
+//        UI.setCurrent(gestor);
+//        gestor.init(null);
+//
+//    }
+//
+//    @AfterClass
+//    public static void tearDownClass() {
+//        // disconnect
+//        GestorEntityManagerProvider.getEntityManager().close();
+//    }
+//
+//    
+//    @Before
+//    public void setUp() {
+//
+//    }
+//
+//    @After
+//    public void tearDown() {
+//
+//    }
+//    
+//    @Test
+//    public void getHierarquiasProjetoTest(){
+//        
+//        DashboardModel model = new DashboardModel();
+//        List<HierarquiaProjeto> l = model.getHierarquiasProjeto();
+//        
+//        Assert.assertFalse("l está vazio", l.isEmpty());
+//
+//        List<HierarquiaProjetoDetalhe> todasCatetorias = new ArrayList<>();
+//        
+//        for (HierarquiaProjeto h : l) {
+//            todasCatetorias.addAll(h.getCategorias());
+//        }
+//        
+//        
+//    }
 
 }

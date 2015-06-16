@@ -945,7 +945,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.4.5";
+	content: "7.4.7";
 }
 
 .v-widget {
@@ -8519,10 +8519,16 @@ div.v-layout.v-horizontal.v-widget {
 
 .valo-light .v-table-row {
 	background-color: white;
+	cursor: pointer;
 }
 
 .valo-light .v-table-row-odd {
 	background-color: #f5f5f5;
+	cursor: pointer;
+}
+
+.valo-light .v-table-body-noselection .v-table-row, .valo-light .v-table-body-noselection .v-table-row-odd {
+	cursor: default;
 }
 
 .valo-light .v-table [class*="-row"].v-selected {

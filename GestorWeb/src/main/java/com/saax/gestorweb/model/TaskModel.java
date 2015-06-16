@@ -715,4 +715,9 @@ public class TaskModel {
 
     }
 
+    public Task findByID(Integer taskID) {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        return em.find(Task.class, taskID);
+    }
+
 }

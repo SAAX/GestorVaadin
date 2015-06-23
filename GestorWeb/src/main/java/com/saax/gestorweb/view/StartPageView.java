@@ -7,7 +7,9 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.TaskPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.server.BrowserWindowOpener;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Sizeable.Unit;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -67,11 +69,13 @@ public class StartPageView extends HorizontalLayout {
         final Button signUpButton = new Button(mensagens.getString("startPageView.signUpButton.label"), (Button.ClickEvent event) -> {
             listener.signUpButtonClicked();
         });
+        signUpButton.setIcon(FontAwesome.PLUS);
 
         // botão para Login
         final Button loginButton = new Button(mensagens.getString("startPageView.loginButton.label"), (Button.ClickEvent event) -> {
             listener.loginButtonClicked();
         });
+        loginButton.setIcon(new ThemeResource("../runo/icons/16/users.png"));
 
         // botão para preview do dashboard
         final Button previewDashboardButton = new Button("dashboard preview", (Button.ClickEvent event) -> {
@@ -81,6 +85,7 @@ public class StartPageView extends HorizontalLayout {
             getSession().setAttribute("loggedUser", usuarioTeste);
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         });
+        previewDashboardButton.setIcon(FontAwesome.SEARCH);
 
         
         // botão para preview de nova aba

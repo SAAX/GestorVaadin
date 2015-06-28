@@ -307,6 +307,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
             case EM_ANDAMENTO:
                 view.setEditAllowed(loggedUserIsTheRequestor || loggedUserIsTheAssignee);
+                view.getAssigneeUserCombo().setEnabled(loggedUserIsTheRequestor);
 
                 break;
 
@@ -317,6 +318,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
             case NAO_INICIADA:
                 view.setEditAllowed(loggedUserIsTheRequestor || loggedUserIsTheAssignee);
+                view.getAssigneeUserCombo().setEnabled(loggedUserIsTheRequestor);
 
                 break;
 
@@ -343,7 +345,6 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         setPopUpEvolucaoStatusEAndamento(tarefa);
         carregaApontamento(tarefa);
         view.getRecurrencyMessage().setVisible(tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE);
-        view.getRecurrencyMessage().setEnabled(false);
 
         // Configuras os beans de 1-N
         view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, loggedUser));
@@ -1047,19 +1048,13 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         loadCostCenterCombo(empresa);
     }
 
-    private boolean isStartAndEndDateValidForRecurrency() {
+    private boolean isStartDateValidForRecurrency() {
 
         // validates the initial and end date
         Date startDate = view.getStartDateDateField().getValue();
-        Date endDate = view.getEndDateDateField().getValue();
 
-        if (startDate == null || endDate == null) {
-            Notification.show("Informe as datas de início e término da tarefa para recorrencia");
-            return false;
-        }
-
-        if (startDate.after(endDate)) {
-            Notification.show("A data de término deve ser maior que a data de início");
+        if (startDate == null ) {
+            Notification.show("Informe a data de início para recorrencia");
             return false;
         }
 
@@ -1069,7 +1064,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     @Override
     public void recurrenceClicked() {
 
-        if (!isStartAndEndDateValidForRecurrency()) {
+        if (!isStartDateValidForRecurrency()) {
             return;
         }
 
@@ -1080,8 +1075,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
         //o presenter liga model e view
         RecorrencyPresenter = new RecurrencyPresenter(recorrenciaModel, RecorrencyView, view.getTarefa(),
-                DateTimeConverters.toLocalDate(view.getStartDateDateField().getValue()),
-                DateTimeConverters.toLocalDate(view.getEndDateDateField().getValue())
+                DateTimeConverters.toLocalDate(view.getStartDateDateField().getValue())
         );
         RecorrencyPresenter.setCallBackListener(this);
 

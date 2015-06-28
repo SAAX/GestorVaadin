@@ -101,7 +101,18 @@ public class RecurrencyModel {
 
             // este será o 1o. dia da obrigação
             recurrencySet.getRecurrentDates().add(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
-            recurrencySet.setFirstTaskStartDate(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
+            if (recurrencySet.getFirstTaskStartDate()==null){
+                recurrencySet.setFirstTaskStartDate(DateTimeConverters.toLocalDate(dataIteracao.getTime()));
+                
+            } else {
+                LocalDate newFirstTaskStartDateToSet = DateTimeConverters.toLocalDate(dataIteracao.getTime());
+                LocalDate firstTaskStartDateAlreadySet = recurrencySet.getFirstTaskStartDate();
+                if (newFirstTaskStartDateToSet.isBefore(firstTaskStartDateAlreadySet)){
+                    recurrencySet.setFirstTaskStartDate(newFirstTaskStartDateToSet);
+                    
+                }
+                
+            }
 
             // vai avancando, semana a semana, até a data final
             do {

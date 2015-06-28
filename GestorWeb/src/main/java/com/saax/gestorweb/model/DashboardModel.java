@@ -112,13 +112,13 @@ public class DashboardModel {
             usuarioResponsavel = em.find(Usuario.class, usuarioResponsavel.getId());
             tarefasUsuarioResponsavel.addAll(usuarioResponsavel.getTarefasSobResponsabilidade());
 
-        };
+        }
 
         List<Task> tarefasUsuarioSolicitante = new ArrayList<>();
         for (Usuario usuariosSolicitante : usuariosSolicitantes) {
             usuariosSolicitante = em.find(Usuario.class, usuariosSolicitante.getId());
             tarefasUsuarioSolicitante.addAll(usuariosSolicitante.getTarefasSolicitadas());
-        };
+        }
 
         List<Task> tarefasUsuariosParticipantes = new ArrayList<>();
         for (Usuario usuarioParticipante : usuariosParticipantes) {
@@ -227,7 +227,7 @@ public class DashboardModel {
 
         Empresa empresa = loggedUser.getEmpresaAtiva();
 
-        String sql = "SELECT t FROM Task t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante ORDER BY t.dataFim DESC";
+        String sql = "SELECT t FROM Task t WHERE t.empresa = :empresa AND t.usuarioSolicitante = :usuarioSolicitante AND NOT t.removida ORDER BY t.dataFim DESC";
 
         Query q = em.createQuery(sql)
                 .setParameter("empresa", empresa)

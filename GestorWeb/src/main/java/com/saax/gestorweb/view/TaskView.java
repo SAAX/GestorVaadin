@@ -143,7 +143,7 @@ public class TaskView extends Window {
     private Button recurrencyButton;
     
     @PropertyId("recurrencyMessage")
-    private TextArea recurrencyMessage;
+    private Label recurrencyMessage;
     
     @PropertyId("prioridade")
     private ComboBox priorityCombo;
@@ -402,7 +402,7 @@ public class TaskView extends Window {
         startDateDateField.addValidator(new DataInicioValidator(endDateDateField, "Data Inicio"));
         endDateDateField.addValidator(new DataFimValidator(startDateDateField, "Data Fim"));
 
-        recurrencyMessage = new TextArea();
+        recurrencyMessage = new Label();
         recurrencyMessage.setEnabled(false);        
         recurrencyMessage.setWidth("100%");
         
@@ -1484,7 +1484,7 @@ public class TaskView extends Window {
 
     }
 
-    public TextArea getRecurrencyMessage() {
+    public Label getRecurrencyMessage() {
         return recurrencyMessage;
     }
 

@@ -28,6 +28,14 @@ import javax.persistence.EntityManager;
  */
 public class PopUpStatusModel {
 
+    private final TaskModel taskModel;
+    
+    /**
+     * Constructor builds the others model this may need
+     */
+    public PopUpStatusModel(){
+        taskModel = new TaskModel();
+    }
     /**
      * Registra o andamento de uma tarefa
      *
@@ -160,7 +168,7 @@ public class PopUpStatusModel {
 
         return null;
     }
-    
+
     /**
      * Registra a recusa de uma tarefa
      *
@@ -223,7 +231,7 @@ public class PopUpStatusModel {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         try {
-        em.getTransaction().begin();
+            em.getTransaction().begin();
 
             Task tarefa = em.find(Task.class, id);
 
@@ -236,7 +244,7 @@ public class PopUpStatusModel {
 
             em.merge(tarefa);
 
-        em.getTransaction().commit();
+            em.getTransaction().commit();
             return tarefa;
 
         } catch (Exception ex) {
@@ -316,7 +324,7 @@ public class PopUpStatusModel {
 
         return null;
     }
-    
+
     /**
      * Libera uma tarefa recusada
      *
@@ -664,49 +672,46 @@ public class PopUpStatusModel {
         em.getTransaction().commit();
     }
 
-    public List<ParametroAndamentoTarefa> listParametroAndamentoTarefa(Empresa empresa){
+    public List<ParametroAndamentoTarefa> listParametroAndamentoTarefa(Empresa empresa) {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
         List<ParametroAndamentoTarefa> list = em.createNamedQuery("ParametroAndamentoTarefa.findByEmpresa")
                 .setParameter("empresa", empresa)
                 .getResultList();
-        
-        if (list.isEmpty()){
+
+        if (list.isEmpty()) {
             list = em.createNamedQuery("ParametroAndamentoTarefa.findDefault")
-                .getResultList();
+                    .getResultList();
         }
-        
+
         return list;
     }
+
 
     /**
      * Notifies the requestor the task is done <br>
      * An email is sent with a link to evaluate the task
+     *
      * @param task
      */
     public void notifyRequestor(Task task) {
-        
+
         String destinationAddresses = task.getUsuarioSolicitante().getLogin();
-        String subject = "Avalie a tarefa";
+        String subject = "Tarefa Concluída";
         StringBuilder htmlBody = new StringBuilder();
         htmlBody.append("<HTML>");
+
+        htmlBody.append("Uma tarefa solicitada por você foi concluída! <br>");
+        htmlBody.append("Verifique e avalie o resultado. <br>");
+        htmlBody.append(" <br>");
+
         
-        htmlBody.append("<a href=\"http://www.w3schools.com\">Visit W3Schools</a>");
-        
-        htmlBody.append("<a href=\"");
-        htmlBody.append(UI.getCurrent().getPage().getLocation());
-        htmlBody.append("/?task=");
-        htmlBody.append(task.getId());
-        htmlBody.append("\">");
-        htmlBody.append(task.getNome());
-        htmlBody.append("</a>");
-        
-        
+        htmlBody.append(taskModel.buildTaskLink(task));
         
         htmlBody.append("</HTML>");
-        
+
         MailSender mailSender = new MailSender();
         mailSender.sendMail(destinationAddresses, subject, htmlBody.toString());
-        
+
     }
-    
+
 }

@@ -17,6 +17,8 @@ import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -66,7 +68,7 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
      */
     private RecurrencyDoneCallBackListener callBackListener;
     private final LocalDate startDate;
-    private LocalDate endDate;
+    private final LocalDate endDate;
 
     public void setCallBackListener(RecurrencyDoneCallBackListener callBackListener) {
         this.callBackListener = callBackListener;
@@ -79,23 +81,21 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
      * @param view
      * @param task
      * @param startDate
-     * @param endDate
      */
     public RecurrencyPresenter(RecurrencyModel model,
             RecurrencyView view,
             Task task,
-            LocalDate startDate,
-            LocalDate endDate) {
+            LocalDate startDate) {
 
         this.model = model;
         this.view = view;
         this.task = task;
         this.startDate = startDate;
+        this.endDate = startDate.plusDays(1);
 
         view.setListener(this);
 
         loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
-        this.endDate = endDate;
 
     }
 

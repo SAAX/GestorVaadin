@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
 import org.apache.commons.beanutils.BeanUtils;
 
 /**
- * Entity bean da tabela Task com as namequerys configuradas.<br><br>
+ * Entity bean da tabela Tarefa com as namequerys configuradas.<br><br>
  *
  * O objetivo desta entidade é armazenar as Taks e subs do sistema <br><br>
  *

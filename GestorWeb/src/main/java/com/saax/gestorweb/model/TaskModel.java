@@ -720,4 +720,26 @@ public class TaskModel {
         return em.find(Task.class, taskID);
     }
 
+    
+    /**
+     * Creates an acessible link to the task
+     *
+     * @param task
+     * @return the HTML created link
+     */
+    public String buildTaskLink(Task task) {
+        StringBuilder html = new StringBuilder();
+
+        html.append("<a href=\"");
+        html.append(UI.getCurrent().getPage().getLocation());
+        html.append("?task=");
+        html.append(task.getId());
+        html.append("\">");
+        html.append(task.getNome());
+        html.append("</a>");
+
+        return html.toString();
+
+    }
+    
 }

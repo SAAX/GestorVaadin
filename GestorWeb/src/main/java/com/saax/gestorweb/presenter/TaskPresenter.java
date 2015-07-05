@@ -383,23 +383,48 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             Double porcIdeal = ((100.00 / diasRealizar) * (diasCorridos));
             System.out.println("Porcentagem ideal é: " + porcIdeal);
 
-            if (andamento == 0) {
-                System.out.println("Não Iniciada");
-                view.getProjectionButton().setCaption("Não Iniciada");
-            } else if (andamento < porcIdeal) {
-                System.out.println("Andamento Baixo");
-                view.getProjectionButton().setCaption("Andamento Baixo");
-            } else if (andamento == porcIdeal) {
-                System.out.println("Ideal");
-                view.getProjectionButton().setCaption("Ideal");
-            } else if (andamento > porcIdeal) {
-                System.out.println("Andamento Alto");
-                view.getProjectionButton().setCaption("Andamento Alto");
-            } else if (andamento == 100) {
-                System.out.println("Finalizado");
-                view.getProjectionButton().setCaption("Finalizado");
-            }
+            if (diasCorridos < 0) {
+                if (andamento == 0) {
+                    System.out.println("Não Iniciada");
+                    view.getProjectionButton().setCaption("Não Iniciada");
+                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+                } else if (andamento > 0 && andamento < 100) {
+                    System.out.println("Tarefa Atrasada");
+                    view.getProjectionButton().setCaption("Tarefa Atrasada");
+                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+                } else if (andamento == 100) {
+                    System.out.println("Concluída");
+                    view.getProjectionButton().setCaption("Tarefa Finalizada");
+                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
+                }
+            } else {
+                if (andamento == 0) {
+                    System.out.println("Não Iniciada");
+                    view.getProjectionButton().setCaption("Não Iniciada");
+                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+                } else if (andamento < porcIdeal) {
+                    System.out.println("Andamento Baixo");
+                    view.getProjectionButton().setCaption("Andamento Baixo");
+                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+                } else if (andamento == porcIdeal) {
+                    System.out.println("Ideal");
+                    view.getProjectionButton().setCaption("Ideal");
+                    tarefa.setProjecao(ProjecaoTarefa.NORMAL);
+                } else if (andamento > porcIdeal) {
+                    System.out.println("Andamento Alto");
+                    view.getProjectionButton().setCaption("Andamento Alto");
+                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
+                } else if (andamento == 100) {
+                    System.out.println("Finalizada");
+                    view.getProjectionButton().setCaption("Finalizada");
+                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
+                }
 
+            }
+        }else{
+        System.out.println("Não Iniciada");
+        view.getProjectionButton().setCaption("Não Iniciada");
+        tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
         }
     }
 
@@ -1053,7 +1078,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         // validates the initial and end date
         Date startDate = view.getStartDateDateField().getValue();
 
-        if (startDate == null ) {
+        if (startDate == null) {
             Notification.show("Informe a data de início para recorrencia");
             return false;
         }

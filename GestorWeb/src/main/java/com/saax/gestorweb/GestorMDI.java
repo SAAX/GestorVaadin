@@ -3,8 +3,8 @@ package com.saax.gestorweb;
 import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.StartPageModel;
-import com.saax.gestorweb.model.TaskModel;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.TarefaModel;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.presenter.LoginPresenter;
@@ -52,7 +52,7 @@ public class GestorMDI extends UI {
 
     private boolean trataParametroTask(String parametroIdTarefa) {
 
-        // verifica se foi passado o parametro "Task"
+        // verifica se foi passado o parametro "Tarefa"
         if (parametroIdTarefa == null) {
             return false;
         }
@@ -67,8 +67,8 @@ public class GestorMDI extends UI {
         }
 
         // valida se o valor passado é mesmo uma task válida na base de dados
-        TaskModel taskModel = new TaskModel();
-        Task task = taskModel.findByID(taskID);
+        TarefaModel taskModel = new TarefaModel();
+        Tarefa task = taskModel.findByID(taskID);
 
         if (task == null) {
             return false;
@@ -154,7 +154,7 @@ public class GestorMDI extends UI {
         carregarDashBoard(null);
     }
 
-    public void carregarDashBoard(Task taskToOpen) {
+    public void carregarDashBoard(Tarefa taskToOpen) {
 
         // Cria a pagina inical
         DashboardModel dashboradModel = new DashboardModel();

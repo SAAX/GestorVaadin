@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
- * Entity bean da tabela Favoritos Task Meta com as namequerys configuradas<br><br>
+ * Entity bean da tabela Favoritos Tarefa Meta com as namequerys configuradas<br><br>
  * 
  * O objetivo desta entidade e armazenar as metas e tarefas favoritas dos usuários<br><br>
  *
@@ -48,7 +48,7 @@ public class FavoritosTarefaMeta implements Serializable {
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Task tarefa;
+    private Tarefa tarefa;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -90,11 +90,11 @@ public class FavoritosTarefaMeta implements Serializable {
         this.meta = meta;
     }
 
-    public Task getTarefa() {
+    public Tarefa getTarefa() {
         return tarefa;
     }
 
-    public void setTarefa(Task tarefa) {
+    public void setTarefa(Tarefa tarefa) {
         this.tarefa = tarefa;
     }
 

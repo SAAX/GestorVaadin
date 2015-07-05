@@ -24,7 +24,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *Entity bean do Chat da Task com as namequerys configuradas.<br><br>
+ *Entity bean do Chat da Tarefa com as namequerys configuradas.<br><br>
  *
  * O objetivo desta entidade é armazenar as mensagens enviadas pelo Chat <br><br>
  * @author Fernando
@@ -57,7 +57,7 @@ public class ChatTarefa implements Serializable {
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Task tarefa;
+    private Tarefa tarefa;
     
     @Basic(optional = false)
     @NotNull(message = "Informe a mensagem que deverá ser enviada")
@@ -88,7 +88,7 @@ public class ChatTarefa implements Serializable {
         
     }
     
-    public ChatTarefa(String mensagem, Usuario usuario, Task tarefa, LocalDateTime datahorainclusao) {
+    public ChatTarefa(String mensagem, Usuario usuario, Tarefa tarefa, LocalDateTime datahorainclusao) {
         this.mensagem = mensagem;
         this.usuario = usuario;
         this.tarefa = tarefa;
@@ -126,11 +126,11 @@ public class ChatTarefa implements Serializable {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    public void setTarefa(Task tarefa) {
+    public void setTarefa(Tarefa tarefa) {
         this.tarefa = tarefa;
     }
 
-    public Task getTarefa() {
+    public Tarefa getTarefa() {
         return tarefa;
     }
 

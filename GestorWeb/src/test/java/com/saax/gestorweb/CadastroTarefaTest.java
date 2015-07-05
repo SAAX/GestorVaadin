@@ -5,7 +5,7 @@
  */
 package com.saax.gestorweb;
 
-import com.saax.gestorweb.model.TaskModel;
+import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
@@ -18,7 +18,7 @@ import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.TaskPresenter;
@@ -57,7 +57,7 @@ import org.junit.Test;
 public class CadastroTarefaTest {
 
 //    TaskView view;
-//    TaskModel model;
+//    TarefaModel model;
 //    TaskPresenter presenter;
 //    private EntityManager em;
 //    private static List<Task> tarefasCadastradas;
@@ -86,17 +86,17 @@ public class CadastroTarefaTest {
 //        // se assegura que nao existem tarefas ja cadastradas
 //        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 //        GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
-//        List<Task> tarefas = em.createNamedQuery("Task.findAll")
+//        List<Task> tarefas = em.createNamedQuery("Tarefa.findAll")
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva()).getResultList();
-//        for (Task tarefa : tarefas) {
-//            tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Task.class, tarefa.getId());
+//        for (Tarefa tarefa : tarefas) {
+//            tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
 //            GestorEntityManagerProvider.getEntityManager().remove(tarefa);
 //        }
 //        for (Empresa sub : loggedUser.getEmpresaAtiva().getSubEmpresas()) {
-//            tarefas = em.createNamedQuery("Task.findAll")
+//            tarefas = em.createNamedQuery("Tarefa.findAll")
 //                    .setParameter("empresa", sub).getResultList();
-//            for (Task tarefa : tarefas) {
-//                tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Task.class, tarefa.getId());
+//            for (Tarefa tarefa : tarefas) {
+//                tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
 //                GestorEntityManagerProvider.getEntityManager().remove(tarefa);
 //            }
 //
@@ -113,8 +113,8 @@ public class CadastroTarefaTest {
 //        // limpar tarefas cadastradas
 //        List<Task> tarefas = tarefasCadastradas;
 //        GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
-//        for (Task tarefa : tarefas) {
-//            tarefa = GestorEntityManagerProvider.getEntityManager().find(Task.class, tarefa.getId());
+//        for (Tarefa tarefa : tarefas) {
+//            tarefa = GestorEntityManagerProvider.getEntityManager().find(Tarefa.class, tarefa.getId());
 //            GestorEntityManagerProvider.getEntityManager().remove(tarefa);
 //        }
 //        GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
@@ -128,7 +128,7 @@ public class CadastroTarefaTest {
 //    public void setUp() {
 //
 //        view = new TaskView();
-//        model = new TaskModel();
+//        model = new TarefaModel();
 //        presenter = new TaskPresenter(model, view);
 //
 //        em = GestorEntityManagerProvider.getEntityManager();
@@ -167,7 +167,7 @@ public class CadastroTarefaTest {
 //        }
 //        presenter.gravarButtonClicked();
 //
-//        Task t = (Task) em.createNamedQuery("Task.findByNome")
+//        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
 //                .setParameter("nome", nome)
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva())
 //                .getSingleResult();
@@ -218,7 +218,7 @@ public class CadastroTarefaTest {
 //        }
 //        presenter.gravarButtonClicked();
 //
-//        Task t = (Task) em.createNamedQuery("Task.findByNome")
+//        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
 //                .setParameter("nome", nome)
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva())
 //                .getSingleResult();
@@ -289,11 +289,11 @@ public class CadastroTarefaTest {
 //        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
 //        view.getCustomerCompanyCombo().setValue(empresaCliente);
 //        //        private List<Tarefa> subTarefas;
-//        //        private Task proximaTarefa;
+//        //        private Tarefa proximaTarefa;
 //        //        private TipoTarefa tipoRecorrencia;
 //        view.getRecurrencyButton().getCaption().equals("RECORRENTE");
 //        //view.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-//        //        private Task tarefaPai;
+//        //        private Tarefa tarefaPai;
 //        //        private LocalDate dataInicio;
 //        Date dataInicio = DAOAleatorio.getDataByOffset(20, true); // hoje + 20 dias
 //        view.getStartDateDateField().setValue(dataInicio);
@@ -363,7 +363,7 @@ public class CadastroTarefaTest {
 //        }
 //        presenter.gravarButtonClicked();
 //
-//        Task t = (Task) em.createNamedQuery("Task.findByNome")
+//        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
 //                .setParameter("nome", nome)
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva())
 //                .getSingleResult();
@@ -403,10 +403,10 @@ public class CadastroTarefaTest {
 //        //        private EmpresaCliente empresaCliente;
 //        Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
 //        //        private List<Tarefa> subTarefas;
-//        //        private Task proximaTarefa;
+//        //        private Tarefa proximaTarefa;
 //        //        private TipoTarefa tipoRecorrencia;
 //        Assert.assertEquals(TipoTarefa.RECORRENTE, t.getTipoRecorrencia());
-//        //        private Task tarefaPai;
+//        //        private Tarefa tarefaPai;
 //        Assert.assertNull(t.getTarefaPai());
 //        //        private LocalDate dataTermino;
 //        //        private LocalDate dataInicio;
@@ -452,7 +452,7 @@ public class CadastroTarefaTest {
 //        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 //
 //        // -------------------------------------------------------------------------------------
-//        // Task:  Teste Multiplos Niveis
+//        // Tarefa:  Teste Multiplos Niveis
 //        // -------------------------------------------------------------------------------------
 //        HierarquiaProjetoDetalhe categoriaDefaultTarefa = null;
 //        HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
@@ -476,7 +476,7 @@ public class CadastroTarefaTest {
 //        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
 //
 //        // -------------------------------------------------------------------------------------
-//        // Task:  Teste Multiplos Niveis -> Sub 1
+//        // Tarefa:  Teste Multiplos Niveis -> Sub 1
 //        // -------------------------------------------------------------------------------------
 //        try {
 //            view.getTaskFieldGroup().commit();
@@ -484,7 +484,7 @@ public class CadastroTarefaTest {
 //            fail(ex.getMessage());
 //        }
 //        TaskView view_sub1 = new TaskView();
-//        TaskModel model_sub1 = new TaskModel();
+//        TarefaModel model_sub1 = new TarefaModel();
 //
 //        TaskPresenter presenter_sub1 = new TaskPresenter(model_sub1, view_sub1);
 //        presenter_sub1.setCallBackListener(presenter);
@@ -500,7 +500,7 @@ public class CadastroTarefaTest {
 //        view_sub1.getHierarchyCombo().setValue(view_sub1.getHierarchyCombo().getItemIds().toArray()[0]);
 //
 //        // -------------------------------------------------------------------------------------
-//        // Task:  Teste Multiplos Niveis -> Sub 1 -> Sub 2
+//        // Tarefa:  Teste Multiplos Niveis -> Sub 1 -> Sub 2
 //        // -------------------------------------------------------------------------------------
 //        try {
 //            view_sub1.getTaskFieldGroup().commit();
@@ -508,7 +508,7 @@ public class CadastroTarefaTest {
 //            fail(ex.getMessage());
 //        }
 //        TaskView view_sub2 = new TaskView();
-//        TaskModel model_sub2 = new TaskModel();
+//        TarefaModel model_sub2 = new TarefaModel();
 //
 //        TaskPresenter presenter_sub2 = new TaskPresenter(model_sub2, view_sub2);
 //        presenter_sub2.setCallBackListener(presenter_sub1);
@@ -547,15 +547,15 @@ public class CadastroTarefaTest {
 //        }
 //        presenter.gravarButtonClicked();
 //
-//        Task t = (Task) em.createNamedQuery("Task.findByNome")
+//        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
 //                .setParameter("nome", nome_principal)
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva())
 //                .getSingleResult();
 //
 //        tarefasCadastradas.add(t);
-//        Task sub1 = t.getSubTarefas().get(0);
+//        Tarefa sub1 = t.getSubTarefas().get(0);
 //        tarefasCadastradas.add(sub1);
-//        Task sub2 = sub1.getSubTarefas().get(0);
+//        Tarefa sub2 = sub1.getSubTarefas().get(0);
 //        tarefasCadastradas.add(sub2);
 //
 //        // Valida resultados da principal
@@ -592,7 +592,7 @@ public class CadastroTarefaTest {
 //        String nome = "Teste Cadastro Tarefa #2";
 //        String novonome = "Teste Cadastro Tarefa #2 - Alterada";
 //
-//        Task t = (Task) em.createNamedQuery("Task.findByNome")
+//        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
 //                .setParameter("nome", nome)
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva())
 //                .getSingleResult();
@@ -608,7 +608,7 @@ public class CadastroTarefaTest {
 //        //        private StatusTarefa status;
 //        view.getTaskStatusPopUpButton().click();
 //        PopUpStatusPresenter presenterPopUP = presenter.getPresenterPopUpStatus();
-//        presenterPopUP.aceitarTarefaClicked(); // Task ficará com status = aceita
+//        presenterPopUP.aceitarTarefaClicked(); // Tarefa ficará com status = aceita
 //        //        private ProjecaoTarefa projecao;
 //        //        private int andamento;
 //        //        private String descricao;
@@ -630,11 +630,11 @@ public class CadastroTarefaTest {
 //        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
 //        view.getCustomerCompanyCombo().setValue(empresaCliente);
 //        //        private List<Tarefa> subTarefas;
-//        //        private Task proximaTarefa;
+//        //        private Tarefa proximaTarefa;
 //        //        private TipoTarefa tipoRecorrencia;
 //        //view.getTipoRecorrenciaCombo().select(TipoTarefa.UNICA);
 //        view.getRecurrencyButton().getCaption().equals("ÚNICA");
-//        //        private Task tarefaPai;
+//        //        private Tarefa tarefaPai;
 //        //        private LocalDate dataInicio;
 //        Date dataInicio = DAOAleatorio.getDataByOffset(10, true); // hoje + 10 dias
 //        view.getStartDateDateField().setValue(dataInicio);
@@ -698,7 +698,7 @@ public class CadastroTarefaTest {
 //        view.getSaveButton().click();
 //
 //        // obtem novamente a tarefa do banco
-//        t = (Task) em.createNamedQuery("Task.findByNome")
+//        t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
 //                .setParameter("nome", novonome)
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva())
 //                .getSingleResult();
@@ -736,10 +736,10 @@ public class CadastroTarefaTest {
 //        //        private EmpresaCliente empresaCliente;
 //        Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
 //        //        private List<Tarefa> subTarefas;
-//        //        private Task proximaTarefa;
+//        //        private Tarefa proximaTarefa;
 //        //        private TipoTarefa tipoRecorrencia;
 //        Assert.assertEquals(TipoTarefa.UNICA, t.getTipoRecorrencia());
-//        //        private Task tarefaPai;
+//        //        private Tarefa tarefaPai;
 //        Assert.assertNull(t.getTarefaPai());
 //        //        private LocalDate dataTermino;
 //        //        private LocalDate dataInicio;
@@ -803,7 +803,7 @@ public class CadastroTarefaTest {
 //        }
 //        presenter.gravarButtonClicked();
 //
-//        Task t = (Task) em.createNamedQuery("Task.findByNome")
+//        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
 //                .setParameter("nome", nome)
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva())
 //                .getSingleResult();
@@ -813,7 +813,7 @@ public class CadastroTarefaTest {
 //        em.persist(t);
 //        
 //
-//        t = (Task) em.createNamedQuery("Task.findByNome")
+//        t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
 //                .setParameter("nome", nome)
 //                .setParameter("empresa", loggedUser.getEmpresaAtiva())
 //                .getSingleResult();

@@ -34,8 +34,8 @@
     <class>com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe</class>
     <class>com.saax.gestorweb.model.datamodel.HierarquiaProjeto</class>
     <class>com.saax.gestorweb.model.datamodel.ChatTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.Task</class>
     <class>com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa</class>
+    <class>com.saax.gestorweb.model.datamodel.Tarefa</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor"/>

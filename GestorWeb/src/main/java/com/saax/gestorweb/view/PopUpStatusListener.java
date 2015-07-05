@@ -5,7 +5,7 @@
  */
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 
 /**
  *
@@ -14,6 +14,6 @@ import com.saax.gestorweb.model.datamodel.Task;
 public interface PopUpStatusListener {
 
     
-    public void taskStatusChanged(Task task);
+    public void taskStatusChanged(Tarefa task);
     
 }

@@ -6,7 +6,7 @@ import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -97,7 +97,7 @@ public class PopUpStatusView extends CustomComponent {
 
     }
 
-    public void apresentaMensagemComStatus(Task tarefa) {
+    public void apresentaMensagemComStatus(Tarefa tarefa) {
 
         HorizontalLayout linhaUmContainer = new HorizontalLayout();
 

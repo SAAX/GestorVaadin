@@ -94,7 +94,7 @@ public class EmpresaCliente implements Serializable {
     private LocalDateTime dataHoraInclusao;
     
     @OneToMany(mappedBy = "empresaCliente")
-    private List<Task> tarefas;
+    private List<Tarefa> tarefas;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "cliente")
     private List<Meta> metas;
@@ -239,11 +239,11 @@ public class EmpresaCliente implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<Task> getTarefas() {
+    public List<Tarefa> getTarefas() {
         return tarefas;
     }
 
-    public void setTarefas(List<Task> tarefas) {
+    public void setTarefas(List<Tarefa> tarefas) {
         this.tarefas = tarefas;
     }
 

@@ -72,7 +72,7 @@ public class CentroCusto implements Serializable {
     private Usuario usuarioInclusao;
     
     @OneToMany(mappedBy = "centroCusto")
-    private List<Task> tarefas;
+    private List<Tarefa> tarefas;
 
     public CentroCusto() {
     }
@@ -171,11 +171,11 @@ public class CentroCusto implements Serializable {
         this.usuarioInclusao = usuarioInclusao;
     }
 
-    public List<Task> getTarefas() {
+    public List<Tarefa> getTarefas() {
         return tarefas;
     }
 
-    public void setTarefas(List<Task> tarefas) {
+    public void setTarefas(List<Tarefa> tarefas) {
         this.tarefas = tarefas;
     }
     

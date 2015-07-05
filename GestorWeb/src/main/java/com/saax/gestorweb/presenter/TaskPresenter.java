@@ -1,7 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.TaskModel;
+import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.CompanyModel;
 import com.saax.gestorweb.model.PopUpStatusModel;
@@ -21,14 +21,14 @@ import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
-import com.saax.gestorweb.view.TaskCreationCallBackListener;
+import com.saax.gestorweb.view.TarefaCallBackListener;
 import com.saax.gestorweb.view.TaskView;
 import com.saax.gestorweb.view.TaskViewListener;
 import com.saax.gestorweb.view.ChatView;
@@ -65,16 +65,16 @@ import org.apache.commons.beanutils.converters.DateTimeConverter;
  *
  * @author rodrigo
  */
-public class TaskPresenter implements Serializable, TaskViewListener, TaskCreationCallBackListener, RecurrencyDoneCallBackListener, PopUpStatusListener {
+public class TaskPresenter implements Serializable, TaskViewListener, TarefaCallBackListener, RecurrencyDoneCallBackListener, PopUpStatusListener {
 
     // Todo presenterPopUpStatus mantem acesso à view e ao model
     private final transient TaskView view;
-    private final transient TaskModel model;
+    private final transient TarefaModel model;
 
     // Referencia ao recurso das mensagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    private TaskCreationCallBackListener callbackListener;
+    private TarefaCallBackListener callbackListener;
     private final Usuario loggedUser;
     private PopUpStatusPresenter presenterPopUpStatus;
     private List<LocalDate> recurrentDates;
@@ -87,7 +87,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
      * @param model
      * @param view
      */
-    public TaskPresenter(TaskModel model,
+    public TaskPresenter(TarefaModel model,
             TaskView view) {
 
         this.model = model;
@@ -105,12 +105,12 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
      * @param tarefaPai
      */
     @Override
-    public void criarNovaSubTarefa(Task tarefaPai) {
+    public void criarNovaSubTarefa(Tarefa tarefaPai) {
 
-        Task tarefa;
+        Tarefa tarefa;
 
         // Cria uma nova tarefa com valores default
-        tarefa = new Task();
+        tarefa = new Tarefa();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
         tarefa.setEmpresa(loggedUser.getEmpresaAtiva());
         tarefa.setUsuarioInclusao(loggedUser);
@@ -155,8 +155,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     }
 
     /**
-     * Creates a new default Task, with a specific category Just overloaded:
-     * createTask(List) <br>
+     * Creates a new default Tarefa, with a specific category Just overloaded:
+ createTask(List) <br>
      *
      *
      * @param category in wich the task'll be created
@@ -170,17 +170,17 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     }
 
     /**
-     * Creates a new default Task, with given possible categories
+     * Creates a new default Tarefa, with given possible categories
      *
      * @param target the main target to be attached with the new task
      * @param possibleCategories
      */
     public void createTask(Meta target, List<HierarquiaProjetoDetalhe> possibleCategories) {
 
-        Task tarefa;
+        Tarefa tarefa;
 
         // Cria uma nova tarefa com valores default
-        tarefa = new Task();
+        tarefa = new Tarefa();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
         tarefa.setEmpresa(loggedUser.getEmpresaAtiva());
         tarefa.setUsuarioInclusao(loggedUser);
@@ -223,7 +223,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
      * @param taskToEdit
      */
     @Override
-    public void editar(Task taskToEdit) {
+    public void editar(Tarefa taskToEdit) {
 
         if (!model.userHasAccessToTask(loggedUser, taskToEdit)) {
             Notification.show(mensagens.getString("TaskView.accessDenied"), Notification.Type.WARNING_MESSAGE);
@@ -234,7 +234,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
         init(taskToEdit);
 
-        for (Task sub : taskToEdit.getSubTarefas()) {
+        for (Tarefa sub : taskToEdit.getSubTarefas()) {
             adicionarSubTarefa(sub);
         }
 
@@ -273,7 +273,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
      *
      * @param tarefaToEdit
      */
-    private void configPermissions(Task task) {
+    private void configPermissions(Tarefa task) {
 
         boolean loggedUserIsTheAssignee = task.getUsuarioResponsavel() != null && task.getUsuarioResponsavel().equals(loggedUser);
         boolean loggedUserIsTheRequestor = task.getUsuarioSolicitante() != null && task.getUsuarioSolicitante().equals(loggedUser);
@@ -335,7 +335,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     /**
      * inicializa a gui
      */
-    private void init(Task tarefa) {
+    private void init(Tarefa tarefa) {
         // Carrega os combos de seleção
         carregaComboEmpresa();
         carregaComboPrioridade();
@@ -362,7 +362,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     /**
      * Carrega os apontamentos e executa o método para o cálculo da projeção
      */
-    private void carregaApontamento(Task tarefa) {
+    private void carregaApontamento(Tarefa tarefa) {
         List<AndamentoTarefa> andamentos = tarefa.getAndamentos();
         if (andamentos.size() != 0) {
             //Buscando o andamento da tarefa    
@@ -516,9 +516,9 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     /**
      *
      */
-    private void organizeTree(Task parentTask, List<Task> subTasks) {
+    private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
 
-        for (Task subTask : subTasks) {
+        for (Tarefa subTask : subTasks) {
             view.getSubTasksTable().setParent(subTask, parentTask);
             if (subTask.getSubTarefas() != null && !subTask.getSubTarefas().isEmpty()) {
                 organizeTree(subTask, subTask.getSubTarefas());
@@ -546,7 +546,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
      *
      * @return
      */
-    private void setPopUpEvolucaoStatusEAndamento(Task tarefa) {
+    private void setPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
 
         // comportmento e regras:
         PopUpStatusView viewPopUP = new PopUpStatusView();
@@ -667,7 +667,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
 
         try {
             view.getTaskFieldGroup().commit();
-            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
+            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(this);
             presenter.criarNovaSubTarefa(view.getTarefa());
         } catch (FieldGroup.CommitException ex) {
@@ -702,7 +702,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     @Override
     public void gravarButtonClicked() {
 
-        Task task = view.getTarefa();
+        Tarefa task = view.getTarefa();
 
         boolean itIsANewTask = task.getId() == null;
 
@@ -721,7 +721,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             task.setTipoRecorrencia(TipoTarefa.UNICA);
         }
 
-        // compare the Task's initial and final dates with its parent Task (only if there is a parent Task)
+        // compare the Tarefa's initial and final dates with its parent Tarefa (only if there is a parent Tarefa)
         if (task.getTarefaPai() != null) {
             if (task.getDataInicio().isBefore(task.getTarefaPai().getDataInicio())) {
                 throw new RuntimeException(mensagens.getString("CadastroTarefaPresenter.mensagem.dataInicio"));
@@ -753,15 +753,15 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
                 RecurrencyModel recorrenciaModel = new RecurrencyModel();
                 task = recorrenciaModel.createRecurrentTasks(task, recurrentDates, recurrencyMessage);
             }
-            task = model.saveTask(task);
+            task = model.gravarTarefa(task);
         }
 
         // Notifies the call back listener that the create/update is done
         if (callbackListener != null) {
             if (itIsANewTask) {
-                callbackListener.taskCreationDone(task);
+                callbackListener.tarefaCriada(task);
             } else {
-                callbackListener.taskUpdateDone(task);
+                callbackListener.tarefaAtualizada(task);
             }
         }
         view.close();
@@ -858,7 +858,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
             Notification.show("Ops, apenas " + anexoTarefa.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
         } else {
             view.getAttachmentsAddedTable().removeItem(anexoTarefa);
-            Task tarefa = view.getTarefa();
+            Tarefa tarefa = view.getTarefa();
             tarefa.getAnexos().remove(anexoTarefa);
         }
 
@@ -908,24 +908,24 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
      * @param callback
      */
     @Override
-    public void setCallBackListener(TaskCreationCallBackListener callback) {
+    public void setCallBackListener(TarefaCallBackListener callback) {
         this.callbackListener = callback;
     }
 
-    private Button buildButtonEditarTarefa(Task subTarefa, String caption) {
+    private Button buildButtonEditarTarefa(Tarefa subTarefa, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
-        TaskCreationCallBackListener callback = this;
+        TarefaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getSubTasksTable().setValue(subTarefa);
-            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
+            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(callback);
             presenter.editar(subTarefa);
         });
         return link;
     }
 
-    private void adicionarSubTarefa(Task sub) {
+    private void adicionarSubTarefa(Tarefa sub) {
 
         // monta os dados para adicionar na grid
         Object[] linha = new Object[]{
@@ -946,7 +946,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         };
         view.getSubTasksTable().addItem(linha, sub);
 
-        for (Task subTarefa : sub.getSubTarefas()) {
+        for (Tarefa subTarefa : sub.getSubTarefas()) {
             adicionarSubTarefa(subTarefa);
         }
 
@@ -958,7 +958,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
      * @param tarefa
      */
     @Override
-    public void taskCreationDone(Task tarefa) {
+    public void tarefaCriada(Tarefa tarefa) {
 
         adicionarSubTarefa(tarefa);
         organizeTree(tarefa, tarefa.getSubTarefas());
@@ -966,7 +966,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     }
 
     @Override
-    public void taskUpdateDone(Task tarefa) {
+    public void tarefaAtualizada(Tarefa tarefa) {
 
         Item it = view.getSubTasksTable().getItem(tarefa);
 
@@ -989,7 +989,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     @Override
     public void removerParticipante(ParticipanteTarefa participanteTarefa) {
         view.getFollowersTable().removeItem(participanteTarefa);
-        Task tarefa = view.getTarefa();
+        Tarefa tarefa = view.getTarefa();
         tarefa.getParticipantes().remove(participanteTarefa);
     }
 
@@ -1001,7 +1001,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
         } else {
             ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
             view.getFollowersContainer().addBean(participanteTarefa);
-            Task tarefa = view.getTarefa();
+            Tarefa tarefa = view.getTarefa();
 
             if (tarefa.getParticipantes() == null) {
                 tarefa.setParticipantes(new ArrayList<>());
@@ -1095,20 +1095,20 @@ public class TaskPresenter implements Serializable, TaskViewListener, TaskCreati
     }
 
     @Override
-    public void recurrencyRemoved(Task task) {
+    public void recurrencyRemoved(Tarefa task) {
         view.close();
-        callbackListener.taskUpdateDone(task);
+        callbackListener.tarefaAtualizada(task);
     }
 
     @Override
-    public void assigneeUserChanged(Task task, Usuario assignee) {
+    public void assigneeUserChanged(Tarefa task, Usuario assignee) {
         task.setUsuarioResponsavel(assignee);
         configPermissions(task);
 
     }
 
     @Override
-    public void taskStatusChanged(Task task) {
+    public void taskStatusChanged(Tarefa task) {
         view.setTarefa(task);
     }
 

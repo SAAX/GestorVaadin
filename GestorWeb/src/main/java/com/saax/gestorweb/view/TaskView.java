@@ -1,7 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.TaskModel;
+import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
@@ -9,7 +9,7 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.TaskPresenter;
 import com.saax.gestorweb.presenter.PopUpStatusPresenter;
@@ -119,7 +119,7 @@ public class TaskView extends Window {
     // -----------------------------------------------------------------------------------
     // Bean Biding
     // -----------------------------------------------------------------------------------
-    private BeanItem<Task> taskBeanItem;
+    private BeanItem<Tarefa> taskBeanItem;
     private FieldGroup taskFieldGroup;
 
     // -------------------------------------------------------------------------
@@ -260,7 +260,7 @@ public class TaskView extends Window {
      *
      * @param task
      */
-    public void setTarefa(Task task) {
+    public void setTarefa(Tarefa task) {
 
         taskBeanItem = new BeanItem<>(task);
         taskFieldGroup = new FieldGroup(taskBeanItem);
@@ -275,7 +275,7 @@ public class TaskView extends Window {
      *
      * @return
      */
-    public Task getTarefa() {
+    public Tarefa getTarefa() {
         return taskBeanItem.getBean();
     }
 
@@ -351,13 +351,13 @@ public class TaskView extends Window {
             listener.empresaSelecionada((Empresa) event.getProperty().getValue());
         });
         companyCombo.setWidth("100%");
-        companyCombo.addValidator(new BeanValidator(Task.class, "empresa"));
+        companyCombo.addValidator(new BeanValidator(Tarefa.class, "empresa"));
         requiredFields.add(companyCombo);
 
         // Combo: Hierarchy
         hierarchyCombo = new ComboBox(messages.getString("TaskView.hierarchyCombo.label"));
         hierarchyCombo.setWidth("140px");
-        hierarchyCombo.addValidator(new BeanValidator(Task.class, "hierarquia"));
+        hierarchyCombo.addValidator(new BeanValidator(Tarefa.class, "hierarquia"));
         hierarchyCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.hierarquiaSelecionada((HierarquiaProjetoDetalhe) event.getProperty().getValue());
         });
@@ -368,7 +368,7 @@ public class TaskView extends Window {
         taskNameTextField.setWidth("100%");
         taskNameTextField.setInputPrompt(messages.getString("TaskView.nomeTarefaTextField.inputPrompt"));
         taskNameTextField.setNullRepresentation("");
-        taskNameTextField.addValidator(new BeanValidator(Task.class, "nome"));
+        taskNameTextField.addValidator(new BeanValidator(Tarefa.class, "nome"));
         requiredFields.add(taskNameTextField);
 
         // TextField: Start Date
@@ -376,7 +376,7 @@ public class TaskView extends Window {
         startDateDateField.setWidth("100%");
         startDateDateField.setInputPrompt(messages.getString("TaskView.dataInicioDateField.inputPrompt"));
         startDateDateField.setConverter(new DateToLocalDateConverter());
-        startDateDateField.addValidator(new BeanValidator(Task.class, "dataInicio"));
+        startDateDateField.addValidator(new BeanValidator(Tarefa.class, "dataInicio"));
         //dataInicioDateField.addValidator(new DataFuturaValidator(true, "Data de Início"));
         requiredFields.add(startDateDateField);
 
@@ -1313,7 +1313,7 @@ public class TaskView extends Window {
         taskStatusPopUpButton.setVisible(false);
     }
 
-    private String getCaminhoTarefa(Task tarefa) {
+    private String getCaminhoTarefa(Tarefa tarefa) {
         if (tarefa.getTarefaPai() != null) {
             return getCaminhoTarefa(tarefa.getTarefaPai()) + " >> " + tarefa.getNome() == null ? "[NOVA]" : tarefa.getNome();
         } else {
@@ -1397,12 +1397,12 @@ public class TaskView extends Window {
      * @param caption the button caption
      * @return
      */
-    public static Button buildButtonOpenTask(TaskCreationCallBackListener callback, Table table, Task task, String caption) {
+    public static Button buildButtonOpenTask(TarefaCallBackListener callback, Table table, Tarefa task, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
         link.addClickListener((Button.ClickEvent event) -> {
             table.setValue(task);
-            TaskPresenter presenter = new TaskPresenter(new TaskModel(), new TaskView());
+            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(callback);
             presenter.editar(task);
         });
@@ -1418,7 +1418,7 @@ public class TaskView extends Window {
      * @param listener
      * @return a popup button
      */
-    public static PopupButton buildPopUpStatusProgressTask(Table table, Task task, PopUpStatusListener listener) {
+    public static PopupButton buildPopUpStatusProgressTask(Table table, Tarefa task, PopUpStatusListener listener) {
 
         PopUpStatusView viewPopUP = new PopUpStatusView();
         PopUpStatusModel modelPopUP = new PopUpStatusModel();
@@ -1430,7 +1430,7 @@ public class TaskView extends Window {
         // Event fired when the pop-up becomes visible:
         presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
             if (event.isPopupVisible()) {
-                Task tarefaEditada = (Task) event.getPopupButton().getData();
+                Tarefa tarefaEditada = (Tarefa) event.getPopupButton().getData();
                 table.setValue(tarefaEditada);
             }
         });

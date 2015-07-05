@@ -157,7 +157,7 @@ public class Meta implements Serializable {
     private HierarquiaProjetoDetalhe categoria;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "meta")
-    private List<Task> tarefas;
+    private List<Tarefa> tarefas;
     
     public Meta() {
     }
@@ -468,14 +468,14 @@ public class Meta implements Serializable {
     /**
      * @return the tarefas
      */
-    public List<Task> getTarefas() {
+    public List<Tarefa> getTarefas() {
         return tarefas;
     }
 
     /**
      * @param tarefas the tarefas to set
      */
-    public void setTarefas(List<Task> tarefas) {
+    public void setTarefas(List<Tarefa> tarefas) {
         this.tarefas = tarefas;
     }
 
@@ -483,7 +483,7 @@ public class Meta implements Serializable {
      * Adds a task to the task list
      * @param task to be added
      */
-    public void addTask(Task task) {
+    public void addTask(Tarefa task) {
         if(tarefas==null){
             tarefas = new ArrayList<>();
         }

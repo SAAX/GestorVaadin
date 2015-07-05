@@ -9,7 +9,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
@@ -49,7 +49,7 @@ public class ChatPresenter implements Serializable, ChatViewListener {
     // Every presenter keeps access to view and model
     private final transient ChatView view;
     private final transient ChatSingletonModel model;
-    private Task task;
+    private Tarefa task;
 
     /**
      * Creates the presenter linking the Model View
@@ -65,7 +65,7 @@ public class ChatPresenter implements Serializable, ChatViewListener {
         userLogged = (Usuario) GestorSession.getAttribute("loggedUser");
     }
 
-    public void open(Task task) {
+    public void open(Tarefa task) {
 
         view.chatConfigure(task, ChatSingletonModel.getInstance().getChat(task));
         ChatSingletonModel.getInstance().getChat(task).addListener(ChatSingletonModel.getInstance());
@@ -101,7 +101,7 @@ public class ChatPresenter implements Serializable, ChatViewListener {
     /**
      * Carries the information to fill the Users table
      */
-    public void loadingTable(Task task) {                                              
+    public void loadingTable(Tarefa task) {                                              
         view.getUserTable().addItem(new Object[]{task.getUsuarioSolicitante().getNome(), messages.getString("ChatPresenter.solicitante")}, messages.getString("ChatPresenter.solicitante"));
         if (task.getUsuarioResponsavel()!=null){
             view.getUserTable().addItem(new Object[]{task.getUsuarioResponsavel().getNome(), messages.getString("ChatPresenter.responsavel")}, messages.getString("ChatPresenter.responsavel"));

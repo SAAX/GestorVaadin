@@ -91,7 +91,7 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
         this.view = view;
         this.task = task;
         this.startDate = startDate;
-        this.endDate = startDate.plusDays(1);
+        this.endDate = startDate;
 
         view.setListener(this);
 

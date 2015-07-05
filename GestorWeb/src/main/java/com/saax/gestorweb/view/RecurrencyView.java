@@ -3,7 +3,7 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -141,7 +141,7 @@ public class RecurrencyView extends Window {
      * Create a view and all components
      *
      */
-    public RecurrencyView(Task task) {
+    public RecurrencyView(Tarefa task) {
         super();
 
         boolean isRecurrent = task.getTipoRecorrencia() == TipoTarefa.RECORRENTE;

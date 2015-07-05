@@ -3,7 +3,7 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import java.util.List;
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -13,7 +13,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  */
 public interface PopUpStatusViewListener {
 
-    public void load(Task tarefa, PopupButton statusButton, PopUpStatusListener listener);
+    public void load(Tarefa tarefa, PopupButton statusButton, PopUpStatusListener listener);
     
     public void processarAlteracaoAndamento();
 

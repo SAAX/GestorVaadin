@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.GestorMDI;
@@ -17,16 +12,13 @@ import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
-import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
-import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
@@ -44,29 +36,37 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 
 /**
- *
- * @author rodrigo
+ * Classe de modelo da tarefa <br><br>
+ * 
+ * Esta classe é responsável pela aplicação das regras de negócios do elemento "Tarefa" do sistema <br>
+ * Todas as regras de negócio que envolvam outros elementos do sistema são executadas com auxílio do model destes elementos <br>
+ * @author Rodrigo Moreira
+ * @author Fernando Stávale
  */
-public class TaskModel {
+public class TarefaModel {
 
-    // Classes do modelo acessórias acessadas por este model
+    // Classes do modelo acessórias utilizadas por este model
     private final UsuarioModel usuarioModel;
     private final CompanyModel empresaModel;
 
     // Reference to the use of the messages:
-    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private Task firstRecurrentTask;
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+    // Controle da primeira tafarefa da lista de tarefas recorrentes, usado na gravação de tarefas
+    private Tarefa primeiraTarefaRecorrente;
 
-    public TaskModel() {
+    /**
+     * Cria um novo model para Tarefa e instancia todos os models acessórios necessários
+     */
+    public TarefaModel() {
         usuarioModel = new UsuarioModel();
         empresaModel = new CompanyModel();
 
     }
 
     /**
-     * Listar todos os usuários ativos da mesma empresa do usuário logado
-     *
-     * @return
+     * Lista todos os usuários ativos da mesma empresa do usuário logado <br>
+     * 
+     * @return a lista de usuários
      */
     public List<Usuario> listarUsuariosEmpresa() {
         return usuarioModel.listarUsuariosEmpresa();
@@ -75,67 +75,68 @@ public class TaskModel {
     /**
      * Lista e retorna todos os clientes de todas as empresas de usuario logado
      *
-     * @param loggedUser
-     * @return
+     * @param usuarioLogado
+     * @return a lista de empresas cliente
      */
-    public List<EmpresaCliente> listarEmpresasCliente(Usuario loggedUser) {
-        return empresaModel.listarEmpresasCliente(loggedUser);
+    public List<EmpresaCliente> listarEmpresasCliente(Usuario usuarioLogado) {
+        return empresaModel.listarEmpresasCliente(usuarioLogado);
     }
 
     /**
-     * Save (persist) a Task
+     * Grava a tarefa na base de dados. <br>
+     * No caso de tarefas recursivas percorre toda a lista de tarefas recusivamente (da última para a primeira) persistindo só na primeira <br>
+     * No caso das tarefas não recursivas: <br>
+     * Quando for uma nova tarefa só persiste na tarefa pai ou na meta <br>
+     * Quando for uma tarefa já existente (edição) grava individualmente <br>
      *
-     * @param task
-     * @return the saved task if success, null otherwise
-     *
+     * @param tarefa
+     * @return a tarefa gravada com sucesso, ou null se não gravar
+     * @throws IllegalStateException se a tarefa passada por parâmetro for nula
+     * @throws RuntimeException se ocorrer algum problema na persistencia 
      */
-    public Task saveTask(Task task) {
+    public Tarefa gravarTarefa(Tarefa tarefa) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        if (task == null) {
-            throw new IllegalArgumentException("Tarefa NULA para persistencia");
+        if (tarefa == null) {
+            throw new IllegalArgumentException(mensagens.getString("TarefaModel.gravarTarefa.tarefanula"));
         }
 
         try {
 
-            // so abre transação na gravacao da tarefa pai
+            // abre a transação, caso ainda não esteja aberta
             if (!em.getTransaction().isActive()) {
                 em.getTransaction().begin();
             }
 
             // TODO: Colocar projecao calculada
-            task.setProjecao(ProjecaoTarefa.NORMAL);
+            tarefa.setProjecao(ProjecaoTarefa.NORMAL);
 
             // persiste as tarefas recorrentes:
-            if (task.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
-                if (firstRecurrentTask == null) {
-                    firstRecurrentTask = task; // save the first of the recurrency set
+            if (tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
+                if (primeiraTarefaRecorrente == null) {
+                    primeiraTarefaRecorrente = tarefa; // save the first of the recurrency set
                 }
-                if (task.getProximaTarefa() != null) {
-                    saveTask(task.getProximaTarefa());
+                if (tarefa.getProximaTarefa() != null) {
+                    gravarTarefa(tarefa.getProximaTarefa());
                 }
             }
 
-            if (task.getId() == null) {
-                em.persist(task);
+            if (tarefa.getId() == null) {
+                em.persist(tarefa);
             } else {
-                em.merge(task);
+                em.merge(tarefa);
             }
 
-            /**
-             * when creating a new task only commit in the parent task or
-             * target when editing an existing task, save anyway
-             */
-            boolean itIsANewTask = task.getId() == null;
-            boolean itIsAParentTask = task.getMeta() == null && task.getTarefaPai() == null;
+            boolean novaTarefa = tarefa.getId() == null;
+            boolean tarefaPai = tarefa.getMeta() == null && tarefa.getTarefaPai() == null;
 
-            if (itIsANewTask && itIsAParentTask || !itIsANewTask) {
+            if (novaTarefa && tarefaPai || !novaTarefa) {
 
                 // verify if it is a recurrent set of tasks
-                if (firstRecurrentTask != null) {
+                if (primeiraTarefaRecorrente != null) {
                     // if it is a recurrent set, only commit on the first 
-                    if (task == firstRecurrentTask) {
+                    if (tarefa == primeiraTarefaRecorrente) {
                         em.getTransaction().commit();
                     }
                 } else {
@@ -144,7 +145,7 @@ public class TaskModel {
             }
 
             // mover anexos das pastas temporarias para as oficiais
-            task.getAnexos().stream().filter((anexo) -> (anexo.getArquivoTemporario() != null)).forEach((anexo) -> {
+            tarefa.getAnexos().stream().filter((anexo) -> (anexo.getArquivoTemporario() != null)).forEach((anexo) -> {
                 moverAnexoTemporario(anexo);
             });
 
@@ -157,27 +158,34 @@ public class TaskModel {
             throw ex;
         }
 
-        return task;
+        return tarefa;
     }
 
     /**
-     * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ
-     * e do ID Task.
-     *
+     * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ,  e do ID Tarefa. <br> <br>
+     * Este método é chamado na gravação das tarefas para mover os anexos enviados pelo usuário para pasta oficial de anexos <br>
+     * Considerando a pasta base para gravação dos anexos parametrizada na aplicação em : <br>
+     * "anexos.relative.path"
      * @param anexoTarefa anexo a ser movido
+     * @throws IllegalArgumentException se o anexo enviado for nulo
+     * @throws IllegalStateException se o parametro "anexos.relative.path" nao estiver adequadamente configurado 
+     * @throws IllegalStateException se a empresa não possuir CNPJ (já que este é usado como pasta) 
+     * @throws IllegalStateException se a pasta base nao existir ou ser somente leitura
+     * @throws IllegalStateException se o arquivo anexo nao existir
+     * @throws RuntimeException se ocorrer algum erro na gravação do anexo
      */
     public void moverAnexoTemporario(AnexoTarefa anexoTarefa) {
 
         if (anexoTarefa.getTarefa() == null) {
-            throw new IllegalArgumentException("Parametro inválido: AnexoTarefa");
+            throw new IllegalArgumentException(mensagens.getString("TarefaModel.moverAnexoTemporario.anexoNulo"));
         }
 
-        Task tarefa = anexoTarefa.getTarefa();
+        Tarefa tarefa = anexoTarefa.getTarefa();
 
         String relativePath = ((GestorMDI) UI.getCurrent()).getApplication().getProperty("anexos.relative.path");
 
         if (relativePath == null) {
-            throw new IllegalStateException("Não encontrada propriedade: 'anexos.relative.path'");
+            throw new IllegalStateException(mensagens.getString("TarefaModel.moverAnexoTemporario.pastaBaseNaoEncontrada"));
         }
 
         String path = System.getProperty("user.dir") + "/" + relativePath;
@@ -185,7 +193,7 @@ public class TaskModel {
         String cnpj = FormatterUtil.removeNonDigitChars(tarefa.getEmpresa().getCnpj());
 
         if (cnpj == null) {
-            throw new IllegalStateException("Empresa não possui CNPJ");
+            throw new IllegalStateException(mensagens.getString("TarefaModel.moverAnexoTemporario.empresaSemCNPJ"));
         }
 
         File folder = new File(path + "/" + cnpj + "/" + tarefa.getId());
@@ -195,13 +203,13 @@ public class TaskModel {
         }
 
         if (!folder.exists() || !folder.canWrite()) {
-            throw new IllegalStateException("Não é possível gravar no destino: '" + folder.getAbsolutePath() + "'.");
+            throw new IllegalStateException(mensagens.getString("TarefaModel.moverAnexoTemporario.impossivelGravarPastaBase"));
         }
 
         File arquivoTMP = anexoTarefa.getArquivoTemporario();
 
         if (!arquivoTMP.exists() || !arquivoTMP.canWrite()) {
-            throw new IllegalStateException("Não é possível ler arquivo de origem: '" + arquivoTMP.getAbsolutePath() + "'.");
+            throw new IllegalStateException(mensagens.getString("TarefaModel.moverAnexoTemporario.impossivelLerAnexoTemporario"));
         }
 
         File arquivoOficial = new File(folder, arquivoTMP.getName());
@@ -209,7 +217,7 @@ public class TaskModel {
         boolean sucess = arquivoTMP.renameTo(arquivoOficial);
 
         if (!sucess) {
-            throw new RuntimeException("Falha ao gravar anexo: " + arquivoOficial.getAbsolutePath());
+            throw new RuntimeException(mensagens.getString("TarefaModel.moverAnexoTemporario.falhaAoGravarAnexoTemporario"));
         }
         anexoTarefa.setArquivo(arquivoOficial);
         anexoTarefa.setArquivoTemporario(null);
@@ -221,8 +229,10 @@ public class TaskModel {
 
     /**
      * Valida o arquivo que será enviado ao servidor. <br>
-     * Regras: 1. O arquivo deve existir 2. O arquivo deve ter menos que 10 mb
-     * 3. O arquivo nao pode ser executavel por risco de virus
+     * Regras: <br>
+     * 1. O arquivo deve existir <br>
+     * 2. O arquivo deve ter menos que 10 mb <br>
+     * 3. O arquivo nao pode ser executavel por risco de virus <br>
      *
      *
      * @throws java.io.FileNotFoundException
@@ -286,7 +296,7 @@ public class TaskModel {
         // Porém de a lista de apontamentos estiver vazia significa que este é o primeiro apontamento.
         // E sendo o primeiro apontamento um de DEBTIO o sistema reporta um aviso:
         if (apontamentoTarefa.getTarefa().getApontamentos().isEmpty()) {
-            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
+            throw new RuntimeException(mensagens.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
         }
 
         // obtem o ultimo registro de apontamento inserido (registro anterior), para verificar o saldo disponivel
@@ -296,7 +306,7 @@ public class TaskModel {
 
         // Inicialmente verifica se o saldo em Horas é suficiente para receber um débito de InputHoras
         if (ultimoApontamentoTarefa.getSaldoHoras().compareTo(inputHoras) < 0) {
-            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
+            throw new RuntimeException(mensagens.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
         }
 
         // Passada a verificação do saldo em horas, verifica o saldo em valores.
@@ -312,7 +322,7 @@ public class TaskModel {
 
         // realiza a comparação
         if (saldoDisponivel.compareTo(custoInputHoras) < 0) {
-            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
+            throw new RuntimeException(mensagens.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
         }
 
         // Fim da verificação de saldo em valor
@@ -341,7 +351,7 @@ public class TaskModel {
         // Porém de a lista de apontamentos estiver vazia significa que este é o primeiro apontamento.
         // E sendo o primeiro apontamento um de DEBTIO o sistema reporta um aviso:
         if (orcamentoTarefa.getTarefa().getOrcamentos().isEmpty()) {
-            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
+            throw new RuntimeException(mensagens.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoInsuficiente"));
         }
 
         // obtem o ultimo registro de apontamento inserido (registro anterior), para verificar o saldo disponivel
@@ -353,7 +363,7 @@ public class TaskModel {
         BigDecimal saldoDisponivel = ultimoApontamentoTarefa.getSaldo();
 
         if ((saldoDisponivel.compareTo(orcamentoTarefa.getDebito())) < 0) {
-            throw new RuntimeException(messages.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoValorInsuficiente"));
+            throw new RuntimeException(mensagens.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoValorInsuficiente"));
         }
 
         // Fim da verificação de saldo em valor
@@ -578,7 +588,7 @@ public class TaskModel {
         recalculaSaldoOrcamento(orcamentos);
     }
 
-    public ParticipanteTarefa criarParticipante(Usuario usuario, Task tarefa) {
+    public ParticipanteTarefa criarParticipante(Usuario usuario, Tarefa tarefa) {
 
         Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
@@ -621,7 +631,7 @@ public class TaskModel {
         return null;
     }
 
-    public List<HierarquiaProjetoDetalhe> getProximasCategorias(Task tarefaPai) {
+    public List<HierarquiaProjetoDetalhe> getProximasCategorias(Tarefa tarefaPai) {
 
         List<HierarquiaProjetoDetalhe> categoriasPossiveis = new ArrayList<>();
 
@@ -676,14 +686,14 @@ public class TaskModel {
      * @param task
      * @param target
      */
-    public void attachTaskToTarget(Task task, Meta target) {
+    public void attachTaskToTarget(Tarefa task, Meta target) {
         if (task != null && target != null) {
             task.setMeta(target);
             target.addTask(task);
         }
     }
 
-    public boolean userHasAccessToTask(Usuario loggedUser, Task tarefaToEdit) {
+    public boolean userHasAccessToTask(Usuario loggedUser, Tarefa tarefaToEdit) {
 
         if (tarefaToEdit.getUsuarioInclusao().equals(loggedUser)) {
             return true;
@@ -708,16 +718,16 @@ public class TaskModel {
 
     }
 
-    public Task refresh(Task taskToEdit) {
+    public Tarefa refresh(Tarefa taskToEdit) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        return em.find(Task.class, taskToEdit.getId());
+        return em.find(Tarefa.class, taskToEdit.getId());
 
     }
 
-    public Task findByID(Integer taskID) {
+    public Tarefa findByID(Integer taskID) {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        return em.find(Task.class, taskID);
+        return em.find(Tarefa.class, taskID);
     }
 
     
@@ -727,7 +737,7 @@ public class TaskModel {
      * @param task
      * @return the HTML created link
      */
-    public String buildTaskLink(Task task) {
+    public String buildTaskLink(Tarefa task) {
         StringBuilder html = new StringBuilder();
 
         html.append("<a href=\"");

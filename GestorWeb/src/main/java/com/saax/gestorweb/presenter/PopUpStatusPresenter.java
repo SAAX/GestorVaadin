@@ -7,7 +7,7 @@ import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.PopUpStatusView;
@@ -36,7 +36,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
-    private Task tarefa = null;
+    private Tarefa tarefa = null;
     private PopupButton statusButton = null;
     private final Usuario usuario;
     private PopUpStatusListener listener;
@@ -64,7 +64,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      * @param listener
      */
     @Override
-    public void load(Task tarefa, PopupButton statusButton, PopUpStatusListener listener) {
+    public void load(Tarefa tarefa, PopupButton statusButton, PopUpStatusListener listener) {
 
         this.listener = listener;
         
@@ -348,7 +348,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      * @param tarefa
      * @return
      */
-    private String getStatusTarefaDescription(Task tarefa) {
+    private String getStatusTarefaDescription(Tarefa tarefa) {
 
         StatusTarefa statusTarefa = tarefa.getStatus();
 

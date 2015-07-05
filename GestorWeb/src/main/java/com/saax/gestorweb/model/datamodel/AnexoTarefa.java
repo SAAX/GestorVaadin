@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- * Entity bean da tabela Anexo Task com as namequerys configuradas.<br><br>
+ * Entity bean da tabela Anexo Tarefa com as namequerys configuradas.<br><br>
  * 
  * O objetivo desta entidade e armazenar os arquivos anexados as tarefas / subs <br><br>
  *
@@ -51,7 +51,7 @@ public class AnexoTarefa implements Serializable {
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
     @ManyToOne(optional = false)
-    private Task tarefa;
+    private Tarefa tarefa;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -109,11 +109,11 @@ public class AnexoTarefa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public Task getTarefa() {
+    public Tarefa getTarefa() {
         return tarefa;
     }
 
-    public void setTarefa(Task tarefa) {
+    public void setTarefa(Tarefa tarefa) {
         this.tarefa = tarefa;
     }
 

@@ -121,7 +121,7 @@ public class Empresa implements Serializable {
     private LocalDateTime dataHoraInclusao;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
-    private List<Task> tarefas;
+    private List<Tarefa> tarefas;
 
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -306,11 +306,11 @@ public class Empresa implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    public List<Task> getTarefas() {
+    public List<Tarefa> getTarefas() {
         return tarefas;
     }
 
-    public void setTarefas(List<Task> tarefas) {
+    public void setTarefas(List<Tarefa> tarefas) {
         this.tarefas = tarefas;
     }
 

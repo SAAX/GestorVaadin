@@ -2,7 +2,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.Cipher;
 import com.saax.gestorweb.util.CookiesManager;
@@ -28,7 +28,7 @@ public class LoginPresenter implements Serializable, LoginViewListener {
     // Todo presenter mantem acesso à view e ao model
     private final transient LoginView view;
     private final transient LoginModel model;
-    private Task taskToOpenWhenSucess;
+    private Tarefa taskToOpenWhenSucess;
 
     /**
      * Cria o presenter ligando o Model ao View
@@ -136,7 +136,7 @@ public class LoginPresenter implements Serializable, LoginViewListener {
         }
     }
 
-    public void openTaskOnSucessLogin(Task taskToOpenWhenSucess) {
+    public void openTaskOnSucessLogin(Tarefa taskToOpenWhenSucess) {
         this.taskToOpenWhenSucess = taskToOpenWhenSucess;
     }
 

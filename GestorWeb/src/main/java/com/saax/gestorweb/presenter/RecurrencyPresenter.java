@@ -4,7 +4,7 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.RecurrencyModel;
 import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.GestorSession;
@@ -61,7 +61,7 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
     /**
      * The task being created or edited
      */
-    private Task task;
+    private Tarefa task;
 
     /**
      * Listener to be called back when the recurrency task creation is done
@@ -84,14 +84,14 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
      */
     public RecurrencyPresenter(RecurrencyModel model,
             RecurrencyView view,
-            Task task,
+            Tarefa task,
             LocalDate startDate) {
 
         this.model = model;
         this.view = view;
         this.task = task;
         this.startDate = startDate;
-        this.endDate = startDate.plusDays(1);
+        this.endDate = startDate;
 
         view.setListener(this);
 

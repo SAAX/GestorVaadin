@@ -1,7 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
-import com.saax.gestorweb.model.datamodel.Task;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 
 /**
  * Call back listener interface. <br>
@@ -16,7 +16,7 @@ public interface RecurrencyDoneCallBackListener {
      */
     public void recurrencyCreationDone(RecurrencySet recurrencySet);
 
-    public void recurrencyRemoved(Task task);
+    public void recurrencyRemoved(Tarefa task);
 
 
 }

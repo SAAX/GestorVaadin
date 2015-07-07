@@ -3,7 +3,6 @@
   <persistence-unit name="GestorWebPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.saax.gestorweb.model.datamodel.Usuario</class>
-    <class>com.saax.gestorweb.model.datamodel.RelacionamentoEmpresaCliente</class>
     <class>com.saax.gestorweb.model.datamodel.UsuarioEmpresa</class>
     <class>com.saax.gestorweb.model.datamodel.Empresa</class>
     <class>com.saax.gestorweb.model.datamodel.CentroCusto</class>
@@ -20,9 +19,6 @@
     <class>com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta</class>
     <class>com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.OrcamentoTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.StatusTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.PrioridadeTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.TipoTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.DurationConverter</class>
     <class>com.saax.gestorweb.model.datamodel.LocalDatePersistenceConverter</class>
     <class>com.saax.gestorweb.model.datamodel.LocalDateTimePersistenceConverter</class>

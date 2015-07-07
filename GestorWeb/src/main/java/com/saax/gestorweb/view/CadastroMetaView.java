@@ -419,8 +419,6 @@ public class CadastroMetaView  extends Window implements Serializable {
         tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
         tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
         tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaStatus"), Button.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
         tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
         tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
         tarefasTable.addContainerProperty("[E]", Button.class, "");

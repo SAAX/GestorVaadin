@@ -9,7 +9,7 @@
     <!-- Inherit DefaultWidgetSet -->
     <inherits name="com.vaadin.DefaultWidgetSet" /> 
 
-    <!--
+    <!-- 
      Uncomment the following to compile the widgetset for one browser only.
 
      Multiple browsers can be specified as a comma separated list. The

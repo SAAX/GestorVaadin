@@ -586,8 +586,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
             taskToInsert.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(taskToInsert.getDataInicio()),
             FormatterUtil.formatDate(taskToInsert.getDataFim()),
-            //buildPopUpEvolucaoStatusEAndamento(meta),
-            // meta.getProjecao().toString().charAt(0),
+            taskToInsert.getProjecao().toString().charAt(0),
             new Button("E"), // new Button("C")
         };
 

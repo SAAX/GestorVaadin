@@ -366,6 +366,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
     @Override
     public void tarefaCriada(Tarefa createdTask) {
 
+        
         addTaskInTable(createdTask);
         organizeTree(createdTask, createdTask.getSubTarefas());
     }

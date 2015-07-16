@@ -349,13 +349,14 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    //Projeção será inserida na V2
     /**
      * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the Target
      */
-    @Override
-    public void forecastButtonClickedd() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public void forecastButtonClickedd() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
 
     
     /**

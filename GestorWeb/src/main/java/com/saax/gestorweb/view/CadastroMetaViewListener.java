@@ -24,7 +24,7 @@ public interface CadastroMetaViewListener {
 
     public void chatButtonClicked();
 
-    public void forecastButtonClickedd();
+//    public void forecastButtonClickedd();
     
     
 }

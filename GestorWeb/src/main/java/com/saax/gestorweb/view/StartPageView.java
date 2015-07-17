@@ -3,7 +3,9 @@ package com.saax.gestorweb.view;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.ProcessoDemoradoModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.ProcessoDemoradoPresenter;
 import com.saax.gestorweb.presenter.TaskPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.server.BrowserWindowOpener;
@@ -16,6 +18,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
 
 /**
@@ -87,6 +90,17 @@ public class StartPageView extends HorizontalLayout {
         });
         previewDashboardButton.setIcon(FontAwesome.SEARCH);
 
+        // botão para teste de pop up para processo muito demorado
+        final Button processoMuitoDemorado = new Button("Teste de processo muito demorado", (Button.ClickEvent event) -> {
+            
+            ProcessoDemoradoModel model = new ProcessoDemoradoModel();
+            ProcessoDemoradoView view = new ProcessoDemoradoView();
+            new ProcessoDemoradoPresenter(view, model).executarProcessoDemorado();
+            
+            
+        });
+
+        
         
         // botão para preview de nova aba
         BrowserWindowOpener opener = new BrowserWindowOpener("http://google.com");// 
@@ -103,6 +117,7 @@ public class StartPageView extends HorizontalLayout {
         barraBotoes.addComponent(signUpButton);
         barraBotoes.addComponent(loginButton);
         barraBotoes.addComponent(previewDashboardButton);
+        barraBotoes.addComponent(processoMuitoDemorado);
 
         // Adicona os dois containers, lado-a-lado
         addComponent(containerEsquerdo);

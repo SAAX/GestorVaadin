@@ -935,7 +935,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.4.7";
+	content: "7.5.1";
 }
 
 .v-widget {
@@ -2467,6 +2467,23 @@ div.v-layout.v-horizontal.v-widget {
 	background: transparent;
 }
 
+.valo-flat-dark .v-checkbox.v-readonly  > label, .valo-flat-dark .v-checkbox.v-readonly  > .v-icon {
+	cursor: default;
+}
+
+.valo-flat-dark .v-checkbox.v-readonly  > label > .v-icon {
+	cursor: default;
+}
+
+:root .valo-flat-dark .v-checkbox.v-readonly > input:active ~ label:after {
+	background: transparent;
+}
+
+:root .valo-flat-dark .v-checkbox.v-readonly > input ~ label:after {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .valo-flat-dark .v-checkbox-small {
 	position: relative;
 	line-height: 11px;
@@ -2574,6 +2591,23 @@ div.v-layout.v-horizontal.v-widget {
 	background: transparent;
 }
 
+.valo-flat-dark .v-checkbox-small.v-readonly  > label, .valo-flat-dark .v-checkbox-small.v-readonly  > .v-icon {
+	cursor: default;
+}
+
+.valo-flat-dark .v-checkbox-small.v-readonly  > label > .v-icon {
+	cursor: default;
+}
+
+:root .valo-flat-dark .v-checkbox-small.v-readonly > input:active ~ label:after {
+	background: transparent;
+}
+
+:root .valo-flat-dark .v-checkbox-small.v-readonly > input ~ label:after {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .valo-flat-dark .v-checkbox-large {
 	position: relative;
 	line-height: 15px;
@@ -2679,6 +2713,23 @@ div.v-layout.v-horizontal.v-widget {
 
 :root .valo-flat-dark .v-checkbox-large.v-disabled > input:active ~ label:after {
 	background: transparent;
+}
+
+.valo-flat-dark .v-checkbox-large.v-readonly  > label, .valo-flat-dark .v-checkbox-large.v-readonly  > .v-icon {
+	cursor: default;
+}
+
+.valo-flat-dark .v-checkbox-large.v-readonly  > label > .v-icon {
+	cursor: default;
+}
+
+:root .valo-flat-dark .v-checkbox-large.v-readonly > input:active ~ label:after {
+	background: transparent;
+}
+
+:root .valo-flat-dark .v-checkbox-large.v-readonly > input ~ label:after {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 .valo-flat-dark .v-filterselect {
@@ -4046,6 +4097,24 @@ div.v-layout.v-horizontal.v-widget {
 	z-index: 1;
 }
 
+.valo-flat-dark .v-grid-spacer {
+	position: absolute;
+	display: block;
+	background-color: black;
+}
+
+.valo-flat-dark .v-grid-spacer  > td {
+	width: 100%;
+	height: 100%;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.v-ie8 .valo-flat-dark .v-grid-spacer, .v-ie9 .valo-flat-dark .v-grid-spacer {
+	margin-top: 0;
+}
+
 .valo-flat-dark .v-grid {
 	outline: none;
 }
@@ -4064,6 +4133,96 @@ div.v-layout.v-horizontal.v-widget {
 
 .valo-flat-dark .v-grid-tablewrapper {
 	border: 2px solid #3d3d3d;
+}
+
+.valo-flat-dark .v-grid .header-drag-table {
+	border-spacing: 0;
+	position: relative;
+	table-layout: fixed;
+	width: inherit;
+}
+
+.valo-flat-dark .v-grid .header-drag-table .v-grid-header {
+	position: absolute;
+}
+
+.valo-flat-dark .v-grid .header-drag-table .v-grid-header  > .v-grid-cell {
+	border: 2px solid #3d3d3d;
+	margin-top: -10px;
+	opacity: 0.9;
+	filter: alpha(opacity=90);
+	z-index: 30000;
+}
+
+.valo-flat-dark .v-grid .header-drag-table .v-grid-header  > .v-grid-drop-marker {
+	background-color: #ffa500;
+	position: absolute;
+	width: 3px;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border-radius: 0;
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: #000;
+	border: 2px solid #3d3d3d;
+	padding: 0;
+	z-index: 5;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu .v-grid-sidebar-button {
+	background: transparent;
+	border: none;
+	color: inherit;
+	cursor: pointer;
+	outline: none;
+	padding: 0 4px;
+	text-align: right;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu .v-grid-sidebar-button::-moz-focus-inner {
+	border: 0;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu .v-grid-sidebar-button:after {
+	content: "\f0c9";
+	display: block;
+	font-family: FontAwesome, sans-serif;
+	font-size: 12px;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu.closed {
+	border-radius: 0;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-button {
+	width: 100%;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-button:after {
+	content: "\00d7";
+	font-size: 16px;
+	line-height: 1;
+}
+
+.v-ie .valo-flat-dark .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-button {
+	vertical-align: middle;
+}
+
+.v-ie8 .valo-flat-dark .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-button:after {
+	display: inline;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu .v-grid-sidebar-content {
+	border-top: 2px solid #3d3d3d;
+	padding: 4px 0;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu .v-grid-sidebar-content .gwt-MenuBar .gwt-MenuItem .column-hiding-toggle {
+	text-shadow: none;
 }
 
 .valo-flat-dark .v-grid-cell {
@@ -4248,6 +4407,14 @@ div.v-layout.v-horizontal.v-widget {
 	max-height: 100%;
 }
 
+.v-ie8 .valo-flat-dark .v-grid-editor-cells  > div .v-datefield-button {
+	margin-left: -30px;
+}
+
+.v-ie8 .valo-flat-dark .v-grid-editor-cells  > div .v-filterselect-button {
+	margin-left: -27px;
+}
+
 .valo-flat-dark .v-grid-editor-cells  > div .v-select, .valo-flat-dark .v-grid-editor-cells  > div .v-select-select {
 	min-width: 100%;
 	max-width: 100%;
@@ -4312,6 +4479,45 @@ div.v-layout.v-horizontal.v-widget {
 	margin-right: 4px;
 }
 
+.valo-flat-dark .v-grid-spacer {
+	padding-left: 3px;
+}
+
+.valo-flat-dark .v-grid-spacer > td {
+	display: block;
+	padding: 0;
+	background-color: black;
+	border-top: 2px solid #161616;
+	border-bottom: 2px solid #3d3d3d;
+}
+
+.valo-flat-dark .v-grid-spacer.stripe > td {
+	background-color: #0a0a0a;
+	border-top: 2px solid #202020;
+	border-bottom: 2px solid #3d3d3d;
+}
+
+.valo-flat-dark .v-grid-spacer-deco-container {
+	border-top: 1px solid transparent;
+	position: relative;
+	top: 0;
+	z-index: 5;
+}
+
+.valo-flat-dark .v-grid-spacer-deco {
+	top: 0;
+	left: 0;
+	width: 4px;
+	background-color: #ffa500;
+	position: absolute;
+	height: 100%;
+	pointer-events: none;
+}
+
+.ie8 .valo-flat-dark .v-grid-spacer-deco:before, .ie9 .valo-flat-dark .v-grid-spacer-deco:before, .ie10 .valo-flat-dark .v-grid-spacer-deco:before {
+	content: url(data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjwvc3ZnPg==);
+}
+
 .valo-flat-dark .v-grid-cell > .v-progressbar {
 	width: 100%;
 }
@@ -4327,6 +4533,18 @@ div.v-layout.v-horizontal.v-widget {
 .valo-flat-dark .v-grid-header .v-grid-cell {
 	background: #000;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.valo-flat-dark .v-grid-header .v-grid-cell.dragged {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+	-webkit-transition: opacity 0.3s ease-in-out;
+	-moz-transition: opacity 0.3s ease-in-out;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.valo-flat-dark .v-grid-header .v-grid-cell.dragged-column-header {
+	margin-top: -13px;
 }
 
 .valo-flat-dark .v-grid-footer .v-grid-cell {
@@ -4401,6 +4619,14 @@ div.v-layout.v-horizontal.v-widget {
 	box-shadow: none;
 }
 
+.v-ie8 .valo-flat-dark .v-grid-editor-cells > div .v-datefield-button {
+	margin-left: 0px;
+}
+
+.v-ie8 .valo-flat-dark .v-grid-editor-cells > div .v-filterselect-button {
+	margin-left: 0px;
+}
+
 .valo-flat-dark .v-grid-editor-cells > div .v-textfield-focus, .valo-flat-dark .v-grid-editor-cells > div .v-datefield .v-textfield-focus, .valo-flat-dark .v-grid-editor-cells > div .v-filterselect-input:focus {
 	position: relative;
 }
@@ -4451,6 +4677,23 @@ div.v-layout.v-horizontal.v-widget {
 .valo-flat-dark .v-grid-editor-save.v-disabled, .valo-flat-dark .v-grid-editor-cancel.v-disabled {
 	opacity: 0.5;
 	filter: alpha(opacity=50) ;
+}
+
+.valo-flat-dark .v-grid-spacer {
+	margin-top: -2px;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-button:after {
+	font-size: 20px;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-content {
+	margin: 0 0 2px;
+	padding: 4px 4px 2px;
+}
+
+.valo-flat-dark .v-grid-sidebar.v-contextmenu.closed {
+	background: #000;
 }
 
 .valo-flat-dark .v-grid-scroller::-webkit-scrollbar {
@@ -7038,6 +7281,23 @@ div.v-layout.v-horizontal.v-widget {
 	background: transparent;
 }
 
+.valo-flat-dark .v-radiobutton.v-readonly  > label, .valo-flat-dark .v-radiobutton.v-readonly  > .v-icon {
+	cursor: default;
+}
+
+.valo-flat-dark .v-radiobutton.v-readonly  > label > .v-icon {
+	cursor: default;
+}
+
+:root .valo-flat-dark .v-radiobutton.v-readonly > input:active ~ label:after {
+	background: transparent;
+}
+
+:root .valo-flat-dark .v-radiobutton.v-readonly > input ~ label:after {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 :root .valo-flat-dark .v-radiobutton > input:checked ~ label:after {
 	width: 5px;
 	height: 5px;
@@ -7178,6 +7438,23 @@ div.v-layout.v-horizontal.v-widget {
 	background: transparent;
 }
 
+.valo-flat-dark .v-select-optiongroup-small .v-checkbox.v-readonly  > label, .valo-flat-dark .v-select-optiongroup-small .v-checkbox.v-readonly  > .v-icon {
+	cursor: default;
+}
+
+.valo-flat-dark .v-select-optiongroup-small .v-checkbox.v-readonly  > label > .v-icon {
+	cursor: default;
+}
+
+:root .valo-flat-dark .v-select-optiongroup-small .v-checkbox.v-readonly > input:active ~ label:after {
+	background: transparent;
+}
+
+:root .valo-flat-dark .v-select-optiongroup-small .v-checkbox.v-readonly > input ~ label:after {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .valo-flat-dark .v-select-optiongroup-small .v-radiobutton {
 	position: relative;
 	line-height: 11px;
@@ -7282,6 +7559,23 @@ div.v-layout.v-horizontal.v-widget {
 
 :root .valo-flat-dark .v-select-optiongroup-small .v-radiobutton.v-disabled > input:active ~ label:after {
 	background: transparent;
+}
+
+.valo-flat-dark .v-select-optiongroup-small .v-radiobutton.v-readonly  > label, .valo-flat-dark .v-select-optiongroup-small .v-radiobutton.v-readonly  > .v-icon {
+	cursor: default;
+}
+
+.valo-flat-dark .v-select-optiongroup-small .v-radiobutton.v-readonly  > label > .v-icon {
+	cursor: default;
+}
+
+:root .valo-flat-dark .v-select-optiongroup-small .v-radiobutton.v-readonly > input:active ~ label:after {
+	background: transparent;
+}
+
+:root .valo-flat-dark .v-select-optiongroup-small .v-radiobutton.v-readonly > input ~ label:after {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 :root .valo-flat-dark .v-select-optiongroup-small .v-radiobutton > input:checked ~ label:after {
@@ -7424,6 +7718,23 @@ div.v-layout.v-horizontal.v-widget {
 	background: transparent;
 }
 
+.valo-flat-dark .v-select-optiongroup-large .v-checkbox.v-readonly  > label, .valo-flat-dark .v-select-optiongroup-large .v-checkbox.v-readonly  > .v-icon {
+	cursor: default;
+}
+
+.valo-flat-dark .v-select-optiongroup-large .v-checkbox.v-readonly  > label > .v-icon {
+	cursor: default;
+}
+
+:root .valo-flat-dark .v-select-optiongroup-large .v-checkbox.v-readonly > input:active ~ label:after {
+	background: transparent;
+}
+
+:root .valo-flat-dark .v-select-optiongroup-large .v-checkbox.v-readonly > input ~ label:after {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
+}
+
 .valo-flat-dark .v-select-optiongroup-large .v-radiobutton {
 	position: relative;
 	line-height: 15px;
@@ -7528,6 +7839,23 @@ div.v-layout.v-horizontal.v-widget {
 
 :root .valo-flat-dark .v-select-optiongroup-large .v-radiobutton.v-disabled > input:active ~ label:after {
 	background: transparent;
+}
+
+.valo-flat-dark .v-select-optiongroup-large .v-radiobutton.v-readonly  > label, .valo-flat-dark .v-select-optiongroup-large .v-radiobutton.v-readonly  > .v-icon {
+	cursor: default;
+}
+
+.valo-flat-dark .v-select-optiongroup-large .v-radiobutton.v-readonly  > label > .v-icon {
+	cursor: default;
+}
+
+:root .valo-flat-dark .v-select-optiongroup-large .v-radiobutton.v-readonly > input:active ~ label:after {
+	background: transparent;
+}
+
+:root .valo-flat-dark .v-select-optiongroup-large .v-radiobutton.v-readonly > input ~ label:after {
+	opacity: 0.5;
+	filter: alpha(opacity=50) ;
 }
 
 :root .valo-flat-dark .v-select-optiongroup-large .v-radiobutton > input:checked ~ label:after {
@@ -7668,9 +7996,9 @@ div.v-layout.v-horizontal.v-widget {
 	background-image: radial-gradient(  circle at 50% 50%, #222, #222222);
 	opacity: 0.8;
 	filter: alpha(opacity=80) ;
-	-webkit-animation: valo-animate-in-fade 400ms 100ms;
-	-moz-animation: valo-animate-in-fade 400ms 100ms;
-	animation: valo-animate-in-fade 400ms 100ms;
+	-webkit-animation: valo-animate-in-fade 400ms 100ms backwards;
+	-moz-animation: valo-animate-in-fade 400ms 100ms backwards;
+	animation: valo-animate-in-fade 400ms 100ms backwards;
 }
 
 .v-op12 .valo-flat-dark .v-window-modalitycurtain {
@@ -9509,9 +9837,9 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .valo-flat-dark .v-tabsheet-tabsheetpanel > .v-scrollable > .v-widget {
-	-webkit-animation: valo-animate-in-fade 300ms;
-	-moz-animation: valo-animate-in-fade 300ms;
-	animation: valo-animate-in-fade 300ms;
+	-webkit-animation: valo-animate-in-fade 300ms backwards;
+	-moz-animation: valo-animate-in-fade 300ms backwards;
+	animation: valo-animate-in-fade 300ms backwards;
 }
 
 .valo-flat-dark .v-tabsheet-deco {
@@ -10643,6 +10971,10 @@ div.v-layout.v-horizontal.v-widget {
 	margin-top: 14px;
 }
 
+.valo-flat-dark .v-verticallayout > .v-slot:first-child .v-formlayout-contentcell h1, .valo-flat-dark .v-verticallayout > .v-slot:first-child .v-formlayout-contentcell .v-label-h1, .valo-flat-dark .v-verticallayout > .v-slot:first-child .v-formlayout-contentcell h2, .valo-flat-dark .v-verticallayout > .v-slot:first-child .v-formlayout-contentcell .v-label-h2, .valo-flat-dark .v-verticallayout > .v-slot:first-child .v-formlayout-contentcell h3, .valo-flat-dark .v-verticallayout > .v-slot:first-child .v-formlayout-contentcell .v-label-h3, .valo-flat-dark .v-verticallayout > .v-slot:first-child .v-formlayout-contentcell h4, .valo-flat-dark .v-verticallayout > .v-slot:first-child .v-formlayout-contentcell .v-label-h4, .valo-flat-dark .v-verticallayout > div > .v-slot:first-child .v-formlayout-contentcell h1, .valo-flat-dark .v-verticallayout > div > .v-slot:first-child .v-formlayout-contentcell .v-label-h1, .valo-flat-dark .v-verticallayout > div > .v-slot:first-child .v-formlayout-contentcell h2, .valo-flat-dark .v-verticallayout > div > .v-slot:first-child .v-formlayout-contentcell .v-label-h2, .valo-flat-dark .v-verticallayout > div > .v-slot:first-child .v-formlayout-contentcell h3, .valo-flat-dark .v-verticallayout > div > .v-slot:first-child .v-formlayout-contentcell .v-label-h3, .valo-flat-dark .v-verticallayout > div > .v-slot:first-child .v-formlayout-contentcell h4, .valo-flat-dark .v-verticallayout > div > .v-slot:first-child .v-formlayout-contentcell .v-label-h4 {
+	margin-top: -0.5em;
+}
+
 .valo-flat-dark h1.no-margin, .valo-flat-dark .v-label-h1.no-margin, .valo-flat-dark h2.no-margin, .valo-flat-dark .v-label-h2.no-margin, .valo-flat-dark h3.no-margin, .valo-flat-dark .v-label-h3.no-margin, .valo-flat-dark h4.no-margin, .valo-flat-dark .v-label-h4.no-margin {
 	margin: 0 !important;
 }
@@ -11210,7 +11542,17 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 13px 15px;
 }
 
-.valo-flat-dark .v-Notification h1 {
+.valo-flat-dark .v-Notification .v-Notification-caption {
+	color: #ffa500;
+	font-size: 17px;
+	line-height: 1;
+}
+
+.valo-flat-dark .v-Notification .v-Notification-description {
+	line-height: 1.4;
+}
+
+.valo-flat-dark .v-Notification-caption {
 	margin: 0;
 	display: inline-block;
 	text-align: left;
@@ -11220,7 +11562,7 @@ div.v-layout.v-horizontal.v-widget {
 	letter-spacing: 0;
 }
 
-.valo-flat-dark .v-Notification p {
+.valo-flat-dark .v-Notification-description, .valo-flat-dark .v-Notification-details {
 	margin: 0;
 	display: inline-block;
 	vertical-align: middle;
@@ -11230,22 +11572,12 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: auto;
 }
 
-.valo-flat-dark .v-Notification h1 ~ p {
+.valo-flat-dark .v-Notification-caption ~ .v-Notification-description, .valo-flat-dark .v-Notification-caption ~ .v-Notification-details {
 	margin-left: 21px;
 }
 
-.valo-flat-dark .v-Notification .v-icon + h1 {
+.valo-flat-dark .v-icon + .v-Notification-caption {
 	margin-left: 14px;
-}
-
-.valo-flat-dark .v-Notification h1 {
-	color: #ffa500;
-	font-size: 17px;
-	line-height: 1;
-}
-
-.valo-flat-dark .v-Notification p {
-	line-height: 1.4;
 }
 
 .valo-flat-dark .v-Notification-system {
@@ -11263,7 +11595,7 @@ div.v-layout.v-horizontal.v-widget {
 	line-height: 20px;
 }
 
-.valo-flat-dark .v-Notification-system p {
+.valo-flat-dark .v-Notification-system .v-Notification-description, .valo-flat-dark .v-Notification-system .v-Notification-details {
 	max-width: 50em;
 }
 
@@ -11299,12 +11631,12 @@ div.v-layout.v-horizontal.v-widget {
 	animation: valo-animate-out-slide-down 200ms;
 }
 
-.valo-flat-dark .v-Notification-system h1 {
+.valo-flat-dark .v-Notification-system .v-Notification-caption {
 	color: #fff;
 	vertical-align: middle;
 }
 
-.valo-flat-dark .v-Notification-system p {
+.valo-flat-dark .v-Notification-system .v-Notification-description, .valo-flat-dark .v-Notification-system .v-Notification-details {
 	color: #e6e6e6;
 }
 
@@ -11316,7 +11648,7 @@ div.v-layout.v-horizontal.v-widget {
 	text-align: left;
 }
 
-.valo-flat-dark .v-Notification.tray h1 + p {
+.valo-flat-dark .v-Notification.tray .v-Notification-caption + .v-Notification-description {
 	display: block;
 	margin: 0.5em 0 0;
 }
@@ -11325,11 +11657,11 @@ div.v-layout.v-horizontal.v-widget {
 	background: #FFF3D2;
 }
 
-.valo-flat-dark .v-Notification.warning h1 {
+.valo-flat-dark .v-Notification.warning .v-Notification-caption {
 	color: #AC7C00;
 }
 
-.valo-flat-dark .v-Notification.warning p {
+.valo-flat-dark .v-Notification.warning .v-Notification-description {
 	color: #9D874D;
 }
 
@@ -11340,11 +11672,11 @@ div.v-layout.v-horizontal.v-widget {
 	box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.25);
 }
 
-.valo-flat-dark .v-Notification.error h1 {
+.valo-flat-dark .v-Notification.error .v-Notification-caption {
 	color: white;
 }
 
-.valo-flat-dark .v-Notification.error p {
+.valo-flat-dark .v-Notification.error .v-Notification-description {
 	color: #f4e0df;
 }
 
@@ -11355,12 +11687,12 @@ div.v-layout.v-horizontal.v-widget {
 	line-height: 20px;
 }
 
-.valo-flat-dark .v-Notification.dark h1 {
+.valo-flat-dark .v-Notification.dark .v-Notification-caption {
 	color: #fff;
 	vertical-align: middle;
 }
 
-.valo-flat-dark .v-Notification.dark p {
+.valo-flat-dark .v-Notification.dark .v-Notification-description, .valo-flat-dark .v-Notification.dark .v-Notification-details {
 	color: #e6e6e6;
 }
 
@@ -11375,7 +11707,7 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 8px 10px;
 }
 
-.valo-flat-dark .v-Notification.bar p {
+.valo-flat-dark .v-Notification.bar .v-Notification-description, .valo-flat-dark .v-Notification.bar .v-Notification-details {
 	max-width: 50em;
 }
 
@@ -11415,11 +11747,11 @@ div.v-layout.v-horizontal.v-widget {
 	padding: 8px 9px;
 }
 
-.valo-flat-dark .v-Notification.small h1 {
+.valo-flat-dark .v-Notification.small .v-Notification-caption {
 	font-size: 14px;
 }
 
-.valo-flat-dark .v-Notification.small p {
+.valo-flat-dark .v-Notification.small .v-Notification-description {
 	font-size: 12px;
 }
 
@@ -11489,12 +11821,12 @@ div.v-layout.v-horizontal.v-widget {
 	border: 2px solid #2c9720;
 }
 
-.valo-flat-dark .v-Notification.success h1, .valo-flat-dark .v-Notification.failure h1 {
+.valo-flat-dark .v-Notification.success .v-Notification-caption, .valo-flat-dark .v-Notification.failure .v-Notification-caption {
 	color: #2c9720;
 	font-weight: 700;
 }
 
-.valo-flat-dark .v-Notification.success h1:before, .valo-flat-dark .v-Notification.failure h1:before {
+.valo-flat-dark .v-Notification.success .v-Notification-caption:before, .valo-flat-dark .v-Notification.failure .v-Notification-caption:before {
 	font-family: FontAwesome;
 	content: "\f00c";
 	margin-right: 0.5em;
@@ -11508,11 +11840,11 @@ div.v-layout.v-horizontal.v-widget {
 	border-color: #ed473b;
 }
 
-.valo-flat-dark .v-Notification.failure h1 {
+.valo-flat-dark .v-Notification.failure .v-Notification-caption {
 	color: #ed473b;
 }
 
-.valo-flat-dark .v-Notification.failure h1:before {
+.valo-flat-dark .v-Notification.failure .v-Notification-caption:before {
 	content: "\f05e";
 }
 

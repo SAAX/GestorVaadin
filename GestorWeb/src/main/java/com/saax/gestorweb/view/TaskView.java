@@ -475,10 +475,11 @@ public class TaskView extends Window {
         });
         buttonsSuperiorBar.addComponent(chatButton);
 
-        projectionButton = new Button("[Projeção]", (Button.ClickEvent event) -> {
-            listener.projecaoButtonClicked();
-        });
-        buttonsSuperiorBar.addComponent(projectionButton);
+//Projeção será feita para a V2        
+//        projectionButton = new Button("[Projeção]", (Button.ClickEvent event) -> {
+//            listener.projecaoButtonClicked();
+//        });
+//        buttonsSuperiorBar.addComponent(projectionButton);
 
         return buttonsSuperiorBar;
     }
@@ -1129,9 +1130,9 @@ public class TaskView extends Window {
     /**
      * @return the projectionButton
      */
-    public Button getProjectionButton() {
-        return projectionButton;
-    }
+//    public Button getProjectionButton() {
+//        return projectionButton;
+//    }
 
     /**
      * @return the startDateDateField

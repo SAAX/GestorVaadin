@@ -259,10 +259,11 @@ public class CadastroMetaView  extends Window implements Serializable {
         });
         topButtonsBar.addComponent(chatButton);
 
-        forecast​Button = new Button("[Projeção]", (Button.ClickEvent event) -> {
-            listener.forecastButtonClickedd();
-        });
-        topButtonsBar.addComponent(forecast​Button);
+//       Projeção será inserida na V2           
+//        forecast​Button = new Button("[Projeção]", (Button.ClickEvent event) -> {
+//            listener.forecastButtonClickedd();
+//        });
+//        topButtonsBar.addComponent(forecast​Button);
 
         return topButtonsBar;
     }

@@ -126,7 +126,9 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
         }
         tarefaPai.getSubTarefas().add(tarefa);
         view.getChatButton().setVisible(false);
-        view.getProjectionButton().setVisible(false);
+        
+        //Projeção será inserida na V2
+        //view.getProjectionButton().setVisible(false);
 
         // ajuste ate a projecao ser implementada
         tarefa.setProjecao(ProjecaoTarefa.NORMAL);
@@ -211,7 +213,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
         }
 
         view.getChatButton().setVisible(false);
-        view.getProjectionButton().setVisible(false);
+        //Projeção será inserida na V2
+//        view.getProjectionButton().setVisible(false);
 
         init(tarefa);
 
@@ -343,7 +346,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
         carregaComboParticipante();
         carregaComboEmpresaCliente();
         setPopUpEvolucaoStatusEAndamento(tarefa);
-        carregaApontamento(tarefa);
+//Projeção será inserida na V2
+//        carregaApontamento(tarefa);
         view.getRecurrencyMessage().setVisible(tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE);
 
         // Configuras os beans de 1-N
@@ -358,75 +362,75 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
         view.setTarefa(tarefa);
 
     }
-
+//Projeção será inserida na V2
     /**
      * Carrega os apontamentos e executa o método para o cálculo da projeção
      */
-    private void carregaApontamento(Tarefa tarefa) {
-        List<AndamentoTarefa> andamentos = tarefa.getAndamentos();
-        if (andamentos.size() != 0) {
-            //Buscando o andamento da tarefa    
-            int andamento = tarefa.getAndamento();
-            System.out.println("Andamento Atual " + tarefa.getAndamento());
-
-            Date inicio = DateTimeConverters.toDate(tarefa.getDataInicio());
-            Date fim = DateTimeConverters.toDate(tarefa.getDataFim());
-            Date hoje = DateTimeConverters.toDate(LocalDate.now());
-
-            int diasRealizar = contarDias(inicio, fim);
-            System.out.println("Dias para realizar :" + diasRealizar);
-
-            int diasCorridos = contarDias(inicio, hoje);
-            System.out.println("Dias corridos :" + diasCorridos);
-
-            //Porcentagem ideal até o momento
-            Double porcIdeal = ((100.00 / diasRealizar) * (diasCorridos));
-            System.out.println("Porcentagem ideal é: " + porcIdeal);
-
-            if (diasCorridos < 0) {
-                if (andamento == 0) {
-                    System.out.println("Não Iniciada");
-                    view.getProjectionButton().setCaption("Não Iniciada");
-                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
-                } else if (andamento > 0 && andamento < 100) {
-                    System.out.println("Tarefa Atrasada");
-                    view.getProjectionButton().setCaption("Tarefa Atrasada");
-                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
-                } else if (andamento == 100) {
-                    System.out.println("Concluída");
-                    view.getProjectionButton().setCaption("Tarefa Finalizada");
-                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
-                }
-            } else {
-                if (andamento == 0) {
-                    System.out.println("Não Iniciada");
-                    view.getProjectionButton().setCaption("Não Iniciada");
-                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
-                } else if (andamento < porcIdeal) {
-                    System.out.println("Andamento Baixo");
-                    view.getProjectionButton().setCaption("Andamento Baixo");
-                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
-                } else if (andamento == porcIdeal) {
-                    System.out.println("Ideal");
-                    view.getProjectionButton().setCaption("Ideal");
-                    tarefa.setProjecao(ProjecaoTarefa.NORMAL);
-                } else if (andamento > porcIdeal) {
-                    System.out.println("Andamento Alto");
-                    view.getProjectionButton().setCaption("Andamento Alto");
-                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
-                } else if (andamento == 100) {
-                    System.out.println("Finalizada");
-                    view.getProjectionButton().setCaption("Finalizada");
-                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
-                }
-
-            }
-        }else{
-        System.out.println("Não Iniciada");
-        view.getProjectionButton().setCaption("Não Iniciada");
-        tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
-        }
-    }
+//    private void carregaApontamento(Tarefa tarefa) {
+//        List<AndamentoTarefa> andamentos = tarefa.getAndamentos();
+//        if (andamentos.size() != 0) {
+//            //Buscando o andamento da tarefa    
+//            int andamento = tarefa.getAndamento();
+//            System.out.println("Andamento Atual " + tarefa.getAndamento());
+//
+//            Date inicio = DateTimeConverters.toDate(tarefa.getDataInicio());
+//            Date fim = DateTimeConverters.toDate(tarefa.getDataFim());
+//            Date hoje = DateTimeConverters.toDate(LocalDate.now());
+//
+//            int diasRealizar = contarDias(inicio, fim);
+//            System.out.println("Dias para realizar :" + diasRealizar);
+//
+//            int diasCorridos = contarDias(inicio, hoje);
+//            System.out.println("Dias corridos :" + diasCorridos);
+//
+//            //Porcentagem ideal até o momento
+//            Double porcIdeal = ((100.00 / diasRealizar) * (diasCorridos));
+//            System.out.println("Porcentagem ideal é: " + porcIdeal);
+//
+//            if (diasCorridos < 0) {
+//                if (andamento == 0) {
+//                    System.out.println("Não Iniciada");
+//                    view.getProjectionButton().setCaption("Não Iniciada");
+//                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+//                } else if (andamento > 0 && andamento < 100) {
+//                    System.out.println("Tarefa Atrasada");
+//                    view.getProjectionButton().setCaption("Tarefa Atrasada");
+//                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+//                } else if (andamento == 100) {
+//                    System.out.println("Concluída");
+//                    view.getProjectionButton().setCaption("Tarefa Finalizada");
+//                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
+//                }
+//            } else {
+//                if (andamento == 0) {
+//                    System.out.println("Não Iniciada");
+//                    view.getProjectionButton().setCaption("Não Iniciada");
+//                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+//                } else if (andamento < porcIdeal) {
+//                    System.out.println("Andamento Baixo");
+//                    view.getProjectionButton().setCaption("Andamento Baixo");
+//                    tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+//                } else if (andamento == porcIdeal) {
+//                    System.out.println("Ideal");
+//                    view.getProjectionButton().setCaption("Ideal");
+//                    tarefa.setProjecao(ProjecaoTarefa.NORMAL);
+//                } else if (andamento > porcIdeal) {
+//                    System.out.println("Andamento Alto");
+//                    view.getProjectionButton().setCaption("Andamento Alto");
+//                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
+//                } else if (andamento == 100) {
+//                    System.out.println("Finalizada");
+//                    view.getProjectionButton().setCaption("Finalizada");
+//                    tarefa.setProjecao(ProjecaoTarefa.ASCENDENTE);
+//                }
+//
+//            }
+//        }else{
+//        System.out.println("Não Iniciada");
+//        view.getProjectionButton().setCaption("Não Iniciada");
+//        tarefa.setProjecao(ProjecaoTarefa.DESCENDENTE);
+//        }
+//    }
 
     public int contarDias(Date anterior, Date prox) {
 

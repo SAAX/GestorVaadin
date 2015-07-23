@@ -25,9 +25,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import java.io.File;
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -79,13 +76,14 @@ public class ChatPresenter implements Serializable, ChatViewListener {
             attachmentsTable.addItem(anexo);
             attachmentsTable.getContainerProperty(anexo, "Arquivo:").setValue(anexo.getNome());
             attachmentsTable.getContainerProperty(anexo, "Enviado em:").setValue(anexo.getUsuarioInclusao().getNome() + " às " + (FormatterUtil.formatDateTime(anexo.getDataHoraInclusao())));
-            attachmentsTable.getContainerProperty(anexo, "Download:").setValue(buildButtonDownload(anexo));    
+            attachmentsTable.getContainerProperty(anexo, "Download:").setValue(buildButtonDownload(anexo));
         }
-        
-            
-            
+
     }
-    
+
+    /**
+     * Cria botao para download de anexo
+     */
     private Button buildButtonDownload(AnexoTarefa anexos) {
         Button exportar = new Button();
         exportar.setIcon(FontAwesome.DOWNLOAD);
@@ -93,26 +91,24 @@ public class ChatPresenter implements Serializable, ChatViewListener {
         exportar.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         FileDownloader fd = new FileDownloader(new FileResource(new File(anexos.getCaminhoCompleto())));
         fd.extend(exportar);
-        //Notification.show(("Download realizado com sucesso!"), Notification.Type.TRAY_NOTIFICATION);
         return exportar;
-        
+
     }
 
     /**
      * Carries the information to fill the Users table
      */
-    public void loadingTable(Tarefa task) {                                              
+    public void loadingTable(Tarefa task) {
         view.getUserTable().addItem(new Object[]{task.getUsuarioSolicitante().getNome(), messages.getString("ChatPresenter.solicitante")}, messages.getString("ChatPresenter.solicitante"));
-        if (task.getUsuarioResponsavel()!=null){
+        if (task.getUsuarioResponsavel() != null) {
             view.getUserTable().addItem(new Object[]{task.getUsuarioResponsavel().getNome(), messages.getString("ChatPresenter.responsavel")}, messages.getString("ChatPresenter.responsavel"));
         }
-        
+
         List<ParticipanteTarefa> participants = task.getParticipantes();
-        
+
         for (int i = 0; i < participants.size(); i++) {
             view.getUserTable().addItem(new Object[]{participants.get(i).getUsuarioParticipante().getNome(), messages.getString("ChatPresenter.participante")}, messages.getString("ChatPresenter.participante"));
         }
-        
 
     }
 
@@ -120,6 +116,5 @@ public class ChatPresenter implements Serializable, ChatViewListener {
     public void cancelButtonClicked() {
         ((GestorMDI) UI.getCurrent()).logout();
     }
-    
 
 }

@@ -4,7 +4,6 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.GoalModel;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.CompanyModel;
-import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -22,7 +21,6 @@ import com.saax.gestorweb.view.CadastroMetaViewListener;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.view.TarefaCallBackListener;
 import com.saax.gestorweb.view.TaskView;
-import com.saax.gestorweb.view.PopUpStatusView;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.Button;
@@ -32,7 +30,6 @@ import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
-import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  *
@@ -420,6 +417,9 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
 
     }
     
+    /**
+     * Atualiza a tabela de tarefas com a hierarquia pertencente a elas
+     */
     private void atualizarTarefaTable(Tarefa task) {
         Item it = view.getTarefasTable().getItem(task);
 
@@ -443,6 +443,9 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
 
     }
 
+    /**
+     * Atualiza a tarefa após o status ser alterado
+     */
     @Override
     public void taskStatusChanged(Tarefa task) {
         atualizarTarefaTable(task);

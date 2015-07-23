@@ -92,10 +92,10 @@ public class StartPageView extends HorizontalLayout {
 
         // botão para teste de pop up para processo muito demorado
         final Button processoMuitoDemorado = new Button("Teste de processo muito demorado", (Button.ClickEvent event) -> {
-            
+            String teste = "teste123";
             ProcessoDemoradoModel model = new ProcessoDemoradoModel();
             ProcessoDemoradoView view = new ProcessoDemoradoView();
-            new ProcessoDemoradoPresenter(view, model).executarProcessoDemorado();
+            new ProcessoDemoradoPresenter(view, model, teste).executarProcessoDemorado();
             
             
         });

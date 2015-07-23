@@ -249,12 +249,12 @@ public class CadastroMetaView  extends Window implements Serializable {
 
         topButtonsBar.addComponent(templateCheckBox);
 
-        addTaskButton = new Button("[Add Task]", (Button.ClickEvent event) -> {
+        addTaskButton = new Button(message.getString("CadastroMetaView.addTaskButton.caption"), (Button.ClickEvent event) -> {
             listener.addTaskButtonClicked();
         });
         topButtonsBar.addComponent(addTaskButton);
 
-        chatButton = new Button("[Chat]", (Button.ClickEvent event) -> {
+        chatButton = new Button(message.getString("CadastroMetaView.chatButton.caption"), (Button.ClickEvent event) -> {
             listener.chatButtonClicked();
         });
         topButtonsBar.addComponent(chatButton);

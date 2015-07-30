@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS ProjecaoTarefa CASCADE;
 DROP TABLE IF EXISTS TipoTarefa CASCADE;
 DROP TABLE IF EXISTS PrioridadeTarefa CASCADE;
 DROP TABLE IF EXISTS Tarefa CASCADE;
-DROP TABLE IF EXISTS ParticipanteTarefa CASCADE;
+DROP TABLE IF EXISTS Participante CASCADE;
 DROP TABLE IF EXISTS AndamentoTarefa CASCADE;
 DROP TABLE IF EXISTS BloqueioTarefa CASCADE;
 DROP TABLE IF EXISTS AnexoTarefa CASCADE;
@@ -381,14 +381,16 @@ CREATE TABLE Tarefa (
 
 CREATE SEQUENCE RecurrencySequence;
 
--- Participante tarefa
-CREATE TABLE ParticipanteTarefa (
-    idParticipanteTarefa SERIAL NOT NULL PRIMARY KEY, 
-    idTarefa BIGINT NOT NULL, 
+-- Participante meta / tarefa
+CREATE TABLE Participante (
+    idParticipante SERIAL NOT NULL PRIMARY KEY, 
+    idTarefa BIGINT, 
+    idMeta BIGINT, 
     idUsuarioParticipante INTEGER NOT NULL,
     idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
+    FOREIGN KEY (idMeta) REFERENCES Meta(idMeta),
     FOREIGN KEY (idUsuarioParticipante) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
 );

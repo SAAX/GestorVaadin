@@ -5,7 +5,7 @@ import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -124,7 +124,7 @@ public class DashboardModel {
         for (Usuario usuarioParticipante : usuariosParticipantes) {
             usuarioParticipante = em.find(Usuario.class, usuarioParticipante.getId());
 
-            for (ParticipanteTarefa participanteTarefa : usuarioParticipante.getTarefasParticipantes()) {
+            for (Participante participanteTarefa : usuarioParticipante.getTarefasParticipantes()) {
                 tarefasUsuariosParticipantes.add(participanteTarefa.getTarefa());
             }
         }

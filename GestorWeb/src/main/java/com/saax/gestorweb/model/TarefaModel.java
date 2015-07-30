@@ -11,7 +11,7 @@ import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
@@ -588,11 +588,11 @@ public class TarefaModel {
         recalculaSaldoOrcamento(orcamentos);
     }
 
-    public ParticipanteTarefa criarParticipante(Usuario usuario, Tarefa tarefa) {
+    public Participante criarParticipante(Usuario usuario, Tarefa tarefa) {
 
         Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
 
-        ParticipanteTarefa participanteTarefa = new ParticipanteTarefa();
+        Participante participanteTarefa = new Participante();
         participanteTarefa.setTarefa(tarefa);
         participanteTarefa.setUsuarioInclusao(loggedUser);
         participanteTarefa.setUsuarioParticipante(usuario);
@@ -707,7 +707,7 @@ public class TarefaModel {
 
         List<Usuario> followers = new ArrayList<>();
 
-        for (ParticipanteTarefa pt : tarefaToEdit.getParticipantes()) {
+        for (Participante pt : tarefaToEdit.getParticipantes()) {
             followers.add(pt.getUsuarioParticipante());
         }
         if (followers.contains(loggedUser)) {

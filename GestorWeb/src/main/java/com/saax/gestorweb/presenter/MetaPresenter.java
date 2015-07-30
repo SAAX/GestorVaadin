@@ -1,7 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.GoalModel;
+import com.saax.gestorweb.model.MetaModel;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.CompanyModel;
 import com.saax.gestorweb.model.PopUpStatusModel;
@@ -11,14 +11,15 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
-import com.saax.gestorweb.view.CadastroMetaView;
-import com.saax.gestorweb.view.CadastroMetaViewListener;
+import com.saax.gestorweb.view.MetaView;
+import com.saax.gestorweb.view.MetaViewListener;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.view.TarefaCallBackListener;
 import com.saax.gestorweb.view.TaskView;
@@ -30,6 +31,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.vaadin.hene.popupbutton.PopupButton;
@@ -38,16 +40,16 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class CadastroMetaPresenter implements Serializable, CadastroMetaViewListener, TarefaCallBackListener, PopUpStatusListener {
+public class MetaPresenter implements Serializable, MetaViewListener, TarefaCallBackListener, PopUpStatusListener {
 
     // Todo presenter mantem acesso à view e ao model
-    private final transient CadastroMetaView view;
-    private final transient GoalModel model;
+    private final transient MetaView view;
+    private final transient MetaModel model;
 
     // recursos de aplicação
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    
+
     // usuario logado
     private final Usuario loggedUser;
     private CadastroMetaCallBackListener callbackListener;
@@ -59,8 +61,8 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
      * @param model
      * @param view
      */
-    public CadastroMetaPresenter(GoalModel model,
-            CadastroMetaView view) {
+    public MetaPresenter(MetaModel model,
+            MetaView view) {
 
         this.model = model;
         this.view = view;
@@ -79,7 +81,6 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
     public void criarNovaMeta(HierarquiaProjetoDetalhe categoria) {
 
         target = model.criarNovaMeta(categoria, loggedUser);
-        
 
         // configura a categoria
         ComboBox combo = view.getHierarquiaCombo();
@@ -89,8 +90,9 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
         init(target);
 
         view.getHierarquiaCombo().setEnabled(false);
+        configPermissions(target);
         view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + categoria.getCategoria());
-        
+
     }
 
     /**
@@ -107,7 +109,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
 
         // liga (bind) o form com a meta
         view.setMeta(target);
-        
+
         this.target = target;
 
     }
@@ -132,23 +134,22 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
     }
 
     /**
-     * Loads the department's combobox with all active company's department or 
+     * Loads the department's combobox with all active company's department or
      * disable the combo if there is not any active department for this company.
      */
     private void loadDepartmentCombo(Empresa company) {
-            
+
         // Retrieves the combo reference
         ComboBox department = view.getDepartamentoCombo();
-            
 
         // Verify if the company is already set
         if (company != null) {
-            
+
             // Retrieves the list of active departments for this company
             List<Departamento> departmentList = model.obterListaDepartamentosAtivos(company);
 
             if (departmentList.isEmpty()) {
-                
+
                 // if there is not any department: disable and empty the combo
                 department.removeAllItems();
                 department.setEnabled(false);
@@ -162,7 +163,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
                 }
             }
         } else {
-            
+
             // if there conmpany has not been setted: disable and empty the combo
             department.removeAllItems();
             department.setEnabled(false);
@@ -170,25 +171,24 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
         }
 
     }
-    
+
     /**
-     * Loads the cost center's combobox with all active company's cc or 
-     * disable the combo if there is not any active cost-center for this company.
+     * Loads the cost center's combobox with all active company's cc or disable
+     * the combo if there is not any active cost-center for this company.
      */
     private void loadCostCenterCombo(Empresa company) {
-            
+
         // Retrieves the combo reference
         ComboBox costCenterCombo = view.getCentroCustoCombo();
-            
 
         // Verify if the company is already set
         if (company != null) {
-            
+
             // Retrieves the list of active departments for this company
             List<CentroCusto> costCenterList = model.obterListaCentroCustosAtivos(company);
 
             if (costCenterList.isEmpty()) {
-                
+
                 // if there is not any cost center: disable and empty the combo
                 costCenterCombo.removeAllItems();
                 costCenterCombo.setEnabled(false);
@@ -202,7 +202,7 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
                 }
             }
         } else {
-            
+
             // if there conmpany has not been setted: disable and empty the combo
             costCenterCombo.removeAllItems();
             costCenterCombo.setEnabled(false);
@@ -238,8 +238,10 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
     }
 
     /**
-     * Trata o evento disparado ao soelecionar uma empresa e carrega a lista de departamentos
-     * @param empresa 
+     * Trata o evento disparado ao soelecionar uma empresa e carrega a lista de
+     * departamentos
+     *
+     * @param empresa
      */
     @Override
     public void empresaSelecionada(Empresa empresa) {
@@ -287,62 +289,64 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
     /**
      * Opens the presenter in editing mode with the target to edit
      *
-     * @param targetToEdit
+     * @param meta
      */
     @Override
-    public void edit(Meta targetToEdit) {
+    public void edit(Meta meta) {
 
         // sets the title
-        view.exibeTituloEdicao(targetToEdit);
+        view.exibeTituloEdicao(meta);
 
         // configura a categoria
         ComboBox combo = view.getHierarquiaCombo();
-        combo.addItem(targetToEdit.getCategoria());
-        combo.setItemCaption(targetToEdit.getCategoria(), targetToEdit.getCategoria().getCategoria());
+        combo.addItem(meta.getCategoria());
+        combo.setItemCaption(meta.getCategoria(), meta.getCategoria().getCategoria());
 
         // inits the UI
-        init(targetToEdit);
-        
-        for (Tarefa task : targetToEdit.getTarefas()) {
+        init(meta);
+
+        for (Tarefa task : meta.getTarefas()) {
             addTaskInTable(task);
         }
-        organizeTree(null, targetToEdit.getTarefas());
-        view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + targetToEdit.getCategoria().getCategoria());
-
+        organizeTree(null, meta.getTarefas());
+        configPermissions(meta);
+        view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + meta.getCategoria().getCategoria());
 
     }
 
     /**
-     * Handle the event thrown when the "addTask" button is clicked, indicating that the user wants a new task to the Target.
-     * Creates and presents a new form (presenter) to create a new Tarefa under this Target
+     * Handle the event thrown when the "addTask" button is clicked, indicating
+     * that the user wants a new task to the Target. Creates and presents a new
+     * form (presenter) to create a new Tarefa under this Target
      */
     @Override
     public void addTaskButtonClicked() {
-            
+
         try {
             // commit and run validators
             view.setValidatorsVisible(true);
             view.getMetaFieldGroup().commit();
-            
+
             // Creates the presenter that will handle the new task creation
             TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
-            
+
             // Configure this as the object to be called when the task creation was done
             presenter.setCallBackListener(this);
-            
+
             // Gets the tasks categories from the Target category
             List<HierarquiaProjetoDetalhe> tasksCategories = model.getFirstsTaskCategories(view.getMeta().getCategoria());
-            
+
             // Tells the presenter which is gonna be the Tarefa's category
             presenter.createTask(target, tasksCategories);
-            
+
         } catch (FieldGroup.CommitException ex) {
             Notification.show(mensagens.getString("CadastroMetaPresenter.addTaskButtonClicked.commitException"), Notification.Type.HUMANIZED_MESSAGE);
         }
     }
 
     /**
-     * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the Target
+     * Event thrown when the "chat" button is clicked to start or continue a
+     * conversation between the stackholders of the Target
      */
     @Override
     public void chatButtonClicked() {
@@ -351,39 +355,38 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
 
     //Projeção será inserida na V2
     /**
-     * Event thrown when the "chat" button is clicked to start or continue a conversation between the stackholders of the Target
+     * Event thrown when the "chat" button is clicked to start or continue a
+     * conversation between the stackholders of the Target
      */
 //    @Override
 //    public void forecastButtonClickedd() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-
-    
     /**
-     * Handles the event thrown when the sub window is done with a Tarefa creation 
-     * @param createdTask 
+     * Handles the event thrown when the sub window is done with a Tarefa
+     * creation
+     *
+     * @param createdTask
      * @see TarefaCallBackListener
      */
     @Override
     public void tarefaCriada(Tarefa createdTask) {
 
-        
         addTaskInTable(createdTask);
         organizeTree(createdTask, createdTask.getSubTarefas());
     }
 
     private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
 
-        
         for (Tarefa subTask : subTasks) {
             view.getTarefasTable().setParent(subTask, parentTask);
-            if (subTask.getSubTarefas()!=null && !subTask.getSubTarefas().isEmpty()){
+            if (subTask.getSubTarefas() != null && !subTask.getSubTarefas().isEmpty()) {
                 organizeTree(subTask, subTask.getSubTarefas());
             }
         }
     }
 
-    private void addTaskInTable(Tarefa task){
+    private void addTaskInTable(Tarefa task) {
         Object[] gridRow = new Object[]{
             TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
             TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
@@ -400,26 +403,24 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
 
         };
         view.getTarefasTable().addItem(gridRow, task);
-        
-        
+
         for (Tarefa subTarefa : task.getSubTarefas()) {
             addTaskInTable(subTarefa);
         }
-        
+
     }
-    
 
     /**
      * @see TarefaCallBackListener
      */
     @Override
     public void tarefaAtualizada(Tarefa updatedTask) {
-        
+
         atualizarTarefaTable(updatedTask);
         organizeTree(updatedTask, updatedTask.getSubTarefas());
 
     }
-    
+
     private void atualizarTarefaTable(Tarefa task) {
         Item it = view.getTarefasTable().getItem(task);
 
@@ -448,5 +449,38 @@ public class CadastroMetaPresenter implements Serializable, CadastroMetaViewList
         atualizarTarefaTable(task);
     }
 
+    @Override
+    public void adicionarParticipante(Usuario usuario) {
+        if (usuario.equals(view.getResponsavelCombo().getValue()) || usuario.equals(loggedUser)) {
+            Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
+        } else {
+            Participante participante = model.criarParticipante(usuario, view.getMeta());
+            view.getParticipantesContainer().addBean(participante);
+            Meta meta = view.getMeta();
+
+            if (meta.getParticipantes() == null) {
+                meta.setParticipantes(new ArrayList<>());
+            }
+
+            meta.getParticipantes().add(participante);
+        }
+    }
+
+    @Override
+    public void removerParticipante(Participante participante) {
+        view.getParticipantesContainer().removeItem(participante);
+        Meta meta = view.getMeta();
+        meta.getParticipantes().remove(participante);
+
+    }
+
+    private void configPermissions(Meta meta) {
+
+        boolean usuarioLogadoEhOResponsavel = meta.getUsuarioResponsavel() != null && meta.getUsuarioResponsavel().equals(loggedUser);
+        boolean usuarioLogadoEhOSolicitante = meta.getUsuarioSolicitante() != null && meta.getUsuarioSolicitante().equals(loggedUser);
+
+        view.setEditAllowed(usuarioLogadoEhOSolicitante || usuarioLogadoEhOResponsavel);
+        view.getResponsavelCombo().setEnabled(usuarioLogadoEhOSolicitante);
+    }
 
 }

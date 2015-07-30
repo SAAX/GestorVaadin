@@ -5,6 +5,8 @@ import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.Participante;
+import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
@@ -14,11 +16,13 @@ import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -27,6 +31,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.RichTextArea;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
@@ -39,6 +44,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 /**
  * Pop-up Window do cadastro de Metas
@@ -53,19 +59,22 @@ import java.util.logging.Logger;
  *
  * @author rodrigo
  */
-public class CadastroMetaView  extends Window implements Serializable {
+public class MetaView  extends Window implements Serializable {
 
     // Message resource bunlde
-    private final transient ResourceBundle message = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     // Images resource
     private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     // Presenter (listener)
-    private CadastroMetaViewListener listener;
+    private MetaViewListener listener;
 
     // List of required fields
     private final List<AbstractField> requiredFields;
 
+    
+    private boolean editAllowed = true;
+    
     // -------------------------------------------------------------------------
     // Top button's bar
     // -------------------------------------------------------------------------
@@ -110,6 +119,11 @@ public class CadastroMetaView  extends Window implements Serializable {
     @PropertyId("usuarioResponsavel")
     private ComboBox responsavelCombo;
 
+    private ComboBox participantesCombo;
+
+    private BeanItemContainer<Participante> participantesContainer;
+    
+    
     @PropertyId("empresaCliente")
     private ComboBox empresaClienteCombo;
     
@@ -142,12 +156,12 @@ public class CadastroMetaView  extends Window implements Serializable {
      * Cria o pop-up de login, com campos para usuário e senha
      *
      */
-    public CadastroMetaView() {
+    public MetaView() {
         super();
-
+       
         requiredFields = new ArrayList();
 
-        setCaption(message.getString("CadastroMetaView.tituloBase"));
+        setCaption(mensagens.getString("CadastroMetaView.tituloBase"));
         setModal(true);
         setWidth(1000, Unit.PIXELS);
         setHeight(600, Unit.PIXELS);
@@ -167,7 +181,7 @@ public class CadastroMetaView  extends Window implements Serializable {
      *
      * @param listener
      */
-    public void setListener(CadastroMetaViewListener listener) {
+    public void setListener(MetaViewListener listener) {
         this.listener = listener;
     }
 
@@ -245,7 +259,7 @@ public class CadastroMetaView  extends Window implements Serializable {
         topButtonsBar.setSpacing(true);
         topButtonsBar.setSizeUndefined();
 
-        templateCheckBox = new CheckBox(message.getString("CadastroMetaView.templateCheckBox.caption"));
+        templateCheckBox = new CheckBox(mensagens.getString("CadastroMetaView.templateCheckBox.caption"));
 
         topButtonsBar.addComponent(templateCheckBox);
 
@@ -287,8 +301,8 @@ public class CadastroMetaView  extends Window implements Serializable {
         containerCabecalhoLinha1.setWidth("100%");// ocupar todo espaço disponível na largura
 
         // combo de seleção da empresa
-        empresaCombo = new ComboBox(message.getString("CadastroMetaView.empresaCombo.label"));
-        empresaCombo.setInputPrompt(message.getString("CadastroMetaView.empresaCombo.inputPrompt"));
+        empresaCombo = new ComboBox(mensagens.getString("CadastroMetaView.empresaCombo.label"));
+        empresaCombo.setInputPrompt(mensagens.getString("CadastroMetaView.empresaCombo.inputPrompt"));
         empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.empresaSelecionada((Empresa) event.getProperty().getValue());
         });
@@ -299,9 +313,9 @@ public class CadastroMetaView  extends Window implements Serializable {
         containerCabecalhoLinha1.setExpandRatio(empresaCombo, 0);
         
         // TextField: Nome da meta 
-        nomeMetaTextField = new TextField(message.getString("CadastroMetaView.nomeMetaTextField.caption"));
+        nomeMetaTextField = new TextField(mensagens.getString("CadastroMetaView.nomeMetaTextField.caption"));
         nomeMetaTextField.setWidth("100%");// ocupar todo espaço disponível na largura
-        nomeMetaTextField.setInputPrompt(message.getString("CadastroMetaView.nomeMetaTextField.inputPrompt"));
+        nomeMetaTextField.setInputPrompt(mensagens.getString("CadastroMetaView.nomeMetaTextField.inputPrompt"));
         nomeMetaTextField.setNullRepresentation("");
         nomeMetaTextField.addValidator(new BeanValidator(Meta.class, "nome"));
         requiredFields.add(nomeMetaTextField);
@@ -320,23 +334,23 @@ public class CadastroMetaView  extends Window implements Serializable {
         containerCabecalhoLinha2.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
 
         // Combo: Categoria
-        hierarquiaCombo = new ComboBox(message.getString("CadastroMetaView.hierarquiaCombo.label"));
+        hierarquiaCombo = new ComboBox(mensagens.getString("CadastroMetaView.hierarquiaCombo.label"));
         hierarquiaCombo.addValidator(new BeanValidator(Meta.class, "categoria"));
         requiredFields.add(hierarquiaCombo);
         containerCabecalhoLinha2.addComponent(hierarquiaCombo);
 
         
         // TextField: Data de Inicio 
-        dataInicioDateField = new PopupDateField(message.getString("CadastroMetaView.dataInicioTextField.label"));
-        dataInicioDateField.setInputPrompt(message.getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
+        dataInicioDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataInicioTextField.label"));
+        dataInicioDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
         dataInicioDateField.setConverter(new DateToLocalDateConverter());
         dataInicioDateField.addValidator(new BeanValidator(Meta.class, "dataInicio"));
         requiredFields.add(dataInicioDateField);
         containerCabecalhoLinha2.addComponent(dataInicioDateField);
         
         // TextField: Data Fim
-        dataFimDateField = new PopupDateField(message.getString("CadastroMetaView.dataFimTextField.label"));
-        dataFimDateField.setInputPrompt(message.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
+        dataFimDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataFimTextField.label"));
+        dataFimDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
         dataFimDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
 
@@ -344,7 +358,7 @@ public class CadastroMetaView  extends Window implements Serializable {
         dataFimDateField.addValidator(new DataFimValidator(dataInicioDateField, "Data Fim"));
 
         // TextField: Data Termino
-        dataTerminoDateField = new PopupDateField(message.getString("CadastroMetaView.dataTerminoDateField.label"));
+        dataTerminoDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataTerminoDateField.label"));
         dataTerminoDateField.setWidth("100%");
         dataTerminoDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
@@ -404,24 +418,24 @@ public class CadastroMetaView  extends Window implements Serializable {
         containerTabelaTarefas.setContent(tarefasTable);
         tarefasTable.setSizeFull();
 
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaCod"), Button.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaCod"), 70);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaTitulo"), Button.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaTitulo"), 50);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaNome"), Button.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaNome"), 250);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), String.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), 200);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), String.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), 80);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), String.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), 80);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), String.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
-        tarefasTable.addContainerProperty(message.getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
-        tarefasTable.setColumnWidth(message.getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod"), Button.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod"), 70);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo"), Button.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo"), 50);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome"), Button.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome"), 250);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), 200);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
         tarefasTable.addContainerProperty("[E]", Button.class, "");
         tarefasTable.setColumnWidth("[E]", 30);
         tarefasTable.addContainerProperty("[C]", Button.class, "");
@@ -458,6 +472,56 @@ public class CadastroMetaView  extends Window implements Serializable {
         empresaClienteCombo.setWidth("100%");
         containerDetalhes.addComponent(empresaClienteCombo);
 
+        participantesCombo = new ComboBox("Participantes");
+
+        participantesCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+            listener.adicionarParticipante((Usuario) event.getProperty().getValue());
+        });
+
+        participantesContainer = new BeanItemContainer<>(Participante.class);
+
+        Table participantesTable = new Table() {
+            @Override
+            protected String formatPropertyValue(Object rowId,
+                    Object colId, Property property) {
+                // Format by property type
+                if (property.getType() == Usuario.class) {
+
+                    return ((Usuario) property.getValue()).getNome() + " " + ((Usuario) property.getValue()).getSobrenome();
+
+                }
+
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
+
+        participantesTable.setContainerDataSource(participantesContainer);
+
+        participantesTable.setColumnWidth("usuarioParticipante", 120);
+        participantesTable.setColumnHeader("usuarioParticipante", "Participante");
+
+        participantesTable.setVisibleColumns("usuarioParticipante");
+
+        
+        // Adicionar coluna do botão "remover"
+        participantesTable.addGeneratedColumn("X", (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button("X");
+            removeButton.addClickListener((ClickEvent event) -> {
+                listener.removerParticipante((Participante) itemId);
+            });
+
+            removeButton.setEnabled(editAllowed);
+            return removeButton;
+        });
+
+        participantesTable.setSelectable(true);
+        participantesTable.setImmediate(true);
+        participantesTable.setWidth("100%");
+        participantesTable.setPageLength(3);
+        
+        containerDetalhes.addComponent(participantesCombo);
+        
+        
         // combo de seleção do departamento
         departamentoCombo = new ComboBox("Departamento");
         departamentoCombo.setWidth("100%");
@@ -490,7 +554,7 @@ public class CadastroMetaView  extends Window implements Serializable {
         barraBotoesInferior.setSizeUndefined();
         barraBotoesInferior.setSpacing(true);
 
-        gravarButton = new Button(message.getString("CadastroMetaView.gravarButton.caption"), (Button.ClickEvent event) -> {
+        gravarButton = new Button(mensagens.getString("CadastroMetaView.gravarButton.caption"), (Button.ClickEvent event) -> {
             try {
                 setValidatorsVisible(true);
                 metaFieldGroup.commit();
@@ -506,7 +570,7 @@ public class CadastroMetaView  extends Window implements Serializable {
 
         barraBotoesInferior.addComponent(gravarButton);
 
-        cancelarButton = new Button(message.getString("CadastroMetaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
+        cancelarButton = new Button(mensagens.getString("CadastroMetaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
             listener.cancelarButtonClicked();
         });
         barraBotoesInferior.addComponent(cancelarButton);
@@ -595,7 +659,7 @@ public class CadastroMetaView  extends Window implements Serializable {
     }
 
     public void exibeTituloEdicao(Meta metapai) {
-        setCaption(message.getString("TaskView.titulo.edicao"));
+        setCaption(mensagens.getString("TaskView.titulo.edicao"));
     }
     
 
@@ -650,6 +714,46 @@ public class CadastroMetaView  extends Window implements Serializable {
         return empresaClienteCombo;
     }
 
+    public ComboBox getParticipantesCombo() {
+        return participantesCombo;
+    }
+
+    public BeanItemContainer<Participante> getParticipantesContainer() {
+        return participantesContainer;
+    }
+
+    public void setEditAllowed(boolean editAllowed) {
+
+        this.editAllowed = editAllowed;
+
+        // Header:
+        templateCheckBox.setEnabled(editAllowed);
+        addTaskButton.setEnabled(editAllowed);
+
+        // Basic Data:
+        empresaCombo.setEnabled(editAllowed);
+        hierarquiaCombo.setEnabled(editAllowed);
+        nomeMetaTextField.setEnabled(editAllowed);
+        dataInicioDateField.setEnabled(editAllowed);
+        dataFimDateField.setEnabled(editAllowed);
+        dataTerminoDateField.setEnabled(editAllowed);
+
+        // Description tab of components and Responsible
+        responsavelCombo.setEnabled(editAllowed);
+        descricaoMeta.setEnabled(editAllowed);
+        participantesCombo.setEnabled(editAllowed);
+        empresaClienteCombo.setEnabled(editAllowed);
+
+        // Componentes da Aba Detalhes
+        departamentoCombo.setEnabled(editAllowed);
+        centroCustoCombo.setEnabled(editAllowed);
+
+    }
+
+            
+    
+    
+    
     
 
     

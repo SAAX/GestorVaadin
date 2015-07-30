@@ -8,7 +8,7 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatSingletonModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
@@ -107,7 +107,7 @@ public class ChatPresenter implements Serializable, ChatViewListener {
             view.getUserTable().addItem(new Object[]{task.getUsuarioResponsavel().getNome(), messages.getString("ChatPresenter.responsavel")}, messages.getString("ChatPresenter.responsavel"));
         }
         
-        List<ParticipanteTarefa> participants = task.getParticipantes();
+        List<Participante> participants = task.getParticipantes();
         
         for (int i = 0; i < participants.size(); i++) {
             view.getUserTable().addItem(new Object[]{participants.get(i).getUsuarioParticipante().getNome(), messages.getString("ChatPresenter.participante")}, messages.getString("ChatPresenter.participante"));

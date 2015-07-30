@@ -115,10 +115,10 @@ public class Usuario implements Serializable {
     private List<Tarefa> tarefasSobResponsabilidade;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
-    private List<ParticipanteTarefa> paricipacoesIncluidas;
+    private List<Participante> paricipacoesIncluidas;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioParticipante")
-    private List<ParticipanteTarefa> tarefasParticipantes;
+    private List<Participante> tarefasParticipantes;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<FilialCliente> filiaisClientesIncluidas;
@@ -317,19 +317,19 @@ public class Usuario implements Serializable {
         this.tarefasSobResponsabilidade = tarefasSobResponsabilidade;
     }
 
-    public List<ParticipanteTarefa> getParicipacoesIncluidas() {
+    public List<Participante> getParicipacoesIncluidas() {
         return paricipacoesIncluidas;
     }
 
-    public void setParicipacoesIncluidas(List<ParticipanteTarefa> paricipacoesIncluidas) {
+    public void setParicipacoesIncluidas(List<Participante> paricipacoesIncluidas) {
         this.paricipacoesIncluidas = paricipacoesIncluidas;
     }
 
-    public List<ParticipanteTarefa> getTarefasParticipantes() {
+    public List<Participante> getTarefasParticipantes() {
         return tarefasParticipantes;
     }
 
-    public void setTarefasParticipantes(List<ParticipanteTarefa> tarefasParticipantes) {
+    public void setTarefasParticipantes(List<Participante> tarefasParticipantes) {
         this.tarefasParticipantes = tarefasParticipantes;
     }
 

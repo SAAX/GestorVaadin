@@ -16,7 +16,7 @@ import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
@@ -1016,7 +1016,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
     }
 
     @Override
-    public void removerParticipante(ParticipanteTarefa participanteTarefa) {
+    public void removerParticipante(Participante participanteTarefa) {
         view.getFollowersTable().removeItem(participanteTarefa);
         Tarefa tarefa = view.getTarefa();
         tarefa.getParticipantes().remove(participanteTarefa);
@@ -1025,10 +1025,10 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
     @Override
     public void adicionarParticipante(Usuario usuario) {
 
-        if (usuario.equals(view.getAssigneeUserCombo().getValue()) || usuario.equals(view.getAssigneeUserCombo().getValue())) {
+        if (usuario.equals(view.getAssigneeUserCombo().getValue()) || usuario.equals(loggedUser)) {
             Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
         } else {
-            ParticipanteTarefa participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
+            Participante participanteTarefa = model.criarParticipante(usuario, view.getTarefa());
             view.getFollowersContainer().addBean(participanteTarefa);
             Tarefa tarefa = view.getTarefa();
 

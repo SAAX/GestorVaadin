@@ -19,42 +19,42 @@ import javax.persistence.EntityManager;
  */
 public class LoginModel {
 
-    
-/**
-     * Obtém a empresa do usuario logado
-     * Só pode have uma
+    /**
+     * Obtém a empresa do usuario logado Só pode have uma
+     *
      * @return empresa
      * @throws Runtime se empresa não for encontrada ou existir mais que uma
      */
-    public  Empresa getEmpresaUsuarioLogado()  {
-        
+    public Empresa getEmpresaUsuarioLogado() {
+
         // obtem o usuario logado
         Usuario usuario = (Usuario) GestorSession.getAttribute("loggedUser");
-        
+
         // obtem a empresa ativa do usuario logado 
         // so pode haver uma
         Empresa empresa = null;
-        for (UsuarioEmpresa usuarioEmpresa : usuario.getEmpresas()) {
-            
-            if (usuarioEmpresa.getAtivo()){
-                if (empresa == null){
-                    empresa = usuarioEmpresa.getEmpresa();
-                    
-                } else {
-                    throw new RuntimeException("Usuario esta ativo em mais de uma empresa.");
+        if (usuario.getEmpresas() != null) {
+            for (UsuarioEmpresa usuarioEmpresa : usuario.getEmpresas()) {
+
+                if (usuarioEmpresa.getAtivo()) {
+                    if (empresa == null) {
+                        empresa = usuarioEmpresa.getEmpresa();
+
+                    } else {
+                        throw new RuntimeException("Usuario esta ativo em mais de uma empresa.");
+                    }
                 }
             }
         }
 
         // dispara exceção se nao encontrar a empresa do usuario logado
-        if (empresa==null){
+        if (empresa == null) {
             throw new RuntimeException("Não foram encontrados os usuarios da empresa");
         }
-        
 
         return empresa;
     }
-       
+
     /**
      * Verifica se um usuario está cadastrado pelo seu login
      *
@@ -72,13 +72,13 @@ public class LoginModel {
                     .getResultList();
 
             return (!usuarios.isEmpty());
-            
+
         } catch (Exception e) {
 
             Logger.getLogger(LoginModel.class.getName()).log(Level.SEVERE, "", e);
 
         }
-        
+
         return null;
 
     }
@@ -90,24 +90,24 @@ public class LoginModel {
      * @return
      */
     public Usuario getUsuario(String login) {
-        
+
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        
+
         Usuario usuario = null;
-        
+
         try {
             usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin")
                     .setParameter("login", login)
                     .getSingleResult();
-            
+
         } catch (Exception e) {
 
             Logger.getLogger(LoginModel.class.getName()).log(Level.SEVERE, "", e);
 
         }
-        
+
         return usuario;
-        
+
     }
 
 }

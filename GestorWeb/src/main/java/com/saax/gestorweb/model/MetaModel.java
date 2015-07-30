@@ -12,10 +12,13 @@ import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.PrioridadeMeta;
 import com.saax.gestorweb.model.datamodel.StatusMeta;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
+import com.saax.gestorweb.util.GestorSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,13 +32,13 @@ import javax.persistence.EntityManager;
  *
  * @author Rodrigo
  */
-public class GoalModel {
+public class MetaModel {
 
     // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
     private final CompanyModel empresaModel;
 
-    public GoalModel() {
+    public MetaModel() {
         usuarioModel = new UsuarioModel();
         empresaModel = new CompanyModel();
 
@@ -191,4 +194,18 @@ public class GoalModel {
         return tasksCategories;
     }
 
+    public Participante criarParticipante(Usuario usuario, Meta meta) {
+
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+
+        Participante participanteTarefa = new Participante();
+        participanteTarefa.setMeta(meta);
+        participanteTarefa.setUsuarioInclusao(loggedUser);
+        participanteTarefa.setUsuarioParticipante(usuario);
+        participanteTarefa.setDataHoraInclusao(LocalDateTime.now());
+
+        return participanteTarefa;
+    }
+
+    
 }

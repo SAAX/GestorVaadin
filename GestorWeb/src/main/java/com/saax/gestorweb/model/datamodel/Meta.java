@@ -123,6 +123,9 @@ public class Meta implements Serializable {
     @JoinColumn(name = "idempresacliente", referencedColumnName = "idempresacliente")
     @ManyToOne()
     private EmpresaCliente cliente;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "meta", orphanRemoval = true)
+    private List<Participante> participantes;
     
     @Column(name = "template")
     private boolean template;
@@ -490,6 +493,16 @@ public class Meta implements Serializable {
         tarefas.add(task);
     }
 
+    public List<Participante> getParticipantes() {
+        return participantes;
+    }
+
+    public void setParticipantes(List<Participante> participantes) {
+        if (participantes==null){
+            setParticipantes(new ArrayList<>());
+        }
+        this.participantes = participantes;
+    }
     
     
     

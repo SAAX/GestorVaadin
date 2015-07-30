@@ -1,7 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.GoalModel;
+import com.saax.gestorweb.model.MetaModel;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 
@@ -26,7 +26,7 @@ import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.data.Item;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
-import com.saax.gestorweb.view.CadastroMetaView;
+import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.view.PopUpStatusView;
@@ -301,7 +301,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     private void criarNova(HierarquiaProjetoDetalhe categoria) {
 
         if (categoria.getNivel() == 1) {
-            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new GoalModel(), new CadastroMetaView());
+            MetaPresenter presenter = new MetaPresenter(new MetaModel(), new MetaView());
             presenter.setCallBackListener(this);
             presenter.criarNovaMeta(categoria);
         } else if (categoria.getNivel() == 2) {
@@ -701,7 +701,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         CadastroMetaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTargetTable().setValue(meta);
-            CadastroMetaPresenter presenter = new CadastroMetaPresenter(new GoalModel(), new CadastroMetaView());
+            MetaPresenter presenter = new MetaPresenter(new MetaModel(), new MetaView());
             presenter.setCallBackListener(callback);
             presenter.edit(meta);
         });

@@ -5,7 +5,7 @@ import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.vaadin.data.Property;
@@ -48,7 +48,7 @@ public interface TaskViewListener {
 
     public void removePointingTime(ApontamentoTarefa apontamentoTarefa);
 
-    public void removerParticipante(ParticipanteTarefa participanteTarefa);
+    public void removerParticipante(Participante participanteTarefa);
 
     public void adicionarParticipante(Usuario participanteTarefa);
 

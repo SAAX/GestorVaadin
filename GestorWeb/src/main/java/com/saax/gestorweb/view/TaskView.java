@@ -8,7 +8,7 @@ import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
-import com.saax.gestorweb.model.datamodel.ParticipanteTarefa;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.TaskPresenter;
@@ -161,7 +161,7 @@ public class TaskView extends Window {
 
     private ComboBox followersCombo;
 
-    private BeanItemContainer<ParticipanteTarefa> followersContainer;
+    private BeanItemContainer<Participante> followersContainer;
 
     @PropertyId("empresaCliente")
     private ComboBox customerCompanyCombo;
@@ -539,7 +539,7 @@ public class TaskView extends Window {
             listener.adicionarParticipante((Usuario) event.getProperty().getValue());
         });
 
-        followersContainer = new BeanItemContainer<>(ParticipanteTarefa.class);
+        followersContainer = new BeanItemContainer<>(Participante.class);
 
         followersTable = new Table() {
             @Override
@@ -567,7 +567,7 @@ public class TaskView extends Window {
         followersTable.addGeneratedColumn(messages.getString("TaskView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button(messages.getString("TaskView.participantesTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
-                listener.removerParticipante((ParticipanteTarefa) itemId);
+                listener.removerParticipante((Participante) itemId);
             });
 
             removeButton.setEnabled(editAllowed);
@@ -1326,7 +1326,7 @@ public class TaskView extends Window {
         return hoursControlContainer;
     }
 
-    public BeanItemContainer<ParticipanteTarefa> getFollowersContainer() {
+    public BeanItemContainer<Participante> getFollowersContainer() {
         return followersContainer;
     }
 
@@ -1489,6 +1489,8 @@ public class TaskView extends Window {
         return recurrencyMessage;
     }
 
+    
+    
     
     
 }

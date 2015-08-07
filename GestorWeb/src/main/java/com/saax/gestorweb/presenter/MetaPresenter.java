@@ -103,6 +103,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         carregaComboEmpresa();
         carregaComboResponsavel();
         carregaComboEmpresaCliente();
+        carregaComboParticipante();
 
         // Abre o formulário
         UI.getCurrent().addWindow(view);
@@ -161,6 +162,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
                     department.addItem(depto);
                     department.setItemCaption(depto, depto.getDepartamento());
                 }
+                department.setEnabled(true);
             }
         } else {
 
@@ -304,7 +306,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
 
         // inits the UI
         init(meta);
-
+        view.getParticipantesContainer().addAll(meta.getParticipantes());
         for (Tarefa task : meta.getTarefas()) {
             addTaskInTable(task);
         }
@@ -444,6 +446,20 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
 
     }
 
+    /**
+     * Carrega o combo de participante com todos os usuários ativos da mesma
+     * empresa do usuário logado
+     */
+    private void carregaComboParticipante() {
+        ComboBox participante = view.getParticipantesCombo();
+        for (Usuario usuario : model.listarUsuariosEmpresa()) {
+            participante.addItem(usuario);
+            participante.setItemCaption(usuario, usuario.getNome());
+
+        }
+    }
+
+    
     @Override
     public void taskStatusChanged(Tarefa task) {
         atualizarTarefaTable(task);

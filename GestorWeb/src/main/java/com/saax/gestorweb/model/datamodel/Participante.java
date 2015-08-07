@@ -48,7 +48,7 @@ public class Participante implements Serializable {
 
     @JoinColumn(name = "idmeta", referencedColumnName = "idmeta")
     @ManyToOne()
-    private Meta Meta;
+    private Meta meta;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -95,11 +95,11 @@ public class Participante implements Serializable {
     }
 
     public Meta getMeta() {
-        return Meta;
+        return meta;
     }
 
     public void setMeta(Meta Meta) {
-        this.Meta = Meta;
+        this.meta = Meta;
     }
 
     public Usuario getUsuarioInclusao() {

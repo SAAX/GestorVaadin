@@ -632,6 +632,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
                     department.addItem(depto);
                     department.setItemCaption(depto, depto.getDepartamento());
                 }
+                department.setEnabled(true);
             }
         } else {
 
@@ -647,7 +648,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
      * Loads the cost center's combobox with all active company's cc or disable
      * the combo if there is not any active cost-center for this company.
      */
-    private void loadCostCenterCombo(Empresa company) {
+    private void carregaComboCentroCusto(Empresa company) {
 
         // Retrieves the combo reference
         ComboBox costCenterCombo = view.getCostCenterCombo();
@@ -1074,7 +1075,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
     @Override
     public void empresaSelecionada(Empresa empresa) {
         loadDepartmentCombo(empresa);
-        loadCostCenterCombo(empresa);
+        carregaComboCentroCusto(empresa);
     }
 
     private boolean isStartDateValidForRecurrency() {

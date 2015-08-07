@@ -176,33 +176,35 @@ public class GestorMDI extends UI {
     @Override
     protected void init(VaadinRequest request) {
 
-            // obtém o arquivo de mensagens de acordo com o locale do usuário
-            mensagens = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", new Locale("pt","BR")));
-            //mensagens = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", request.getLocale()));
+        // obtém o arquivo de mensagens de acordo com o locale do usuário
+        mensagens = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", new Locale("pt", "BR")));
+        //mensagens = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", request.getLocale()));
 
-            application = new Properties();
+        application = new Properties();
 
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("Application.properties");
-            if (inputStream == null) {
-                throw new RuntimeException("property file 'Application.properties' not found in the classpath");
-            }
-            try {
-                application.load(inputStream);
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("Application.properties");
+        if (inputStream == null) {
+            throw new RuntimeException("property file 'Application.properties' not found in the classpath");
+        }
+        try {
+            application.load(inputStream);
 
-            } catch (IOException ex) {
-                Logger.getLogger(GestorMDI.class
-                        .getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException(ex);
-            }
+        } catch (IOException ex) {
+            Logger.getLogger(GestorMDI.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
 
-            //obtém os cookies da sessão
-            CookiesManager cookieManager = new CookiesManager();
-            GestorSession.setAttribute("cookieManager", cookieManager);
+        //obtém os cookies da sessão
+        CookiesManager cookieManager = new CookiesManager();
+        GestorSession.setAttribute("cookieManager", cookieManager);
 
-            // obtém e armazena as imagens
-            gestorWebImagens = new GestorWebImagens();
+        // obtém e armazena as imagens
+        gestorWebImagens = new GestorWebImagens();
 
-        trataParametrosDeEntrada(request);
+        if (request != null) {
+            trataParametrosDeEntrada(request);
+        }
 
         setSizeFull();
 

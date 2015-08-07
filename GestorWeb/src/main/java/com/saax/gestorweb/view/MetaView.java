@@ -124,7 +124,7 @@ public class MetaView  extends Window implements Serializable {
     private BeanItemContainer<Participante> participantesContainer;
     
     
-    @PropertyId("empresaCliente")
+    @PropertyId("cliente")
     private ComboBox empresaClienteCombo;
     
     @PropertyId("departamento")
@@ -520,6 +520,7 @@ public class MetaView  extends Window implements Serializable {
         participantesTable.setPageLength(3);
         
         containerDetalhes.addComponent(participantesCombo);
+        containerDetalhes.addComponent(participantesTable);
         
         
         // combo de seleção do departamento

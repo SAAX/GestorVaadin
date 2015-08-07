@@ -13,24 +13,15 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.server.FileDownloader;
-import com.vaadin.server.FileResource;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.Upload;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.Random;
 import java.util.ResourceBundle;
 import org.vaadin.chatbox.ChatBox;
 import org.vaadin.chatbox.SharedChat;
@@ -109,20 +100,19 @@ public class ChatView extends Window{
         
     }
 
+    //Cria um novo ChatBox e um novo ChatUser
     public void chatConfigure(Tarefa task, SharedChat chat){
         
         ChatBox cb = new ChatBox(chat);
-        
-     
         ChatUser user = new ChatUser(ChatSingletonModel.getInstance().buildID(userLogged, task, false), userLogged.getNome(), "user1");
         cb.setUser(user);
         cb.setSizeFull();
-                
         hsplit.setSecondComponent(cb);
         hsplit.getSecondComponent().setWidth("100%");
         
     }
        
+    //Cria tabela com os arquivos anexos nesta conversa
     private Table buildAttachTable(){
         
         attachmentsAddedTable = new Table();
@@ -140,6 +130,7 @@ public class ChatView extends Window{
         return attachmentsAddedTable;
     }
     
+    //Cria camada vertical com os usuários disponíveis no chat
     private VerticalLayout containerUserTable(){
         
         VerticalLayout users = new VerticalLayout();

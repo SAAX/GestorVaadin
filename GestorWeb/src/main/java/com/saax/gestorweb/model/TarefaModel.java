@@ -7,6 +7,7 @@ import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
+import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
@@ -16,6 +17,7 @@ import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * Classe de modelo da tarefa <br><br>
@@ -752,4 +756,176 @@ public class TarefaModel {
 
     }
     
+        /**
+     * Obtém as tarefas sob responsabilidade do usuário logado
+     *
+     * @param loggedUser
+     * @return
+     */
+    public List<Tarefa> listarTarefas(Usuario loggedUser) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findByUsuarioResponsavelDashboard")
+                .setParameter("usuarioResponsavel", loggedUser)
+                //.setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .getResultList();
+
+        return tarefas;
+
+    }
+
+
+    /**
+     * Lista as tarefas que correspondam aos filtros informados
+     *
+     * @param tipoPesquisa
+     * @param usuariosResponsaveis
+     * @param usuariosSolicitantes
+     * @param usuariosParticipantes
+     * @param empresas
+     * @param filiais
+     * @param dataFim
+     * @param projecoes
+     * @return
+     */
+    public List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis,
+            List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        final List<Tarefa> tarefasUsuarioResponsavel = new ArrayList<>();
+
+        for (Usuario usuarioResponsavel : usuariosResponsaveis) {
+
+            usuarioResponsavel = em.find(Usuario.class, usuarioResponsavel.getId());
+            tarefasUsuarioResponsavel.addAll(usuarioResponsavel.getTarefasSobResponsabilidade());
+
+        }
+
+        List<Tarefa> tarefasUsuarioSolicitante = new ArrayList<>();
+        for (Usuario usuariosSolicitante : usuariosSolicitantes) {
+            usuariosSolicitante = em.find(Usuario.class, usuariosSolicitante.getId());
+            tarefasUsuarioSolicitante.addAll(usuariosSolicitante.getTarefasSolicitadas());
+        }
+
+        List<Tarefa> tarefasUsuariosParticipantes = new ArrayList<>();
+        for (Usuario usuarioParticipante : usuariosParticipantes) {
+            usuarioParticipante = em.find(Usuario.class, usuarioParticipante.getId());
+
+            for (Participante participanteTarefa : usuarioParticipante.getTarefasParticipantes()) {
+                tarefasUsuariosParticipantes.add(participanteTarefa.getTarefa());
+            }
+        }
+
+        List<Tarefa> tarefasEmpresa = new ArrayList<>();
+        for (Empresa empresa : empresas) {
+            empresa = em.find(Empresa.class, empresa.getId());
+            tarefasEmpresa.addAll(empresa.getTarefas());
+        }
+
+        List<Tarefa> tarefasFiliais = new ArrayList<>();
+        for (FilialEmpresa filial : filiais) {
+            filial = em.find(FilialEmpresa.class, filial.getId());
+            tarefasFiliais.addAll(filial.getTarefas());
+        }
+
+        List<Tarefa> tarefasDataFim = new ArrayList<>();
+        if (dataFim != null) {
+
+            tarefasDataFim.addAll(em.createNamedQuery("Tarefa.findByDataFim")
+                    .setParameter("dataFim", dataFim)
+                    .getResultList());
+        }
+
+        List<Tarefa> tarefasProjecao = new ArrayList<>();
+        for (ProjecaoTarefa projecao : projecoes) {
+            tarefasProjecao.addAll(
+                    em.createNamedQuery("Tarefa.findByProjecao")
+                    .setParameter("projecao", projecao)
+                    .getResultList());
+        }
+
+        List<Tarefa> tarefas = new ArrayList<>();
+        if (tipoPesquisa == DashboardPresenter.TipoPesquisa.INCLUSIVA_OU) {
+
+            tarefas.addAll(tarefasUsuarioResponsavel);
+
+            tarefas.addAll(tarefasUsuarioSolicitante);
+
+            tarefas.addAll(tarefasUsuariosParticipantes);
+
+            tarefas.addAll(tarefasEmpresa);
+
+            tarefas.addAll(tarefasFiliais);
+
+            tarefas.addAll(tarefasDataFim);
+
+            tarefas.addAll(tarefasProjecao);
+
+        } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
+
+            tarefas.addAll(em.createNamedQuery("Tarefa.findAll")
+                    .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                    .getResultList());
+
+            if (!tarefasUsuarioResponsavel.isEmpty()) {
+                tarefas.retainAll(tarefasUsuarioResponsavel);
+            }
+            if (!tarefasUsuarioSolicitante.isEmpty()) {
+                tarefas.retainAll(tarefasUsuarioSolicitante);
+            }
+            if (!tarefasUsuariosParticipantes.isEmpty()) {
+                tarefas.retainAll(tarefasUsuariosParticipantes);
+            }
+            if (!tarefasEmpresa.isEmpty()) {
+                tarefas.retainAll(tarefasEmpresa);
+            }
+            if (!tarefasFiliais.isEmpty()) {
+                tarefas.retainAll(tarefasFiliais);
+            }
+            if (!tarefasDataFim.isEmpty()) {
+                tarefas.retainAll(tarefasDataFim);
+            }
+            if (!tarefasProjecao.isEmpty()) {
+                tarefas.retainAll(tarefasProjecao);
+            }
+
+        }
+
+        List<Tarefa> result = new ArrayList<>();
+        for (Tarefa task : tarefas) {
+            if (userHasAccessToTask(loggedUser, task)) {
+                result.add(task);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Obtém as tarefas solicitadas pelo usuário logado, ordenadas por data FIM
+     *
+     * @param loggedUser
+     * @return
+     */
+    public List<Tarefa> listarTarefasPrincipais(Usuario loggedUser) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        Empresa empresa = loggedUser.getEmpresaAtiva();
+
+        String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.usuarioSolicitante = :usuarioSolicitante AND NOT t.removida ORDER BY t.dataFim DESC";
+
+        Query q = em.createQuery(sql)
+                .setParameter("empresa", empresa)
+                .setParameter("usuarioSolicitante", loggedUser);
+
+        List<Tarefa> tarefas = q.getResultList();
+
+        return tarefas;
+
+    }
+
+
 }

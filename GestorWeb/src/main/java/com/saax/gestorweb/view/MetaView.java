@@ -7,6 +7,7 @@ import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.util.ErrorUtils;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
@@ -562,10 +563,9 @@ public class MetaView  extends Window implements Serializable {
                 listener.gravarButtonClicked();
             } catch (Exception ex) {
                 
-                String mensagem = FormatterUtil.extrairMensagemValidacao(ex);
+                ErrorUtils.showComponentErrors(this.metaFieldGroup.getFields());
+                Logger.getLogger(TaskView.class.getName()).log(Level.WARNING, null, ex);
                 
-                Notification.show(mensagem, Notification.Type.WARNING_MESSAGE);
-                Logger.getLogger(TaskView.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 

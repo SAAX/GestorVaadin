@@ -739,6 +739,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
         // if there is not an specified responsible user, the logged user will be the responsible
         if (task.getUsuarioResponsavel() == null) {
             task.setUsuarioResponsavel(task.getUsuarioInclusao());
+            
         }
 
         // if the user has not selected a task's priority, the system do select the LOW priority

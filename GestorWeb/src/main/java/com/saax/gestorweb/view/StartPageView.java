@@ -95,7 +95,7 @@ public class StartPageView extends HorizontalLayout {
             String teste = "teste123";
             ProcessoDemoradoModel model = new ProcessoDemoradoModel();
             ProcessoDemoradoView view = new ProcessoDemoradoView();
-            new ProcessoDemoradoPresenter(view, model, teste).executarProcessoDemorado();
+            new ProcessoDemoradoPresenter(view, model).executarProcessoDemorado();
             
             
         });

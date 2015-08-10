@@ -104,7 +104,7 @@ public class ChatPresenter implements Serializable, ChatViewListener {
             view.getUserTable().addItem(new Object[]{task.getUsuarioResponsavel().getNome(), messages.getString("ChatPresenter.responsavel")}, messages.getString("ChatPresenter.responsavel"));
         }
 
-        List<ParticipanteTarefa> participants = task.getParticipantes();
+        List<Participante> participants = task.getParticipantes();
 
         for (int i = 0; i < participants.size(); i++) {
             view.getUserTable().addItem(new Object[]{participants.get(i).getUsuarioParticipante().getNome(), messages.getString("ChatPresenter.participante")}, messages.getString("ChatPresenter.participante"));

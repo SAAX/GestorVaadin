@@ -72,6 +72,7 @@ public class PopUpStatusView extends CustomComponent {
     private Table historicoTable;
     private BeanItemContainer<HistoricoTarefa> historicoContainer;
     private TextArea comentarioTextArea;
+    private Button confirmarAvaliacaoButton;
 
     public void setListener(PopUpStatusViewListener listener) {
         this.listener = listener;
@@ -727,9 +728,6 @@ public class PopUpStatusView extends CustomComponent {
         avaliarTarefaCombo.addItem(5);
         avaliarTarefaCombo.setItemCaption(5, "Ícone 5 Estrelas");
 
-        avaliarTarefaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.processarAvaliacao();
-        });
         
         comboAvaliacaoContainer.addComponent(avaliarTarefaCombo);
 
@@ -738,6 +736,13 @@ public class PopUpStatusView extends CustomComponent {
             avaliarTarefaCombo.select(avaliacaoTarefa.getAvaliacao());
         }
 
+        confirmarAvaliacaoButton = new Button("Confirmar");
+        confirmarAvaliacaoButton.addClickListener((Button.ClickEvent event) -> {
+            listener.processarAvaliacao();
+        });
+        
+        comboAvaliacaoContainer.addComponent(confirmarAvaliacaoButton);
+        
         main.addComponent(comboAvaliacaoContainer);
         
         

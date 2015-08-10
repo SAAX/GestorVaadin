@@ -511,7 +511,16 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void processarAvaliacao() {
+        if (view.getAvaliarTarefaCombo().getValue() == null){
+            throw new IllegalArgumentException("Informe a avaliação");
+        }
+        
         Integer avaliacao = (Integer) view.getAvaliarTarefaCombo().getValue();
+        
+        if (view.getComentarioAvaliacaoTextField() == null){
+            throw new IllegalArgumentException("Informe o comentário");
+        }
+        
         String observacaoAvaliacao = view.getComentarioAvaliacaoTextField().getValue();
         tarefa = model.avaliarTarefa(tarefa.getId(), avaliacao, observacaoAvaliacao, usuario);
         closePopUpButton();

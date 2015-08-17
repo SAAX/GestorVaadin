@@ -9,6 +9,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.RecurrencyView;
 import com.saax.gestorweb.view.RecurrencyViewListener;
 import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
@@ -17,11 +18,8 @@ import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import org.vaadin.dialogs.ConfirmDialog;
@@ -95,7 +93,7 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
 
         view.setListener(this);
 
-        loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
     }
 

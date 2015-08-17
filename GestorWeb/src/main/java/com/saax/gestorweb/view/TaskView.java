@@ -11,7 +11,7 @@ import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.TaskPresenter;
+import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.presenter.PopUpStatusPresenter;
 import com.saax.gestorweb.util.ErrorUtils;
 import com.saax.gestorweb.util.FormatterUtil;
@@ -1403,7 +1403,7 @@ public class TaskView extends Window {
         link.setStyleName("quiet");
         link.addClickListener((Button.ClickEvent event) -> {
             table.setValue(task);
-            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(callback);
             presenter.editar(task);
         });

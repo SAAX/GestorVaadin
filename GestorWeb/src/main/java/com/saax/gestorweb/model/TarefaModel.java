@@ -21,6 +21,7 @@ import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
@@ -51,7 +52,7 @@ public class TarefaModel {
 
     // Classes do modelo acessórias utilizadas por este model
     private final UsuarioModel usuarioModel;
-    private final CompanyModel empresaModel;
+    private final EmpresaModel empresaModel;
 
     // Reference to the use of the messages:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -63,7 +64,7 @@ public class TarefaModel {
      */
     public TarefaModel() {
         usuarioModel = new UsuarioModel();
-        empresaModel = new CompanyModel();
+        empresaModel = new EmpresaModel();
 
     }
 
@@ -383,7 +384,7 @@ public class TarefaModel {
     public ApontamentoTarefa configuraApontamento(ApontamentoTarefa apontamentoTarefa) {
 
         // Identifica os usuários relacionados ao apontamento e a tarefa
-        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         Usuario usuarioResponsavel = apontamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = apontamentoTarefa.getTarefa().getUsuarioSolicitante();
 
@@ -507,7 +508,7 @@ public class TarefaModel {
     public OrcamentoTarefa configuraInputOrcamento(OrcamentoTarefa orcamentoTarefa) {
 
         // Identifica os usuários relacionados ao apontamento e a tarefa
-        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         Usuario usuarioResponsavel = orcamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = orcamentoTarefa.getTarefa().getUsuarioSolicitante();
 
@@ -594,7 +595,7 @@ public class TarefaModel {
 
     public Participante criarParticipante(Usuario usuario, Tarefa tarefa) {
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         Participante participanteTarefa = new Participante();
         participanteTarefa.setTarefa(tarefa);
@@ -675,7 +676,7 @@ public class TarefaModel {
     }
 
     /**
-     * Delega chamada ao model responsavel (CompanyModel)
+     * Delega chamada ao model responsavel (EmpresaModel)
      *
      * @param empresa
      * @return

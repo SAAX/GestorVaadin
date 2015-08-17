@@ -12,6 +12,7 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
@@ -77,7 +78,7 @@ public class ChatView extends Window{
         container.setHeight("100%");
         setContent(container);
         
-        userLogged = (Usuario) GestorSession.getAttribute("loggedUser");
+        userLogged = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         
         HorizontalLayout hlayout = new HorizontalLayout();
         

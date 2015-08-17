@@ -6,7 +6,7 @@ import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.ProcessoDemoradoModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.ProcessoDemoradoPresenter;
-import com.saax.gestorweb.presenter.TaskPresenter;
+import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.server.BrowserWindowOpener;
 import com.vaadin.server.FontAwesome;

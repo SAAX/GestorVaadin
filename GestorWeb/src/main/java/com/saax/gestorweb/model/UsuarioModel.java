@@ -5,6 +5,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -23,7 +24,7 @@ public class UsuarioModel {
      */
     public List<Usuario> listarUsuariosEmpresa() {
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         Empresa empresa = loggedUser.getEmpresaAtiva();
 
         List<Usuario> usuarios = new ArrayList<>();

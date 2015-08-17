@@ -5,6 +5,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +29,7 @@ public class LoginModel {
     public Empresa getEmpresaUsuarioLogado() {
 
         // obtem o usuario logado
-        Usuario usuario = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         // obtem a empresa ativa do usuario logado 
         // so pode haver uma

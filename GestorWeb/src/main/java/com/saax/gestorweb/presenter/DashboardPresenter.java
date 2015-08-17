@@ -6,7 +6,7 @@ import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
 
 import com.saax.gestorweb.model.DashboardModel;
-import com.saax.gestorweb.model.CompanyModel;
+import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
@@ -25,6 +25,7 @@ import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.data.Item;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.CadastroMetaCallBackListener;
 import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.ChatView;
@@ -79,7 +80,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     @Override
     public void init() {
 
-        loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         adicionarHierarquiasProjeto();
         carregaVisualizacaoInicial();
@@ -148,7 +149,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         TarefaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTaskTable().setValue(tarefa);
-            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(callback);
             presenter.editar(tarefa);
         });
@@ -264,7 +265,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         Button criar = new Button("Criar Tarefa", (Button.ClickEvent event) -> {
             Tarefa template = (Tarefa) listaTemplates.getValue();
             if (template != null) {
-                TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
+                TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
                 presenter.setCallBackListener(callback);
 
                 Tarefa novaTarefa;
@@ -305,7 +306,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
             presenter.setCallBackListener(this);
             presenter.criarNovaMeta(categoria);
         } else if (categoria.getNivel() == 2) {
-            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(this);
             presenter.createTask(categoria);
         }
@@ -330,7 +331,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
      */
     @Override
     public void usuarioLogadoAlteradoAPENASTESTE() {
-        this.loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        this.loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         adicionarHierarquiasProjeto();
         carregaVisualizacaoInicial();
     }
@@ -341,7 +342,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     }
 
     public void openTask(Tarefa taskToOpen) {
-            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(this);
             presenter.editar(taskToOpen);
         
@@ -407,7 +408,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
 
         }
 
-        CompanyModel empresaModel = new CompanyModel();
+        EmpresaModel empresaModel = new EmpresaModel();
         List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(loggedUser);
         for (Empresa empresa : empresas) {
 
@@ -703,7 +704,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
             view.getTargetTable().setValue(meta);
             MetaPresenter presenter = new MetaPresenter(new MetaModel(), new MetaView());
             presenter.setCallBackListener(callback);
-            presenter.edit(meta);
+            presenter.editarMeta(meta);
         });
         return link;
     }
@@ -715,7 +716,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     public void carregarListaMetasUsuarioLogado() {
 
         // Usuario logado
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         List<Meta> listaMetas = model.listarMetas(loggedUser);
 

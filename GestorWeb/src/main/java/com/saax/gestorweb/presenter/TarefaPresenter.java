@@ -3,14 +3,11 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.ChatSingletonModel;
-import com.saax.gestorweb.model.CompanyModel;
+import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.RecurrencyModel;
-import com.saax.gestorweb.model.datamodel.AndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
-import com.saax.gestorweb.model.datamodel.CentroCusto;
-import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
@@ -28,6 +25,7 @@ import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.TarefaCallBackListener;
 import com.saax.gestorweb.view.TaskView;
 import com.saax.gestorweb.view.TaskViewListener;
@@ -56,7 +54,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.beanutils.converters.DateTimeConverter;
 
 /**
  * Presenter:
@@ -65,7 +62,7 @@ import org.apache.commons.beanutils.converters.DateTimeConverter;
  *
  * @author rodrigo
  */
-public class TaskPresenter implements Serializable, TaskViewListener, TarefaCallBackListener, RecurrencyDoneCallBackListener, PopUpStatusListener {
+public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCallBackListener, RecurrencyDoneCallBackListener, PopUpStatusListener {
 
     // Todo presenterPopUpStatus mantem acesso à view e ao model
     private final transient TaskView view;
@@ -87,7 +84,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
      * @param model
      * @param view
      */
-    public TaskPresenter(TarefaModel model,
+    public TarefaPresenter(TarefaModel model,
             TaskView view) {
 
         this.model = model;
@@ -95,7 +92,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
 
         view.setListener(this);
 
-        loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
     }
 
@@ -344,7 +341,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
         carregaComboPrioridade();
         carregaComboResponsavel();
         carregaComboParticipante();
-        carregaComboEmpresaCliente();
+        PresenterUtils.carregaComboEmpresaCliente(view.getCustomerCompanyCombo());
         setPopUpEvolucaoStatusEAndamento(tarefa);
 //Projeção será inserida na V2
 //        carregaApontamento(tarefa);
@@ -482,7 +479,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
     private void carregaComboEmpresa() {
         ComboBox empresaCombo = view.getCompanyCombo();
 
-        CompanyModel empresaModel = new CompanyModel();
+        EmpresaModel empresaModel = new EmpresaModel();
 
         List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(loggedUser);
         for (Empresa empresa : empresas) {
@@ -604,84 +601,6 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
 
     }
 
-    /**
-     * Loads the department's combobox with all active company's department or
-     * disable the combo if there is not any active department for this company.
-     */
-    private void loadDepartmentCombo(Empresa company) {
-
-        // Retrieves the combo reference
-        ComboBox department = view.getDepartamentCombo();
-
-        // Verify if the company is already set
-        if (company != null) {
-
-            // Retrieves the list of active departments for this company
-            List<Departamento> departmentList = model.obterListaDepartamentosAtivos(company);
-
-            if (departmentList.isEmpty()) {
-
-                // if there is not any department: disable and empty the combo
-                department.removeAllItems();
-                department.setEnabled(false);
-
-            } else {
-
-                // loads the department's list into the combo
-                for (Departamento depto : departmentList) {
-                    department.addItem(depto);
-                    department.setItemCaption(depto, depto.getDepartamento());
-                }
-                department.setEnabled(true);
-            }
-        } else {
-
-            // if there conmpany has not been setted: disable and empty the combo
-            department.removeAllItems();
-            department.setEnabled(false);
-
-        }
-
-    }
-
-    /**
-     * Loads the cost center's combobox with all active company's cc or disable
-     * the combo if there is not any active cost-center for this company.
-     */
-    private void carregaComboCentroCusto(Empresa company) {
-
-        // Retrieves the combo reference
-        ComboBox costCenterCombo = view.getCostCenterCombo();
-
-        // Verify if the company is already set
-        if (company != null) {
-
-            // Retrieves the list of active departments for this company
-            List<CentroCusto> costCenterList = model.obterListaCentroCustosAtivos(company);
-
-            if (costCenterList.isEmpty()) {
-
-                // if there is not any cost center: disable and empty the combo
-                costCenterCombo.removeAllItems();
-                costCenterCombo.setEnabled(false);
-
-            } else {
-
-                // loads the cost center list into the combo
-                for (CentroCusto cc : costCenterList) {
-                    costCenterCombo.addItem(cc);
-                    costCenterCombo.setItemCaption(cc, cc.getCentroCusto());
-                }
-            }
-        } else {
-
-            // if there conmpany has not been setted: disable and empty the combo
-            costCenterCombo.removeAllItems();
-            costCenterCombo.setEnabled(false);
-
-        }
-
-    }
 
     @Override
     public void avisoButtonClicked() {
@@ -697,7 +616,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
 
         try {
             view.getTaskFieldGroup().commit();
-            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(this);
             presenter.criarNovaSubTarefa(view.getTarefa());
         } catch (FieldGroup.CommitException ex) {
@@ -826,7 +745,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(TaskPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -866,7 +785,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
-            Logger.getLogger(TaskPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TarefaPresenter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -915,7 +834,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
 
         } catch (FileNotFoundException | RuntimeException ex) {
             // caso alguma exceção ocorra, loga:
-            Logger.getLogger(TaskPresenter.class
+            Logger.getLogger(TarefaPresenter.class
                     .getName()).log(Level.SEVERE, null, ex);
             // e exibe ao usuario:
             Notification.show(ex.getMessage(), Notification.Type.WARNING_MESSAGE);
@@ -949,7 +868,7 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
         TarefaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getSubTasksTable().setValue(subTarefa);
-            TaskPresenter presenter = new TaskPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
             presenter.setCallBackListener(callback);
             presenter.editar(subTarefa);
         });
@@ -1075,8 +994,8 @@ public class TaskPresenter implements Serializable, TaskViewListener, TarefaCall
 
     @Override
     public void empresaSelecionada(Empresa empresa) {
-        loadDepartmentCombo(empresa);
-        carregaComboCentroCusto(empresa);
+        PresenterUtils.carregaComboDepartamento(view.getDepartamentCombo(), empresa);
+        PresenterUtils.carregaComboCentroCusto(view.getCostCenterCombo(), empresa);
     }
 
     private boolean isStartDateValidForRecurrency() {

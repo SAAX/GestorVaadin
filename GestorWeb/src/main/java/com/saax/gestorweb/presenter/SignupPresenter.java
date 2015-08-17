@@ -14,6 +14,7 @@ import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
 import com.vaadin.data.Item;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Notification;
@@ -60,7 +61,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         this.model = model;
         this.view = view;
         
-        loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         view.setListener(this);
 

@@ -5,7 +5,6 @@ import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.StartPageModel;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
-import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.presenter.LoginPresenter;
 import com.saax.gestorweb.presenter.StartPagePresenter;
@@ -13,6 +12,7 @@ import com.saax.gestorweb.util.CookiesManager;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.StartPageView;
@@ -75,7 +75,7 @@ public class GestorMDI extends UI {
         }
 
         // valida se o usuário está logado 
-        if (GestorSession.getAttribute("loggedUser") == null) {
+        if (GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName()) == null) {
 
             // se o usuario nao estiver logado, chama da tela de login
             LoginModel loginModel = new LoginModel();

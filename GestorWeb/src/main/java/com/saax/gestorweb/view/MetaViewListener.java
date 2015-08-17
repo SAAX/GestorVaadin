@@ -20,7 +20,7 @@ public interface MetaViewListener {
 
     public void cancelarButtonClicked();
     
-    public void edit(Meta metaToEdit);   
+    public void editarMeta(Meta metaToEdit);   
 
     public void addTaskButtonClicked();
 

@@ -17,7 +17,7 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.MetaPresenter;
-import com.saax.gestorweb.presenter.TaskPresenter;
+import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
@@ -205,7 +205,7 @@ public class CadastroMetaTest {
         // open a presenter to create a task under the target
         TaskView taskView = new TaskView();
         TarefaModel taskModel = new TarefaModel();
-        TaskPresenter taskPresenter = new TaskPresenter(taskModel, taskView);
+        TarefaPresenter taskPresenter = new TarefaPresenter(taskModel, taskView);
         
         // sets the taskPresenter's call back to the targetPresenter
         taskPresenter.setCallBackListener(presenter);

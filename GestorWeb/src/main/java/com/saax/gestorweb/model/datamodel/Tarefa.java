@@ -1,6 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -287,7 +288,7 @@ public class Tarefa implements Serializable {
             }
             clone.setSubTarefas(cloneSubs);
 
-            Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+            Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
             clone.setId(null);
             clone.setUsuarioInclusao(loggedUser);

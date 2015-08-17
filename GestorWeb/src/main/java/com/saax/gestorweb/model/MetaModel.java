@@ -17,11 +17,11 @@ import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.PrioridadeMeta;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusMeta;
-import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,11 +40,11 @@ public class MetaModel {
 
     // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
-    private final CompanyModel empresaModel;
+    private final EmpresaModel empresaModel;
 
     public MetaModel() {
         usuarioModel = new UsuarioModel();
-        empresaModel = new CompanyModel();
+        empresaModel = new EmpresaModel();
 
     }
 
@@ -78,7 +78,7 @@ public class MetaModel {
     }
 
     /**
-     * Delega chamada ao model responsavel (CompanyModel)
+     * Delega chamada ao model responsavel (EmpresaModel)
      *
      * @param loggedUser
      * @return lista de EmpresaCliente
@@ -88,7 +88,7 @@ public class MetaModel {
     }
 
     /**
-     * Delega chamada ao model responsavel (CompanyModel)
+     * Delega chamada ao model responsavel (EmpresaModel)
      *
      * @param empresa
      * @return
@@ -98,7 +98,7 @@ public class MetaModel {
     }
 
     /**
-     * Delega chamada ao model responsavel (CompanyModel)
+     * Delega chamada ao model responsavel (EmpresaModel)
      *
      * @param empresa
      * @return
@@ -203,7 +203,7 @@ public class MetaModel {
 
     public Participante criarParticipante(Usuario usuario, Meta meta) {
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         Participante participanteTarefa = new Participante();
         participanteTarefa.setMeta(meta);

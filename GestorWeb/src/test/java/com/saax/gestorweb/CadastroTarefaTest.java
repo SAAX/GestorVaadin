@@ -15,14 +15,13 @@ import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
-import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.TaskPresenter;
+import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.presenter.PopUpStatusPresenter;
 import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.DAOAleatorio;
@@ -30,6 +29,7 @@ import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.PostgresConnection;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.TaskView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import org.apache.commons.lang3.time.DateUtils;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import static org.junit.Assert.fail;
@@ -59,7 +58,7 @@ public class CadastroTarefaTest {
 
     TaskView view;
     TarefaModel model;
-    TaskPresenter presenter;
+    TarefaPresenter presenter;
     private EntityManager em;
     private static List<Tarefa> tarefasCadastradas;
     private static ResourceBundle mensagens = null;
@@ -87,7 +86,7 @@ public class CadastroTarefaTest {
             tarefasCadastradas = new ArrayList<>();
 
             // se assegura que nao existem tarefas ja cadastradas
-            Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+            Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
             GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
             List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findAll")
                     .setParameter("empresa", loggedUser.getEmpresaAtiva()).getResultList();
@@ -141,7 +140,7 @@ public class CadastroTarefaTest {
 
         view = new TaskView();
         model = new TarefaModel();
-        presenter = new TaskPresenter(model, view);
+        presenter = new TarefaPresenter(model, view);
 
         em = GestorEntityManagerProvider.getEntityManager();
     }
@@ -155,7 +154,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro simples de tarefa");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
@@ -197,7 +196,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro de tarefa com anexo");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
@@ -249,7 +248,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro completo de uma tarefa");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         Usuario usuarioResponsavel = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
@@ -456,7 +455,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro multiplas sub tarefas");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis
@@ -493,7 +492,7 @@ public class CadastroTarefaTest {
         TaskView view_sub1 = new TaskView();
         TarefaModel model_sub1 = new TarefaModel();
 
-        TaskPresenter presenter_sub1 = new TaskPresenter(model_sub1, view_sub1);
+        TarefaPresenter presenter_sub1 = new TarefaPresenter(model_sub1, view_sub1);
         presenter_sub1.setCallBackListener(presenter);
 
         presenter_sub1.criarNovaSubTarefa(view.getTarefa());
@@ -517,7 +516,7 @@ public class CadastroTarefaTest {
         TaskView view_sub2 = new TaskView();
         TarefaModel model_sub2 = new TarefaModel();
 
-        TaskPresenter presenter_sub2 = new TaskPresenter(model_sub2, view_sub2);
+        TarefaPresenter presenter_sub2 = new TarefaPresenter(model_sub2, view_sub2);
         presenter_sub2.setCallBackListener(presenter_sub1);
 
         presenter_sub2.criarNovaSubTarefa(view_sub1.getTarefa());
@@ -593,7 +592,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando a edição (alteração) da tarefa complesta");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         Usuario usuarioResponsavel = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
 
         String nome = "Teste Cadastro Tarefa #2";
@@ -791,7 +790,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro simples de tarefa");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);

@@ -14,6 +14,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.ChatViewListener;
 import com.vaadin.server.FileDownloader;
@@ -59,7 +60,7 @@ public class ChatPresenter implements Serializable, ChatViewListener {
         this.model = model;
         this.view = view;
         view.setListener(this);
-        userLogged = (Usuario) GestorSession.getAttribute("loggedUser");
+        userLogged = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
     }
 
     public void open(Tarefa task) {

@@ -13,6 +13,7 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.PopUpStatusView;
 import com.saax.gestorweb.view.PopUpStatusViewListener;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
@@ -50,7 +51,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
     public PopUpStatusPresenter(PopUpStatusView view, PopUpStatusModel model) {
         this.view = view;
         this.model = model;
-        usuario = (Usuario) GestorSession.getAttribute("loggedUser");
+        usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         view.setListener(this);
 
     }

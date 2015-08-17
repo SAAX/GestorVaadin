@@ -5,22 +5,20 @@ import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
-import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import org.apache.commons.beanutils.BeanUtils;
 
 /**
@@ -32,20 +30,20 @@ public class DashboardModel {
 
     // Classes do modelo acessórias acessadas por este model
     private final UsuarioModel usuarioModel;
-    private final CompanyModel empresaModel;
+    private final EmpresaModel empresaModel;
     private final TarefaModel tarefaModel;
     private final MetaModel metaModel;
 
     public DashboardModel() {
         usuarioModel = new UsuarioModel();
-        empresaModel = new CompanyModel();
+        empresaModel = new EmpresaModel();
         tarefaModel = new TarefaModel();
         metaModel = new MetaModel();
 
     }
 
     public List<Tarefa> getTarefasTemplate() {
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         List<Tarefa> templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .setParameter("template", true)
@@ -76,7 +74,7 @@ public class DashboardModel {
                 .getResultList();
 
         // Obtem as hiearquias da empresa do usuário logad
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute("loggedUser");
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
         List<HierarquiaProjeto> hierarquiasEmpresa = em.createNamedQuery("HierarquiaProjeto.findByEmpresa")
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();

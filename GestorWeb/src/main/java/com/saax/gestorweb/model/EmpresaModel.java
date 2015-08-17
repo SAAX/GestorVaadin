@@ -17,7 +17,7 @@ import javax.persistence.EntityManager;
  *
  * @author rodrigo
  */
-public class CompanyModel {
+public class EmpresaModel {
 
     /**
      * Obtem a lista de empresas possiveis de seleção para o usuário logado
@@ -54,7 +54,7 @@ public class CompanyModel {
 
         List<EmpresaCliente> clientes = new ArrayList<>();
 
-        CompanyModel empresaModel = new CompanyModel();
+        EmpresaModel empresaModel = new EmpresaModel();
 
         // obtem as coligadas a empresa do usuario logado
         for (Empresa empresa : empresaModel.listarEmpresasParaSelecao(loggedUser)) {

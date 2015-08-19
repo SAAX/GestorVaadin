@@ -22,6 +22,7 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -439,6 +440,26 @@ public class DashboardView extends VerticalLayout {
         return tabSheetContainer;
     }
 
+    
+    /**
+     * Configura a coluna da a tabela informadas de modo que ao expandir/colapsar o
+     * tamanho seja aumentado ou reduzido em 20px
+     * @param treeTable
+     * @param columnID 
+     */
+    private void configuraExpansaoColunaCodigo(TreeTable treeTable, Object columnID){
+        
+        final int INCREMENTO = 20;
+        
+        treeTable.addExpandListener((Tree.ExpandEvent event) -> {
+            taskTable.setColumnWidth(columnID, taskTable.getColumnWidth(columnID) + INCREMENTO);
+        });
+        treeTable.addCollapseListener((Tree.CollapseEvent event) -> {
+            taskTable.setColumnWidth(columnID, taskTable.getColumnWidth(columnID) - INCREMENTO);
+        });
+
+    }
+    
     /**
      * Build the task table with its columns and initial parameters
      *
@@ -446,12 +467,36 @@ public class DashboardView extends VerticalLayout {
      */
     private Table buildTaskTable() {
 
-        taskTable = new TreeTable();
+        taskTable = new TreeTable(){
+            {this.alwaysRecalculateColumnWidths = true;}
+        };
         taskTable.setWidth("100%");
+        
+        configuraExpansaoColunaCodigo(taskTable, messages.getString("DashboardView.taskTable.cod"));
+        
+        taskTable.addExpandListener(new Tree.ExpandListener() {
+
+            @Override
+            public void nodeExpand(Tree.ExpandEvent event) {
+                taskTable.setColumnWidth(
+                        messages.getString("DashboardView.taskTable.cod"), 
+                        taskTable.getColumnWidth(messages.getString("DashboardView.taskTable.cod")) + 20);
+            }
+        });
+        taskTable.addCollapseListener(new Tree.CollapseListener() {
+
+            @Override
+            public void nodeCollapse(Tree.CollapseEvent event) {
+                taskTable.setColumnWidth(
+                        messages.getString("DashboardView.taskTable.cod"), 
+                        taskTable.getColumnWidth(messages.getString("DashboardView.taskTable.cod")) - 20);
+            }
+        });
+
         taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.cod"), Button.class, "");
-        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.cod"), 70);
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.cod"), 100);
         taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.title"), Button.class, "");
-        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.title"), 50);
+        taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.title"), 100);
         taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.name"), Button.class, "");
         taskTable.setColumnWidth(messages.getString("DashboardView.taskTable.name"), 250);
         taskTable.addContainerProperty(messages.getString("DashboardView.taskTable.company"), String.class, "");
@@ -488,13 +533,17 @@ public class DashboardView extends VerticalLayout {
      */
     private Table buildTargetTable() {
 
-        targetTable = new TreeTable();
+        targetTable = new TreeTable(){
+            {this.alwaysRecalculateColumnWidths = true;}
+        };
+        
+        configuraExpansaoColunaCodigo(targetTable, messages.getString("DashboardView.targetTable.cod"));
         targetTable.setWidth("100%");
 
         targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.cod"), Button.class, "");
-        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.cod"), 70);
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.cod"), 100);
         targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.title"), Button.class, "");
-        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.title"), 50);
+        targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.title"), 100);
         targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.name"), Button.class, "");
         targetTable.setColumnWidth(messages.getString("DashboardView.targetTable.name"), 250);
         targetTable.addContainerProperty(messages.getString("DashboardView.targetTable.company"), String.class, "");

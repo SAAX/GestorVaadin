@@ -51,7 +51,7 @@ public class DashboardTest {
 //    @AfterClass
 //    public static void tearDownClass() {
 //        // disconnect
-//        GestorEntityManagerProvider.getEntityManager().close();
+//        GestorEntityManagerProvider.close();
 //    }
 //
 //    

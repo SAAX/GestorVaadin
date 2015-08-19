@@ -25,11 +25,11 @@ public class AtmosphereFilter {} /*extends AtmosphereInterceptorAdapter {
         @Override
         public void postInspect(AtmosphereResource r) {
             // Fecha o entity manger ao fim da requisição
-            if (GestorEntityManagerProvider.getEntityManager() != null) {
+            if (GestorEntityManagerProvider != null) {
                 Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Fechando EM no Filter");
-                GestorEntityManagerProvider.getEntityManager().close();
+                GestorEntityManagerProvider.close();
                 // Libera a variável da thread
-                GestorEntityManagerProvider.remove();
+                GestorEntityManagerProvider.getEntityManager().remove();();
             }
         }
     }*/

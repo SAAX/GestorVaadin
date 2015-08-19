@@ -14,7 +14,7 @@ import javax.servlet.annotation.WebListener;
  *
  */
 @WebListener
-public class GestorServletContextListener implements ServletContextListener {
+public class GestorServletContextListener  implements ServletContextListener {
 
     /**
      * Inicilizador do contexto

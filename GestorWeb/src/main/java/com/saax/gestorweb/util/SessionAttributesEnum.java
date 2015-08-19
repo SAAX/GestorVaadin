@@ -13,7 +13,7 @@ public enum SessionAttributesEnum {
 
     USUARIO_LOGADO("loggedUser");
     
-    private String attributeName;
+    private final String attributeName;
     
     private SessionAttributesEnum(String nome){
         this.attributeName = nome;

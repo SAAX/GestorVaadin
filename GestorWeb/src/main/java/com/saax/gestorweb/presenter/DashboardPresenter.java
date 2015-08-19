@@ -509,6 +509,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
             adicionarTarefaTable(tarefa);
             organizeTree(view.getTaskTable(), tarefa, tarefa.getSubTarefas());
         });
+        
 
     }
 

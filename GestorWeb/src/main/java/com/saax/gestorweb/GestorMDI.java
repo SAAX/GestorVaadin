@@ -12,6 +12,7 @@ import com.saax.gestorweb.util.CookiesManager;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.LoginView;
@@ -30,6 +31,9 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -118,21 +122,30 @@ public class GestorMDI extends UI {
         @Override
         protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-            try {
+            EntityManagerFactory entityManagerFactory;
+            EntityManager entityManager = null;
 
+            entityManagerFactory = PostgresConnection.getInstance().getEntityManagerFactory();
+
+            entityManager = entityManagerFactory.createEntityManager();
+
+            // Create and set the entity manager
+            GestorEntityManagerProvider.setCurrentEntityManager(entityManager);
+
+            try {
                 super.service(req, resp);
 
             } finally {
-                // Fecha o entity manger ao fim da requisição
-                if (GestorEntityManagerProvider.getEntityManager() != null) {
-                    Logger.getLogger(GestorMDI.class.getName()).log(Level.INFO, "Closing EM on service method");
-                    GestorEntityManagerProvider.getEntityManager().close();
-                    GestorEntityManagerProvider.remove();
-                }
-            }
-        }
 
-    }
+                if (entityManager.isOpen()) {
+                    entityManager.close();
+                }
+                // Reset the entity manager
+                GestorEntityManagerProvider.setCurrentEntityManager(null);
+            }
+
+        }
+    };
 
     public void loadstartPage() {
         // Cria a pagina inical
@@ -195,7 +208,7 @@ public class GestorMDI extends UI {
             throw new RuntimeException(ex);
         }
 
-        //obtém os cookies da sessão
+//obtém os cookies da sessão
         CookiesManager cookieManager = new CookiesManager();
         GestorSession.setAttribute("cookieManager", cookieManager);
 

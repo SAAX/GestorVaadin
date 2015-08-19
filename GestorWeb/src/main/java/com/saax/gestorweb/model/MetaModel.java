@@ -21,6 +21,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -240,33 +241,48 @@ public class MetaModel {
     }
 
     public List<Meta> filtrarMetas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
+
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         final List<Meta> metasUsuarioResponsavel = new ArrayList<>();
-        usuariosResponsaveis.stream().forEach((usuario) -> {
-            // refresh
-            usuario = em.find(Usuario.class, usuario.getId());
-            metasUsuarioResponsavel.addAll(usuario.getMetasSobResponsabilidade());
+        
+        for (Usuario usuarioResponsavel : usuariosResponsaveis) {
 
-        });
+            usuarioResponsavel = em.find(Usuario.class, usuarioResponsavel.getId());
+            metasUsuarioResponsavel.addAll(usuarioResponsavel.getMetasSobResponsabilidade());
 
+        }
+
+        
+        
         List<Meta> metasUsuarioSolicitante = new ArrayList<>();
-        usuariosSolicitantes.stream().forEach((usuario) -> {
-            usuario = em.find(Usuario.class, usuario.getId());
-            metasUsuarioSolicitante.addAll(usuario.getMetasSolicitadas());
-        });
+        for (Usuario usuariosSolicitante : usuariosSolicitantes) {
+            usuariosSolicitante = em.find(Usuario.class, usuariosSolicitante.getId());
+            metasUsuarioSolicitante.addAll(usuariosSolicitante.getMetasSolicitadas());
+        }
+
+        List<Meta> metasUsuariosParticipantes = new ArrayList<>();
+        for (Usuario usuarioParticipante : usuariosParticipantes) {
+            usuarioParticipante = em.find(Usuario.class, usuarioParticipante.getId());
+
+            for (Participante participanteMeta : usuarioParticipante.getTarefasParticipantes()) {
+                if (participanteMeta.getMeta() != null) {
+                    metasUsuariosParticipantes.add(participanteMeta.getMeta());
+                }
+            }
+        }
 
         List<Meta> metasEmpresa = new ArrayList<>();
-        empresas.stream().forEach((empresa) -> {
+        for (Empresa empresa : empresas) {
             empresa = em.find(Empresa.class, empresa.getId());
             metasEmpresa.addAll(empresa.getMetas());
-        });
+        }
 
         List<Meta> metasFiliais = new ArrayList<>();
-        filiais.stream().forEach((filial) -> {
+        for (FilialEmpresa filial : filiais) {
             filial = em.find(FilialEmpresa.class, filial.getId());
             metasFiliais.addAll(filial.getMetas());
-        });
+        }
 
         List<Meta> metasDataFim = new ArrayList<>();
         if (dataFim != null) {
@@ -283,11 +299,14 @@ public class MetaModel {
 
             metas.addAll(metasUsuarioSolicitante);
 
+            metas.addAll(metasUsuariosParticipantes);
+
             metas.addAll(metasEmpresa);
 
             metas.addAll(metasFiliais);
 
             metas.addAll(metasDataFim);
+
 
         } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
 
@@ -300,6 +319,9 @@ public class MetaModel {
             }
             if (!metasUsuarioSolicitante.isEmpty()) {
                 metas.retainAll(metasUsuarioSolicitante);
+            }
+            if (!metasUsuariosParticipantes.isEmpty()) {
+                metas.retainAll(metasUsuariosParticipantes);
             }
             if (!metasEmpresa.isEmpty()) {
                 metas.retainAll(metasEmpresa);
@@ -319,18 +341,18 @@ public class MetaModel {
                 result.add(meta);
             }
         }
-
-        return result;
-    }
-
     
-    /**
-     * Obtém as metas sob responsabilidade do usuário logado
-     *
-     * @param loggedUser
-     * @return
-     */
-    public List<Meta> listarMetas(Usuario loggedUser) {
+
+    return result ;
+}
+
+/**
+ * Obtém as metas sob responsabilidade do usuário logado
+ *
+ * @param loggedUser
+ * @return
+ */
+public List<Meta> listarMetas(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 

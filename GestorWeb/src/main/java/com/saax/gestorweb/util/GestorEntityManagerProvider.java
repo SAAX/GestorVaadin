@@ -29,16 +29,12 @@ public class GestorEntityManagerProvider {
 
     public static void setCurrentEntityManager(EntityManager em) {
         if (em==null){
-            throw new RuntimeException("Entity Manager está NULO!");
-        }
-        if (!em.isOpen()){
-            throw new RuntimeException("Entity Manager está FECHADO!");
+            Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.INFO, "Anulando EM");
+            
+        } else {
+            Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.INFO, "Setando EM:"+em.toString());
+            
         }
         entityManagerThreadLocal.set(em);
-
-    }
-
-    public static void remove() {
-        entityManagerThreadLocal.remove();
     }
 }

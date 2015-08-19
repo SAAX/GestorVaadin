@@ -9,7 +9,7 @@ import javax.persistence.EntityManagerFactory;
  * @author Rodrigo
  */
 public class PostgresConnection {
-
+    
     private static PostgresConnection instance;
     private EntityManagerFactory entityManagerFactory;
     

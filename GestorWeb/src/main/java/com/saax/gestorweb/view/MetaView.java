@@ -50,13 +50,6 @@ import java.util.logging.Logger;
 /**
  * Pop-up Window do cadastro de Metas
  * A visualização será em uma estrutura com:
- * <br>
- * <ol>
- * <li>Informações Básicas</li>
- * <li>Informações Adicionais e Descrição</li>
- * <li>Tabela de Tarefas</li>
- * </ol>
- *
  *
  * @author rodrigo
  */
@@ -73,7 +66,6 @@ public class MetaView  extends Window implements Serializable {
     // List of required fields
     private final List<AbstractField> requiredFields;
 
-    
     private boolean editAllowed = true;
     
     // -------------------------------------------------------------------------

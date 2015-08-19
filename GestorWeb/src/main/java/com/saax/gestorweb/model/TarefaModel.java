@@ -42,9 +42,12 @@ import javax.persistence.Query;
 
 /**
  * Classe de modelo da tarefa <br><br>
- * 
- * Esta classe é responsável pela aplicação das regras de negócios do elemento "Tarefa" do sistema <br>
- * Todas as regras de negócio que envolvam outros elementos do sistema são executadas com auxílio do model destes elementos <br>
+ *
+ * Esta classe é responsável pela aplicação das regras de negócios do elemento
+ * "Tarefa" do sistema <br>
+ * Todas as regras de negócio que envolvam outros elementos do sistema são
+ * executadas com auxílio do model destes elementos <br>
+ *
  * @author Rodrigo Moreira
  * @author Fernando Stávale
  */
@@ -60,7 +63,8 @@ public class TarefaModel {
     private Tarefa primeiraTarefaRecorrente;
 
     /**
-     * Cria um novo model para Tarefa e instancia todos os models acessórios necessários
+     * Cria um novo model para Tarefa e instancia todos os models acessórios
+     * necessários
      */
     public TarefaModel() {
         usuarioModel = new UsuarioModel();
@@ -70,7 +74,7 @@ public class TarefaModel {
 
     /**
      * Lista todos os usuários ativos da mesma empresa do usuário logado <br>
-     * 
+     *
      * @return a lista de usuários
      */
     public List<Usuario> listarUsuariosEmpresa() {
@@ -89,7 +93,8 @@ public class TarefaModel {
 
     /**
      * Grava a tarefa na base de dados. <br>
-     * No caso de tarefas recursivas percorre toda a lista de tarefas recusivamente (da última para a primeira) persistindo só na primeira <br>
+     * No caso de tarefas recursivas percorre toda a lista de tarefas
+     * recusivamente (da última para a primeira) persistindo só na primeira <br>
      * No caso das tarefas não recursivas: <br>
      * Quando for uma nova tarefa só persiste na tarefa pai ou na meta <br>
      * Quando for uma tarefa já existente (edição) grava individualmente <br>
@@ -97,7 +102,7 @@ public class TarefaModel {
      * @param tarefa
      * @return a tarefa gravada com sucesso, ou null se não gravar
      * @throws IllegalStateException se a tarefa passada por parâmetro for nula
-     * @throws RuntimeException se ocorrer algum problema na persistencia 
+     * @throws RuntimeException se ocorrer algum problema na persistencia
      */
     public Tarefa gravarTarefa(Tarefa tarefa) {
 
@@ -132,7 +137,7 @@ public class TarefaModel {
             } else {
                 em.merge(tarefa);
             }
-
+            
             boolean novaTarefa = tarefa.getId() == null;
             boolean tarefaPai = tarefa.getMeta() == null && tarefa.getTarefaPai() == null;
 
@@ -154,6 +159,7 @@ public class TarefaModel {
                 moverAnexoTemporario(anexo);
             });
 
+
         } catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
             if (GestorEntityManagerProvider.getEntityManager().getTransaction().isActive()) {
@@ -167,15 +173,22 @@ public class TarefaModel {
     }
 
     /**
-     * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ,  e do ID Tarefa. <br> <br>
-     * Este método é chamado na gravação das tarefas para mover os anexos enviados pelo usuário para pasta oficial de anexos <br>
-     * Considerando a pasta base para gravação dos anexos parametrizada na aplicação em : <br>
+     * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ,
+     * e do ID Tarefa. <br> <br>
+     * Este método é chamado na gravação das tarefas para mover os anexos
+     * enviados pelo usuário para pasta oficial de anexos <br>
+     * Considerando a pasta base para gravação dos anexos parametrizada na
+     * aplicação em : <br>
      * "anexos.relative.path"
+     *
      * @param anexoTarefa anexo a ser movido
      * @throws IllegalArgumentException se o anexo enviado for nulo
-     * @throws IllegalStateException se o parametro "anexos.relative.path" nao estiver adequadamente configurado 
-     * @throws IllegalStateException se a empresa não possuir CNPJ (já que este é usado como pasta) 
-     * @throws IllegalStateException se a pasta base nao existir ou ser somente leitura
+     * @throws IllegalStateException se o parametro "anexos.relative.path" nao
+     * estiver adequadamente configurado
+     * @throws IllegalStateException se a empresa não possuir CNPJ (já que este
+     * é usado como pasta)
+     * @throws IllegalStateException se a pasta base nao existir ou ser somente
+     * leitura
      * @throws IllegalStateException se o arquivo anexo nao existir
      * @throws RuntimeException se ocorrer algum erro na gravação do anexo
      */
@@ -735,7 +748,6 @@ public class TarefaModel {
         return em.find(Tarefa.class, taskID);
     }
 
-    
     /**
      * Creates an acessible link to the task
      *
@@ -756,8 +768,8 @@ public class TarefaModel {
         return html.toString();
 
     }
-    
-        /**
+
+    /**
      * Obtém as tarefas sob responsabilidade do usuário logado
      *
      * @param loggedUser
@@ -775,7 +787,6 @@ public class TarefaModel {
         return tarefas;
 
     }
-
 
     /**
      * Lista as tarefas que correspondam aos filtros informados
@@ -815,7 +826,9 @@ public class TarefaModel {
             usuarioParticipante = em.find(Usuario.class, usuarioParticipante.getId());
 
             for (Participante participanteTarefa : usuarioParticipante.getTarefasParticipantes()) {
-                tarefasUsuariosParticipantes.add(participanteTarefa.getTarefa());
+                if (participanteTarefa.getTarefa() != null) {
+                    tarefasUsuariosParticipantes.add(participanteTarefa.getTarefa());
+                }
             }
         }
 
@@ -927,6 +940,5 @@ public class TarefaModel {
         return tarefas;
 
     }
-
 
 }

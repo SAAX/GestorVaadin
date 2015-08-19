@@ -109,7 +109,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -175,10 +175,7 @@
             <version>2.2.4</version>
             <scope>test</scope>
         </dependency>
-
-
-
-    </dependencies>
+	</dependencies>
 
     <build>
         <plugins>
@@ -232,13 +229,12 @@
                     <compileReport>false</compileReport>
                     <noServer>true</noServer>
                     <!-- Remove draftCompile when project is ready -->
-                    <draftCompile>false</draftCompile>
+                    <draftCompile>true</draftCompile>
 					
                     <style>OBF</style>
                     <strict>true</strict>
                     <runTarget>http://localhost:8080/</runTarget>
-                    <optimizationLevel>4</optimizationLevel>
-                    <localWorkers>1</localWorkers>
+                    <localWorkers>5</localWorkers>
                 </configuration>
                 <executions>
                     <execution>

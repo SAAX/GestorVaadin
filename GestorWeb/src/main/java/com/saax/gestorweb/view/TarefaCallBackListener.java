@@ -10,15 +10,10 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 public interface TarefaCallBackListener {
 
     /**
-     * Trata o evento disparado ao concluir a criação de uma nova tarefa
+     * Trata o evento disparado ao concluir a criação de uma nova tarefa ou alteração de uma
      * @param tarefaCriada 
      */
-    public void tarefaCriada(Tarefa tarefaCriada);
+    public void tarefaCriadaOuAtualizada(Tarefa tarefaCriada);
 
-    /**
-     * Trata o evento disparado ao concluir a edição de uma tarefa
-     * @param tarefaAtualizada 
-     */
-    public void tarefaAtualizada(Tarefa tarefaAtualizada);
 
 }

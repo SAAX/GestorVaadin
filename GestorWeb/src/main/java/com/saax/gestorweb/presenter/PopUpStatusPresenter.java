@@ -512,11 +512,11 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void processarAvaliacao() {
-        if (view.getAvaliarTarefaCombo().getValue() == null){
+        if (view.getAvaliarTarefaRatingStars().getValue() == null){
             throw new IllegalArgumentException("Informe a avaliação");
         }
         
-        Integer avaliacao = (Integer) view.getAvaliarTarefaCombo().getValue();
+        Integer avaliacao = (Integer) view.getAvaliarTarefaRatingStars().getValue().intValue();
         
         if (view.getComentarioAvaliacaoTextField() == null){
             throw new IllegalArgumentException("Informe o comentário");
@@ -559,5 +559,5 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
     public List<ParametroAndamentoTarefa> listAndamento() {
         return model.listParametroAndamentoTarefa(usuario.getEmpresaAtiva());
     }
-
+   
 }

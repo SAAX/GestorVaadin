@@ -23,6 +23,7 @@ import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.FormatterUtil;
+
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
@@ -64,7 +65,7 @@ import java.util.logging.Logger;
  */
 public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCallBackListener, RecurrencyDoneCallBackListener, PopUpStatusListener {
 
-    // Todo presenterPopUpStatus mantem acesso à view e ao model
+    // Todo popUpStatusPresenter mantem acesso à view e ao model
     private final transient TaskView view;
     private final transient TarefaModel model;
 
@@ -73,13 +74,15 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private TarefaCallBackListener callbackListener;
     private final Usuario loggedUser;
-    private PopUpStatusPresenter presenterPopUpStatus;
+    private PopUpStatusPresenter popUpStatusPresenter;
     private List<LocalDate> recurrentDates;
     private RecurrencyPresenter RecorrencyPresenter;
     private String recurrencyMessage;
+    private PopUpStatusView popUpStatusView;
+    private PopUpStatusModel popUpStatusModel;
 
     /**
-     * Cria o presenterPopUpStatus ligando o Model ao View
+     * Cria o popUpStatusPresenter ligando o Model ao View
      *
      * @param model
      * @param view
@@ -575,18 +578,24 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
     private void setPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
 
         // comportmento e regras:
-        PopUpStatusView viewPopUP = new PopUpStatusView();
-        PopUpStatusModel modelPopUP = new PopUpStatusModel();
+        popUpStatusView = new PopUpStatusView();
+        popUpStatusModel = new PopUpStatusModel();
 
-        presenterPopUpStatus = new PopUpStatusPresenter(viewPopUP, modelPopUP);
+        popUpStatusPresenter = new PopUpStatusPresenter(popUpStatusView, popUpStatusModel);
 
-        presenterPopUpStatus.load(tarefa, view.getTaskStatusPopUpButton(), this);
+        popUpStatusPresenter.load(tarefa, view.getTaskStatusPopUpButton(), this);
 
     }
 
-    public PopUpStatusPresenter getPresenterPopUpStatus() {
-        return presenterPopUpStatus;
+    public PopUpStatusPresenter getPopUpStatusPresenter() {
+        return popUpStatusPresenter;
     }
+
+    public PopUpStatusView getPopUpStatusView() {
+        return popUpStatusView;
+    }
+    
+    
 
     /**
      * Carrega o combo de clientes com todos os clientes ativos de todas as
@@ -608,8 +617,8 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
     }
 
     /**
-     * abre um novo presenterPopUpStatus para o cadastro de uma sub tarefa desta
-     * tarefa
+     * abre um novo popUpStatusPresenter para o cadastro de uma sub tarefa desta
+ tarefa
      */
     @Override
     public void addSubButtonClicked() {
@@ -681,14 +690,8 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
             }
         }
 
-        if (task.getUsuarioResponsavel().equals(task.getUsuarioSolicitante())) {
-
-            // if it is an own task auto accept the task (switches from NOT ACCEPTED to NOT STARTED)
-            if (task.getStatus() == StatusTarefa.NAO_ACEITA) {
-                task.setStatus(StatusTarefa.NAO_INICIADA);
-            }
-        }
-
+        model.aceitarAutomaticamenteTarefaPropria(task);
+        
         /**
          * when creating a new task only persist in the parent task or target
          * when editing an existing task, save anyway
@@ -708,11 +711,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
 
         // Notifies the call back listener that the create/update is done
         if (callbackListener != null) {
-            if (itIsANewTask) {
-                callbackListener.tarefaCriada(task);
-            } else {
-                callbackListener.tarefaAtualizada(task);
-            }
+                callbackListener.tarefaCriadaOuAtualizada(task);
         }
         view.close();
 
@@ -875,6 +874,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
         return link;
     }
 
+
     private void adicionarSubTarefa(Tarefa sub) {
 
         // monta os dados para adicionar na grid
@@ -901,22 +901,25 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
         }
 
     }
-
     /**
      * metodo chamado quando uma subtarefa foi criada
      *
      * @param tarefa
      */
     @Override
-    public void tarefaCriada(Tarefa tarefa) {
+    public void tarefaCriadaOuAtualizada(Tarefa tarefa) {
 
-        adicionarSubTarefa(tarefa);
+        if (view.getSubTasksTable().getItemIds().contains(tarefa)){
+            atualizarsubTarefa(tarefa);
+        } else {
+            adicionarSubTarefa(tarefa);
+            
+        }
         organizeTree(tarefa, tarefa.getSubTarefas());
 
     }
 
-    @Override
-    public void tarefaAtualizada(Tarefa tarefa) {
+    public void atualizarsubTarefa(Tarefa tarefa) {
 
         Item it = view.getSubTasksTable().getItem(tarefa);
 
@@ -1047,7 +1050,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
     @Override
     public void recurrencyRemoved(Tarefa task) {
         view.close();
-        callbackListener.tarefaAtualizada(task);
+        callbackListener.tarefaCriadaOuAtualizada(task);
     }
 
     @Override

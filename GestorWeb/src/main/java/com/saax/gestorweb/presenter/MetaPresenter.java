@@ -208,6 +208,11 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         boolean novaMeta = meta.getId() == null;
         meta = model.gravarMeta(meta);
 
+        TarefaModel tarefaModel = new TarefaModel();
+        for (Tarefa tarefa : meta.getTarefas()) {
+            tarefaModel.gravarTarefa(tarefa);
+        }
+
         // notica (se existir) algum listener interessado em saber que o cadastro foi finalizado.
         if (callbackListener != null) {
             if (novaMeta) {
@@ -255,15 +260,6 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         }
     }
 
-    /**
-     * Event thrown when the "chat" button is clicked to start or continue a
-     * conversation between the stackholders of the Target
-     */
-    @Override
-    public void chatButtonClicked() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     //Projeção será inserida na V2
     /**
      * Event thrown when the "chat" button is clicked to start or continue a
@@ -273,19 +269,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
 //    public void forecastButtonClickedd() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-    /**
-     * Handles the event thrown when the sub window is done with a Tarefa
-     * creation
-     *
-     * @param createdTask
-     * @see TarefaCallBackListener
-     */
-    @Override
-    public void tarefaCriada(Tarefa createdTask) {
-
-        addTaskInTable(createdTask);
-        organizeTree(createdTask, createdTask.getSubTarefas());
-    }
+    
 
     private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
 
@@ -308,6 +292,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
             task.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(task.getDataInicio()),
             FormatterUtil.formatDate(task.getDataFim()),
+            TaskView.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this),
             task.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -321,14 +306,16 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
 
     }
 
-    /**
-     * @see TarefaCallBackListener
-     */
-    @Override
-    public void tarefaAtualizada(Tarefa updatedTask) {
+        @Override
+    public void tarefaCriadaOuAtualizada(Tarefa tarefa) {
 
-        atualizarTarefaTable(updatedTask);
-        organizeTree(updatedTask, updatedTask.getSubTarefas());
+        if (view.getTarefasTable().getItemIds().contains(tarefa)){
+            atualizarTarefaTable(tarefa);
+        } else {
+            addTaskInTable(tarefa);
+            
+        }
+        organizeTree(tarefa, tarefa.getSubTarefas());
 
     }
 

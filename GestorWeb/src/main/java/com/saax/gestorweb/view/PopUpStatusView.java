@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
+import org.vaadin.teemu.ratingstars.RatingStars;
 
 /**
  *
@@ -67,12 +68,14 @@ public class PopUpStatusView extends CustomComponent {
     private Button aceitarTarefaButton;
     private Button reabrirTarefaButton;
     private Button reativarTarefaButton;
-    private ComboBox avaliarTarefaCombo;
     private TextField comentarioAvaliacaoTextField;
     private Table historicoTable;
     private BeanItemContainer<HistoricoTarefa> historicoContainer;
     private TextArea comentarioTextArea;
     private Button confirmarAvaliacaoButton;
+    private Button confirmarAlteracaoHistorico;
+    private Button cancelarAlteracaoHistorico;
+    private RatingStars avaliarTarefaRatingStars;
 
     public void setListener(PopUpStatusViewListener listener) {
         this.listener = listener;
@@ -711,29 +714,15 @@ public class PopUpStatusView extends CustomComponent {
 
         comboAvaliacaoContainer.addComponent(comentarioAvaliacaoTextField);
 
-        avaliarTarefaCombo = new ComboBox();
-            
-        avaliarTarefaCombo.addItem(1);
-        avaliarTarefaCombo.setItemCaption(1, "Ícone 1 Estrela");
-
-        avaliarTarefaCombo.addItem(2);
-        avaliarTarefaCombo.setItemCaption(2, "Ícone 2 Estrelas");
-
-        avaliarTarefaCombo.addItem(3);
-        avaliarTarefaCombo.setItemCaption(3, "Ícone 3 Estrelas");
-
-        avaliarTarefaCombo.addItem(4);
-        avaliarTarefaCombo.setItemCaption(4, "Ícone 4 Estrelas");
-
-        avaliarTarefaCombo.addItem(5);
-        avaliarTarefaCombo.setItemCaption(5, "Ícone 5 Estrelas");
-
+        avaliarTarefaRatingStars = new RatingStars();
+        avaliarTarefaRatingStars.setAnimated(true);
+        avaliarTarefaRatingStars.setMaxValue(5);
         
-        comboAvaliacaoContainer.addComponent(avaliarTarefaCombo);
+        comboAvaliacaoContainer.addComponent(avaliarTarefaRatingStars);
 
         // Reavaliacao
         if (avaliacaoTarefa != null){
-            avaliarTarefaCombo.select(avaliacaoTarefa.getAvaliacao());
+            avaliarTarefaRatingStars.setValue((double)avaliacaoTarefa.getAvaliacao());
         }
 
         confirmarAvaliacaoButton = new Button("Confirmar");
@@ -765,8 +754,8 @@ public class PopUpStatusView extends CustomComponent {
         return comentarioAvaliacaoTextField;
     }
 
-    public ComboBox getAvaliarTarefaCombo() {
-        return avaliarTarefaCombo;
+    public RatingStars getAvaliarTarefaRatingStars() {
+        return avaliarTarefaRatingStars;
     }
     
     
@@ -858,31 +847,18 @@ public class PopUpStatusView extends CustomComponent {
         barraDeBotoesContainer.setWidth("100%");
         barraDeBotoesContainer.setSpacing(true);
 
-        cancelarBloqueio = new Button("Cancelar", (Button.ClickEvent event) -> {
+        cancelarAlteracaoHistorico = new Button("Cancelar", (Button.ClickEvent event) -> {
             subWindow.close();
         });
-        barraDeBotoesContainer.addComponent(cancelarBloqueio);
-        barraDeBotoesContainer.setComponentAlignment(cancelarBloqueio, Alignment.BOTTOM_LEFT);
+        barraDeBotoesContainer.addComponent(cancelarAlteracaoHistorico);
+        barraDeBotoesContainer.setComponentAlignment(cancelarAlteracaoHistorico, Alignment.BOTTOM_LEFT);
         
-        cancelarRecusa = new Button("Cancelar", (Button.ClickEvent event) -> {
-            subWindow.close();
-        });
-        barraDeBotoesContainer.addComponent(cancelarRecusa);
-        barraDeBotoesContainer.setComponentAlignment(cancelarRecusa, Alignment.BOTTOM_LEFT);
-
-        confirmarBloqueio = new Button("Confirmar", (Button.ClickEvent event) -> {
+        confirmarAlteracaoHistorico = new Button("Confirmar", (Button.ClickEvent event) -> {
             listener.confirmarAlteracaoHistoricoClicked(historicoTarefa);
             subWindow.close();
         });
-        barraDeBotoesContainer.addComponent(confirmarBloqueio);
-        barraDeBotoesContainer.setComponentAlignment(confirmarBloqueio, Alignment.BOTTOM_RIGHT);
-        
-        confirmarRecusa = new Button("Confirmar", (Button.ClickEvent event) -> {
-            listener.confirmarAlteracaoHistoricoClicked(historicoTarefa);
-            subWindow.close();
-        });
-        barraDeBotoesContainer.addComponent(confirmarRecusa);
-        barraDeBotoesContainer.setComponentAlignment(confirmarRecusa, Alignment.BOTTOM_RIGHT);
+        barraDeBotoesContainer.addComponent(confirmarAlteracaoHistorico);
+        barraDeBotoesContainer.setComponentAlignment(confirmarAlteracaoHistorico, Alignment.BOTTOM_RIGHT);
 
         subContent.addComponent(barraDeBotoesContainer);
         
@@ -898,5 +874,10 @@ public class PopUpStatusView extends CustomComponent {
         return comentarioTextArea;
     }
 
+    public Button getCancelarRecusa() {
+        return cancelarRecusa;
+    }
+
+    
     
 }

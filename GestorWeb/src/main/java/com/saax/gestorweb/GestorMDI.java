@@ -10,6 +10,7 @@ import com.saax.gestorweb.presenter.LoginPresenter;
 import com.saax.gestorweb.presenter.StartPagePresenter;
 import com.saax.gestorweb.util.CookiesManager;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
+
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.PostgresConnection;
@@ -33,7 +34,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Rodrigo
  */
-@Theme("valo-light")
+@Theme("valo-default")
 public class GestorMDI extends UI {
 
     private transient StartPageModel startPageModel;
@@ -187,7 +187,7 @@ public class GestorMDI extends UI {
     }
 
     @Override
-    protected void init(VaadinRequest request) {
+    public void init(VaadinRequest request) {
 
         // obtém o arquivo de mensagens de acordo com o locale do usuário
         mensagens = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", new Locale("pt", "BR")));

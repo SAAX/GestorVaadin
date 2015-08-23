@@ -7,6 +7,7 @@ package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
@@ -30,6 +31,7 @@ import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.SessionAttributesEnum;
+import com.saax.gestorweb.util.TestUtils;
 import com.saax.gestorweb.view.TaskView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
@@ -59,56 +61,26 @@ public class CadastroTarefaTest {
     TaskView view;
     TarefaModel model;
     TarefaPresenter presenter;
-    private EntityManager em;
-    private static List<Tarefa> tarefasCadastradas;
     private static ResourceBundle mensagens = null;
+
 
     @BeforeClass
     public static void setUpClass() {
 
         try {
-            // connect to database
-            DBConnect.getInstance().assertConnection();
-            EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
-            GestorEntityManagerProvider.setCurrentEntityManager(em);
+            
+            TestUtils.connectDB();
 
-            // set logged user
-            Usuario usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "teste-user@gmail.com").getSingleResult();
-            GestorSession.setAttribute("loggedUser", usuario);
-            usuario.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
+            TestUtils.setUsuarioLogado(TestUtils.getUsuarioTeste());
 
-            // creates UI
-            GestorMDI gestor = new GestorMDI();
-            UI.setCurrent(gestor);
-            gestor.init(null);
+            TestUtils.createGestorMDI();
 
             mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-            tarefasCadastradas = new ArrayList<>();
 
+            
             // se assegura que nao existem tarefas ja cadastradas
-            Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
-            GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
-            List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findAll")
-                    .setParameter("empresa", loggedUser.getEmpresaAtiva()).getResultList();
-            for (Tarefa tarefa : tarefas) {
-                if (tarefa.getTarefaPai() == null) {
-                    tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
-                    GestorEntityManagerProvider.getEntityManager().remove(tarefa);
-                }
-            }
-            for (Empresa sub : loggedUser.getEmpresaAtiva().getSubEmpresas()) {
-                tarefas = em.createNamedQuery("Tarefa.findAll")
-                        .setParameter("empresa", sub).getResultList();
-                for (Tarefa tarefa : tarefas) {
-                    if (tarefa.getTarefaPai() == null) {
-                        tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
-                        GestorEntityManagerProvider.getEntityManager().remove(tarefa);
-                    }
-                }
-
-            }
-            GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
-
+            TestUtils.removeTodasTarefas();
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -118,20 +90,8 @@ public class CadastroTarefaTest {
     @AfterClass
     public static void tearDownClass() {
 
-        
         // limpar tarefas cadastradas
-        GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
-        // limpar tarefas cadastradas
-        for (Tarefa tarefa : tarefasCadastradas) {
-            if (tarefa.getTarefaPai() == null) {
-                tarefa = GestorEntityManagerProvider.getEntityManager().find(Tarefa.class, tarefa.getId());
-                GestorEntityManagerProvider.getEntityManager().remove(tarefa);
-            }
-        }
-        GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
-
-        // disconnect
-        GestorEntityManagerProvider.getEntityManager().close();
+        TestUtils.removeTodasTarefas();
 
     }
 
@@ -142,9 +102,10 @@ public class CadastroTarefaTest {
         model = new TarefaModel();
         presenter = new TarefaPresenter(model, view);
 
-        em = GestorEntityManagerProvider.getEntityManager();
     }
 
+    
+    
     /**
      * Testa o cadastro de uma tarefa simples, onde só os campos obrigatórios
      * são preenchidos
@@ -173,12 +134,12 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
-        tarefasCadastradas.add(t);
+        
 
         Assert.assertEquals(nome, t.getNome());
 
@@ -224,12 +185,12 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
-        tarefasCadastradas.add(t);
+        
 
         Assert.assertEquals(nome, t.getNome());
 
@@ -249,7 +210,7 @@ public class CadastroTarefaTest {
         System.out.println("Testando cadastro completo de uma tarefa");
 
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
-        Usuario usuarioResponsavel = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
+        Usuario usuarioResponsavel = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
@@ -260,7 +221,7 @@ public class CadastroTarefaTest {
         // Setando os campos
         //        private Integer id;
         //        private HierarquiaProjetoDetalhe hierarquia;
-        HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
+        HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) GestorEntityManagerProvider.getEntityManager().createNamedQuery("HierarquiaProjeto.findByNome")
                 .setParameter("nome", "Norma")
                 .getSingleResult();
 
@@ -285,14 +246,14 @@ public class CadastroTarefaTest {
         //        private boolean orcamentoControlado;
         view.getBudgetControlCheckBox().setValue(Boolean.FALSE);
         //        private CentroCusto centroCusto;
-        CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio(em);
+        CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio (GestorEntityManagerProvider.getEntityManager());
         view.getCostCenterCombo().setValue(centroCusto);
         //        private Departamento departamento;
-        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, loggedUser.getEmpresaAtiva());
+        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresaAtiva());
         view.getDepartamentCombo().setValue(departamento);
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
-        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
+        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresaAtiva());
         view.getCustomerCompanyCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
         //        private Tarefa proximaTarefa;
@@ -312,9 +273,9 @@ public class CadastroTarefaTest {
         //        private Usuario usuarioResponsavel;
         view.getAssigneeUserCombo().setValue(usuarioResponsavel);
         //        private List<ParticipanteTarefa> participantes;
-        Usuario usuarioParticipante_0 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
+        Usuario usuarioParticipante_0 = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
         view.getFollowersCombo().setValue(usuarioParticipante_0);
-        Usuario usuarioParticipante_1 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
+        Usuario usuarioParticipante_1 = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
         view.getFollowersCombo().setValue(usuarioParticipante_1);
         //        private List<AvaliacaoMetaTarefa> avaliacoes;
         //        private List<OrcamentoTarefa> orcamentos;
@@ -369,12 +330,12 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
-        tarefasCadastradas.add(t);
+        
 
         // ---------------------------------------------------------------------
         // Conferindo resultado
@@ -461,7 +422,7 @@ public class CadastroTarefaTest {
         // Tarefa:  Teste Multiplos Niveis
         // -------------------------------------------------------------------------------------
         HierarquiaProjetoDetalhe categoriaDefaultTarefa = null;
-        HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) em.createNamedQuery("HierarquiaProjeto.findByNome")
+        HierarquiaProjeto hierarquiaProjetoDefault = (HierarquiaProjeto) GestorEntityManagerProvider.getEntityManager().createNamedQuery("HierarquiaProjeto.findByNome")
                 .setParameter("nome", "Norma c/ Tarefa")
                 .getSingleResult();
 
@@ -553,16 +514,14 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome_principal)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
-        tarefasCadastradas.add(t);
+        
         Tarefa sub1 = t.getSubTarefas().get(0);
-        tarefasCadastradas.add(sub1);
         Tarefa sub2 = sub1.getSubTarefas().get(0);
-        tarefasCadastradas.add(sub2);
 
         // Valida resultados da principal
         Assert.assertEquals(nome_principal, t.getNome());
@@ -593,12 +552,12 @@ public class CadastroTarefaTest {
         System.out.println("Testando a edição (alteração) da tarefa complesta");
 
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
-        Usuario usuarioResponsavel = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
+        Usuario usuarioResponsavel = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
 
         String nome = "Teste Cadastro Tarefa #2";
         String novonome = "Teste Cadastro Tarefa #2 - Alterada";
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
@@ -615,7 +574,7 @@ public class CadastroTarefaTest {
         view.getPriorityCombo().setValue(PrioridadeTarefa.BAIXA);
         //        private StatusTarefa status;
         view.getTaskStatusPopUpButton().click();
-        PopUpStatusPresenter presenterPopUP = presenter.getPresenterPopUpStatus();
+        PopUpStatusPresenter presenterPopUP = presenter.getPopUpStatusPresenter();
         presenterPopUP.aceitarTarefaClicked(); // Tarefa ficará com status = aceita
         //        private ProjecaoTarefa projecao;
         //        private int andamento;
@@ -626,16 +585,16 @@ public class CadastroTarefaTest {
         //        private boolean orcamentoControlado;
         view.getBudgetControlCheckBox().setValue(Boolean.TRUE);
         //        private CentroCusto centroCusto;
-        CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio(em);
+        CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio (GestorEntityManagerProvider.getEntityManager());
         view.getCostCenterCombo().setValue(centroCusto);
         //        private Departamento departamento;
-        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio(em, loggedUser.getEmpresaAtiva());
+        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresaAtiva());
         view.getDepartamentCombo().setValue(departamento);
         //        private Empresa empresa;
         view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
-        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria(em, loggedUser.getEmpresaAtiva());
+        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresaAtiva());
         view.getCustomerCompanyCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
         //        private Tarefa proximaTarefa;
@@ -656,8 +615,8 @@ public class CadastroTarefaTest {
         view.getAssigneeUserCombo().setValue(usuarioResponsavel);
         //        private List<ParticipanteTarefa> participantes;
         presenter.removerParticipante(t.getParticipantes().get(1));
-        Usuario usuarioParticipante_0 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
-        Usuario usuarioParticipante_1 = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
+        Usuario usuarioParticipante_0 = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
+        Usuario usuarioParticipante_1 = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
         view.getFollowersCombo().setValue(usuarioParticipante_1); // insere o participante rodrigo
         //        private List<AvaliacaoMetaTarefa> avaliacoes;
         //        private List<OrcamentoTarefa> orcamentos;
@@ -706,7 +665,7 @@ public class CadastroTarefaTest {
         view.getSaveButton().click();
 
         // obtem novamente a tarefa do banco
-        t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", novonome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
@@ -785,6 +744,9 @@ public class CadastroTarefaTest {
 
     }
 
+    /**
+     * Cadastra uma tarefa simples e adiciona um histórico
+     */
     @Test
     public void tarefaComHistorico() {
 
@@ -809,24 +771,25 @@ public class CadastroTarefaTest {
         }
         presenter.gravarButtonClicked();
 
-        Tarefa t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         t.addHistorico(new HistoricoTarefa("teste", "comentario", loggedUser, t, LocalDateTime.now()));
 
-        em.persist(t);
+        GestorEntityManagerProvider.getEntityManager().persist(t);
 
-        t = (Tarefa) em.createNamedQuery("Tarefa.findByNome")
+        t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
         Assert.assertEquals(1, t.getHistorico().size());
 
-        em.remove(t);
+        GestorEntityManagerProvider.getEntityManager().remove(t);
 
     }
 
+    
 }

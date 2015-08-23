@@ -472,6 +472,9 @@ public class Meta implements Serializable {
      * @return the tarefas
      */
     public List<Tarefa> getTarefas() {
+        if (tarefas==null){
+            setTarefas(new ArrayList<>());
+        }
         return tarefas;
     }
 

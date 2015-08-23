@@ -1,0 +1,23 @@
+
+Proximo commit:
+
+1. Criação de classe de testes para evolução de status.
+2. Retirada do botão de chat da tela de metas
+3. Retirada do temas customizados e retorno do tema default valo
+4. Reoganização das classes de modelo do usuario e de login
+5. Correção de erro ao aceitar automaticamente uma tarefa (solicitante=responsavel)
+6. Adição de componente Rating Stars para avaliação de tarefas
+7. Reorganizacao do Daschboard presenter (existia código de visualização e foi movido para classe correta)
+8. Correção de erro ao criar tarefas pelo template: sistema estava perdendo as subtarefas
+9. O sistema está disparando exceção ao verificar se a data fim da filha é maior que a data fim da tarefa pai
+        Ao invés de notificar o usuário, ele está dando erro genérico "ERROR"
+        Para corrigir este erro tive que alterar o sistema de exceções do sistema como um todo.
+
+        Agora o sistema está mostrando a mensagem correta: "Data Final da Sub Tarefa deverá ser menor do que a Data Final da Tarefa"
+
+        Para os casos onde algum erro genérico ocorre e não sabemos o que é, coloquei a mensagem: "Desculpe, houve um erro inesperado no sistema. Nosso suporte irá tratá-lo o mais rápido possível.";
+
+10. O sistema estava disparando erro no auto aceite de tarefas próprias. O erro foi corrigido
+11. Foi feita uma alteração bem grande na parte de criar/atualizar tarefas nas tabelas do Dashboard, do cadastro de metas e do cadastro de tarefas. Agradeço se voce puder testar.
+12. Ao editar uma subtarefa couja tarefa pai também estava em edição o sistema não esta atualizando os dados na tabela da tarefa pai. O erro foi corrigido.
+13.    Ao editarr uma tarefa dentro de uma meta o sistema estava disparando erro nulo, pois a coluna de status da tarefa estava errada

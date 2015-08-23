@@ -20,8 +20,8 @@ import com.saax.gestorweb.model.datamodel.StatusMeta;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
+
 import com.saax.gestorweb.util.GestorSession;
-import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

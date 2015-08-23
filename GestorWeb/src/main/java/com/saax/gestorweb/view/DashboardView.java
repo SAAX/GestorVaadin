@@ -2,7 +2,11 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.TarefaModel;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.DashboardPresenter;
+import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
@@ -17,6 +21,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.InlineDateField;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
+import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TabSheet;
@@ -26,12 +32,15 @@ import com.vaadin.ui.Tree;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -48,6 +57,7 @@ public class DashboardView extends VerticalLayout {
     private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     // listener interface (presenter in MVP)
     private DashboardViewListenter listener;
+    private ListSelect listaTemplates;
 
     public void setListener(DashboardViewListenter listener) {
         this.listener = listener;
@@ -196,62 +206,6 @@ public class DashboardView extends VerticalLayout {
         MenuBar.MenuItem reportsMenuItem = topMenu.addItem("<h3>" + messages.getString("DashboardView.reportsMenuItem") + "</h3>", null, null);
 
         MenuBar.MenuItem config = topMenu.addItem("<h3>Config</h3>", null, null);
-        MenuBar.MenuItem themeMenuItem = config.addItem("Tema", null, null);
-        themeMenuItem.addItem("Light", new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                UI.getCurrent().setTheme("valo-light");
-            }
-        });
-
-        themeMenuItem.addItem("Dark", new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                UI.getCurrent().setTheme("valo-dark");
-            }
-        });
-
-        themeMenuItem.addItem("Blueprint", new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                UI.getCurrent().setTheme("valo-blueprint");
-            }
-        });
-
-        themeMenuItem.addItem("Metro", new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                UI.getCurrent().setTheme("valo-metro");
-            }
-        });
-
-        themeMenuItem.addItem("Flat", new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                UI.getCurrent().setTheme("valo-flat");
-            }
-        });
-
-        themeMenuItem.addItem("Flat (Dark)", new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                UI.getCurrent().setTheme("valo-flat-dark");
-            }
-        });
-
-        themeMenuItem.addItem("Reindeer", new MenuBar.Command() {
-
-            @Override
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                UI.getCurrent().setTheme("reindeer");
-            }
-        });
 
         config.addItem("Config 2", null, null);
         config.addItem("Config 3", null, null);
@@ -613,6 +567,50 @@ public class DashboardView extends VerticalLayout {
         return bottomContainer;
     }
 
+    public void abrirPopUpSelecaoTemplates(List<Tarefa> templates) {
+        
+        Window templatesWindow = new Window("Escolha a tarefa modelo");
+        
+        templatesWindow.setModal(true);
+
+        VerticalLayout content = new VerticalLayout();
+        content.setMargin(true);
+        content.setSpacing(true);
+        content.setSizeUndefined();
+
+        listaTemplates = new ListSelect();
+        listaTemplates.setMultiSelect(false);
+        listaTemplates.setWidth("300px");
+
+        for (Tarefa template : templates) {
+            listaTemplates.addItem(template);
+            listaTemplates.setItemCaption(template, template.getNome());
+        }
+
+        content.addComponent(listaTemplates);
+
+        Button cancelar = new Button("Cancelar", (Button.ClickEvent event) -> {
+            templatesWindow.close();
+        });
+        
+        
+        Button criar = new Button("Criar Tarefa", (Button.ClickEvent event) -> {
+            
+            Tarefa template = (Tarefa) listaTemplates.getValue();
+            listener.criarTarefaPorTemplate(template);
+            
+        });
+        content.addComponent(new HorizontalLayout(cancelar, criar));
+
+        templatesWindow.setContent(content);
+
+        templatesWindow.center();
+
+        UI.getCurrent().addWindow(templatesWindow);
+
+    }
+
+
     // ------------------------------------------------------------------------------------------------
     // GETTERS TO EXTERNAL ACCESS
     // ------------------------------------------------------------------------------------------------
@@ -668,4 +666,11 @@ public class DashboardView extends VerticalLayout {
         return cleanFiltersButton;
     }
 
+    public ListSelect getListaTemplates() {
+        return listaTemplates;
+    }
+
+
+    
+    
 }

@@ -8,7 +8,7 @@ import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.ErrorUtils;
-import com.saax.gestorweb.util.FormatterUtil;
+
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.saax.gestorweb.view.validator.DataFimValidator;
@@ -19,12 +19,12 @@ import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.server.Page;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -45,15 +45,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
- * Pop-up Window do cadastro de Metas
- * A visualização será em uma estrutura com:
+ * Pop-up Window do cadastro de Metas A visualização será em uma estrutura com:
  *
  * @author rodrigo
  */
-public class MetaView  extends Window implements Serializable {
+public class MetaView extends Window implements Serializable {
 
     // Message resource bunlde
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -67,14 +66,12 @@ public class MetaView  extends Window implements Serializable {
     private final List<AbstractField> requiredFields;
 
     private boolean editAllowed = true;
-    
+
     // -------------------------------------------------------------------------
     // Top button's bar
     // -------------------------------------------------------------------------
     private HorizontalLayout topButtonsBar;
-    private CheckBox templateCheckBox;
     private Button addTaskButton;
-    private Button chatButton;
     private Button forecast​Button;
 
     // -----------------------------------------------------------------------------------
@@ -86,7 +83,6 @@ public class MetaView  extends Window implements Serializable {
     // -----------------------------------------------------------------------------------
     // Basic fields
     // -----------------------------------------------------------------------------------
-
     @PropertyId("empresa")
     private ComboBox empresaCombo;
 
@@ -101,49 +97,44 @@ public class MetaView  extends Window implements Serializable {
 
     @PropertyId("dataFim")
     private PopupDateField dataFimDateField;
-    
+
     @PropertyId("dataTermino")
     private PopupDateField dataTerminoDateField;
-    
+
     // -----------------------------------------------------------------------------------
     // Informações Adicionais e Descrição
     // -----------------------------------------------------------------------------------
-    
     @PropertyId("usuarioResponsavel")
     private ComboBox responsavelCombo;
 
     private ComboBox participantesCombo;
 
     private BeanItemContainer<Participante> participantesContainer;
-    
-    
+
     @PropertyId("cliente")
     private ComboBox empresaClienteCombo;
-    
+
     @PropertyId("departamento")
     private ComboBox departamentoCombo;
 
     @PropertyId("centroCusto")
     private ComboBox centroCustoCombo;
-    
+
     @PropertyId("descricao")
     private RichTextArea descricaoMeta;
-    
+
     // -----------------------------------------------------------------------------------
     // Tabela de Tarefas
     // -----------------------------------------------------------------------------------
-
     private TreeTable tarefasTable;
     private Panel containerTabelaTarefas;
-    
+
     // -------------------------------------------------------------------------
     // Barra de botoes inferior
     // -------------------------------------------------------------------------
     private Button gravarButton;
     private Button cancelarButton;
     private VerticalLayout containerCabecalhoVisivel;
-    
-    
 
     /**
      * Cria o pop-up de login, com campos para usuário e senha
@@ -151,7 +142,7 @@ public class MetaView  extends Window implements Serializable {
      */
     public MetaView() {
         super();
-       
+
         requiredFields = new ArrayList();
 
         setCaption(mensagens.getString("CadastroMetaView.tituloBase"));
@@ -168,7 +159,7 @@ public class MetaView  extends Window implements Serializable {
 
         setValidatorsVisible(false);
     }
-    
+
     /**
      * Configura o listener de eventos da view
      *
@@ -177,7 +168,6 @@ public class MetaView  extends Window implements Serializable {
     public void setListener(MetaViewListener listener) {
         this.listener = listener;
     }
-
 
     /**
      * Bind (liga) a meta ao formulário
@@ -191,9 +181,8 @@ public class MetaView  extends Window implements Serializable {
 
         metaFieldGroup.bindMemberFields(this);
 
-        
     }
-    
+
     /**
      * Obtem a tarefa ligada (binding) ao form
      *
@@ -205,7 +194,7 @@ public class MetaView  extends Window implements Serializable {
 
     /**
      * Constrói o container principal da view, que terá todos os outros
-     * containers dentro 
+     * containers dentro
      *
      * @return containerPrincipal
      */
@@ -227,23 +216,23 @@ public class MetaView  extends Window implements Serializable {
         containerPrincipal.addComponent(accordion);
 
         containerPrincipal.addComponent(buildBarraBotoesInferior());
-        
+
         // configuração para que apenas o accordion expanda verticalmente, deixando o painel superior travado
         containerPrincipal.setExpandRatio(containerCabecalhoVisivel, 0);
         containerPrincipal.setExpandRatio(accordion, 1);
 
-        
         return containerPrincipal;
     }
 
     /**
      * Build and return the top button's bar with options: <br>
      * <ul>
-     *  <li>Templatebox </li>
-     *  <li>Add Task </li>
-     *  <li>Chat </li>
-     *  <li>Forecast​ </li>
+     * <li>Templatebox </li>
+     * <li>Add Task </li>
+     * <li>Chat </li>
+     * <li>Forecast​ </li>
      * </ul>
+     *
      * @return
      */
     private Component buildTopButtonsBar() {
@@ -252,33 +241,24 @@ public class MetaView  extends Window implements Serializable {
         topButtonsBar.setSpacing(true);
         topButtonsBar.setSizeUndefined();
 
-        templateCheckBox = new CheckBox(mensagens.getString("CadastroMetaView.templateCheckBox.caption"));
-
-        topButtonsBar.addComponent(templateCheckBox);
-
         addTaskButton = new Button("[Add Task]", (Button.ClickEvent event) -> {
             listener.addTaskButtonClicked();
         });
         topButtonsBar.addComponent(addTaskButton);
-
-        chatButton = new Button("[Chat]", (Button.ClickEvent event) -> {
-            listener.chatButtonClicked();
-        });
-        topButtonsBar.addComponent(chatButton);
 
 //       Projeção será inserida na V2           
 //        forecast​Button = new Button("[Projeção]", (Button.ClickEvent event) -> {
 //            listener.forecastButtonClickedd();
 //        });
 //        topButtonsBar.addComponent(forecast​Button);
-
         return topButtonsBar;
     }
-    
+
     /**
-     * Constroi o layout do cabeçalho sempre visivel da view
-     * onde vão os campos de informações básicas
-     * @return 
+     * Constroi o layout do cabeçalho sempre visivel da view onde vão os campos
+     * de informações básicas
+     *
+     * @return
      */
     private VerticalLayout buildContainerCabecalho() {
 
@@ -301,10 +281,10 @@ public class MetaView  extends Window implements Serializable {
         });
         empresaCombo.addValidator(new BeanValidator(Meta.class, "empresa"));
         requiredFields.add(empresaCombo);
-        
+
         containerCabecalhoLinha1.addComponent(empresaCombo);
         containerCabecalhoLinha1.setExpandRatio(empresaCombo, 0);
-        
+
         // TextField: Nome da meta 
         nomeMetaTextField = new TextField(mensagens.getString("CadastroMetaView.nomeMetaTextField.caption"));
         nomeMetaTextField.setWidth("100%");// ocupar todo espaço disponível na largura
@@ -321,7 +301,6 @@ public class MetaView  extends Window implements Serializable {
         // ----------------------------------------------------------------------------------------------------------
         // Linha 2: Categoria e Datas
         // ----------------------------------------------------------------------------------------------------------
-
         HorizontalLayout containerCabecalhoLinha2 = new HorizontalLayout();
         containerCabecalhoLinha2.setSizeUndefined();
         containerCabecalhoLinha2.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
@@ -332,7 +311,6 @@ public class MetaView  extends Window implements Serializable {
         requiredFields.add(hierarquiaCombo);
         containerCabecalhoLinha2.addComponent(hierarquiaCombo);
 
-        
         // TextField: Data de Inicio 
         dataInicioDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataInicioTextField.label"));
         dataInicioDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
@@ -340,7 +318,7 @@ public class MetaView  extends Window implements Serializable {
         dataInicioDateField.addValidator(new BeanValidator(Meta.class, "dataInicio"));
         requiredFields.add(dataInicioDateField);
         containerCabecalhoLinha2.addComponent(dataInicioDateField);
-        
+
         // TextField: Data Fim
         dataFimDateField = new PopupDateField(mensagens.getString("CadastroMetaView.dataFimTextField.label"));
         dataFimDateField.setInputPrompt(mensagens.getString("CadastroMetaView.dataFimDateField.inputPrompt"));
@@ -355,7 +333,7 @@ public class MetaView  extends Window implements Serializable {
         dataTerminoDateField.setWidth("100%");
         dataTerminoDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
-        
+
         containerCabecalhoVisivel.addComponent(containerCabecalhoLinha2);
 
         return containerCabecalhoVisivel;
@@ -427,8 +405,11 @@ public class MetaView  extends Window implements Serializable {
         tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
         tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
         tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
+        tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus"), PopupButton.class, "");
+        tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
         tarefasTable.addContainerProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
         tarefasTable.setColumnWidth(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
+        
         tarefasTable.addContainerProperty("[E]", Button.class, "");
         tarefasTable.setColumnWidth("[E]", 30);
         tarefasTable.addContainerProperty("[C]", Button.class, "");
@@ -437,7 +418,6 @@ public class MetaView  extends Window implements Serializable {
         tarefasTable.setPageLength(7);
         tarefasTable.setSelectable(true);
         tarefasTable.setImmediate(true);
-
 
         accordion.addTab(containerTabelaTarefas, "Tarefas", null);
 
@@ -495,7 +475,6 @@ public class MetaView  extends Window implements Serializable {
 
         participantesTable.setVisibleColumns("usuarioParticipante");
 
-        
         // Adicionar coluna do botão "remover"
         participantesTable.addGeneratedColumn("X", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("X");
@@ -511,11 +490,10 @@ public class MetaView  extends Window implements Serializable {
         participantesTable.setImmediate(true);
         participantesTable.setWidth("100%");
         participantesTable.setPageLength(3);
-        
+
         containerDetalhes.addComponent(participantesCombo);
         containerDetalhes.addComponent(participantesTable);
-        
-        
+
         // combo de seleção do departamento
         departamentoCombo = new ComboBox("Departamento");
         departamentoCombo.setWidth("100%");
@@ -531,7 +509,6 @@ public class MetaView  extends Window implements Serializable {
         containerHorasEstimadasRealizadas.setSpacing(true);
         containerHorasEstimadasRealizadas.setWidth("100%");
         containerDetalhes.addComponent(containerHorasEstimadasRealizadas);
-
 
         return containerDetalhes;
 
@@ -553,11 +530,18 @@ public class MetaView  extends Window implements Serializable {
                 setValidatorsVisible(true);
                 metaFieldGroup.commit();
                 listener.gravarButtonClicked();
-            } catch (Exception ex) {
+            } catch (RuntimeException ex) {
+                Notification notification = new Notification("Erro", (ex.getMessage() == null ? mensagens.getString("ErrorUtils.errogenerico") : ex.getMessage()),
+                        Notification.Type.WARNING_MESSAGE, true);
+
                 
+                notification.show(Page.getCurrent());
+
+            } catch (Exception ex) {
+
                 ErrorUtils.showComponentErrors(this.metaFieldGroup.getFields());
                 Logger.getLogger(TaskView.class.getName()).log(Level.WARNING, null, ex);
-                
+
             }
         });
 
@@ -609,7 +593,7 @@ public class MetaView  extends Window implements Serializable {
             departamentoCombo.setItemCaption(departamento, departamento.getDepartamento());
         }
     }
-    
+
     /**
      * Carrega o combo de seleção de centro de Custo
      *
@@ -654,7 +638,6 @@ public class MetaView  extends Window implements Serializable {
     public void exibeTituloEdicao(Meta metapai) {
         setCaption(mensagens.getString("TaskView.titulo.edicao"));
     }
-    
 
     // -------------------------------------------------------------------------
     // GETTERS AND SETTERS
@@ -694,7 +677,7 @@ public class MetaView  extends Window implements Serializable {
     public ComboBox getDepartamentoCombo() {
         return departamentoCombo;
     }
-    
+
     public ComboBox getCentroCustoCombo() {
         return centroCustoCombo;
     }
@@ -720,7 +703,6 @@ public class MetaView  extends Window implements Serializable {
         this.editAllowed = editAllowed;
 
         // Header:
-        templateCheckBox.setEnabled(editAllowed);
         addTaskButton.setEnabled(editAllowed);
 
         // Basic Data:
@@ -743,13 +725,4 @@ public class MetaView  extends Window implements Serializable {
 
     }
 
-            
-    
-    
-    
-    
-
-    
-    
-    
 }

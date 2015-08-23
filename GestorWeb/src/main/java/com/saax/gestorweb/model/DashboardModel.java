@@ -10,6 +10,7 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
+
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.lang.reflect.InvocationTargetException;
@@ -151,6 +152,12 @@ public class DashboardModel {
 
     public List<Meta> listarMetas(Usuario loggedUser) {
         return metaModel.listarMetas(loggedUser);
+    }
+
+    public Tarefa criarNovaTarefaPeloTemplate(Tarefa template) {
+        return tarefaModel.criarNovaTarefaPeloTemplate(template);
+                                
+
     }
 
     

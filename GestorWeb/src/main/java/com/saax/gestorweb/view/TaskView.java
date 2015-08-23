@@ -15,6 +15,7 @@ import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.presenter.PopUpStatusPresenter;
 import com.saax.gestorweb.util.ErrorUtils;
 import com.saax.gestorweb.util.FormatterUtil;
+
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.converter.DateToLocalDateConverter;
 import com.saax.gestorweb.view.validator.DataFimValidator;
@@ -28,6 +29,7 @@ import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
+import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.AbstractField;
@@ -141,10 +143,10 @@ public class TaskView extends Window {
     private PopupDateField endDateDateField;
 
     private Button recurrencyButton;
-    
+
     @PropertyId("recurrencyMessage")
     private Label recurrencyMessage;
-    
+
     @PropertyId("prioridade")
     private ComboBox priorityCombo;
 
@@ -403,9 +405,9 @@ public class TaskView extends Window {
         endDateDateField.addValidator(new DataFimValidator(startDateDateField, "Data Fim"));
 
         recurrencyMessage = new Label();
-        recurrencyMessage.setEnabled(false);        
+        recurrencyMessage.setEnabled(false);
         recurrencyMessage.setWidth("100%");
-        
+
         // configura o layout usando uma grid
         GridLayout grid = new GridLayout(3, 4);
         grid.setSpacing(true);
@@ -480,7 +482,6 @@ public class TaskView extends Window {
 //            listener.projecaoButtonClicked();
 //        });
 //        buttonsSuperiorBar.addComponent(projectionButton);
-
         return buttonsSuperiorBar;
     }
 
@@ -500,6 +501,13 @@ public class TaskView extends Window {
                 setValidatorsVisible(true);
                 taskFieldGroup.commit();
                 listener.gravarButtonClicked();
+            } catch (RuntimeException ex) {
+                Notification notification = new Notification("Erro", (ex.getMessage() == null ? messages.getString("ErrorUtils.errogenerico") : ex.getMessage()),
+                        Notification.Type.WARNING_MESSAGE, true);
+
+                notification.show(Page.getCurrent());
+                Logger.getLogger(TaskView.class.getName()).log(Level.WARNING, null, ex);
+
             } catch (Exception ex) {
                 ErrorUtils.showComponentErrors(this.taskFieldGroup.getFields());
                 Logger.getLogger(TaskView.class.getName()).log(Level.WARNING, null, ex);
@@ -528,7 +536,7 @@ public class TaskView extends Window {
 
         assigneeUserCombo = new ComboBox(messages.getString("TaskView.responsavelCombo.label"));
         assigneeUserCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-           listener.assigneeUserChanged(getTarefa(), (Usuario) event.getProperty().getValue());
+            listener.assigneeUserChanged(getTarefa(), (Usuario) event.getProperty().getValue());
         });
 
         requiredFields.add(assigneeUserCombo);
@@ -675,7 +683,7 @@ public class TaskView extends Window {
             FileDownloader fd = new FileDownloader(new FileResource(new File(anexoTarefa.getCaminhoCompleto())));
 
             fd.extend(downloadButton);
-           downloadButton.setEnabled(true);
+            downloadButton.setEnabled(true);
             return downloadButton;
         });
         attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
@@ -685,7 +693,7 @@ public class TaskView extends Window {
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerAnexo((AnexoTarefa) itemId);
             });
-           removeButton.setEnabled(true);
+            removeButton.setEnabled(true);
             return removeButton;
         });
         attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
@@ -830,14 +838,14 @@ public class TaskView extends Window {
         pointingTimeTable.setColumnHeader("custoHora", messages.getString("TaskView.controleHorasTable.colunaCustoHora"));
         pointingTimeTable.setColumnWidth("custoHora", 80);
 
-        pointingTimeTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor","custoHora");
+        pointingTimeTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor", "custoHora");
         // Adicionar coluna do botão "remover"
         pointingTimeTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("x");
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removePointingTime((ApontamentoTarefa) itemId);
             });
-           removeButton.setEnabled(editAllowed);
+            removeButton.setEnabled(editAllowed);
             return removeButton;
         });
 
@@ -1133,7 +1141,6 @@ public class TaskView extends Window {
 //    public Button getProjectionButton() {
 //        return projectionButton;
 //    }
-
     /**
      * @return the startDateDateField
      */
@@ -1469,8 +1476,6 @@ public class TaskView extends Window {
         costCenterCombo.setEnabled(editAllowed);
         addAttach.setEnabled(true);
         attachmentsAddedTable.setEnabled(true);
-        
-        
 
         // Tab Hours Control Components
         hourCostTextField.setEnabled(editAllowed);
@@ -1489,8 +1494,4 @@ public class TaskView extends Window {
         return recurrencyMessage;
     }
 
-    
-    
-    
-    
 }

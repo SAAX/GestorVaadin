@@ -24,8 +24,6 @@ public interface MetaViewListener {
 
     public void addTaskButtonClicked();
 
-    public void chatButtonClicked();
-
 //    public void forecastButtonClickedd();
 
     public void adicionarParticipante(Usuario usuario);

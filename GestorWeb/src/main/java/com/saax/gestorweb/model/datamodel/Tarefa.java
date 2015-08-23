@@ -79,7 +79,6 @@ public class Tarefa implements Serializable {
     // ----------------------------------------------------------------------------------------------------------------
     // ATRIBUTOS PERSISTIDOS
     // ----------------------------------------------------------------------------------------------------------------
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -108,7 +107,7 @@ public class Tarefa implements Serializable {
     private int andamento;
 
     @Column(name = "recurrencyMessage")
-    private String  recurrencyMessage;
+    private String recurrencyMessage;
 
     @Column(name = "template")
     private boolean template;
@@ -209,7 +208,7 @@ public class Tarefa implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<HistoricoTarefa> historico;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<ChatTarefa> chat;
 
@@ -234,7 +233,7 @@ public class Tarefa implements Serializable {
     @JoinColumn(name = "idhierarquiaprojetodetalhe", referencedColumnName = "idhierarquiaprojetodetalhe")
     @ManyToOne(optional = false)
     private HierarquiaProjetoDetalhe hierarquia;
-    
+
     @NotNull()
     @Column(name = "removida")
     private boolean removida;
@@ -242,7 +241,6 @@ public class Tarefa implements Serializable {
     // ----------------------------------------------------------------------------------------------------------------
     // ATRIBUTOS TRANSIENTES
     // ----------------------------------------------------------------------------------------------------------------
-
     /**
      * Custo de hora para todos os apontamentos
      */
@@ -251,7 +249,6 @@ public class Tarefa implements Serializable {
     // ----------------------------------------------------------------------------------------------------------------
     // CONSTRUTORES
     // ----------------------------------------------------------------------------------------------------------------
-
     public Tarefa() {
     }
 
@@ -284,7 +281,10 @@ public class Tarefa implements Serializable {
             clone = (Tarefa) BeanUtils.cloneBean(this);
             List<Tarefa> cloneSubs = new ArrayList<>();
             for (Tarefa sub : clone.getSubTarefas()) {
-                cloneSubs.add(sub.clone());
+                Tarefa subClone = sub.clone();
+                subClone.setTarefaPai(clone);
+                cloneSubs.add(subClone);
+
             }
             clone.setSubTarefas(cloneSubs);
 
@@ -315,8 +315,6 @@ public class Tarefa implements Serializable {
     // ----------------------------------------------------------------------------------------------------------------
     // GETTERS AND SETTERS (com tratamento p/ NULL)
     // ----------------------------------------------------------------------------------------------------------------
-    
-    
     public Integer getId() {
         return id;
     }
@@ -366,7 +364,7 @@ public class Tarefa implements Serializable {
     }
 
     public List<FavoritosTarefaMeta> getFavoritados() {
-        if (favoritados==null){
+        if (favoritados == null) {
             setFavoritados(new ArrayList<>());
         }
         return favoritados;
@@ -417,7 +415,7 @@ public class Tarefa implements Serializable {
     }
 
     public List<Tarefa> getSubTarefas() {
-        if (subTarefas==null) {
+        if (subTarefas == null) {
             setSubTarefas(new ArrayList<>());
         }
         return subTarefas;
@@ -460,18 +458,22 @@ public class Tarefa implements Serializable {
     }
 
     public List<Participante> getParticipantes() {
+        if (participantes == null) {
+            setParticipantes(new ArrayList<>());
+        }
+
         return participantes;
     }
 
     public void setParticipantes(List<Participante> participantes) {
-        if (participantes==null){
+        if (participantes == null) {
             setParticipantes(new ArrayList<>());
         }
         this.participantes = participantes;
     }
 
     public List<AvaliacaoMetaTarefa> getAvaliacoes() {
-        if (avaliacoes==null){
+        if (avaliacoes == null) {
             setAvaliacoes(new ArrayList<>());
         }
         return avaliacoes;
@@ -482,7 +484,7 @@ public class Tarefa implements Serializable {
     }
 
     public List<OrcamentoTarefa> getOrcamentos() {
-        if (orcamentos==null){
+        if (orcamentos == null) {
             setOrcamentos(new ArrayList<>());
         }
         return orcamentos;
@@ -493,7 +495,7 @@ public class Tarefa implements Serializable {
     }
 
     public List<ApontamentoTarefa> getApontamentos() {
-        if (apontamentos==null){
+        if (apontamentos == null) {
             setApontamentos(new ArrayList<>());
         }
         return apontamentos;
@@ -504,7 +506,7 @@ public class Tarefa implements Serializable {
     }
 
     public List<AnexoTarefa> getAnexos() {
-        if (anexos==null){
+        if (anexos == null) {
             setAnexos(new ArrayList<>());
         }
         return anexos;
@@ -514,7 +516,6 @@ public class Tarefa implements Serializable {
         this.anexos = anexos;
     }
 
-    
     public StatusTarefa getStatus() {
         return status;
     }
@@ -560,7 +561,7 @@ public class Tarefa implements Serializable {
     }
 
     public List<AndamentoTarefa> getAndamentos() {
-        if (andamentos==null){
+        if (andamentos == null) {
             setAndamentos(new ArrayList<>());
         }
         return andamentos;
@@ -571,7 +572,7 @@ public class Tarefa implements Serializable {
     }
 
     public List<BloqueioTarefa> getBloqueios() {
-        if (bloqueios==null){
+        if (bloqueios == null) {
             setBloqueios(new ArrayList<>());
         }
         return bloqueios;
@@ -618,7 +619,7 @@ public class Tarefa implements Serializable {
     }
 
     public List<HistoricoTarefa> getHistorico() {
-        if (historico==null){
+        if (historico == null) {
             setHistorico(new ArrayList<>());
         }
         return historico;
@@ -627,9 +628,9 @@ public class Tarefa implements Serializable {
     public void setHistorico(List<HistoricoTarefa> historico) {
         this.historico = historico;
     }
-    
-        public List<ChatTarefa> getChat() {
-        if (chat==null){
+
+    public List<ChatTarefa> getChat() {
+        if (chat == null) {
             setChat(new ArrayList<>());
         }
         return chat;
@@ -687,13 +688,9 @@ public class Tarefa implements Serializable {
         return recurrencyMessage;
     }
 
-    
-    
     // ----------------------------------------------------------------------------------------------------------------
     // EQUALS E HASCODE
     // ----------------------------------------------------------------------------------------------------------------
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -733,14 +730,13 @@ public class Tarefa implements Serializable {
     // ----------------------------------------------------------------------------------------------------------------
     // METODO UTILITARIOS
     // ----------------------------------------------------------------------------------------------------------------
-    
     public void addAndamento(AndamentoTarefa andamentoTarefa) {
         if (getAndamentos() == null) {
             setAndamentos(new ArrayList<>());
         }
         getAndamentos().add(andamentoTarefa);
     }
-    
+
     public void addBloqueio(BloqueioTarefa bloqueioTarefa) {
         if (getBloqueios() == null) {
             setBloqueios(new ArrayList<>());
@@ -761,7 +757,6 @@ public class Tarefa implements Serializable {
         }
         getApontamentos().add(apontamento);
     }
-
 
     public void addOrcamento(OrcamentoTarefa orcamentoTarefa) {
         if (getOrcamentos() == null) {

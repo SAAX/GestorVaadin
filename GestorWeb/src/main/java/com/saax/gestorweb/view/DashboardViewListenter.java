@@ -1,5 +1,6 @@
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 
 /**
@@ -17,6 +18,8 @@ public interface DashboardViewListenter {
     void createsNewTaskByTemplate();
     void init();
     void usuarioLogadoAlteradoAPENASTESTE();
+
+    void criarTarefaPorTemplate(Tarefa template);
     
 
     

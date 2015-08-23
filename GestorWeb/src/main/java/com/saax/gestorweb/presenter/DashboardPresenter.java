@@ -32,14 +32,9 @@ import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.view.PopUpStatusView;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -51,8 +46,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -73,6 +66,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private Usuario loggedUser;
+    private TarefaPresenter tarefaPresenter;
 
     /**
      * Inicializa o presenter
@@ -110,29 +104,6 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         }
     }
 
-    /**
-     * Callback notificando que o cadastro de uma nova tarefa foi concluido
-     *
-     * @param tarefaCriada
-     */
-    @Override
-    public void tarefaCriada(Tarefa tarefaCriada) {
-
-        adicionarTarefaTable(tarefaCriada);
-        organizeTree(view.getTaskTable(), tarefaCriada, tarefaCriada.getSubTarefas());
-
-        if (tarefaCriada.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
-
-            Tarefa next = tarefaCriada.getProximaTarefa();
-            while (next != null) {
-                adicionarTarefaTable(next);
-                next = next.getProximaTarefa();
-
-            }
-            organizeTree(view.getTaskTable(), tarefaCriada, tarefaCriada.getSubTarefas());
-        }
-    }
-
     private void organizeTree(TreeTable table, Object parentTaskOrTarget, List<Tarefa> subTasks) {
 
         for (Tarefa subTask : subTasks) {
@@ -157,33 +128,36 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     }
 
     private void atualizarTarefaTable(Tarefa tarefa) {
-        
-        if (tarefa == null || tarefa.getGlobalID() == null ) {
+
+        if (tarefa == null || tarefa.getGlobalID() == null) {
             throw new IllegalArgumentException("Tarefa nula");
         }
-        
+
         Item it = view.getTaskTable().getItem(tarefa);
 
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.cod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.title")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.name")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.company")).setValue(tarefa.getEmpresa().getNome()
-                + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.requestor")).setValue(tarefa.getUsuarioSolicitante().getNome());
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.assingee")).setValue(tarefa.getUsuarioResponsavel().getNome());
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.startDate")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.endDate")).setValue(FormatterUtil.formatDate(tarefa.getDataFim()));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.state")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.email")).setValue(new Button("E"));
-        it.getItemProperty(mensagens.getString("DashboardView.taskTable.chat")).setValue(new Button("C"));
+        if (it != null) {
 
-        // se a tarefa possui subs, chama recursivamente
-        for (Tarefa subTarefa : tarefa.getSubTarefas()) {
-            if (view.getTaskTable().getItemIds().contains(subTarefa)) {
-                atualizarTarefaTable(subTarefa);
-            } else {
-                adicionarTarefaTable(subTarefa);
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.cod")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getGlobalID()));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.title")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getHierarquia().getCategoria()));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.name")).setValue(buildButtonEditarTarefa(tarefa, tarefa.getNome()));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.company")).setValue(tarefa.getEmpresa().getNome()
+                    + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.requestor")).setValue(tarefa.getUsuarioSolicitante().getNome());
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.assingee")).setValue(tarefa.getUsuarioResponsavel().getNome());
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.startDate")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.endDate")).setValue(FormatterUtil.formatDate(tarefa.getDataFim()));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.state")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.email")).setValue(new Button("E"));
+            it.getItemProperty(mensagens.getString("DashboardView.taskTable.chat")).setValue(new Button("C"));
+
+            // se a tarefa possui subs, chama recursivamente
+            for (Tarefa subTarefa : tarefa.getSubTarefas()) {
+                if (view.getTaskTable().getItemIds().contains(subTarefa)) {
+                    atualizarTarefaTable(subTarefa);
+                } else {
+                    adicionarTarefaTable(subTarefa);
+                }
             }
         }
 
@@ -211,91 +185,47 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
 
     }
 
+    /**
+     * Callback notificando que o cadastro de uma nova tarefa foi concluido
+     *
+     * @param tarefa
+     */
     @Override
-    public void tarefaAtualizada(Tarefa tarefa) {
+    public void tarefaCriadaOuAtualizada(Tarefa tarefa) {
 
-        atualizarTarefaTable(tarefa);
-
-        if (tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
-
-            Tarefa task = tarefa;
-            do {
-
-                if (task.isRemovida()){
-                    view.getTaskTable().removeItem(task);
-                }
-                task = task.getProximaTarefa();
-                
-            } while (task != null);
+        if (tarefa.isRemovida()) {
             
-        }
-        
-        organizeTree(view.getTaskTable(), tarefa, tarefa.getSubTarefas());
-
-    }
-
-    public Layout buildChooseTemplatePopUp(Window window) {
-
-        VerticalLayout content = new VerticalLayout();
-        content.setMargin(true);
-        content.setSpacing(true);
-        content.setSizeUndefined();
-
-        ListSelect listaTemplates = new ListSelect();
-        listaTemplates.setMultiSelect(false);
-        listaTemplates.setWidth("300px");
-
-        List<Tarefa> templates = model.getTarefasTemplate();
-
-        for (Tarefa template : templates) {
-            listaTemplates.addItem(template);
-            listaTemplates.setItemCaption(template, template.getNome());
-        }
-
-        content.addComponent(listaTemplates);
-
-        Button cancelar = new Button("Cancelar", new Button.ClickListener() {
-
-            @Override
-            public void buttonClick(Button.ClickEvent event) {
-                window.close();
+            if (view.getTaskTable().getItemIds().contains(tarefa)) {
+                view.getTaskTable().removeItem(tarefa);
             }
-        });
-        DashboardPresenter callback = this;
-        Button criar = new Button("Criar Tarefa", (Button.ClickEvent event) -> {
-            Tarefa template = (Tarefa) listaTemplates.getValue();
-            if (template != null) {
-                TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
-                presenter.setCallBackListener(callback);
+            
+        } else {
 
-                Tarefa novaTarefa;
-                try {
-                    novaTarefa = template.clone();
-                    novaTarefa.setTarefaPai(null);
-                    novaTarefa.setTemplate(false);
-                    presenter.editar(novaTarefa);
-                } catch (CloneNotSupportedException ex) {
-                    Logger.getLogger(DashboardPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            if (view.getTaskTable().getItemIds().contains(tarefa)) {
+                atualizarTarefaTable(tarefa);
+
+            } else {
+                adicionarTarefaTable(tarefa);
+
+            }
+
+            organizeTree(view.getTaskTable(), tarefa, tarefa.getSubTarefas());
+            
+            if (tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
+
+                Tarefa next = tarefa.getProximaTarefa();
+                
+                if (next != null) {
+                    tarefaCriadaOuAtualizada(next);
                 }
-
             }
-        });
-        content.addComponent(new HorizontalLayout(cancelar, criar));
-
-        return content;
+        }
     }
 
     @Override
     public void createsNewTaskByTemplate() {
-
-        Window templatesWindow = new Window("Escolha a tarefa modelo");
-        templatesWindow.setModal(true);
-
-        templatesWindow.setContent(buildChooseTemplatePopUp(templatesWindow));
-
-        templatesWindow.center();
-
-        UI.getCurrent().addWindow(templatesWindow);
+        List<Tarefa> templates = model.getTarefasTemplate();
+        view.abrirPopUpSelecaoTemplates(templates);
 
     }
 
@@ -332,7 +262,6 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     @Override
     public void usuarioLogadoAlteradoAPENASTESTE() {
         this.loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
-        adicionarHierarquiasProjeto();
         carregaVisualizacaoInicial();
     }
 
@@ -342,10 +271,25 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     }
 
     public void openTask(Tarefa taskToOpen) {
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
-            presenter.setCallBackListener(this);
-            presenter.editar(taskToOpen);
-        
+        tarefaPresenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+        tarefaPresenter.setCallBackListener(this);
+        tarefaPresenter.editar(taskToOpen);
+
+    }
+
+    @Override
+    public void criarTarefaPorTemplate(Tarefa template) {
+
+        if (template != null) {
+            tarefaPresenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+            tarefaPresenter.setCallBackListener(this);
+
+            Tarefa novaTarefa;
+            novaTarefa = model.criarNovaTarefaPeloTemplate(template);
+            tarefaPresenter.editar(novaTarefa);
+
+        }
+
     }
 
     // enumeracao do tipo de pesquisa
@@ -509,7 +453,6 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
             adicionarTarefaTable(tarefa);
             organizeTree(view.getTaskTable(), tarefa, tarefa.getSubTarefas());
         });
-        
 
     }
 
@@ -754,6 +697,10 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(chatView);
         chatPresenter.open(tarefa);
+    }
+
+    public TarefaPresenter getTarefaPresenter() {
+        return tarefaPresenter;
     }
 
 }

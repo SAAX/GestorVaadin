@@ -20,6 +20,13 @@ import javax.persistence.EntityManager;
  */
 public class LoginModel {
 
+    // models auxiliares
+    private UsuarioModel usuarioModel;
+    
+    public LoginModel(){
+        usuarioModel = new UsuarioModel();
+    }
+    
     /**
      * Obtém a empresa do usuario logado Só pode have uma
      *
@@ -28,32 +35,7 @@ public class LoginModel {
      */
     public Empresa getEmpresaUsuarioLogado() {
 
-        // obtem o usuario logado
-        Usuario usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
-
-        // obtem a empresa ativa do usuario logado 
-        // so pode haver uma
-        Empresa empresa = null;
-        if (usuario.getEmpresas() != null) {
-            for (UsuarioEmpresa usuarioEmpresa : usuario.getEmpresas()) {
-
-                if (usuarioEmpresa.getAtivo()) {
-                    if (empresa == null) {
-                        empresa = usuarioEmpresa.getEmpresa();
-
-                    } else {
-                        throw new RuntimeException("Usuario esta ativo em mais de uma empresa.");
-                    }
-                }
-            }
-        }
-
-        // dispara exceção se nao encontrar a empresa do usuario logado
-        if (empresa == null) {
-            throw new RuntimeException("Não foram encontrados os usuarios da empresa");
-        }
-
-        return empresa;
+        return usuarioModel.getEmpresaUsuarioLogado();
     }
 
     /**
@@ -92,22 +74,8 @@ public class LoginModel {
      */
     public Usuario getUsuario(String login) {
 
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-
-        Usuario usuario = null;
-
-        try {
-            usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin")
-                    .setParameter("login", login)
-                    .getSingleResult();
-
-        } catch (Exception e) {
-
-            Logger.getLogger(LoginModel.class.getName()).log(Level.SEVERE, "", e);
-
-        }
-
-        return usuario;
+        return usuarioModel.findByLogin(login);
+        
 
     }
 

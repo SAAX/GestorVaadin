@@ -22,19 +22,11 @@ public class GestorEntityManagerProvider {
 
             EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
             setCurrentEntityManager(em);
-            Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.INFO, "Criando EM por demanda...");
         }
         return entityManagerThreadLocal.get();
     }
 
     public static void setCurrentEntityManager(EntityManager em) {
-        if (em==null){
-            Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.INFO, "Anulando EM");
-            
-        } else {
-            Logger.getLogger(GestorEntityManagerProvider.class.getName()).log(Level.INFO, "Setando EM:"+em.toString());
-            
-        }
         entityManagerThreadLocal.set(em);
     }
 }

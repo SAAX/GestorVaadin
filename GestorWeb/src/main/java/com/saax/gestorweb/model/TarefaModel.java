@@ -14,12 +14,14 @@ import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
+import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
+
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.vaadin.ui.UI;
@@ -37,6 +39,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -137,7 +141,7 @@ public class TarefaModel {
             } else {
                 em.merge(tarefa);
             }
-            
+
             boolean novaTarefa = tarefa.getId() == null;
             boolean tarefaPai = tarefa.getMeta() == null && tarefa.getTarefaPai() == null;
 
@@ -158,7 +162,6 @@ public class TarefaModel {
             tarefa.getAnexos().stream().filter((anexo) -> (anexo.getArquivoTemporario() != null)).forEach((anexo) -> {
                 moverAnexoTemporario(anexo);
             });
-
 
         } catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
@@ -738,8 +741,12 @@ public class TarefaModel {
 
     public Tarefa refresh(Tarefa taskToEdit) {
 
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        return em.find(Tarefa.class, taskToEdit.getId());
+        if (taskToEdit.getId() != null) {
+            EntityManager em = GestorEntityManagerProvider.getEntityManager();
+            return em.find(Tarefa.class, taskToEdit.getId());
+        } else {
+            return taskToEdit;
+        }
 
     }
 
@@ -938,6 +945,48 @@ public class TarefaModel {
         List<Tarefa> tarefas = q.getResultList();
 
         return tarefas;
+
+    }
+
+    /**
+     * Aceita automaticamente uma tarefa cujo solicitante é o responsavel
+     *
+     * @param tarefa
+     */
+    public void aceitarAutomaticamenteTarefaPropria(Tarefa tarefa) {
+
+        if (tarefa != null) {
+
+            if (tarefa.getUsuarioResponsavel() != null && tarefa.getUsuarioSolicitante() != null && tarefa.getUsuarioResponsavel().equals(tarefa.getUsuarioSolicitante())) {
+
+                // if it is an own task auto accept the task (switches from NOT ACCEPTED to NOT STARTED)
+                if (tarefa.getStatus() == StatusTarefa.NAO_ACEITA) {
+                    tarefa.setStatus(StatusTarefa.NAO_INICIADA);
+                }
+            }
+
+            if (tarefa.getSubTarefas() != null) {
+                for (Tarefa sub : tarefa.getSubTarefas()) {
+                    if (sub != null) {
+                        aceitarAutomaticamenteTarefaPropria(sub);
+                    }
+                }
+            }
+
+        }
+    }
+
+    public Tarefa criarNovaTarefaPeloTemplate(Tarefa template) {
+        try {
+            Tarefa novaTarefa = template.clone();
+            novaTarefa.setTarefaPai(null);
+            novaTarefa.setTemplate(false);
+
+            return novaTarefa;
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(TarefaModel.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
 
     }
 

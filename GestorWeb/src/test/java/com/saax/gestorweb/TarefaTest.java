@@ -6,12 +6,9 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.TarefaModel;
-import com.saax.gestorweb.model.LoginModel;
-import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
-import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
@@ -24,26 +21,21 @@ import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.presenter.PopUpStatusPresenter;
-import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.DAOAleatorio;
 import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
-import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.util.TestUtils;
-import com.saax.gestorweb.view.TaskView;
+import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.EntityManager;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -56,9 +48,9 @@ import org.junit.Test;
  *
  * @author rodrigo
  */
-public class CadastroTarefaTest {
+public class TarefaTest {
 
-    TaskView view;
+    TarefaView view;
     TarefaModel model;
     TarefaPresenter presenter;
     private static ResourceBundle mensagens = null;
@@ -98,7 +90,7 @@ public class CadastroTarefaTest {
     @Before
     public void setUp() {
 
-        view = new TaskView();
+        view = new TarefaView();
         model = new TarefaModel();
         presenter = new TarefaPresenter(model, view);
 
@@ -115,7 +107,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro simples de tarefa");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
@@ -157,7 +149,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro de tarefa com anexo");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
@@ -209,7 +201,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro completo de uma tarefa");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         Usuario usuarioResponsavel = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
@@ -416,7 +408,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro multiplas sub tarefas");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis
@@ -450,7 +442,7 @@ public class CadastroTarefaTest {
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        TaskView view_sub1 = new TaskView();
+        TarefaView view_sub1 = new TarefaView();
         TarefaModel model_sub1 = new TarefaModel();
 
         TarefaPresenter presenter_sub1 = new TarefaPresenter(model_sub1, view_sub1);
@@ -474,7 +466,7 @@ public class CadastroTarefaTest {
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        TaskView view_sub2 = new TaskView();
+        TarefaView view_sub2 = new TarefaView();
         TarefaModel model_sub2 = new TarefaModel();
 
         TarefaPresenter presenter_sub2 = new TarefaPresenter(model_sub2, view_sub2);
@@ -549,12 +541,14 @@ public class CadastroTarefaTest {
     @Test
     public void editarTarefaCompleta() {
 
-        System.out.println("Testando a edição (alteração) da tarefa complesta");
+        System.out.println("Testando a edição (alteração) da tarefa completa");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         Usuario usuarioResponsavel = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "danielstavale@gmail.com").getSingleResult();
 
-        String nome = "Teste Cadastro Tarefa #2";
+        String nome = "editarTarefaCompleta";
+        TestUtils.cadastrarTarefaSimples(nome);
+        
         String novonome = "Teste Cadastro Tarefa #2 - Alterada";
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
@@ -574,8 +568,6 @@ public class CadastroTarefaTest {
         view.getPriorityCombo().setValue(PrioridadeTarefa.BAIXA);
         //        private StatusTarefa status;
         view.getTaskStatusPopUpButton().click();
-        PopUpStatusPresenter presenterPopUP = presenter.getPopUpStatusPresenter();
-        presenterPopUP.aceitarTarefaClicked(); // Tarefa ficará com status = aceita
         //        private ProjecaoTarefa projecao;
         //        private int andamento;
         //        private String descricao;
@@ -613,49 +605,6 @@ public class CadastroTarefaTest {
         //        private Usuario usuarioSolicitante;
         //        private Usuario usuarioResponsavel;
         view.getAssigneeUserCombo().setValue(usuarioResponsavel);
-        //        private List<ParticipanteTarefa> participantes;
-        presenter.removerParticipante(t.getParticipantes().get(1));
-        Usuario usuarioParticipante_0 = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "fernando.saax@gmail.com").getSingleResult();
-        Usuario usuarioParticipante_1 = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
-        view.getFollowersCombo().setValue(usuarioParticipante_1); // insere o participante rodrigo
-        //        private List<AvaliacaoMetaTarefa> avaliacoes;
-        //        private List<OrcamentoTarefa> orcamentos;
-        presenter.removerRegistroOrcamento(t.getOrcamentos().get(0));
-        OrcamentoTarefa orcamentoTarefa_0 = t.getOrcamentos().get(0);
-
-        view.getBudgetAddTextField().setValue("472.17");
-        view.getObservationBudgetTextField().setValue("v1");
-        OrcamentoTarefa orcamentoTarefa_1 = new OrcamentoTarefa();
-        try {
-            orcamentoTarefa_1 = view.getOrcamentoTarefa();
-        } catch (FieldGroup.CommitException ex) {
-            fail(ex.getMessage());
-        }
-        view.getBudgetAddButton().click();
-//        //        private List<ApontamentoTarefa> apontamentos;
-//        view.getImputarHorasTextField().setValue("135:00");
-//        view.getCustoHoraTextField().setValue("14.36"); // 1938.6
-//        ApontamentoTarefa apontamento_0 = new ApontamentoTarefa();
-//        try {
-//            apontamento_0 = view.getApontamentoTarefa();
-//        } catch (FieldGroup.CommitException ex) {
-//            fail(ex.getMessage());
-//        }
-//        view.getImputarHorasButton().click();
-//
-//        view.getImputarHorasTextField().setValue("214:30"); // 3080.22
-//        ApontamentoTarefa apontamento_1 = new ApontamentoTarefa();
-//        try {
-//            apontamento_1 = view.getApontamentoTarefa();
-//        } catch (FieldGroup.CommitException ex) {
-//            fail(ex.getMessage());
-//        }
-//        view.getImputarHorasButton().click();
-//        //        private List<AnexoTarefa> anexos;
-//        //        private List<AndamentoTarefa> andamentos;
-//        //        private List<BloqueioTarefa> bloqueios;
-//        //        private List<HistoricoTarefa> historico;
-//        //        private LocalDateTime dataHoraInclusao;
 
         try {
             view.getTaskFieldGroup().commit();
@@ -681,7 +630,7 @@ public class CadastroTarefaTest {
         //        private String nome;
         Assert.assertEquals(novonome, t.getNome());
         //        private PrioridadeTarefa prioridade;
-        Assert.assertEquals(PrioridadeTarefa.ALTA, t.getPrioridade());
+        Assert.assertEquals(PrioridadeTarefa.BAIXA, t.getPrioridade());
         //        private StatusTarefa status;
         Assert.assertEquals(StatusTarefa.NAO_INICIADA, t.getStatus());
         //        private ProjecaoTarefa projecao;
@@ -719,28 +668,6 @@ public class CadastroTarefaTest {
         Assert.assertEquals(loggedUser, t.getUsuarioSolicitante());
         //        private Usuario usuarioResponsavel;
         Assert.assertEquals(usuarioResponsavel, t.getUsuarioResponsavel());
-        //        private List<ParticipanteTarefa> participantes;
-        Assert.assertEquals(usuarioParticipante_0, t.getParticipantes().get(0).getUsuarioParticipante());
-        Assert.assertEquals(usuarioParticipante_1, t.getParticipantes().get(1).getUsuarioParticipante());
-        //        private List<AvaliacaoMetaTarefa> avaliacoes;
-        //        private List<OrcamentoTarefa> orcamentos;
-        Assert.assertEquals(orcamentoTarefa_0.getCredito(), t.getOrcamentos().get(0).getCredito());
-        Assert.assertEquals(orcamentoTarefa_0.getSaldo(), t.getOrcamentos().get(0).getSaldo());
-        Assert.assertEquals(orcamentoTarefa_1.getCredito(), t.getOrcamentos().get(1).getCredito());
-        Assert.assertEquals(orcamentoTarefa_1.getSaldo(), t.getOrcamentos().get(1).getSaldo());
-//        //        private List<ApontamentoTarefa> apontamentos;
-//        Assert.assertEquals(apontamento_0.getCreditoHoras(), t.getApontamentos().get(0).getCreditoHoras());
-//        Assert.assertEquals(apontamento_0.getCreditoValor(), t.getApontamentos().get(0).getCreditoValor());
-//        Assert.assertEquals(apontamento_0.getSaldoHoras(), t.getApontamentos().get(0).getSaldoHoras());
-//        Assert.assertEquals(apontamento_1.getCreditoHoras(), t.getApontamentos().get(1).getCreditoHoras());
-//        Assert.assertEquals(apontamento_1.getCreditoValor(), t.getApontamentos().get(1).getCreditoValor());
-//        Assert.assertEquals(apontamento_1.getSaldoHoras(), t.getApontamentos().get(1).getSaldoHoras());
-//        //        private List<AnexoTarefa> anexos;
-//        //        private List<AndamentoTarefa> andamentos;
-//        //        private List<BloqueioTarefa> bloqueios;
-//        //        private List<HistoricoTarefa> historico;
-//        //        private LocalDateTime dataHoraInclusao;
-//        Assert.assertNotNull(t.getDataHoraInclusao());
 
     }
 
@@ -752,7 +679,7 @@ public class CadastroTarefaTest {
 
         System.out.println("Testando cadastro simples de tarefa");
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);

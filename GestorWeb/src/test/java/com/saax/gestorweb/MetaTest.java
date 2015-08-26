@@ -22,8 +22,9 @@ import com.saax.gestorweb.util.DBConnect;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.PostgresConnection;
+import com.saax.gestorweb.util.TestUtils;
 import com.saax.gestorweb.view.MetaView;
-import com.saax.gestorweb.view.TaskView;
+import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
 import java.util.ArrayList;
@@ -43,56 +44,34 @@ import org.junit.Test;
  *
  * @author rodrigo
  */
-public class CadastroMetaTest {
+public class MetaTest {
 
     private static ResourceBundle mensagens;
     private static Usuario loggedUser;
     private MetaView view;
     private MetaModel model;
     private MetaPresenter presenter;
-    private EntityManager em;
-    private static List<Meta> metasPersistidas;
 
     @BeforeClass
     public static void setUpClass() {
 
-        // connect to database
-        DBConnect.getInstance().assertConnection();
-        EntityManager em = PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager();
-        GestorEntityManagerProvider.setCurrentEntityManager(em);
+            TestUtils.connectDB();
 
-        // set logged user
-        loggedUser = (Usuario) em.createNamedQuery("Usuario.findByLogin").setParameter("login", "teste-user@gmail.com").getSingleResult();
-        GestorSession.setAttribute("loggedUser", loggedUser);
-        loggedUser.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
+            TestUtils.setUsuarioLogado(TestUtils.getUsuarioTeste());
 
-        // creates UI
-        GestorMDI gestor = new GestorMDI();
-        UI.setCurrent(gestor);
-        gestor.init(null);
+            TestUtils.createGestorMDI();
 
-        mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+            mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
+            
+            TestUtils.removeTodasTarefas();
+            
         
-        metasPersistidas = new ArrayList<>();
-        
-        
-
     }
 
     @AfterClass
     public static void tearDownClass() {
 
-        // limpar tarefas cadastradas
-        List<Meta> targets = metasPersistidas;
-        GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
-        for (Meta meta : targets) {
-            meta = GestorEntityManagerProvider.getEntityManager().find(Meta.class, meta.getId());
-            GestorEntityManagerProvider.getEntityManager().remove(meta);
-        }
-        GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
-
-        // disconnect
-        GestorEntityManagerProvider.getEntityManager().close();
+            TestUtils.removeTodasTarefas();
 
     }
 
@@ -154,7 +133,6 @@ public class CadastroMetaTest {
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
-        metasPersistidas.add(m);
 
 //        // asserts over the retrieved target 
         Assert.assertEquals(nomeEsperado, m.getNome());
@@ -203,7 +181,7 @@ public class CadastroMetaTest {
         }
         
         // open a presenter to create a task under the target
-        TaskView taskView = new TaskView();
+        TarefaView taskView = new TarefaView();
         TarefaModel taskModel = new TarefaModel();
         TarefaPresenter taskPresenter = new TarefaPresenter(taskModel, taskView);
         
@@ -249,7 +227,6 @@ public class CadastroMetaTest {
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
 
-        metasPersistidas.add(m);
 
 //        // asserts over the retrieved target 
         Assert.assertEquals("Target Test: createsNewTaskUnderTheTarget", m.getNome());

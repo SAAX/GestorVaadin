@@ -1,7 +1,6 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.datamodel.Tarefa;
-import com.saax.gestorweb.model.datamodel.Usuario;
 
 /**
  * Interface com todos os eventos disparados pela View do dashboard
@@ -19,7 +18,7 @@ public interface DashboardViewListenter {
     void init();
     void usuarioLogadoAlteradoAPENASTESTE();
 
-    void criarTarefaPorTemplate(Tarefa template);
+    Tarefa criarTarefaPorTemplate(Tarefa template);
     
 
     

@@ -400,7 +400,7 @@ public class TarefaModel {
     public ApontamentoTarefa configuraApontamento(ApontamentoTarefa apontamentoTarefa) {
 
         // Identifica os usuários relacionados ao apontamento e a tarefa
-        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         Usuario usuarioResponsavel = apontamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = apontamentoTarefa.getTarefa().getUsuarioSolicitante();
 
@@ -524,7 +524,7 @@ public class TarefaModel {
     public OrcamentoTarefa configuraInputOrcamento(OrcamentoTarefa orcamentoTarefa) {
 
         // Identifica os usuários relacionados ao apontamento e a tarefa
-        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario usuarioApontamento = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         Usuario usuarioResponsavel = orcamentoTarefa.getTarefa().getUsuarioResponsavel();
         Usuario usuarioSolicitante = orcamentoTarefa.getTarefa().getUsuarioSolicitante();
 
@@ -611,7 +611,7 @@ public class TarefaModel {
 
     public Participante criarParticipante(Usuario usuario, Tarefa tarefa) {
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         Participante participanteTarefa = new Participante();
         participanteTarefa.setTarefa(tarefa);
@@ -765,7 +765,7 @@ public class TarefaModel {
         StringBuilder html = new StringBuilder();
 
         html.append("<a href=\"");
-        html.append(UI.getCurrent().getPage().getLocation());
+        html.append(((GestorMDI)UI.getCurrent()).getLocation());
         html.append("?task=");
         html.append(task.getId());
         html.append("\">");

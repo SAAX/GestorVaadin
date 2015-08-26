@@ -204,7 +204,7 @@ public class MetaModel {
 
     public Participante criarParticipante(Usuario usuario, Meta meta) {
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         Participante participanteTarefa = new Participante();
         participanteTarefa.setMeta(meta);

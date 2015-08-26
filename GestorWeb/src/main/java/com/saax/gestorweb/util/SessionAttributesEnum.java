@@ -11,6 +11,8 @@ package com.saax.gestorweb.util;
  */
 public enum SessionAttributesEnum {
 
+    TEST_MODE("testMode"),
+    COOKIES_MANAGER("cookieManager"),
     USUARIO_LOGADO("loggedUser");
     
     private final String attributeName;

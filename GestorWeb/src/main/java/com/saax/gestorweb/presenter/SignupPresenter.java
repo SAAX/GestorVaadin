@@ -61,7 +61,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         this.model = model;
         this.view = view;
         
-        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         view.setListener(this);
 

@@ -94,7 +94,7 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
 
         view.setListener(this);
 
-        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
     }
 

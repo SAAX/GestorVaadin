@@ -28,7 +28,7 @@ import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.TarefaCallBackListener;
-import com.saax.gestorweb.view.TaskView;
+import com.saax.gestorweb.view.TarefaView;
 import com.saax.gestorweb.view.TaskViewListener;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.PopUpStatusListener;
@@ -65,8 +65,8 @@ import java.util.logging.Logger;
  */
 public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCallBackListener, RecurrencyDoneCallBackListener, PopUpStatusListener {
 
-    // Todo popUpStatusPresenter mantem acesso à view e ao model
-    private final transient TaskView view;
+    // Todo Presenter mantem acesso à view e ao model
+    private final transient TarefaView view;
     private final transient TarefaModel model;
 
     // Referencia ao recurso das mensagens:
@@ -74,28 +74,25 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private TarefaCallBackListener callbackListener;
     private final Usuario loggedUser;
-    private PopUpStatusPresenter popUpStatusPresenter;
     private List<LocalDate> recurrentDates;
     private RecurrencyPresenter RecorrencyPresenter;
     private String recurrencyMessage;
-    private PopUpStatusView popUpStatusView;
-    private PopUpStatusModel popUpStatusModel;
-
+    
     /**
-     * Cria o popUpStatusPresenter ligando o Model ao View
+     * Cria o Presenter ligando o Model ao View
      *
      * @param model
      * @param view
      */
     public TarefaPresenter(TarefaModel model,
-            TaskView view) {
+            TarefaView view) {
 
         this.model = model;
         this.view = view;
 
         view.setListener(this);
 
-        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
     }
 
@@ -578,24 +575,15 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
     private void setPopUpEvolucaoStatusEAndamento(Tarefa tarefa) {
 
         // comportmento e regras:
-        popUpStatusView = new PopUpStatusView();
-        popUpStatusModel = new PopUpStatusModel();
+        PopUpStatusView popUpStatusView = new PopUpStatusView();
+        PopUpStatusModel popUpStatusModel = new PopUpStatusModel();
 
-        popUpStatusPresenter = new PopUpStatusPresenter(popUpStatusView, popUpStatusModel);
+        PopUpStatusPresenter popUpStatusPresenter = new PopUpStatusPresenter(popUpStatusView, popUpStatusModel);
 
         popUpStatusPresenter.load(tarefa, view.getTaskStatusPopUpButton(), this);
 
     }
 
-    public PopUpStatusPresenter getPopUpStatusPresenter() {
-        return popUpStatusPresenter;
-    }
-
-    public PopUpStatusView getPopUpStatusView() {
-        return popUpStatusView;
-    }
-    
-    
 
     /**
      * Carrega o combo de clientes com todos os clientes ativos de todas as
@@ -625,7 +613,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
 
         try {
             view.getTaskFieldGroup().commit();
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
             presenter.setCallBackListener(this);
             presenter.criarNovaSubTarefa(view.getTarefa());
         } catch (FieldGroup.CommitException ex) {
@@ -867,7 +855,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
         TarefaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getSubTasksTable().setValue(subTarefa);
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
             presenter.setCallBackListener(callback);
             presenter.editar(subTarefa);
         });
@@ -888,7 +876,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
             sub.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(sub.getDataInicio()),
             FormatterUtil.formatDate(sub.getDataFim()),
-            TaskView.buildPopUpStatusProgressTask(view.getSubTasksTable(), sub, this),
+            TarefaView.buildPopUpStatusProgressTask(view.getSubTasksTable(), sub, this),
             sub.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -932,7 +920,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
         it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
         it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaStatus")).setValue(TaskView.buildPopUpStatusProgressTask(view.getSubTasksTable(), tarefa, this));
+        it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaStatus")).setValue(TarefaView.buildPopUpStatusProgressTask(view.getSubTasksTable(), tarefa, this));
         it.getItemProperty(mensagens.getString("TaskView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));

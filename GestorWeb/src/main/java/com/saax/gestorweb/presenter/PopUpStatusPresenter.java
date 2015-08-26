@@ -51,7 +51,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
     public PopUpStatusPresenter(PopUpStatusView view, PopUpStatusModel model) {
         this.view = view;
         this.model = model;
-        usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         view.setListener(this);
 
     }
@@ -100,7 +100,9 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
         statusButton.setCaption(getStatusTarefaDescription(tarefa));
         configurarView();
         statusButton.setContent(view);
-        listener.taskStatusChanged(tarefa);
+        if (listener!=null){
+            listener.taskStatusChanged(tarefa);
+        }
 
     }
 

@@ -10,6 +10,7 @@ import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.LoginViewListener;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
@@ -94,18 +95,18 @@ public class LoginPresenter implements Serializable, LoginViewListener {
         // LOGIN BEM SUCEDIDO!
         
         // Configura o usuáio logado na seção
-        GestorSession.setAttribute("loggedUser",u);
+        GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO,u);
         u.setEmpresaAtiva(model.getEmpresaUsuarioLogado());
         
 
         // verifica se o usuário quer gravar o login na sessão e grava o cookie
         if (view.getLembrarLoginCheckBox().getValue()){
         
-            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute("cookieManager");
+            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
             cookieManager.setCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO, view.getLoginTextField().getValue());
 
         } else {
-            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute("cookieManager");
+            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
             cookieManager.destroyCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO);
         }
 
@@ -127,7 +128,7 @@ public class LoginPresenter implements Serializable, LoginViewListener {
     public void loginPopUpAberto() {
         
         // verifica se o usuário já tem o login gravado em cookie
-        CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute("cookieManager");
+        CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
         String login = cookieManager.getCookieValue(CookiesManager.GestorWebCookieEnum.NOME_USUARIO);
         
         if (login!=null){

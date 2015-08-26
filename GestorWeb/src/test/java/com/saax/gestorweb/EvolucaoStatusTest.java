@@ -7,6 +7,7 @@ package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
@@ -19,7 +20,8 @@ import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.util.TestUtils;
-import com.saax.gestorweb.view.TaskView;
+import com.saax.gestorweb.view.PopUpStatusView;
+import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
 import java.util.ArrayList;
@@ -39,9 +41,9 @@ import org.junit.Test;
  */
 public class EvolucaoStatusTest {
 
-    TaskView view;
-    TarefaModel model;
-    TarefaPresenter presenter;
+    PopUpStatusView view;
+    PopUpStatusModel model;
+    PopUpStatusPresenter presenter;
     private static ResourceBundle mensagens = null;
 
     @BeforeClass
@@ -70,11 +72,11 @@ public class EvolucaoStatusTest {
             Usuario usuarioSolicitante = getUsuarioSolicitante();
 
             // usuario logado = solicitante
-            GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName(), usuarioSolicitante);
-            Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+            GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO, usuarioSolicitante);
+            Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
             // apos mudar o usuário logado é necessario resetar o presenter
-            TaskView view = new TaskView();
+            TarefaView view = new TarefaView();
             TarefaModel model = new TarefaModel();
             TarefaPresenter presenter = new TarefaPresenter(model, view);
 
@@ -111,9 +113,8 @@ public class EvolucaoStatusTest {
     @Before
     public void setUp() {
 
-        view = new TaskView();
-        model = new TarefaModel();
-        presenter = new TarefaPresenter(model, view);
+        view = new PopUpStatusView();
+        model = new PopUpStatusModel();
 
     }
 
@@ -179,24 +180,20 @@ public class EvolucaoStatusTest {
         GestorEntityManagerProvider.getEntityManager().merge(t);
         GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
 
+        // é necessário trocar o usuário logado para o responsavel
+        // usuario logado = responsavel
+        TestUtils.setUsuarioLogado(getUsuarioResponsavel());        
+
         // ------------------------------------------------------------------------------------------------------------------
         // Ação : Aceitar a tarefa
         // ------------------------------------------------------------------------------------------------------------------
-        // 1o. é necessário trocar o usuário logado para o responsavel
-        // usuario logado = responsavel
-        TestUtils.setUsuarioLogado(getUsuarioResponsavel());
-
-        // apos mudar o usuário logado é necessario resetar o presenter
-        view = new TaskView();
-        model = new TarefaModel();
-        presenter = new TarefaPresenter(model, view);
 
         // aceitar a tarefa
-        presenter.editar(t);
+        presenter = new PopUpStatusPresenter(view, model);
+        presenter.load(t, null, null);
 
-        presenter.getPopUpStatusPresenter().aceitarTarefaClicked();
-
-        presenter.gravarButtonClicked();
+        presenter.aceitarTarefaClicked();
+                
 
         // ------------------------------------------------------------------------------------------------------------------
         // Verificação : Aceite da tarefa
@@ -224,27 +221,20 @@ public class EvolucaoStatusTest {
         GestorEntityManagerProvider.getEntityManager().merge(t);
         GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
 
+        // é necessário trocar o usuário logado para o responsavel
+        // usuario logado = responsavel
+        TestUtils.setUsuarioLogado(getUsuarioResponsavel());        
+
         // ------------------------------------------------------------------------------------------------------------------
         // Ação : Recusar a tarefa
         // ------------------------------------------------------------------------------------------------------------------
-        // 1o. é necessário trocar o usuário logado para o responsavel
-        // usuario logado = responsavel
-        TestUtils.setUsuarioLogado(getUsuarioResponsavel());
-
-        // apos mudar o usuário logado é necessario resetar o presenter
-        view = new TaskView();
-        model = new TarefaModel();
-        presenter = new TarefaPresenter(model, view);
-
         // aceitar a tarefa
-        presenter.editar(t);
+        presenter = new PopUpStatusPresenter(view, model);
+        presenter.load(t, null, null);
 
-        PopUpStatusPresenter popUpPresenter = presenter.getPopUpStatusPresenter();
-        popUpPresenter.recusarTarefaClicked();
-        presenter.getPopUpStatusView().getMotivoRecusaTextArea().setValue("Motivo da recusa");
-        popUpPresenter.confirmarRecusaClicked();
-
-        presenter.gravarButtonClicked();
+        presenter.recusarTarefaClicked();
+        view.getMotivoRecusaTextArea().setValue("teste");
+        view.getConfirmarRecusa().click();
 
         // ------------------------------------------------------------------------------------------------------------------
         // Verificação : Aceite da recusa
@@ -272,27 +262,19 @@ public class EvolucaoStatusTest {
         GestorEntityManagerProvider.getEntityManager().merge(t);
         GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
 
+        // é necessário trocar o usuário logado para o responsavel
+        // usuario logado = responsavel
+        TestUtils.setUsuarioLogado(getUsuarioResponsavel());        
+        
         // ------------------------------------------------------------------------------------------------------------------
         // Ação : Recusar a tarefa (CANCELANDO)
         // ------------------------------------------------------------------------------------------------------------------
-        // 1o. é necessário trocar o usuário logado para o responsavel
-        // usuario logado = responsavel
-        TestUtils.setUsuarioLogado(getUsuarioResponsavel());
-
-        // apos mudar o usuário logado é necessario resetar o presenter
-        view = new TaskView();
-        model = new TarefaModel();
-        presenter = new TarefaPresenter(model, view);
-
-        // aceitar a tarefa
-        presenter.editar(t);
-
-        PopUpStatusPresenter popUpPresenter = presenter.getPopUpStatusPresenter();
-        popUpPresenter.recusarTarefaClicked();
-        presenter.getPopUpStatusView().getMotivoRecusaTextArea().setValue("Motivo da recusa");
-        presenter.getPopUpStatusView().getCancelarRecusa().click();
-
-        presenter.gravarButtonClicked();
+        presenter = new PopUpStatusPresenter(view, model);
+        presenter.load(t, null, null);
+        
+        presenter.recusarTarefaClicked();
+        view.getMotivoRecusaTextArea().setValue("Motivo da recusa");
+        view.getCancelarRecusa().click();
 
         // ------------------------------------------------------------------------------------------------------------------
         // Verificação : Tarefa continua no status NAO ACEITA
@@ -303,4 +285,92 @@ public class EvolucaoStatusTest {
 
     }
 
+    /**
+     * Testa o registro do andamento da tarefa em 50%
+     */
+    @Test
+    public void andamento50Test() {
+
+        System.out.println("Testando registro do andamento da tarefa em 50%");
+
+        // ------------------------------------------------------------------------------------------------------------------
+        // Preparação: colocar a tarefa no status: NAO_INICIADA
+        // ------------------------------------------------------------------------------------------------------------------
+        Tarefa t = getTarefa();
+        t.setStatus(StatusTarefa.NAO_INICIADA);
+        GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
+        GestorEntityManagerProvider.getEntityManager().merge(t);
+        GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
+
+        // é necessário trocar o usuário logado para o responsavel
+        // usuario logado = responsavel
+        TestUtils.setUsuarioLogado(getUsuarioResponsavel());        
+
+        // ------------------------------------------------------------------------------------------------------------------
+        // Ação : Registrar andamento
+        // ------------------------------------------------------------------------------------------------------------------
+        presenter = new PopUpStatusPresenter(view, model);
+        presenter.load(t, null, null);
+        
+        presenter.getStatusButton().setPopupVisible(true);
+        view.getAndamentoTarefaCombo().setValue(50);
+        view.getComentarioAndamento().setValue("Teste");
+        presenter.processarAlteracaoAndamento();
+        
+        // ------------------------------------------------------------------------------------------------------------------
+        // Verificação : Aceite da tarefa
+        // ------------------------------------------------------------------------------------------------------------------
+        t = getTarefa();
+
+        Assert.assertEquals(StatusTarefa.EM_ANDAMENTO, t.getStatus());
+        Assert.assertEquals(50, t.getAndamento());
+
+        
+        
+    }
+    /**
+     * Testa o registro da conlusao da tarefa em 100%
+     */
+    @Test
+    public void conclusaoTest() {
+
+        System.out.println("Testando o registro da conlusao da tarefa em 100%");
+
+        // ------------------------------------------------------------------------------------------------------------------
+        // Preparação: colocar a tarefa no status: NAO_INICIADA
+        // ------------------------------------------------------------------------------------------------------------------
+        Tarefa t = getTarefa();
+        t.setStatus(StatusTarefa.EM_ANDAMENTO);
+        GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
+        GestorEntityManagerProvider.getEntityManager().merge(t);
+        GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
+
+        // é necessário trocar o usuário logado para o responsavel
+        // usuario logado = responsavel
+        TestUtils.setUsuarioLogado(getUsuarioResponsavel());        
+
+        // ------------------------------------------------------------------------------------------------------------------
+        // Ação : Registrar andamento
+        // ------------------------------------------------------------------------------------------------------------------
+        presenter = new PopUpStatusPresenter(view, model);
+        presenter.load(t, null, null);
+        
+        presenter.getStatusButton().setPopupVisible(true);
+        view.getAndamentoTarefaCombo().setValue(100);
+        view.getComentarioAndamento().setValue("Teste");
+        presenter.processarAlteracaoAndamento();
+        
+        // ------------------------------------------------------------------------------------------------------------------
+        // Verificação : Aceite da tarefa
+        // ------------------------------------------------------------------------------------------------------------------
+        t = getTarefa();
+
+        Assert.assertEquals(StatusTarefa.CONCLUIDA, t.getStatus());
+        Assert.assertEquals(100, t.getAndamento());
+
+        
+        
+    }
+    
+    
 }

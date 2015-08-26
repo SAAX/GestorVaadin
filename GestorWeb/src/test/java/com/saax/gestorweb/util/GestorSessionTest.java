@@ -38,14 +38,4 @@ public class GestorSessionTest {
     public void tearDown() {
     }
 
-    @Test
-    public void setAtribute() {
-        GestorSession session = new GestorSession();
-        session.setAttribute("attr", 1213);
-        
-        Integer attr = (Integer) session.getAttribute("attr");
-        
-        assertEquals(attr, new Integer(1213));
-    }
-    
 }

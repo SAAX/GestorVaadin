@@ -17,44 +17,44 @@ public class GestorSession {
 
     private static final Map<String, Object> attributes = new HashMap<>();
 
-    public static void setAttribute(String name, Object value) {
+    public static void setAttribute(SessionAttributesEnum name, Object value) {
 
         // se execução normal
         if (VaadinSession.getCurrent() != null) {
-            VaadinSession.getCurrent().setAttribute(name, value);
+            VaadinSession.getCurrent().setAttribute(name.getAttributeName(), value);
         } else {
             // se em testes 
             setLocalAttribute(name, value);
         }
     }
 
-    private static void setLocalAttribute(String name, Object value) {
+    private static void setLocalAttribute(SessionAttributesEnum name, Object value) {
         if (name == null) {
             throw new IllegalArgumentException("name can not be null");
         }
         if (value != null) {
-            attributes.put(name, value);
+            attributes.put(name.getAttributeName(), value);
         } else {
-            attributes.remove(name);
+            attributes.remove(name.getAttributeName());
         }
 
     }
 
-    public static Object getAttribute(String name){
+    public static Object getAttribute(SessionAttributesEnum name){
         
         // se execução normal
         if (VaadinSession.getCurrent() != null) {
-            return VaadinSession.getCurrent().getAttribute(name);
+            return VaadinSession.getCurrent().getAttribute(name.getAttributeName());
         } else {
             // se em testes 
             return getLocalAttribute(name);
         }
     }
-    private static Object getLocalAttribute(String name) {
+    private static Object getLocalAttribute(SessionAttributesEnum name) {
 
         if (name == null) {
             throw new IllegalArgumentException("name can not be null");
         }
-        return attributes.get(name);
+        return attributes.get(name.getAttributeName());
     }
 }

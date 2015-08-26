@@ -86,7 +86,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author rodrigo
  */
-public class TaskView extends Window {
+public class TarefaView extends Window {
 
     // Reference to the use of the messages:
     private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -228,7 +228,7 @@ public class TaskView extends Window {
      * Create a view and all components
      *
      */
-    public TaskView() {
+    public TarefaView() {
         super();
 
         requiredFields = new ArrayList();
@@ -506,11 +506,11 @@ public class TaskView extends Window {
                         Notification.Type.WARNING_MESSAGE, true);
 
                 notification.show(Page.getCurrent());
-                Logger.getLogger(TaskView.class.getName()).log(Level.WARNING, null, ex);
+                Logger.getLogger(TarefaView.class.getName()).log(Level.WARNING, null, ex);
 
             } catch (Exception ex) {
                 ErrorUtils.showComponentErrors(this.taskFieldGroup.getFields());
-                Logger.getLogger(TaskView.class.getName()).log(Level.WARNING, null, ex);
+                Logger.getLogger(TarefaView.class.getName()).log(Level.WARNING, null, ex);
             }
         });
 
@@ -1410,7 +1410,7 @@ public class TaskView extends Window {
         link.setStyleName("quiet");
         link.addClickListener((Button.ClickEvent event) -> {
             table.setValue(task);
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
             presenter.setCallBackListener(callback);
             presenter.editar(task);
         });
@@ -1443,6 +1443,10 @@ public class TaskView extends Window {
             }
         });
 
+        // Correção: 
+        // Só habilita o botão de status em parcelas já gravadas no banco.
+        presenter.getStatusButton().setEnabled(task.getId()!=null);
+        
         return presenter.getStatusButton();
     }
 

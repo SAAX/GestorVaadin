@@ -27,7 +27,7 @@ public class UsuarioModel {
      */
     public List<Usuario> listarUsuariosEmpresa() {
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         Empresa empresa = loggedUser.getEmpresaAtiva();
 
         List<Usuario> usuarios = new ArrayList<>();
@@ -87,7 +87,7 @@ public class UsuarioModel {
     public Empresa getEmpresaUsuarioLogado() {
 
         // obtem o usuario logado
-        Usuario usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         return getEmpresaAtiva(usuario);
     }

@@ -540,7 +540,7 @@ public class MetaView extends Window implements Serializable {
             } catch (Exception ex) {
 
                 ErrorUtils.showComponentErrors(this.metaFieldGroup.getFields());
-                Logger.getLogger(TaskView.class.getName()).log(Level.WARNING, null, ex);
+                Logger.getLogger(TarefaView.class.getName()).log(Level.WARNING, null, ex);
 
             }
         });

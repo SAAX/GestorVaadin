@@ -60,7 +60,7 @@ public class ChatPresenter implements Serializable, ChatViewListener {
         this.model = model;
         this.view = view;
         view.setListener(this);
-        userLogged = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        userLogged = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
     }
 
     public void open(Tarefa task) {

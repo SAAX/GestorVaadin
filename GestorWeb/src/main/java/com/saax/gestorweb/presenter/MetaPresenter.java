@@ -19,7 +19,7 @@ import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.MetaViewListener;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.view.TarefaCallBackListener;
-import com.saax.gestorweb.view.TaskView;
+import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.Button;
@@ -61,7 +61,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         this.model = model;
         this.view = view;
 
-        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         view.setListener(this);
 
@@ -244,7 +244,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
             view.getMetaFieldGroup().commit();
 
             // Creates the presenter that will handle the new task creation
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
 
             // Configure this as the object to be called when the task creation was done
             presenter.setCallBackListener(this);
@@ -283,16 +283,16 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
 
     private void addTaskInTable(Tarefa task) {
         Object[] gridRow = new Object[]{
-            TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
-            TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
-            TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()),
+            TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
+            TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
+            TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()),
             task.getEmpresa().getNome()
             + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""),
             task.getUsuarioSolicitante().getNome(),
             task.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(task.getDataInicio()),
             FormatterUtil.formatDate(task.getDataFim()),
-            TaskView.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this),
+            TarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this),
             task.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -322,16 +322,16 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
     private void atualizarTarefaTable(Tarefa task) {
         Item it = view.getTarefasTable().getItem(task);
 
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(TaskView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial")).setValue(task.getEmpresa().getNome()
                 + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante")).setValue(task.getUsuarioSolicitante().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel")).setValue(task.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(TaskView.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(TarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao")).setValue(task.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));

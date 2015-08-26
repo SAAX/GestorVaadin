@@ -11,6 +11,7 @@ import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.vaadin.data.Property;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Accordion;
@@ -169,7 +170,7 @@ public class DashboardView extends VerticalLayout {
 
         switchUserCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             Usuario loggedUser = (Usuario) switchUserCombo.getValue();
-            GestorSession.setAttribute("loggedUser", loggedUser);
+            GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO, loggedUser);
             loggedUser.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
             listener.usuarioLogadoAlteradoAPENASTESTE();
             listener.removerFiltrosPesquisa();

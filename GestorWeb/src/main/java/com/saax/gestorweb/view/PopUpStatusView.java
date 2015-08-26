@@ -878,6 +878,12 @@ public class PopUpStatusView extends CustomComponent {
         return cancelarRecusa;
     }
 
+    public Button getConfirmarRecusa() {
+        return confirmarRecusa;
+    }
+    
+    
+
     
     
 }

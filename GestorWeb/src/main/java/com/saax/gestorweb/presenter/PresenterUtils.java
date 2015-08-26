@@ -106,7 +106,7 @@ public class PresenterUtils {
     public static void carregaComboEmpresaCliente(ComboBox empresaClienteCombo) {
         
         EmpresaModel empresaModel = new EmpresaModel();            
-        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario usuarioLogado = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         
         for (EmpresaCliente cliente : empresaModel.listarEmpresasCliente(usuarioLogado)) {
             empresaClienteCombo.addItem(cliente);

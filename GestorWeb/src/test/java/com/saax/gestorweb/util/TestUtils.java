@@ -15,7 +15,7 @@ import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.TarefaPresenter;
-import com.saax.gestorweb.view.TaskView;
+import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
 import java.util.Date;
@@ -51,7 +51,7 @@ public class TestUtils {
      */
     public static void removeTodasTarefas() {
 
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
         
         List<Tarefa> tarefas = GestorEntityManagerProvider.getEntityManager().createQuery("SELECT t FROM Tarefa t").getResultList();
@@ -61,17 +61,6 @@ public class TestUtils {
                 tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
                 GestorEntityManagerProvider.getEntityManager().remove(tarefa);
             }
-        }
-        for (Empresa sub : loggedUser.getEmpresaAtiva().getSubEmpresas()) {
-            tarefas = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findAll")
-                    .setParameter("empresa", sub).getResultList();
-            for (Tarefa tarefa : tarefas) {
-                if (tarefa.getTarefaPai() == null) {
-                    tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
-                    GestorEntityManagerProvider.getEntityManager().remove(tarefa);
-                }
-            }
-
         }
         GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
 
@@ -93,17 +82,17 @@ public class TestUtils {
     }
 
     public static void setUsuarioLogado(Usuario usuario) {
-        GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName(), usuario);
+        GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO, usuario);
         usuario.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
     }
 
     public static Usuario getUsuarioLogado() {
-        return (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        return (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
     }
 
     public static Tarefa cadastrarTarefaSimples(String nome) {
 
-        TaskView view = new TaskView();
+        TarefaView view = new TarefaView();
         TarefaModel model = new TarefaModel();
         TarefaPresenter presenter = new TarefaPresenter(model, view);
 

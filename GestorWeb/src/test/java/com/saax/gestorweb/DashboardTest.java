@@ -1,18 +1,18 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.DashboardModel;
+import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
-import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
-import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
+import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.TestUtils;
 import com.saax.gestorweb.view.DashboardView;
+import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -105,10 +105,21 @@ public class DashboardTest {
         Tarefa templateSelecionado = (Tarefa) view.getListaTemplates().getItemIds().iterator().next();
         view.getListaTemplates().select(templateSelecionado);
 
-        templateSelecionado.setNome(nomeTarefa);
-        presenter.criarTarefaPorTemplate(templateSelecionado);
+        Tarefa tarefaCriada = presenter.criarTarefaPorTemplate(templateSelecionado);
         
-        presenter.getTarefaPresenter().gravarButtonClicked();
+        TarefaView tarefaView = new TarefaView();
+        TarefaModel tarefaModel = new TarefaModel();
+        TarefaPresenter tarefaPresenter = new TarefaPresenter(tarefaModel, tarefaView);
+        
+        tarefaPresenter.editar(tarefaCriada);
+        tarefaView.getTaskNameTextField().setValue(nomeTarefa);
+        try {
+            tarefaView.getTaskFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        
+        tarefaPresenter.gravarButtonClicked();
 
         // -------------------------------------------------------------------------------------------------
         // Verificação
@@ -122,7 +133,7 @@ public class DashboardTest {
                 .getSingleResult();
         
         // Nome
-        Assert.assertEquals(templateSelecionado.getNome(), t.getNome());
+        Assert.assertEquals(nomeTarefa, t.getNome());
         
     }
 

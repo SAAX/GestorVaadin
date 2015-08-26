@@ -27,6 +27,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -53,7 +54,7 @@ public class GestorMDI extends UI {
     private transient ResourceBundle mensagens;
     private transient Properties application;
     private transient GestorWebImagens gestorWebImagens;
-
+    
     private boolean trataParametroTask(String parametroIdTarefa) {
 
         // verifica se foi passado o parametro "Tarefa"
@@ -79,7 +80,7 @@ public class GestorMDI extends UI {
         }
 
         // valida se o usuário está logado 
-        if (GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName()) == null) {
+        if (GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO) == null) {
 
             // se o usuario nao estiver logado, chama da tela de login
             LoginModel loginModel = new LoginModel();
@@ -113,6 +114,14 @@ public class GestorMDI extends UI {
 
         }
 
+    }
+
+    public URI getLocation() {
+        if ((boolean)GestorSession.getAttribute(SessionAttributesEnum.TEST_MODE)){
+            return null;
+        } else {
+            return UI.getCurrent().getPage().getLocation();
+        }
     }
 
     @WebServlet(value = "/*", asyncSupported = true, initParams = { /*@WebInitParam(name = "org.atmosphere.cpr.AtmosphereInterceptor", value = "com.saax.gestorweb.util.AtmosphereFilter")*/})
@@ -208,9 +217,9 @@ public class GestorMDI extends UI {
             throw new RuntimeException(ex);
         }
 
-//obtém os cookies da sessão
+        //obtém os cookies da sessão
         CookiesManager cookieManager = new CookiesManager();
-        GestorSession.setAttribute("cookieManager", cookieManager);
+        GestorSession.setAttribute(SessionAttributesEnum.COOKIES_MANAGER, cookieManager);
 
         // obtém e armazena as imagens
         gestorWebImagens = new GestorWebImagens();
@@ -220,6 +229,8 @@ public class GestorMDI extends UI {
         }
 
         setSizeFull();
+        
+        GestorSession.setAttribute(SessionAttributesEnum.TEST_MODE,request==null);
 
     }
 
@@ -228,11 +239,11 @@ public class GestorMDI extends UI {
      */
     public void logout() {
 
-        (UI.getCurrent()).getPage().setLocation("/GestorWeb");
 
         // Close the VaadinServiceSession
         (UI.getCurrent()).getSession().close();
-
+        (UI.getCurrent()).getPage().reload();
+        
     }
 
     public GestorWebImagens getGestorWebImagens() {

@@ -20,7 +20,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.TarefaCallBackListener;
-import com.saax.gestorweb.view.TaskView;
+import com.saax.gestorweb.view.TarefaView;
 import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.data.Item;
@@ -36,6 +36,7 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,7 +67,6 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
     private Usuario loggedUser;
-    private TarefaPresenter tarefaPresenter;
 
     /**
      * Inicializa o presenter
@@ -74,7 +74,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     @Override
     public void init() {
 
-        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         adicionarHierarquiasProjeto();
         carregaVisualizacaoInicial();
@@ -120,7 +120,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         TarefaCallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTaskTable().setValue(tarefa);
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
             presenter.setCallBackListener(callback);
             presenter.editar(tarefa);
         });
@@ -194,11 +194,11 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     public void tarefaCriadaOuAtualizada(Tarefa tarefa) {
 
         if (tarefa.isRemovida()) {
-            
+
             if (view.getTaskTable().getItemIds().contains(tarefa)) {
                 view.getTaskTable().removeItem(tarefa);
             }
-            
+
         } else {
 
             if (view.getTaskTable().getItemIds().contains(tarefa)) {
@@ -210,11 +210,11 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
             }
 
             organizeTree(view.getTaskTable(), tarefa, tarefa.getSubTarefas());
-            
+
             if (tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE) {
 
                 Tarefa next = tarefa.getProximaTarefa();
-                
+
                 if (next != null) {
                     tarefaCriadaOuAtualizada(next);
                 }
@@ -236,7 +236,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
             presenter.setCallBackListener(this);
             presenter.criarNovaMeta(categoria);
         } else if (categoria.getNivel() == 2) {
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
             presenter.setCallBackListener(this);
             presenter.createTask(categoria);
         }
@@ -261,7 +261,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
      */
     @Override
     public void usuarioLogadoAlteradoAPENASTESTE() {
-        this.loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        this.loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         carregaVisualizacaoInicial();
     }
 
@@ -271,24 +271,26 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     }
 
     public void openTask(Tarefa taskToOpen) {
-        tarefaPresenter = new TarefaPresenter(new TarefaModel(), new TaskView());
+        TarefaPresenter tarefaPresenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
         tarefaPresenter.setCallBackListener(this);
         tarefaPresenter.editar(taskToOpen);
 
     }
 
     @Override
-    public void criarTarefaPorTemplate(Tarefa template) {
+    public Tarefa criarTarefaPorTemplate(Tarefa template) {
 
-        if (template != null) {
-            tarefaPresenter = new TarefaPresenter(new TarefaModel(), new TaskView());
-            tarefaPresenter.setCallBackListener(this);
-
-            Tarefa novaTarefa;
-            novaTarefa = model.criarNovaTarefaPeloTemplate(template);
-            tarefaPresenter.editar(novaTarefa);
-
+        if (template == null) {
+            throw new InvalidParameterException("Template Invalido.");
         }
+        TarefaPresenter tarefaPresenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
+        tarefaPresenter.setCallBackListener(this);
+
+        Tarefa novaTarefa;
+        novaTarefa = model.criarNovaTarefaPeloTemplate(template);
+        tarefaPresenter.editar(novaTarefa);
+
+        return novaTarefa;
 
     }
 
@@ -660,7 +662,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     public void carregarListaMetasUsuarioLogado() {
 
         // Usuario logado
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         List<Meta> listaMetas = model.listarMetas(loggedUser);
 
@@ -697,10 +699,6 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(chatView);
         chatPresenter.open(tarefa);
-    }
-
-    public TarefaPresenter getTarefaPresenter() {
-        return tarefaPresenter;
     }
 
 }

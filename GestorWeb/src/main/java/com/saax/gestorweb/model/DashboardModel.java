@@ -44,7 +44,7 @@ public class DashboardModel {
     }
 
     public List<Tarefa> getTarefasTemplate() {
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         List<Tarefa> templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .setParameter("template", true)
@@ -75,7 +75,7 @@ public class DashboardModel {
                 .getResultList();
 
         // Obtem as hiearquias da empresa do usuário logad
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO.getAttributeName());
+        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         List<HierarquiaProjeto> hierarquiasEmpresa = em.createNamedQuery("HierarquiaProjeto.findByEmpresa")
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();

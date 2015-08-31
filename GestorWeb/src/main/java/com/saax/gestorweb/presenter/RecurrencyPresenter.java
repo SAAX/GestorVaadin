@@ -1,19 +1,17 @@
 package com.saax.gestorweb.presenter;
 
-import com.saax.gestorweb.GestorMDI;
+
 import com.saax.gestorweb.model.RecurrencyModel;
 import com.saax.gestorweb.model.datamodel.RecurrencyEnums;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
-
 import com.saax.gestorweb.util.GestorSession;
-import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.RecurrencyView;
 import com.saax.gestorweb.view.RecurrencyViewListener;
-import com.saax.gestorweb.view.RecurrencyDoneCallBackListener;
+import com.saax.gestorweb.callback.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Property;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
@@ -21,8 +19,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.ResourceBundle;
 import java.util.Set;
+import static org.apache.xml.serializer.utils.Utils.messages;
 import org.vaadin.dialogs.ConfirmDialog;
 
 /**
@@ -36,21 +34,6 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
      * View tier
      */
     private final transient RecurrencyView view;
-
-    /**
-     * Model tier
-     */
-    private final transient RecurrencyModel model;
-
-    /**
-     * Messages resource bundle
-     */
-    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
-
-    /**
-     * Images resource
-     */
-    private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
 
     /**
      * The logged user reference
@@ -76,17 +59,14 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
     /**
      * Cria o presenter PopUpStatusigando o Model ao View
      *
-     * @param model
      * @param view
      * @param task
      * @param startDate
      */
-    public RecurrencyPresenter(RecurrencyModel model,
-            RecurrencyView view,
+    public RecurrencyPresenter(RecurrencyView view,
             Tarefa task,
             LocalDate startDate) {
 
-        this.model = model;
         this.view = view;
         this.task = task;
         this.startDate = startDate;
@@ -196,7 +176,7 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
 
             Set<Integer> weekDays = getSelectedWeekDays();
 
-            recurrencySet = model.createWeeklyRecurrence(
+            recurrencySet = RecurrencyModel.createWeeklyRecurrence(
                     weekDays,
                     Integer.parseInt(view.getNumberWeeksCombo().getValue().toString()),
                     DateTimeConverters.toDate(startDate),
@@ -213,7 +193,7 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
             }
             
             // if its is a MONTHLY recurrence:
-            recurrencySet = model.createMonthlyRecurrence(dayType,
+            recurrencySet = RecurrencyModel.createMonthlyRecurrence(dayType,
                     monthDay,
                     Integer.parseInt(view.getNumberMonthsCombo().getValue().toString()),
                     (RecurrencyEnums.WorkingDayType) view.getKindDayMonthlyCombo().getValue(),
@@ -233,7 +213,7 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
             }
             
             
-            recurrencySet = model.createAnnualRecurrence(
+            recurrencySet = RecurrencyModel.createAnnualRecurrence(
                     dayType,
                     annualDay,
                     (RecurrencyEnums.WorkingDayType) view.getKindDayAnnualCombo().getValue(),
@@ -310,12 +290,12 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
     @Override
     public void removeAllRecurrency() {
 
-        ConfirmDialog.show(UI.getCurrent(), messages.getString("RecorrencyPresenter.removeAllRecurrency.title"),
-                messages.getString("RecorrencyPresenter.removeAllRecurrency.text"),
-                messages.getString("RecorrencyPresenter.removeAllRecurrency.OKButton"),
-                messages.getString("RecorrencyPresenter.removeAllRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
+        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.title"),
+                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.text"),
+                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.OKButton"),
+                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
-                        task = model.removeAllRecurrency(task, loggedUser);
+                        task = RecurrencyModel.removeAllRecurrency(task, loggedUser);
                         UI.getCurrent().removeWindow(view);
                         callBackListener.recurrencyRemoved(task);
                     }
@@ -329,12 +309,12 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
     @Override
     public void removeAllNextRecurrency() {
         ConfirmDialog.show(UI.getCurrent(),
-                messages.getString("RecorrencyPresenter.removeAllNextRecurrency.title"),
-                messages.getString("RecorrencyPresenter.removeAllNextRecurrency.text"),
-                messages.getString("RecorrencyPresenter.removeAllNextRecurrency.OKButton"),
-                messages.getString("RecorrencyPresenter.removeAllNextRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
+                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.title"),
+                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.text"),
+                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.OKButton"),
+                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
-                        task = model.removeAllNextRecurrency(task, loggedUser);
+                        task = RecurrencyModel.removeAllNextRecurrency(task, loggedUser);
                         UI.getCurrent().removeWindow(view);
                         callBackListener.recurrencyRemoved(task);
                     }

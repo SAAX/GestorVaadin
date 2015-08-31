@@ -7,6 +7,15 @@ import com.saax.gestorweb.model.datamodel.BloqueioTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.ADIADA;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.AVALIADA;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.BLOQUEADA;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.CANCELADA;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.CONCLUIDA;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.EM_ANDAMENTO;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.NAO_ACEITA;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.NAO_INICIADA;
+import static com.saax.gestorweb.model.datamodel.StatusTarefa.RECUSADA;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -31,7 +40,6 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
 
     // Todo presenter mantem acesso à view e ao model
     private final transient PopUpStatusView view;
-    private final transient PopUpStatusModel model;
 
     // Referencia ao recurso das mensagens e imagens:
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
@@ -46,11 +54,9 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      * Cria o pop-up ligando view e presenter
      *
      * @param view
-     * @param model
      */
-    public PopUpStatusPresenter(PopUpStatusView view, PopUpStatusModel model) {
+    public PopUpStatusPresenter(PopUpStatusView view) {
         this.view = view;
-        this.model = model;
         usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         view.setListener(this);
 
@@ -153,7 +159,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
                     // Se a tarefa estiver bloqueada, possibilita:
                     // * remover bloqueio
                     // * ver histórico
-                    ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
+                    ultimoBloqueioTarefa = PopUpStatusModel.obterBloqueioAtivo(tarefa);
                     motivo = ultimoBloqueioTarefa.getMotivo();
                     view.apresentaPerfilUsuarioResponsavelTarefaBloqueada(motivo);
 
@@ -193,7 +199,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
                     // Se a tarefa estiver recusada, possibilita:
                     // * remover o bloqueio de recusa
                     // * ver histórico
-                    ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
+                    ultimoBloqueioTarefa = PopUpStatusModel.obterBloqueioAtivo(tarefa);
                     motivo = ultimoBloqueioTarefa.getMotivo();
                     view.apresentaPerfilUsuarioResponsavelTarefaRecusada(motivo);
                     
@@ -236,7 +242,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
                     // Se a tarefa estiver bloqueada, possibilita:
                     // * visualizar o motivo do bloqueio
                     // * ver histórico
-                    ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
+                    ultimoBloqueioTarefa = PopUpStatusModel.obterBloqueioAtivo(tarefa);
                     motivo = ultimoBloqueioTarefa.getMotivo();
 
                     view.apresentaPerfilUsuarioSolicitanteTarefaEmAndamento(tarefa.getAndamento(), motivo);
@@ -290,7 +296,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
 
                     // Se a tarefa estiver recusada, possibilita:
                     // * ver histórico
-                    ultimoBloqueioTarefa = model.obterBloqueioAtivo(tarefa);
+                    ultimoBloqueioTarefa = PopUpStatusModel.obterBloqueioAtivo(tarefa);
                     motivo = ultimoBloqueioTarefa.getMotivo();
                     view.apresentaPerfilUsuarioSolicitanteTarefaParada(StatusTarefa.RECUSADA,motivo);
                     
@@ -329,15 +335,15 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
             String comentarioAndamento = view.getComentarioAndamento().getValue();
 
             if (tarefa.getStatus() == StatusTarefa.NAO_INICIADA) {
-                tarefa = model.iniciarTarefa(usuario, idTarefa, andamento, comentarioAndamento);
+                tarefa = PopUpStatusModel.iniciarTarefa(usuario, idTarefa, andamento, comentarioAndamento);
             } else {
-                tarefa = model.atualizarAndamentoTarefa(usuario, idTarefa, andamento, comentarioAndamento);
+                tarefa = PopUpStatusModel.atualizarAndamentoTarefa(usuario, idTarefa, andamento, comentarioAndamento);
             }
 
             if (andamento == 100) {
 
-                model.concluirTarefa(tarefa.getId());
-                model.notifyRequestor(tarefa);
+                PopUpStatusModel.concluirTarefa(tarefa.getId());
+                PopUpStatusModel.notifyRequestor(tarefa);
 
             }
             closePopUpButton();
@@ -422,7 +428,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
 
         String motivoBloqueio = view.getMotivoBloqueioTextArea().getValue();
 
-        tarefa = model.bloquearTarefa(tarefa.getId(), motivoBloqueio, usuario);
+        tarefa = PopUpStatusModel.bloquearTarefa(tarefa.getId(), motivoBloqueio, usuario);
 
         closePopUpButton();
 
@@ -436,7 +442,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
 
         String motivoRecusa = view.getMotivoRecusaTextArea().getValue();
 
-        tarefa = model.recusarTarefa(tarefa.getId(), motivoRecusa, usuario);
+        tarefa = PopUpStatusModel.recusarTarefa(tarefa.getId(), motivoRecusa, usuario);
 
         closePopUpButton();
 
@@ -447,7 +453,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void adiarTarefaClicked() {
-        tarefa = model.adiarTarefa(tarefa.getId(), usuario);
+        tarefa = PopUpStatusModel.adiarTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
@@ -456,7 +462,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void cancelarTarefaClicked() {
-        tarefa = model.cancelarTarefa(tarefa.getId(), usuario);
+        tarefa = PopUpStatusModel.cancelarTarefa(tarefa.getId(), usuario);
         closePopUpButton();
 
     }
@@ -466,7 +472,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void removerBloqueioTarefaClicked() {
-        tarefa = model.removerBloqueioTarefa(tarefa.getId(), usuario);
+        tarefa = PopUpStatusModel.removerBloqueioTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
@@ -475,7 +481,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void removerRecusaTarefaClicked() {
-        tarefa = model.removerRecusaTarefa(tarefa.getId(), usuario);
+        tarefa = PopUpStatusModel.removerRecusaTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
@@ -484,7 +490,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void aceitarTarefaClicked() {
-        tarefa = model.aceitarTarefa(tarefa.getId(), usuario);
+        tarefa = PopUpStatusModel.aceitarTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
@@ -494,7 +500,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void reabrirTarefaClicked() {
-        tarefa = model.reabrirTarefa(tarefa.getId(), usuario);
+        tarefa = PopUpStatusModel.reabrirTarefa(tarefa.getId(), usuario);
         closePopUpButton();
 
     }
@@ -505,7 +511,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
      */
     @Override
     public void reativarTarefaClicked() {
-        tarefa = model.reativarTarefa(tarefa.getId(), usuario);
+        tarefa = PopUpStatusModel.reativarTarefa(tarefa.getId(), usuario);
         closePopUpButton();
     }
 
@@ -525,7 +531,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
         }
         
         String observacaoAvaliacao = view.getComentarioAvaliacaoTextField().getValue();
-        tarefa = model.avaliarTarefa(tarefa.getId(), avaliacao, observacaoAvaliacao, usuario);
+        tarefa = PopUpStatusModel.avaliarTarefa(tarefa.getId(), avaliacao, observacaoAvaliacao, usuario);
         closePopUpButton();
 
     }
@@ -551,7 +557,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
     public void confirmarAlteracaoHistoricoClicked(HistoricoTarefa historicoTarefa) {
         String novoComentario = view.getComentarioTextArea().getValue();
         historicoTarefa.setComentario(novoComentario);
-        model.atualizarHistorico(historicoTarefa.getId(), novoComentario);
+        PopUpStatusModel.atualizarHistorico(historicoTarefa.getId(), novoComentario);
         view.getHistoricoContainer().removeAllItems();
         view.getHistoricoContainer().addAll(historicoTarefa.getTarefa().getHistorico());
 
@@ -559,7 +565,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
 
     @Override
     public List<ParametroAndamentoTarefa> listAndamento() {
-        return model.listParametroAndamentoTarefa(usuario.getEmpresaAtiva());
+        return PopUpStatusModel.listParametroAndamentoTarefa(usuario.getEmpresaAtiva());
     }
    
 }

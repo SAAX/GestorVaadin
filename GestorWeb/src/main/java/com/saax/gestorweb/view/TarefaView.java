@@ -1,8 +1,7 @@
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.TarefaModel;
-import com.saax.gestorweb.model.PopUpStatusModel;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -29,6 +28,7 @@ import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -49,7 +49,6 @@ import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
@@ -115,6 +114,7 @@ public class TarefaView extends Window {
 
     private HorizontalLayout buttonsSuperiorBar;
     private Button addSubButton;
+    private Button removerTarefaButton;
     private Button chatButton;
     private Button projectionButton;
 
@@ -471,6 +471,15 @@ public class TarefaView extends Window {
             listener.addSubButtonClicked();
         });
         buttonsSuperiorBar.addComponent(addSubButton);
+
+        removerTarefaButton = new Button("Remover");
+        removerTarefaButton.setEnabled(false);
+        removerTarefaButton.addClickListener((ClickEvent event) -> {
+            listener.removerTarefaButtonClicked(getTarefa());
+        });
+
+        removerTarefaButton.setIcon(FontAwesome.TRASH_O);
+        buttonsSuperiorBar.addComponent(removerTarefaButton);
 
         chatButton = new Button("[Chat]", (Button.ClickEvent event) -> {
             listener.chatButtonClicked();
@@ -1410,8 +1419,8 @@ public class TarefaView extends Window {
         link.setStyleName("quiet");
         link.addClickListener((Button.ClickEvent event) -> {
             table.setValue(task);
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
-            presenter.setCallBackListener(callback);
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
+            presenter.addCallBackListener(callback);
             presenter.editar(task);
         });
         return link;
@@ -1429,9 +1438,8 @@ public class TarefaView extends Window {
     public static PopupButton buildPopUpStatusProgressTask(Table table, Tarefa task, PopUpStatusListener listener) {
 
         PopUpStatusView viewPopUP = new PopUpStatusView();
-        PopUpStatusModel modelPopUP = new PopUpStatusModel();
 
-        PopUpStatusPresenter presenter = new PopUpStatusPresenter(viewPopUP, modelPopUP);
+        PopUpStatusPresenter presenter = new PopUpStatusPresenter(viewPopUP);
 
         presenter.load(task, null, listener);
 
@@ -1445,8 +1453,8 @@ public class TarefaView extends Window {
 
         // Correção: 
         // Só habilita o botão de status em parcelas já gravadas no banco.
-        presenter.getStatusButton().setEnabled(task.getId()!=null);
-        
+        presenter.getStatusButton().setEnabled(task.getId() != null);
+
         return presenter.getStatusButton();
     }
 
@@ -1496,6 +1504,10 @@ public class TarefaView extends Window {
 
     public Label getRecurrencyMessage() {
         return recurrencyMessage;
+    }
+
+    public Button getRemoverTarefaButton() {
+        return removerTarefaButton;
     }
 
 }

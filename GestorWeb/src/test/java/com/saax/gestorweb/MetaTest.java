@@ -47,7 +47,6 @@ import org.junit.Test;
 public class MetaTest {
 
     private static ResourceBundle mensagens;
-    private static Usuario loggedUser;
     private MetaView view;
     private MetaModel model;
     private MetaPresenter presenter;
@@ -63,7 +62,7 @@ public class MetaTest {
 
             mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
             
-            TestUtils.removeTodasTarefas();
+            TestUtils.limpaBase();
             
         
     }
@@ -71,7 +70,7 @@ public class MetaTest {
     @AfterClass
     public static void tearDownClass() {
 
-            TestUtils.removeTodasTarefas();
+            TestUtils.limpaBase();
 
     }
 
@@ -79,8 +78,7 @@ public class MetaTest {
     public void setUp() {
 
         view = new MetaView();
-        model = new MetaModel();
-        presenter = new MetaPresenter(model, view);
+        presenter = new MetaPresenter(view);
 
         
     }
@@ -110,7 +108,7 @@ public class MetaTest {
         
         presenter.criarNovaMeta(categoria);
         
-        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresaAtiva());
         view.getNomeMetaTextField().setValue(nomeEsperado);
         view.getDataInicioDateField().setValue(new Date());
         
@@ -130,7 +128,7 @@ public class MetaTest {
         Meta m = (Meta) PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager()
                 .createNamedQuery("Meta.findByNome")
                 .setParameter("nome", nomeEsperado)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresaAtiva())
                 .getSingleResult();
 
 
@@ -167,7 +165,7 @@ public class MetaTest {
         Assert.assertEquals(2, view.getEmpresaCombo().getItemIds().size());
 
         // selects a company
-        view.getEmpresaCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresaAtiva());
         
         // fills the required fields
         view.getNomeMetaTextField().setValue("Target Test: createsNewTaskUnderTheTarget");
@@ -182,11 +180,10 @@ public class MetaTest {
         
         // open a presenter to create a task under the target
         TarefaView taskView = new TarefaView();
-        TarefaModel taskModel = new TarefaModel();
-        TarefaPresenter taskPresenter = new TarefaPresenter(taskModel, taskView);
+        TarefaPresenter taskPresenter = new TarefaPresenter(taskView);
         
         // sets the taskPresenter's call back to the targetPresenter
-        taskPresenter.setCallBackListener(presenter);
+        taskPresenter.addCallBackListener(presenter);
 
         // Gets the tasks categories from the Target category
         List<HierarquiaProjetoDetalhe> tasksCategories = model.getFirstsTaskCategories(view.getMeta().getCategoria());
@@ -224,7 +221,7 @@ public class MetaTest {
         Meta m = (Meta) PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager()
                 .createNamedQuery("Meta.findByNome")
                 .setParameter("nome", "Target Test: createsNewTaskUnderTheTarget")
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresaAtiva())
                 .getSingleResult();
 
 

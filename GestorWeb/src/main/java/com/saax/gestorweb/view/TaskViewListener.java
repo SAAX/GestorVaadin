@@ -1,5 +1,6 @@
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -17,8 +18,6 @@ import java.io.File;
  * @author rodrigo
  */
 public interface TaskViewListener {
-
-    public void avisoButtonClicked();
 
     public void addSubButtonClicked();
 
@@ -42,8 +41,6 @@ public interface TaskViewListener {
     
     public void controleOrcamentoSwitched(Property.ValueChangeEvent event);
     
-    public void setCallBackListener(TarefaCallBackListener presenter);
-    
     public void criarNovaSubTarefa(Tarefa tarefaPai);
 
     public void removePointingTime(ApontamentoTarefa apontamentoTarefa);
@@ -65,5 +62,9 @@ public interface TaskViewListener {
     public void recurrenceClicked();   
 
     public void assigneeUserChanged(Tarefa task, Usuario usuario);
+
+    public void removerTarefaButtonClicked(Tarefa tarefa);
+
+    public boolean verificaPermissaoAcessoRemocaoTarefa(Tarefa tarefa);
 
 }

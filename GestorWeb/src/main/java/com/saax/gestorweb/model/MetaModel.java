@@ -39,15 +39,6 @@ import javax.persistence.EntityManager;
  */
 public class MetaModel {
 
-    // Classes do modelo acessórias acessadas por este model
-    private final UsuarioModel usuarioModel;
-    private final EmpresaModel empresaModel;
-
-    public MetaModel() {
-        usuarioModel = new UsuarioModel();
-        empresaModel = new EmpresaModel();
-
-    }
 
     /**
      * Cria uma nova meta na categoria informada, com valores default
@@ -56,7 +47,7 @@ public class MetaModel {
      * @param loggedUser
      * @return a meta criada
      */
-    public Meta criarNovaMeta(HierarquiaProjetoDetalhe categoria, Usuario loggedUser) {
+    public static Meta criarNovaMeta(HierarquiaProjetoDetalhe categoria, Usuario loggedUser) {
         Meta meta = new Meta();
         meta.setCategoria(categoria);
         meta.setDataHoraInclusao(LocalDateTime.now());
@@ -74,8 +65,8 @@ public class MetaModel {
      *
      * @return
      */
-    public List<Usuario> listarUsuariosEmpresa() {
-        return usuarioModel.listarUsuariosEmpresa();
+    public static List<Usuario> listarUsuariosEmpresa() {
+        return UsuarioModel.listarUsuariosEmpresa();
     }
 
     /**
@@ -84,8 +75,8 @@ public class MetaModel {
      * @param loggedUser
      * @return lista de EmpresaCliente
      */
-    public List<EmpresaCliente> listarEmpresasCliente(Usuario loggedUser) {
-        return empresaModel.listarEmpresasCliente(loggedUser);
+    public static List<EmpresaCliente> listarEmpresasCliente(Usuario loggedUser) {
+        return EmpresaModel.listarEmpresasCliente(loggedUser);
     }
 
     /**
@@ -94,8 +85,8 @@ public class MetaModel {
      * @param empresa
      * @return
      */
-    public List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
-        return empresaModel.obterListaDepartamentosAtivos(empresa);
+    public static List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
+        return EmpresaModel.obterListaDepartamentosAtivos(empresa);
     }
 
     /**
@@ -104,8 +95,8 @@ public class MetaModel {
      * @param empresa
      * @return
      */
-    public List<CentroCusto> obterListaCentroCustosAtivos(Empresa empresa) {
-        return empresaModel.obterListaCentroCustosAtivos(empresa);
+    public static List<CentroCusto> obterListaCentroCustosAtivos(Empresa empresa) {
+        return EmpresaModel.obterListaCentroCustosAtivos(empresa);
     }
 
     /**
@@ -115,7 +106,7 @@ public class MetaModel {
      * @return a meta gravada se sucesso, null caso contrario
      *
      */
-    public Meta gravarMeta(Meta meta) {
+    public static Meta gravarMeta(Meta meta) {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         if (meta == null) {
@@ -181,7 +172,7 @@ public class MetaModel {
      * @return a list of categories with every task category child of the give
      * TargetCategory
      */
-    public List<HierarquiaProjetoDetalhe> getFirstsTaskCategories(HierarquiaProjetoDetalhe TargetCategory) {
+    public static List<HierarquiaProjetoDetalhe> getFirstsTaskCategories(HierarquiaProjetoDetalhe TargetCategory) {
 
         // the task's categories
         List<HierarquiaProjetoDetalhe> tasksCategories = new ArrayList<>();
@@ -202,7 +193,7 @@ public class MetaModel {
         return tasksCategories;
     }
 
-    public Participante criarParticipante(Usuario usuario, Meta meta) {
+    public static Participante criarParticipante(Usuario usuario, Meta meta) {
 
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
@@ -215,7 +206,7 @@ public class MetaModel {
         return participanteTarefa;
     }
 
-    public boolean userHasAccessToTarget(Usuario loggedUser, Meta target) {
+    public static boolean userHasAccessToTarget(Usuario loggedUser, Meta target) {
 
         if (target.getUsuarioInclusao().equals(loggedUser)) {
             return true;
@@ -240,7 +231,7 @@ public class MetaModel {
 
     }
 
-    public List<Meta> filtrarMetas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
+    public static List<Meta> filtrarMetas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -352,7 +343,7 @@ public class MetaModel {
  * @param loggedUser
  * @return
  */
-public List<Meta> listarMetas(Usuario loggedUser) {
+public static List<Meta> listarMetas(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 

@@ -28,7 +28,7 @@ import javax.persistence.Query;
  *
  * @author Fernando/Rodrigo
  */
-public class RecurrencyModel {
+public  class RecurrencyModel {
 
     /**
      * Creates a user friendly message summarizing the recurrency configuration
@@ -40,7 +40,7 @@ public class RecurrencyModel {
      * @param endDate
      * @return
      */
-    private String formatRecurrencyWeeklyMessage(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
+    private static String formatRecurrencyWeeklyMessage(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
 
         StringBuilder recurrencyMessage = new StringBuilder();
 
@@ -72,7 +72,7 @@ public class RecurrencyModel {
      * @param endDate
      * @return a list of dates
      */
-    public RecurrencySet createWeeklyRecurrence(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
+    public static RecurrencySet createWeeklyRecurrence(Set<Integer> weekDays, Integer numberWeeks, Date startDate, Date endDate) {
 
         RecurrencySet recurrencySet = new RecurrencySet();
 
@@ -154,7 +154,7 @@ public class RecurrencyModel {
      *
      * @return
      */
-    private String formatRecurrencyAnnualMessage(RecurrencyEnums.DayType dayType, Integer annualDay, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
+    private static String formatRecurrencyAnnualMessage(RecurrencyEnums.DayType dayType, Integer annualDay, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
 
         StringBuilder recurrencyMessage = new StringBuilder();
 
@@ -196,7 +196,7 @@ public class RecurrencyModel {
         return recurrencyMessage.toString();
     }
 
-    public RecurrencySet createAnnualRecurrence(RecurrencyEnums.DayType dayType, Integer annualDay, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
+    public static RecurrencySet createAnnualRecurrence(RecurrencyEnums.DayType dayType, Integer annualDay, RecurrencyEnums.WorkingDayType workingDayType, String mesAnual, String anoTermino) {
 
         RecurrencySet recurrencySet = new RecurrencySet();
 
@@ -249,7 +249,7 @@ public class RecurrencyModel {
      * @param util
      * @return
      */
-    public int tratarDiaDoMes(RecurrencyEnums.DayType dayType, Integer day, int mes, int ano, RecurrencyEnums.WorkingDayType util) {
+    public static int tratarDiaDoMes(RecurrencyEnums.DayType dayType, Integer day, int mes, int ano, RecurrencyEnums.WorkingDayType util) {
 
         // no caso de 1o. dia útil do mês
         if (dayType == RecurrencyEnums.DayType.FIRST_WORKING_DAY) {
@@ -381,7 +381,7 @@ public class RecurrencyModel {
      *
      * @return
      */
-    private String formatRecurrencyMonthlyMessage(RecurrencyEnums.DayType dayType, Integer monthDay, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
+    private static String formatRecurrencyMonthlyMessage(RecurrencyEnums.DayType dayType, Integer monthDay, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
 
         StringBuilder recurrencyMessage = new StringBuilder();
         recurrencyMessage.append("Tarefa recorrente: mensal, todo ");
@@ -424,7 +424,7 @@ public class RecurrencyModel {
         return recurrencyMessage.toString();
     }
 
-    public RecurrencySet createMonthlyRecurrence(RecurrencyEnums.DayType dayType, Integer monthDay, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
+    public static RecurrencySet createMonthlyRecurrence(RecurrencyEnums.DayType dayType, Integer monthDay, Integer numberOfMonths, RecurrencyEnums.WorkingDayType workingDayType, Date startDate, Date endDate) {
 
         RecurrencySet recurrencySet = new RecurrencySet();
 
@@ -506,7 +506,7 @@ public class RecurrencyModel {
         return recurrencySet;
     }
 
-    private int getRecurrencySequenceNextValue() {
+    private static int getRecurrencySequenceNextValue() {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -529,7 +529,7 @@ public class RecurrencyModel {
      * @param recurrentDates the list of dates
      * @return the first task of the recuurrency set
      */
-    public Tarefa createRecurrentTasks(Tarefa task, List<LocalDate> recurrentDates, String recurrencyMessage) {
+    public static Tarefa createRecurrentTasks(Tarefa task, List<LocalDate> recurrentDates, String recurrencyMessage) {
 
         List<Tarefa> recurrentTasks = new ArrayList<>();
 
@@ -584,9 +584,8 @@ public class RecurrencyModel {
         return firstTaskOfTheRecurrentSet;
     }
 
-    private void removeTask(Tarefa task, Usuario loggedUser) {
-        task.setRemovida(true);
-        task.addHistorico(new HistoricoTarefa("Tarefa removida.", null, loggedUser, task, LocalDateTime.now()));
+    private static void removeTask(Tarefa task, Usuario loggedUser) {
+        TarefaModel.removerTarefa(task, loggedUser);
 
     }
 
@@ -597,7 +596,7 @@ public class RecurrencyModel {
      * @param loggedUser the logged user
      * @return
      */
-    public Tarefa removeAllRecurrency(Tarefa task, Usuario loggedUser) {
+    public static Tarefa removeAllRecurrency(Tarefa task, Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -643,7 +642,7 @@ public class RecurrencyModel {
      * @param loggedUser
      * @return
      */
-    public Tarefa removeAllNextRecurrency(Tarefa task, Usuario loggedUser) {
+    public static Tarefa removeAllNextRecurrency(Tarefa task, Usuario loggedUser) {
 
         Tarefa editingTask = task;
 

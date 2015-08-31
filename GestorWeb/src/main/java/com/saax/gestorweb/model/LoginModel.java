@@ -18,24 +18,17 @@ import javax.persistence.EntityManager;
  *
  * @author Rodrigo
  */
-public class LoginModel {
+public  class LoginModel {
 
-    // models auxiliares
-    private UsuarioModel usuarioModel;
-    
-    public LoginModel(){
-        usuarioModel = new UsuarioModel();
-    }
-    
     /**
      * Obtém a empresa do usuario logado Só pode have uma
      *
      * @return empresa
      * @throws Runtime se empresa não for encontrada ou existir mais que uma
      */
-    public Empresa getEmpresaUsuarioLogado() {
+    public static Empresa getEmpresaUsuarioLogado() {
 
-        return usuarioModel.getEmpresaUsuarioLogado();
+        return UsuarioModel.getEmpresaUsuarioLogado();
     }
 
     /**
@@ -44,7 +37,7 @@ public class LoginModel {
      * @param login
      * @return
      */
-    public Boolean verificaLoginExistente(String login) {
+    public static Boolean verificaLoginExistente(String login) {
 
         List<Usuario> usuarios = null;
 
@@ -72,9 +65,9 @@ public class LoginModel {
      * @param login
      * @return
      */
-    public Usuario getUsuario(String login) {
+    public static Usuario getUsuario(String login) {
 
-        return usuarioModel.findByLogin(login);
+        return UsuarioModel.findByLogin(login);
         
 
     }

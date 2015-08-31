@@ -9,8 +9,8 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.UsuarioModel;
-import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -49,41 +49,45 @@ public class TestUtils {
     /**
      * metodo utilitario para remover todas as tarefas cadastradas
      */
-    public static void removeTodasTarefas() {
+    public static void limpaBase() {
 
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
-        
+
         List<Tarefa> tarefas = GestorEntityManagerProvider.getEntityManager().createQuery("SELECT t FROM Tarefa t").getResultList();
-        
+
         for (Tarefa tarefa : tarefas) {
             if (tarefa.getTarefaPai() == null) {
                 tarefa = GestorEntityManagerProvider.getEntityManager().getReference(Tarefa.class, tarefa.getId());
                 GestorEntityManagerProvider.getEntityManager().remove(tarefa);
             }
         }
+
+        List<Meta> metas = GestorEntityManagerProvider.getEntityManager().createQuery("SELECT m FROM Meta m").getResultList();
+
+        for (Meta meta : metas) {
+            meta = GestorEntityManagerProvider.getEntityManager().getReference(Meta.class, meta.getId());
+            GestorEntityManagerProvider.getEntityManager().remove(meta);
+        }
         GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
 
     }
 
     public static Usuario getUsuarioTeste() {
-        UsuarioModel usuarioModel = new UsuarioModel();
-        return usuarioModel.findByLogin("teste-user@gmail.com");
+        return UsuarioModel.findByLogin("teste-user@gmail.com");
     }
 
     public static Usuario getUsuarioFernando() {
-        UsuarioModel usuarioModel = new UsuarioModel();
-        return usuarioModel.findByLogin("fernando.saax@gmail.com");
+        return UsuarioModel.findByLogin("fernando.saax@gmail.com");
     }
 
     public static Usuario getUsuarioRodrigo() {
-        UsuarioModel usuarioModel = new UsuarioModel();
-        return usuarioModel.findByLogin("rodrigo.ccn2005@gmail.com");
+        return UsuarioModel.findByLogin("rodrigo.ccn2005@gmail.com");
     }
 
     public static void setUsuarioLogado(Usuario usuario) {
         GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO, usuario);
-        usuario.setEmpresaAtiva(new LoginModel().getEmpresaUsuarioLogado());
+        usuario.setEmpresaAtiva(LoginModel.getEmpresaUsuarioLogado());
     }
 
     public static Usuario getUsuarioLogado() {
@@ -93,12 +97,11 @@ public class TestUtils {
     public static Tarefa cadastrarTarefaSimples(String nome) {
 
         TarefaView view = new TarefaView();
-        TarefaModel model = new TarefaModel();
-        TarefaPresenter presenter = new TarefaPresenter(model, view);
+        TarefaPresenter presenter = new TarefaPresenter(view);
 
         Usuario loggedUser = TestUtils.getUsuarioLogado();
 
-        HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
+        HierarquiaProjetoDetalhe categoriaDefaultMeta = TarefaModel.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
 
         view.getTaskNameTextField().setValue(nome);
@@ -116,7 +119,7 @@ public class TestUtils {
                 .setParameter("nome", nome)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getSingleResult();
-        
+
         return t;
 
     }

@@ -1,7 +1,7 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.DashboardModel;
-import com.saax.gestorweb.model.TarefaModel;
+import com.saax.gestorweb.model.LixeiraModel;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Tarefa;
@@ -12,6 +12,7 @@ import com.saax.gestorweb.util.TestUtils;
 import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.ui.UI;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
@@ -37,14 +38,12 @@ public class DashboardTest {
 
         TestUtils.createGestorMDI();
         
-        TestUtils.removeTodasTarefas();
+        TestUtils.limpaBase();
 
     }
 
     @AfterClass
     public static void tearDownClass() {
-        
-        TestUtils.removeTodasTarefas();
     }
 
     @Before
@@ -54,14 +53,41 @@ public class DashboardTest {
 
     @After
     public void tearDown() {
-
+        TestUtils.limpaBase();
     }
 
+    
+    /**
+     * Verifica se uma tarefa recem cadastrada aparece no dash do usuario
+     */
+    @Test
+    public void listaTarefaTest(){
+    
+        // arrange
+        
+        // criar uma tarefa pai
+        Tarefa expected = TestUtils.cadastrarTarefaSimples("listaTarefaTest");
+        
+        // act 
+        DashboardView view = new DashboardView();
+        DashboardPresenter presenter = new DashboardPresenter(view);
+        
+        presenter.init();
+        
+
+        // assert
+        Assert.assertTrue(view.getTaskTable().getItemIds().contains(expected));
+        
+        
+        
+        
+    }
+    
+    
     @Test
     public void getHierarquiasProjetoTest() {
 
-        DashboardModel model = new DashboardModel();
-        List<HierarquiaProjeto> l = model.getHierarquiasProjeto();
+        List<HierarquiaProjeto> l = DashboardModel.getHierarquiasProjeto();
 
         Assert.assertFalse("l está vazio", l.isEmpty());
 
@@ -82,8 +108,7 @@ public class DashboardTest {
         // Preparação
         // -------------------------------------------------------------------------------------------------
         DashboardView view = new DashboardView();
-        DashboardModel model = new DashboardModel();
-        DashboardPresenter presenter = new DashboardPresenter(model, view);
+        DashboardPresenter presenter = new DashboardPresenter(view);
         
         String nomeTemplate = "Tarefa Teste: criarTarefaPorTemplateTest (template)";
         String nomeTarefa = "Tarefa Teste: criarTarefaPorTemplateTest (tarefa)";
@@ -108,8 +133,7 @@ public class DashboardTest {
         Tarefa tarefaCriada = presenter.criarTarefaPorTemplate(templateSelecionado);
         
         TarefaView tarefaView = new TarefaView();
-        TarefaModel tarefaModel = new TarefaModel();
-        TarefaPresenter tarefaPresenter = new TarefaPresenter(tarefaModel, tarefaView);
+        TarefaPresenter tarefaPresenter = new TarefaPresenter(tarefaView);
         
         tarefaPresenter.editar(tarefaCriada);
         tarefaView.getTaskNameTextField().setValue(nomeTarefa);

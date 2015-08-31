@@ -242,7 +242,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "com.saax.gestorweb.model.datamodel.Usuario[ idusuario=" + id + " ]";
+        return nome + " [ idusuario=" + id + " ]";
     }
 
     public Collection<UsuarioEmpresa> getEmpresas() {

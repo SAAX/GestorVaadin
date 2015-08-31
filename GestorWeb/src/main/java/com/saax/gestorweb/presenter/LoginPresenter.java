@@ -28,18 +28,15 @@ public class LoginPresenter implements Serializable, LoginViewListener {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient LoginView view;
-    private final transient LoginModel model;
     private Tarefa taskToOpenWhenSucess;
 
     /**
      * Cria o presenter ligando o Model ao View
      *
-     * @param model
      * @param view
      */
-    public LoginPresenter(LoginModel model, LoginView view) {
+    public LoginPresenter(LoginView view) {
 
-        this.model = model;
         this.view = view;
 
         view.setListener(this);
@@ -69,12 +66,12 @@ public class LoginPresenter implements Serializable, LoginViewListener {
         }
 
         // verifica se o usuário informado existe (login)
-        if (!model.verificaLoginExistente(login)) {
+        if (!LoginModel.verificaLoginExistente(login)) {
             view.apresentaErroUsuarioNaoExiste();
             return;
         }
         
-        Usuario u = model.getUsuario(login);
+        Usuario u = LoginModel.getUsuario(login);
 
         
         // criptografa a senha informada, para comparação
@@ -96,7 +93,7 @@ public class LoginPresenter implements Serializable, LoginViewListener {
         
         // Configura o usuáio logado na seção
         GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO,u);
-        u.setEmpresaAtiva(model.getEmpresaUsuarioLogado());
+        u.setEmpresaAtiva(LoginModel.getEmpresaUsuarioLogado());
         
 
         // verifica se o usuário quer gravar o login na sessão e grava o cookie

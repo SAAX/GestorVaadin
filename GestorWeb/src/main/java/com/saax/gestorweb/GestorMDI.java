@@ -83,11 +83,10 @@ public class GestorMDI extends UI {
         if (GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO) == null) {
 
             // se o usuario nao estiver logado, chama da tela de login
-            LoginModel loginModel = new LoginModel();
             LoginView loginView = new LoginView();
 
             // O presenter liga model e view
-            LoginPresenter presenter = new LoginPresenter(loginModel, loginView);
+            LoginPresenter presenter = new LoginPresenter(loginView);
             presenter.openTaskOnSucessLogin(task);
 
             // adiciona a visualização à UI
@@ -179,11 +178,10 @@ public class GestorMDI extends UI {
     public void carregarDashBoard(Tarefa taskToOpen) {
 
         // Cria a pagina inical
-        DashboardModel dashboradModel = new DashboardModel();
         DashboardView dashboardView = new DashboardView();
 
         // O presenter liga model e view
-        DashboardPresenter dashboardPresenter = new DashboardPresenter(dashboradModel, dashboardView);
+        DashboardPresenter dashboardPresenter = new DashboardPresenter(dashboardView);
         if (taskToOpen != null) {
             dashboardPresenter.openTask(taskToOpen);
         }

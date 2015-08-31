@@ -1,9 +1,9 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.MetaModel;
 import com.saax.gestorweb.model.TarefaModel;
-import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
@@ -14,11 +14,11 @@ import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
-import com.saax.gestorweb.view.CadastroMetaCallBackListener;
+import com.saax.gestorweb.callback.MetaCallBackListener;
 import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.MetaViewListener;
 import com.saax.gestorweb.view.PopUpStatusListener;
-import com.saax.gestorweb.view.TarefaCallBackListener;
+import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -39,27 +39,29 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
 
     // Todo presenter mantem acesso à view e ao model
     private final transient MetaView view;
-    private final transient MetaModel model;
 
     // recursos de aplicação
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final List<TarefaCallBackListener> callbackListeneres;
 
     // usuario logado
     private final Usuario loggedUser;
-    private CadastroMetaCallBackListener callbackListener;
+    private MetaCallBackListener callbackListener;
+
+    public List<TarefaCallBackListener> getCallbackListeneres() {
+        return callbackListeneres;
+    }
 
     /**
      * Cria o presenter ligando o Model ao View
      *
-     * @param model
      * @param view
      */
-    public MetaPresenter(MetaModel model,
-            MetaView view) {
+    public MetaPresenter(MetaView view) {
 
-        this.model = model;
         this.view = view;
+        this.callbackListeneres = new ArrayList<>();
 
         loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
@@ -74,7 +76,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
      */
     public void criarNovaMeta(HierarquiaProjetoDetalhe categoria) {
 
-        Meta meta = model.criarNovaMeta(categoria, loggedUser);
+        Meta meta = MetaModel.criarNovaMeta(categoria, loggedUser);
 
         init(meta);
 
@@ -167,7 +169,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
      */
     private void carregaComboResponsavel() {
         ComboBox responsavel = view.getResponsavelCombo();
-        for (Usuario usuario : model.listarUsuariosEmpresa()) {
+        for (Usuario usuario : MetaModel.listarUsuariosEmpresa()) {
             responsavel.addItem(usuario);
             responsavel.setItemCaption(usuario, usuario.getNome());
 
@@ -194,7 +196,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
      * @param callback
      */
     @Override
-    public void setCallBackListener(CadastroMetaCallBackListener callback) {
+    public void setCallBackListener(MetaCallBackListener callback) {
         this.callbackListener = callback;
     }
 
@@ -206,7 +208,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
             meta.setUsuarioResponsavel(meta.getUsuarioInclusao());
         }
         boolean novaMeta = meta.getId() == null;
-        meta = model.gravarMeta(meta);
+        meta = MetaModel.gravarMeta(meta);
 
         TarefaModel tarefaModel = new TarefaModel();
         for (Tarefa tarefa : meta.getTarefas()) {
@@ -216,9 +218,9 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         // notica (se existir) algum listener interessado em saber que o cadastro foi finalizado.
         if (callbackListener != null) {
             if (novaMeta) {
-                callbackListener.cadastroMetaConcluido(meta);
+                callbackListener.metaCriada(meta);
             } else {
-                callbackListener.edicaoMetaConcluida(meta);
+                callbackListener.metaAlterada(meta);
             }
         }
         view.close();
@@ -244,13 +246,13 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
             view.getMetaFieldGroup().commit();
 
             // Creates the presenter that will handle the new task creation
-            TarefaPresenter presenter = new TarefaPresenter(new TarefaModel(), new TarefaView());
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
 
             // Configure this as the object to be called when the task creation was done
-            presenter.setCallBackListener(this);
+            presenter.addCallBackListener(this);
 
             // Gets the tasks categories from the Target category
-            List<HierarquiaProjetoDetalhe> tasksCategories = model.getFirstsTaskCategories(view.getMeta().getCategoria());
+            List<HierarquiaProjetoDetalhe> tasksCategories = MetaModel.getFirstsTaskCategories(view.getMeta().getCategoria());
 
             // Tells the presenter which is gonna be the Tarefa's category
             presenter.createTask(view.getMeta(), tasksCategories);
@@ -306,16 +308,37 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
 
     }
 
-        @Override
-    public void tarefaCriadaOuAtualizada(Tarefa tarefa) {
+    
+    /**
+     * Trata o evento disparado via callback quando uma tarefa é removida
+     *
+     * @param tarefaRemovida
+     */
+    @Override
+    public void tarefaRemovida(Tarefa tarefaRemovida) {
+        // Se a tarefa removida for uma sub da que está sendo editada
+        if (view.getTarefasTable().getItemIds().contains(tarefaRemovida)) {
+            // remove a sub da lista
+            view.getTarefasTable().getItemIds().remove(tarefaRemovida);
+        }
+    }
+    
+    /**
+     * Trata o evento disparado ao concluir a criação de uma nova tarefa ou
+     * alteração de uma
+     *
+     * @param tarefaCriada
+     */
+    @Override
+    public void atualizarApresentacaoTarefa(Tarefa tarefaCriada) {
 
-        if (view.getTarefasTable().getItemIds().contains(tarefa)){
-            atualizarTarefaTable(tarefa);
+        if (view.getTarefasTable().getItemIds().contains(tarefaCriada)){
+            atualizarTarefaTable(tarefaCriada);
         } else {
-            addTaskInTable(tarefa);
+            addTaskInTable(tarefaCriada);
             
         }
-        organizeTree(tarefa, tarefa.getSubTarefas());
+        organizeTree(tarefaCriada, tarefaCriada.getSubTarefas());
 
     }
 
@@ -348,7 +371,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
      */
     private void carregaComboParticipante() {
         ComboBox participante = view.getParticipantesCombo();
-        for (Usuario usuario : model.listarUsuariosEmpresa()) {
+        for (Usuario usuario : MetaModel.listarUsuariosEmpresa()) {
             participante.addItem(usuario);
             participante.setItemCaption(usuario, usuario.getNome());
 
@@ -366,7 +389,7 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         if (usuario.equals(view.getResponsavelCombo().getValue()) || usuario.equals(loggedUser)) {
             Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
         } else {
-            Participante participante = model.criarParticipante(usuario, view.getMeta());
+            Participante participante = MetaModel.criarParticipante(usuario, view.getMeta());
             view.getParticipantesContainer().addBean(participante);
             Meta meta = view.getMeta();
 
@@ -394,5 +417,6 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         view.setEditAllowed(usuarioLogadoEhOSolicitante || usuarioLogadoEhOResponsavel);
         view.getResponsavelCombo().setEnabled(usuarioLogadoEhOSolicitante);
     }
+
 
 }

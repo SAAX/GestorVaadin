@@ -41,25 +41,25 @@ import org.apache.commons.beanutils.BeanUtils;
 @Entity
 @Table(name = "tarefa")
 @NamedQueries({
-    @NamedQuery(name = "Tarefa.findAll", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.nome = :nome AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.prioridade = :prioridade AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByRecurrencyID", query = "SELECT t FROM Tarefa t WHERE t.recurrencyID = :recurrencyID AND NOT t.removida ORDER BY t.dataInicio"),
-    @NamedQuery(name = "Tarefa.findByDataInicio", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataInicio = :dataInicio AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByDataFim", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataFim = :dataFim AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByDataTermino", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataTermino = :dataTermino AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByStatus", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.status = :status AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByProjecao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.projecao = :projecao AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByAndamento", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.andamento = :andamento AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByDescricao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.descricao = :descrica AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByTemplate", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.template = :template AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.apontamentoHoras = :apontamentohoras AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByUsuarioResponsavel", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioResponsavel = :usuarioResponsavel AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByUsuarioResponsavelDashboard", query = "SELECT t FROM Tarefa t WHERE t.usuarioResponsavel = :usuarioResponsavel AND NOT t.removida ORDER BY t.dataInicio"),
-    @NamedQuery(name = "Tarefa.findByUsuarioSolicitante", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByOrcamentocontrolado", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.orcamentoControlado = :orcamentocontrolado AND NOT t.removida"),
-    @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao AND NOT t.removida")})
+    @NamedQuery(name = "Tarefa.findAll", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.nome = :nome AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.prioridade = :prioridade AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByRecurrencyID", query = "SELECT t FROM Tarefa t WHERE t.recurrencyID = :recurrencyID AND t.dataHoraRemocao IS NULL ORDER BY t.dataInicio"),
+    @NamedQuery(name = "Tarefa.findByDataInicio", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataInicio = :dataInicio AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByDataFim", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataFim = :dataFim AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByDataTermino", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataTermino = :dataTermino AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByStatus", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.status = :status AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByProjecao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.projecao = :projecao AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByAndamento", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.andamento = :andamento AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByDescricao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.descricao = :descrica AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByTemplate", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.template = :template AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByApontamentohoras", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.apontamentoHoras = :apontamentohoras AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByUsuarioResponsavel", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioResponsavel = :usuarioResponsavel AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByUsuarioResponsavelDashboard", query = "SELECT t FROM Tarefa t WHERE t.usuarioResponsavel = :usuarioResponsavel AND t.dataHoraRemocao IS NULL ORDER BY t.dataInicio"),
+    @NamedQuery(name = "Tarefa.findByUsuarioSolicitante", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.usuarioSolicitante = :usuarioSolicitante AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByOrcamentocontrolado", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.orcamentoControlado = :orcamentocontrolado AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findByDatahorainclusao", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.dataHoraInclusao = :dataHoraInclusao AND t.dataHoraRemocao IS NULL")})
 public class Tarefa implements Serializable {
 
     /**
@@ -234,9 +234,13 @@ public class Tarefa implements Serializable {
     @ManyToOne(optional = false)
     private HierarquiaProjetoDetalhe hierarquia;
 
-    @NotNull()
-    @Column(name = "removida")
-    private boolean removida;
+    @JoinColumn(name = "idusuarioremocao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario usuarioRemocao;
+
+    @Column(name = "datahoraremocao")
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime dataHoraRemocao;
 
     // ----------------------------------------------------------------------------------------------------------------
     // ATRIBUTOS TRANSIENTES
@@ -672,14 +676,23 @@ public class Tarefa implements Serializable {
         return meta;
     }
 
-    public void setRemovida(boolean removida) {
-        this.removida = removida;
+    public void setUsuarioRemocao(Usuario usuarioRemocao) {
+        this.usuarioRemocao = usuarioRemocao;
     }
 
-    public boolean isRemovida() {
-        return removida;
+    public Usuario getUsuarioRemocao() {
+        return usuarioRemocao;
     }
 
+    public void setDataHoraRemocao(LocalDateTime dataHoraRemocao) {
+        this.dataHoraRemocao = dataHoraRemocao;
+    }
+
+    public LocalDateTime getDataHoraRemocao() {
+        return dataHoraRemocao;
+    }
+
+    
     public void setRecurrencyMessage(String recurrencyMessage) {
         this.recurrencyMessage = recurrencyMessage;
     }

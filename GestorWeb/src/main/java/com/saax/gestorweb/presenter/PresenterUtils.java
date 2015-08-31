@@ -1,15 +1,24 @@
 package com.saax.gestorweb.presenter;
 
+import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
+import com.saax.gestorweb.view.TarefaView;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.UI;
 import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * Está classe é responsavel pela apresentação de itens comuns à vários outros presenters do projeto.
@@ -19,6 +28,24 @@ import java.util.List;
  */
 public class PresenterUtils {
 
+    // Referencia ao recurso das mensagens:
+    private static final transient ResourceBundle mensagensResource = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private static final transient GestorWebImagens imagensResource = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+
+    public static ResourceBundle getMensagensResource() {
+        return mensagensResource;
+    }
+
+    public static GestorWebImagens getImagensResource() {
+        return imagensResource;
+    }
+
+    public static Usuario getUsuarioLogado() {
+        return (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
+    }
+
+    
+    
     
     /**
      * Carrega o combo box de departamento informado, com todas os departamentos ativos da empresas 
@@ -113,6 +140,23 @@ public class PresenterUtils {
             empresaClienteCombo.setItemCaption(cliente, cliente.getNome());
         }
 
+    }
+    
+    public static Button buildButtonEditarTarefa(TreeTable tabela, TarefaCallBackListener callbackListener, Tarefa subTarefa, String caption) {
+        Button link = new Button(caption);
+        link.setStyleName("quiet");
+        link.addClickListener((Button.ClickEvent event) -> {
+            tabela.setValue(subTarefa);
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
+            for (TarefaCallBackListener callBack : callbackListener.getCallbackListeneres()) {
+                presenter.addCallBackListener(callBack);
+                
+            }
+            presenter.addCallBackListener(callbackListener);
+            presenter.editar(subTarefa);
+        });
+        return link;
+        
     }
     
     

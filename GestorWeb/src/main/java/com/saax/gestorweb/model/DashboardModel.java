@@ -6,6 +6,7 @@ import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
+import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
@@ -30,20 +31,8 @@ import org.apache.commons.beanutils.BeanUtils;
 public class DashboardModel {
 
     // Classes do modelo acessórias acessadas por este model
-    private final UsuarioModel usuarioModel;
-    private final EmpresaModel empresaModel;
-    private final TarefaModel tarefaModel;
-    private final MetaModel metaModel;
 
-    public DashboardModel() {
-        usuarioModel = new UsuarioModel();
-        empresaModel = new EmpresaModel();
-        tarefaModel = new TarefaModel();
-        metaModel = new MetaModel();
-
-    }
-
-    public List<Tarefa> getTarefasTemplate() {
+    public static List<Tarefa> getTarefasTemplate() {
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         List<Tarefa> templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
                 .setParameter("empresa", loggedUser.getEmpresaAtiva())
@@ -66,7 +55,7 @@ public class DashboardModel {
      *
      * @return
      */
-    public List<HierarquiaProjeto> getHierarquiasProjeto() {
+    public static List<HierarquiaProjeto> getHierarquiasProjeto() {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -113,7 +102,7 @@ public class DashboardModel {
      *
      * @return
      */
-    public HierarquiaProjetoDetalhe getCategoriaDefaultTarefa() {
+    public static HierarquiaProjetoDetalhe getCategoriaDefaultTarefa() {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -130,35 +119,35 @@ public class DashboardModel {
         return null;
     }
 
-    public List<Usuario> listarUsuariosEmpresa() {
-        return tarefaModel.listarUsuariosEmpresa();
+    public static List<Usuario> listarUsuariosEmpresa() {
+        return TarefaModel.listarUsuariosEmpresa();
     }
 
-    public List<Tarefa> listarTarefas(Usuario loggedUser) {
-        return tarefaModel.listarTarefas(loggedUser);
+    public static List<Tarefa> listarTarefas(Usuario loggedUser) {
+        return TarefaModel.listarTarefas(loggedUser);
     }
 
-    public List<Tarefa> listarTarefasPrincipais(Usuario loggedUser) {
-        return tarefaModel.listarTarefasPrincipais(loggedUser);
+    public static List<Tarefa> listarTarefasPrincipais(Usuario loggedUser) {
+        return TarefaModel.listarTarefasPrincipais(loggedUser);
     }
 
-    public List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
-        return tarefaModel.filtrarTarefas(tipoPesquisa, usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
+    public static List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
+        return TarefaModel.filtrarTarefas(tipoPesquisa, usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
     }
 
-    public List<Meta> filtrarMetas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
-        return metaModel.filtrarMetas(tipoPesquisa, usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
+    public static List<Meta> filtrarMetas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
+        return MetaModel.filtrarMetas(tipoPesquisa, usuariosResponsaveis, usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, loggedUser);
     }
 
-    public List<Meta> listarMetas(Usuario loggedUser) {
-        return metaModel.listarMetas(loggedUser);
+    public static List<Meta> listarMetas(Usuario loggedUser) {
+        return MetaModel.listarMetas(loggedUser);
     }
 
-    public Tarefa criarNovaTarefaPeloTemplate(Tarefa template) {
-        return tarefaModel.criarNovaTarefaPeloTemplate(template);
-                                
+    public static Tarefa criarNovaTarefaPeloTemplate(Tarefa template) {
+        return TarefaModel.criarNovaTarefaPeloTemplate(template);
 
     }
+
 
     
 }

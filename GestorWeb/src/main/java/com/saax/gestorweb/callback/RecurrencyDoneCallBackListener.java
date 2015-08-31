@@ -1,4 +1,4 @@
-package com.saax.gestorweb.view;
+package com.saax.gestorweb.callback;
 
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.model.datamodel.Tarefa;

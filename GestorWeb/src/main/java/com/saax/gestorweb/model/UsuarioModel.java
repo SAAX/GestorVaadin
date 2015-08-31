@@ -18,14 +18,14 @@ import javax.persistence.EntityManager;
  *
  * @author rodrigo
  */
-public class UsuarioModel {
+public  class UsuarioModel {
 
     /**
      * Listar todos os usuários ativos da mesma empresa do usuário logado
      *
      * @return
      */
-    public List<Usuario> listarUsuariosEmpresa() {
+    public static List<Usuario> listarUsuariosEmpresa() {
 
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         Empresa empresa = loggedUser.getEmpresaAtiva();
@@ -41,7 +41,7 @@ public class UsuarioModel {
         return usuarios;
     }
 
-    public Usuario findByID(Integer idUsuario) {
+    public static Usuario findByID(Integer idUsuario) {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
         return (Usuario) em.createNamedQuery("Usuario.findById")
                 .setParameter("id", idUsuario)
@@ -55,7 +55,7 @@ public class UsuarioModel {
      * @param login
      * @return
      */
-    public Usuario findByLogin(String login) {
+    public static Usuario findByLogin(String login) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -84,7 +84,7 @@ public class UsuarioModel {
      * @return empresa
      * @throws Runtime se empresa não for encontrada ou existir mais que uma
      */
-    public Empresa getEmpresaUsuarioLogado() {
+    public static Empresa getEmpresaUsuarioLogado() {
 
         // obtem o usuario logado
         Usuario usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
@@ -100,7 +100,7 @@ public class UsuarioModel {
      * @return empresa
      * @throws Runtime se empresa não for encontrada ou existir mais que uma
      */
-    public Empresa getEmpresaAtiva(Usuario usuario) {
+    public static Empresa getEmpresaAtiva(Usuario usuario) {
 
         // obtem a empresa ativa do usuario logado 
         // so pode haver uma

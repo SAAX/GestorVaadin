@@ -9,8 +9,6 @@ import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 
 /**
@@ -25,7 +23,7 @@ public class EmpresaModel {
      * @param loggedUser
      * @return a empresa principal do usuário + as coligadas (se existirem)
      */
-    public List<Empresa> listarEmpresasParaSelecao(Usuario loggedUser) {
+    public static List<Empresa> listarEmpresasParaSelecao(Usuario loggedUser) {
 
         Empresa empresa = loggedUser.getEmpresaAtiva();
 
@@ -50,7 +48,7 @@ public class EmpresaModel {
      * @param loggedUser
      * @return lista de EmpresaCliente
      */
-    public List<EmpresaCliente> listarEmpresasCliente(Usuario loggedUser) {
+    public static List<EmpresaCliente> listarEmpresasCliente(Usuario loggedUser) {
 
         List<EmpresaCliente> clientes = new ArrayList<>();
 
@@ -77,7 +75,7 @@ public class EmpresaModel {
      * @param empresa
      * @return
      */
-    public List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
+    public static List<Departamento> obterListaDepartamentosAtivos(Empresa empresa) {
 
         // validação de parâmetros
         if (empresa == null) {
@@ -98,7 +96,7 @@ public class EmpresaModel {
      * @param empresa
      * @return
      */
-    public List<CentroCusto> obterListaCentroCustosAtivos(Empresa empresa) {
+    public static List<CentroCusto> obterListaCentroCustosAtivos(Empresa empresa) {
 
         // validação de parâmetros
         if (empresa == null) {

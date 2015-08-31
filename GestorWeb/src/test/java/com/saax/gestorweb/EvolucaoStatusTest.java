@@ -60,7 +60,7 @@ public class EvolucaoStatusTest {
             mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
 
             // se assegura que nao existem tarefas ja cadastradas
-            TestUtils.removeTodasTarefas();
+            TestUtils.limpaBase();
 
             // ------------------------------------------------------------------------------------------------------------------
             // Preparação : Criar uma tarefa com usuário "fernando" como responsavel e "rodrigo" como solicitante
@@ -77,11 +77,10 @@ public class EvolucaoStatusTest {
 
             // apos mudar o usuário logado é necessario resetar o presenter
             TarefaView view = new TarefaView();
-            TarefaModel model = new TarefaModel();
-            TarefaPresenter presenter = new TarefaPresenter(model, view);
+            TarefaPresenter presenter = new TarefaPresenter(view);
 
             // abre o presenter para criação da tarefa
-            HierarquiaProjetoDetalhe categoriaDefaultTarefa = model.getCategoriaDefaultTarefa();
+            HierarquiaProjetoDetalhe categoriaDefaultTarefa = TarefaModel.getCategoriaDefaultTarefa();
             presenter.createTask(categoriaDefaultTarefa);
 
             view.getTaskNameTextField().setValue(nome);
@@ -106,7 +105,7 @@ public class EvolucaoStatusTest {
     public static void tearDownClass() {
 
         // limpar tarefas cadastradas
-        TestUtils.removeTodasTarefas();
+        TestUtils.limpaBase();
 
     }
 
@@ -189,7 +188,7 @@ public class EvolucaoStatusTest {
         // ------------------------------------------------------------------------------------------------------------------
 
         // aceitar a tarefa
-        presenter = new PopUpStatusPresenter(view, model);
+        presenter = new PopUpStatusPresenter(view);
         presenter.load(t, null, null);
 
         presenter.aceitarTarefaClicked();
@@ -229,7 +228,7 @@ public class EvolucaoStatusTest {
         // Ação : Recusar a tarefa
         // ------------------------------------------------------------------------------------------------------------------
         // aceitar a tarefa
-        presenter = new PopUpStatusPresenter(view, model);
+        presenter = new PopUpStatusPresenter(view);
         presenter.load(t, null, null);
 
         presenter.recusarTarefaClicked();
@@ -269,7 +268,7 @@ public class EvolucaoStatusTest {
         // ------------------------------------------------------------------------------------------------------------------
         // Ação : Recusar a tarefa (CANCELANDO)
         // ------------------------------------------------------------------------------------------------------------------
-        presenter = new PopUpStatusPresenter(view, model);
+        presenter = new PopUpStatusPresenter(view);
         presenter.load(t, null, null);
         
         presenter.recusarTarefaClicked();
@@ -309,7 +308,7 @@ public class EvolucaoStatusTest {
         // ------------------------------------------------------------------------------------------------------------------
         // Ação : Registrar andamento
         // ------------------------------------------------------------------------------------------------------------------
-        presenter = new PopUpStatusPresenter(view, model);
+        presenter = new PopUpStatusPresenter(view);
         presenter.load(t, null, null);
         
         presenter.getStatusButton().setPopupVisible(true);
@@ -352,7 +351,7 @@ public class EvolucaoStatusTest {
         // ------------------------------------------------------------------------------------------------------------------
         // Ação : Registrar andamento
         // ------------------------------------------------------------------------------------------------------------------
-        presenter = new PopUpStatusPresenter(view, model);
+        presenter = new PopUpStatusPresenter(view);
         presenter.load(t, null, null);
         
         presenter.getStatusButton().setPopupVisible(true);

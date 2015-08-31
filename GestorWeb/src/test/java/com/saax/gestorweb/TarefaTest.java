@@ -71,7 +71,7 @@ public class TarefaTest {
 
             
             // se assegura que nao existem tarefas ja cadastradas
-            TestUtils.removeTodasTarefas();
+            TestUtils.limpaBase();
             
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -83,7 +83,7 @@ public class TarefaTest {
     public static void tearDownClass() {
 
         // limpar tarefas cadastradas
-        TestUtils.removeTodasTarefas();
+        TestUtils.limpaBase();
 
     }
 
@@ -91,8 +91,7 @@ public class TarefaTest {
     public void setUp() {
 
         view = new TarefaView();
-        model = new TarefaModel();
-        presenter = new TarefaPresenter(model, view);
+        presenter = new TarefaPresenter(view);
 
     }
 
@@ -443,10 +442,9 @@ public class TarefaTest {
             fail(ex.getMessage());
         }
         TarefaView view_sub1 = new TarefaView();
-        TarefaModel model_sub1 = new TarefaModel();
 
-        TarefaPresenter presenter_sub1 = new TarefaPresenter(model_sub1, view_sub1);
-        presenter_sub1.setCallBackListener(presenter);
+        TarefaPresenter presenter_sub1 = new TarefaPresenter(view_sub1);
+        presenter_sub1.addCallBackListener(presenter);
 
         presenter_sub1.criarNovaSubTarefa(view.getTarefa());
 
@@ -467,10 +465,9 @@ public class TarefaTest {
             fail(ex.getMessage());
         }
         TarefaView view_sub2 = new TarefaView();
-        TarefaModel model_sub2 = new TarefaModel();
 
-        TarefaPresenter presenter_sub2 = new TarefaPresenter(model_sub2, view_sub2);
-        presenter_sub2.setCallBackListener(presenter_sub1);
+        TarefaPresenter presenter_sub2 = new TarefaPresenter(view_sub2);
+        presenter_sub2.addCallBackListener(presenter_sub1);
 
         presenter_sub2.criarNovaSubTarefa(view_sub1.getTarefa());
 

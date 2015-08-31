@@ -1,8 +1,4 @@
 
-Proximo commit:
-
-1. Implementada a remoção de tarefas de acordo com a regra abaixo:
-
 RN: REMOÇÃO DE TAREFAS
 1. Somente o usuário solicitante poderá remover uma tarefa
 2. Toda tarefa removida irá para lixeira, onde permanecerá por 30 dias.
@@ -14,15 +10,6 @@ RN: REMOÇÃO DE TAREFAS
 8. No dashboard haverá um botão de comando para consulta da lixeira. Ao consultar a lixeira deverão aparecer apenas as tarefas removidas pelo usuário logado ( que serão as que ele pode recuperar 
 9. Tarefas concluidas não poderão ser removidas.
 
-2. Melhoria técnica: Context statico no modelo
-Todos os models foram convertidos para static. 
-Vantagens: diminui complexidade do código e melhora a performance, pois diminui a quantidade de objetos em memoria no servidor.
-Foram alterados todos os Models (Dash, Tarefa, Meta, Status, Etc) E todos os presenter foram adaptados
-
-3. Melhoria técnica: Reestruturação dos callbac listeners
-
-4. Melhoria técnica: Evolução dos teste unitários do dashboard
-
-5. Melhoria técnica: Unificação da criação do componente de edição de tarefa.
 
 
+http://fortawesome.github.io/Font-Awesome/icons/

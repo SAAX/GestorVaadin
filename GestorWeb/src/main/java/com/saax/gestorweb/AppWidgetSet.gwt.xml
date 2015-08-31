@@ -41,4 +41,6 @@ safari is used for webkit
     <inherits name="org.vaadin.addons.maskedtextfield.MaskedTextFieldWidgetset" />
 
     <inherits name="org.vaadin.teemu.ratingstars.gwt.RatingStarsWidgetset" />
+
+    
 </module>

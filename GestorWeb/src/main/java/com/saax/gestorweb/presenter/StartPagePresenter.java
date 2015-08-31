@@ -1,7 +1,6 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.StartPageModel;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.util.GestorWebImagens;
@@ -52,11 +51,10 @@ public class StartPagePresenter implements StartPageViewListener, Serializable {
     public void loginButtonClicked() {
 
         // Cria o pop up de login (model e view)
-        LoginModel loginModel = new LoginModel();
         LoginView loginView = new LoginView();
 
         // O presenter liga model e view
-        new LoginPresenter(loginModel, loginView);
+        new LoginPresenter(loginView);
 
         // adiciona a visualização à UI
         UI.getCurrent().addWindow(loginView);

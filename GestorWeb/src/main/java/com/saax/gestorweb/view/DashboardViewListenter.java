@@ -13,12 +13,15 @@ public interface DashboardViewListenter {
     void removerFiltrosPesquisa();
     void carregarListaTarefasUsuarioLogado();
     void carregarListaMetasUsuarioLogado();
-    void applyAutoFilter();
+    void aplicarFiltroPesquisa();
     void createsNewTaskByTemplate();
     void init();
     void usuarioLogadoAlteradoAPENASTESTE();
-
     Tarefa criarTarefaPorTemplate(Tarefa template);
+    void removerTarefaButtonClicked(Tarefa tarefa);
+    boolean verificaPermissaoAcessoRemocaoTarefa(Tarefa tarefa);
+    void trashButtonPressed();
+
     
 
     

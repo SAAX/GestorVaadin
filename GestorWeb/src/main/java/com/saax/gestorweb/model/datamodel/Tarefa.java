@@ -42,6 +42,8 @@ import org.apache.commons.beanutils.BeanUtils;
 @Table(name = "tarefa")
 @NamedQueries({
     @NamedQuery(name = "Tarefa.findAll", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Tarefa.findTarefasRemovidas", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.usuarioRemocao = :usuarioRemocao ORDER BY t.dataHoraRemocao DESC"),
+    @NamedQuery(name = "Tarefa.findTarefasPrincipais", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.usuarioSolicitante = :usuarioSolicitante AND t.dataHoraRemocao IS NULL ORDER BY t.dataFim DESC"),
     @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.nome = :nome AND t.dataHoraRemocao IS NULL"),
     @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.dataHoraRemocao IS NULL"),
     @NamedQuery(name = "Tarefa.findByPrioridade", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.prioridade = :prioridade AND t.dataHoraRemocao IS NULL"),

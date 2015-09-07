@@ -1,6 +1,5 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
@@ -10,8 +9,10 @@ import com.saax.gestorweb.model.datamodel.OrcamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.CallBackListener;
 import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.presenter.PopUpStatusPresenter;
+import com.saax.gestorweb.presenter.PresenterUtils;
 import com.saax.gestorweb.util.ErrorUtils;
 import com.saax.gestorweb.util.FormatterUtil;
 
@@ -88,8 +89,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
 public class TarefaView extends Window {
 
     // Reference to the use of the messages:
-    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final transient GestorWebImagens images = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient ResourceBundle messages = PresenterUtils.getMensagensResource();
 
     // The view maintains access to the listener (Presenter) to notify events
     // This access is through an interface to maintain the abstraction layers
@@ -1096,13 +1096,6 @@ public class TarefaView extends Window {
     }
 
     /**
-     * @return the images
-     */
-    public GestorWebImagens getImages() {
-        return images;
-    }
-
-    /**
      * @return the listener
      */
     public TaskViewListener getListener() {
@@ -1414,7 +1407,7 @@ public class TarefaView extends Window {
      * @param caption the button caption
      * @return
      */
-    public static Button buildButtonOpenTask(TarefaCallBackListener callback, Table table, Tarefa task, String caption) {
+    public static Button buildButtonOpenTask(CallBackListener callback, Table table, Tarefa task, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
         link.addClickListener((Button.ClickEvent event) -> {

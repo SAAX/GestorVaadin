@@ -2,6 +2,7 @@ package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.LixeiraModel;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.presenter.LixeiraPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -111,6 +112,7 @@ public class LixeiraTest {
         Assert.assertTrue("Tarefa foi restaurada e deveria estar na lista de tarefas", existe);
         
     }
+    
     @Test
     public void removerTarefaTest(){
         
@@ -163,4 +165,120 @@ public class LixeiraTest {
         
     }
 
+    @Test
+    public void removerMetaTest(){
+        
+        // -------------------------------------------------------------------------------------------------
+        // Preparação
+        // -------------------------------------------------------------------------------------------------
+        
+        String nomeMeta = "Meta Teste: removerMetaTest";
+
+        // cadastrar uma meta
+        Meta metaCriada = TestUtils.cadastrarMetaSimples(nomeMeta);
+        metaCriada.setUsuarioResponsavel(TestUtils.getUsuarioRodrigo());
+        // colocar Rodrigo como usuário responsável
+        GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
+        GestorEntityManagerProvider.getEntityManager().merge(metaCriada);
+        GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
+        
+        // -------------------------------------------------------------------------------------------------
+        // Ação
+        // -------------------------------------------------------------------------------------------------
+        
+        LixeiraModel.removerMeta(metaCriada, TestUtils.getUsuarioRodrigo());
+        List<Meta> lista = DashboardModel.listarMetas(TestUtils.getUsuarioRodrigo());
+        List<Meta> listaRemovidas = LixeiraModel.listarMetasRemovidas(TestUtils.getUsuarioRodrigo());
+
+        // -------------------------------------------------------------------------------------------------
+        // Verificação
+        // -------------------------------------------------------------------------------------------------
+
+        Meta m = (Meta) GestorEntityManagerProvider.getEntityManager().find(Meta.class, metaCriada.getId());
+        
+        Assert.assertNotNull(m.getDataHoraRemocao());
+        Assert.assertEquals(TestUtils.getUsuarioRodrigo(), m.getUsuarioRemocao());
+
+        for (Meta tlista : lista) {
+            if (tlista.equals(m)){
+                Assert.fail("Meta foi removida e nao deveria estar na lista");
+            }
+            
+        }
+        
+        boolean existe = false;
+        for (Meta tlista : listaRemovidas) {
+            if (tlista.equals(m)){
+                existe = true;
+            }
+            
+        }
+        Assert.assertTrue("Meta foi removida e deveria estar na lista de tarefas removidas", existe);
+        
+        
+    }
+
+    
+    @Test
+    public void recuperarMetaTest(){
+        
+        // -------------------------------------------------------------------------------------------------
+        // Preparação
+        // -------------------------------------------------------------------------------------------------
+
+        String nomeMeta = "Meta Teste: recuperarMetaTest";
+        
+        TestUtils.setUsuarioLogado(TestUtils.getUsuarioRodrigo());
+
+        // criar uma terefa
+        Meta metaCriada = TestUtils.cadastrarMetaSimples(nomeMeta);
+        metaCriada.setUsuarioResponsavel(TestUtils.getUsuarioRodrigo());
+        GestorEntityManagerProvider.getEntityManager().getTransaction().begin();
+        GestorEntityManagerProvider.getEntityManager().merge(metaCriada);
+        GestorEntityManagerProvider.getEntityManager().getTransaction().commit();
+        
+        //remove-la
+        LixeiraModel.removerMeta(metaCriada, TestUtils.getUsuarioRodrigo());
+        
+        // -------------------------------------------------------------------------------------------------
+        // Ação
+        // -------------------------------------------------------------------------------------------------
+
+        // recuperar a tarefa removida
+        LixeiraView view = new LixeiraView();
+        LixeiraPresenter presenter = new LixeiraPresenter(view);
+        presenter.aprentarLixeira();
+        // aciona comando para restaurar
+        presenter.restaurarMetaConfirmada(metaCriada);
+
+        // -------------------------------------------------------------------------------------------------
+        // Verificação
+        // -------------------------------------------------------------------------------------------------
+    
+        Meta m = (Meta) GestorEntityManagerProvider.getEntityManager().find(Meta.class, metaCriada.getId());
+        
+        Assert.assertNull(m.getDataHoraRemocao());
+        Assert.assertNull(m.getUsuarioRemocao());
+
+        List<Meta> lista = DashboardModel.listarMetas(TestUtils.getUsuarioRodrigo());
+        List<Meta> listaRemovidas = LixeiraModel.listarMetasRemovidas(TestUtils.getUsuarioRodrigo());
+
+        for (Meta tlista : listaRemovidas) {
+            if (tlista.equals(m)){
+                Assert.fail("Meta foi restaurada e nao deveria estar na lista de removidas");
+            }
+            
+        }
+        
+        boolean existe = false;
+        for (Meta tlista : lista) {
+            if (tlista.equals(m)){
+                existe = true;
+            }
+            
+        }
+        Assert.assertTrue("Meta foi restaurada e deveria estar na lista de tarefas", existe);
+        
+    }
+    
 }

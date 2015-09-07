@@ -58,12 +58,10 @@ import javax.persistence.Query;
  */
 public class TarefaModel {
 
-
     // Classes do modelo acessórias utilizadas por este model
     private final UsuarioModel usuarioModel;
     private final EmpresaModel empresaModel;
 
-    
     // Reference to the use of the messages:
     private static final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     // Controle da primeira tafarefa da lista de tarefas recorrentes, usado na gravação de tarefas
@@ -167,7 +165,7 @@ public class TarefaModel {
             });
 
             primeiraTarefaRecorrenteThreadLocal.remove();
-            
+
         } catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
             if (GestorEntityManagerProvider.getEntityManager().getTransaction().isActive()) {
@@ -751,7 +749,9 @@ public class TarefaModel {
 
         if (taskToEdit.getId() != null) {
             EntityManager em = GestorEntityManagerProvider.getEntityManager();
-            return em.find(Tarefa.class, taskToEdit.getId());
+            Tarefa t = em.find(Tarefa.class, taskToEdit.getId());
+            t.setSubTarefas(LixeiraModel.filtrarTarefasRemovidas(t.getSubTarefas()));
+            return t;
         } else {
             return taskToEdit;
         }
@@ -760,7 +760,9 @@ public class TarefaModel {
 
     public static Tarefa findByID(Integer taskID) {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
-        return em.find(Tarefa.class, taskID);
+        Tarefa t = em.find(Tarefa.class, taskID);
+        t.setSubTarefas(LixeiraModel.filtrarTarefasRemovidas(t.getSubTarefas()));
+        return t;
     }
 
     /**
@@ -773,7 +775,7 @@ public class TarefaModel {
         StringBuilder html = new StringBuilder();
 
         html.append("<a href=\"");
-        html.append(((GestorMDI)UI.getCurrent()).getLocation());
+        html.append(((GestorMDI) UI.getCurrent()).getLocation());
         html.append("?task=");
         html.append(task.getId());
         html.append("\">");
@@ -819,7 +821,7 @@ public class TarefaModel {
      */
     public static List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa,
             List<Usuario> usuariosResponsaveis,
-            List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, 
+            List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas,
             List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario usuarioLogado) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
@@ -925,26 +927,23 @@ public class TarefaModel {
 
         }
 
-
         return filtrarTarefas(tarefas, usuarioLogado);
     }
-    
-    private static List<Tarefa> filtrarTarefas(List<Tarefa> tarefas, Usuario usuarioLogado){
-        
+
+    private static List<Tarefa> filtrarTarefas(List<Tarefa> tarefas, Usuario usuarioLogado) {
+
         List<Tarefa> result = new ArrayList<>();
         for (Tarefa tarefa : tarefas) {
             if (verificaAcesso(usuarioLogado, tarefa)) {
                 result.add(tarefa);
             }
-            
-            tarefa.setSubTarefas(filtrarTarefas(tarefa.getSubTarefas(), usuarioLogado));
+
+            tarefa.setSubTarefas(LixeiraModel.filtrarTarefasRemovidas(tarefa.getSubTarefas()));
         }
 
         return result;
 
-        
     }
-    
 
     /**
      * Obtém as tarefas solicitadas pelo usuário logado, ordenadas por data FIM
@@ -958,9 +957,7 @@ public class TarefaModel {
 
         Empresa empresa = loggedUser.getEmpresaAtiva();
 
-        String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.usuarioSolicitante = :usuarioSolicitante AND t.dataHoraRemocao IS NULL ORDER BY t.dataFim DESC";
-
-        Query q = em.createQuery(sql)
+        Query q = em.createNamedQuery("Tarefa.findTarefasPrincipais")
                 .setParameter("empresa", empresa)
                 .setParameter("usuarioSolicitante", loggedUser);
 
@@ -1014,68 +1011,62 @@ public class TarefaModel {
 
     /**
      * Remove uma tarefa
+     *
      * @param tarefa
-     * @param loggedUser 
+     * @param loggedUser
      */
     public static void removerTarefa(Tarefa tarefa, Usuario loggedUser) {
 
         tarefa.setUsuarioRemocao(loggedUser);
         tarefa.setDataHoraRemocao(LocalDateTime.now());
         tarefa.addHistorico(new HistoricoTarefa("Tarefa removida.", null, loggedUser, tarefa, LocalDateTime.now()));
-        
-        if (tarefa.getSubTarefas()!=null){
+
+        if (tarefa.getSubTarefas() != null) {
             for (Tarefa subtarefa : tarefa.getSubTarefas()) {
                 removerTarefa(subtarefa, loggedUser);
             }
         }
     }
-    
+
     public static void restaurarTarefa(Tarefa tarefa, Usuario usuarioLogado) {
         tarefa.setUsuarioRemocao(null);
         tarefa.setDataHoraRemocao(null);
         tarefa.addHistorico(new HistoricoTarefa("Tarefa restaurada.", null, usuarioLogado, tarefa, LocalDateTime.now()));
-        
-        if (tarefa.getSubTarefas()!=null){
+
+        if (tarefa.getSubTarefas() != null) {
             for (Tarefa subtarefa : tarefa.getSubTarefas()) {
                 restaurarTarefa(subtarefa, usuarioLogado);
             }
         }
     }
-    
+
     public static List<Tarefa> listarTarefasRemovidas(Usuario usuarioLogado) {
-        
+
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         Empresa empresa = usuarioLogado.getEmpresaAtiva();
 
-        String sql = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.usuarioRemocao = :usuarioRemocao ORDER BY t.dataHoraRemocao DESC";
-
-        Query q = em.createQuery(sql, Tarefa.class)
+        Query q = em.createNamedQuery("Tarefa.findTarefasRemovidas")
                 .setParameter("empresa", empresa)
                 .setParameter("usuarioRemocao", usuarioLogado);
 
         List<Tarefa> tarefas = new ArrayList<>();
-        
 
         // filtro:
         for (Object tarefaObject : q.getResultList()) {
             Tarefa tarefa = (Tarefa) tarefaObject;
-            
+
             // so apresenta as tarefas pai removidas
-            if (tarefa.getTarefaPai()==null){
+            if (tarefa.getTarefaPai() == null) {
                 tarefas.add(tarefa);
-            } else if (tarefa.getTarefaPai().getDataHoraRemocao()==null){
+            } else if (tarefa.getTarefaPai().getDataHoraRemocao() == null) {
                 // ou filhas: se a pai nao tiver sido removida
                 tarefas.add(tarefa);
             }
-                
-            
-            
+
         }
-        
+
         return tarefas;
     }
-
-    
 
 }

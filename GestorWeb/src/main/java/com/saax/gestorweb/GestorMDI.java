@@ -1,7 +1,5 @@
 package com.saax.gestorweb;
 
-import com.saax.gestorweb.model.DashboardModel;
-import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.StartPageModel;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
@@ -55,66 +53,7 @@ public class GestorMDI extends UI {
     private transient Properties application;
     private transient GestorWebImagens gestorWebImagens;
     
-    private boolean trataParametroTask(String parametroIdTarefa) {
-
-        // verifica se foi passado o parametro "Tarefa"
-        if (parametroIdTarefa == null) {
-            return false;
-        }
-
-        // valida se o valor passado é inteiro
-        Integer taskID = null;
-        try {
-            taskID = Integer.parseInt(parametroIdTarefa);
-        } catch (NumberFormatException ex) {
-            Logger.getLogger(GestorMDI.class.getName()).log(Level.WARNING, "Trying to open an invallid task (" + parametroIdTarefa + ")", ex);
-            return false;
-        }
-
-        // valida se o valor passado é mesmo uma task válida na base de dados
-        TarefaModel taskModel = new TarefaModel();
-        Tarefa task = taskModel.findByID(taskID);
-
-        if (task == null) {
-            return false;
-        }
-
-        // valida se o usuário está logado 
-        if (GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO) == null) {
-
-            // se o usuario nao estiver logado, chama da tela de login
-            LoginView loginView = new LoginView();
-
-            // O presenter liga model e view
-            LoginPresenter presenter = new LoginPresenter(loginView);
-            presenter.openTaskOnSucessLogin(task);
-
-            // adiciona a visualização à UI
-            UI.getCurrent().addWindow(loginView);
-
-            return true;
-        }
-
-        carregarDashBoard(task);
-
-        return true;
-    }
-
-    private void trataParametrosDeEntrada(VaadinRequest request) {
-
-        String openTask = request.getParameter("task");
-
-        boolean tratamentoBemSucedido = trataParametroTask(openTask);
-
-        // caso existam outros parametros no futuro, criar um método para cada um aqui
-        if (!tratamentoBemSucedido) {
-
-            loadstartPage();
-
-        }
-
-    }
-
+    
     public URI getLocation() {
         if ((boolean)GestorSession.getAttribute(SessionAttributesEnum.TEST_MODE)){
             return null;
@@ -161,7 +100,7 @@ public class GestorMDI extends UI {
         startPageView = new StartPageView();
 
         // O presenter liga model e view
-        new StartPagePresenter(startPageModel, startPageView);
+        StartPagePresenter startPagePresenter = new StartPagePresenter(startPageModel, startPageView);
 
         // adiciona a visualização à UI
         setContent(startPageView);
@@ -223,7 +162,10 @@ public class GestorMDI extends UI {
         gestorWebImagens = new GestorWebImagens();
 
         if (request != null) {
-            trataParametrosDeEntrada(request);
+            // Delega a classe TrataParametros a identificação e tratamento
+            // dos parâmetros de entrada
+            TrataParametros trataParametros = new TrataParametros(this);
+            trataParametros.trataParametrosDeEntrada(request);
         }
 
         setSizeFull();

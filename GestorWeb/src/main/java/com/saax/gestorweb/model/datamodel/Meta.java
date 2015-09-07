@@ -35,15 +35,15 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "meta")
 @NamedQueries({
-    @NamedQuery(name = "Meta.findAll", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa"),
-    @NamedQuery(name = "Meta.findById", query = "SELECT m FROM Meta m WHERE m.id= :id"),
-    @NamedQuery(name = "Meta.findByNome", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.nome = :nome"),
-    @NamedQuery(name = "Meta.findByDescricao", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.descricao = :descricao"),
-    @NamedQuery(name = "Meta.findByDatainicio", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataInicio = :datainicio"),
-    @NamedQuery(name = "Meta.findByDataFim", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataFim = :datafim"),
-    @NamedQuery(name = "Meta.findByUsuarioResponsavelDashboard", query = "SELECT m FROM Meta m WHERE m.usuarioResponsavel = :usuarioResponsavel"),
-    @NamedQuery(name = "Meta.findByDatafim", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataFim = :datafim"),
-    @NamedQuery(name = "Meta.findByDatatermino", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataTermino = :datatermino"),
+    @NamedQuery(name = "Meta.findAll", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Meta.findByNome", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.nome = :nome AND m.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Meta.findMetaRemovidas", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.usuarioRemocao = :usuarioRemocao ORDER BY m.dataHoraRemocao DESC "),    
+    @NamedQuery(name = "Meta.findByDescricao", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.descricao = :descricao AND m.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Meta.findByDatainicio", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataInicio = :datainicio AND m.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Meta.findByDataFim", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataFim = :datafim AND m.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Meta.findByUsuarioResponsavelDashboard", query = "SELECT m FROM Meta m WHERE m.usuarioResponsavel = :usuarioResponsavel AND m.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Meta.findByDatafim", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataFim = :datafim AND m.dataHoraRemocao IS NULL"),
+    @NamedQuery(name = "Meta.findByDatatermino", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataTermino = :datatermino AND m.dataHoraRemocao IS NULL"),
 })
 public class Meta implements Serializable {
 /**
@@ -153,6 +153,14 @@ public class Meta implements Serializable {
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
+
+    @JoinColumn(name = "idusuarioremocao", referencedColumnName = "idusuario")
+    @ManyToOne
+    private Usuario usuarioRemocao;
+
+    @Column(name = "datahoraremocao")
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime dataHoraRemocao;
 
     @NotNull(message = "Informe a categoria")
     @JoinColumn(name = "idhierarquiaprojetodetalhe", referencedColumnName = "idhierarquiaprojetodetalhe")
@@ -454,6 +462,23 @@ public class Meta implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
+    public void setUsuarioRemocao(Usuario usuarioRemocao) {
+        this.usuarioRemocao = usuarioRemocao;
+    }
+
+    public Usuario getUsuarioRemocao() {
+        return usuarioRemocao;
+    }
+
+    public void setDataHoraRemocao(LocalDateTime dataHoraRemocao) {
+        this.dataHoraRemocao = dataHoraRemocao;
+    }
+
+    public LocalDateTime getDataHoraRemocao() {
+        return dataHoraRemocao;
+    }
+
+    
     /**
      * @return the categoria
      */

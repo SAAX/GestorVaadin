@@ -1,7 +1,6 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
@@ -142,13 +141,13 @@ public class PresenterUtils {
 
     }
     
-    public static Button buildButtonEditarTarefa(TreeTable tabela, TarefaCallBackListener callbackListener, Tarefa subTarefa, String caption) {
+    public static Button buildButtonEditarTarefa(TreeTable tabela, CallBackListener callbackListener, Tarefa subTarefa, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
         link.addClickListener((Button.ClickEvent event) -> {
             tabela.setValue(subTarefa);
             TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
-            for (TarefaCallBackListener callBack : callbackListener.getCallbackListeneres()) {
+            for (CallBackListener callBack : callbackListener.getCallbackListeneres()) {
                 presenter.addCallBackListener(callBack);
                 
             }

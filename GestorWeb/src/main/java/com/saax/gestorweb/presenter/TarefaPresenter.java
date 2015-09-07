@@ -31,7 +31,6 @@ import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.DateTimeConverters;
 import com.saax.gestorweb.util.FormatterUtil;
-import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.view.TarefaView;
 import com.saax.gestorweb.view.TaskViewListener;
 import com.saax.gestorweb.view.ChatView;
@@ -39,7 +38,6 @@ import com.saax.gestorweb.view.LixeiraView;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.view.PopUpStatusView;
 import com.saax.gestorweb.view.RecurrencyView;
-import com.saax.gestorweb.callback.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -67,13 +65,13 @@ import java.util.logging.Logger;
  *
  * @author rodrigo
  */
-public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCallBackListener, RecurrencyDoneCallBackListener, PopUpStatusListener {
+public class TarefaPresenter implements Serializable, TaskViewListener, CallBackListener, PopUpStatusListener {
 
     // Todo Presenter mantem acesso à view e ao model
     private final transient TarefaView view;
 
     // Referencia ao recurso das mensagens:
-    private final List<TarefaCallBackListener> callbackListeneres;
+    private final List<CallBackListener> callbackListeneres;
     private List<LocalDate> recurrentDates;
     private RecurrencyPresenter RecorrencyPresenter;
     private String recurrencyMessage;
@@ -91,7 +89,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
 
     }
 
-    public List<TarefaCallBackListener> getCallbackListeneres() {
+    public List<CallBackListener> getCallbackListeneres() {
         return callbackListeneres;
     }
 
@@ -330,7 +328,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
                 throw new RuntimeException("Falha ao identificar status.");
         }
 
-        view.getRemoverTarefaButton().setEnabled(verificaPermissaoAcessoRemocaoTarefa(task));
+        view.getRemoverTarefaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoTarefa(task, PresenterUtils.getUsuarioLogado()));
 
     }
 
@@ -691,7 +689,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
         }
 
         // Notifies the call back listener that the create/update is done
-        for (TarefaCallBackListener callbackListener : callbackListeneres) {
+        for (CallBackListener callbackListener : callbackListeneres) {
             callbackListener.atualizarApresentacaoTarefa(task);
         }
         view.close();
@@ -837,7 +835,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
      *
      * @param callback
      */
-    public void addCallBackListener(TarefaCallBackListener callback) {
+    public void addCallBackListener(CallBackListener callback) {
         this.callbackListeneres.add(callback);
     }
 
@@ -1034,7 +1032,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
         RecorrencyPresenter = new RecurrencyPresenter(RecorrencyView, view.getTarefa(),
                 DateTimeConverters.toLocalDate(view.getStartDateDateField().getValue())
         );
-        RecorrencyPresenter.setCallBackListener(this);
+        RecorrencyPresenter.addCallBackListener(this);
 
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(RecorrencyView);
@@ -1056,7 +1054,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
         view.close();
         
         // Notifies the call back listener that the create/update is done
-        for (TarefaCallBackListener callbackListener : callbackListeneres) {
+        for (CallBackListener callbackListener : callbackListeneres) {
             callbackListener.atualizarApresentacaoTarefa(task);
         }
 
@@ -1084,7 +1082,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
     public void removerTarefaButtonClicked(Tarefa tarefa) {
 
         LixeiraPresenter popUpRemocaoTarefaPresenter = new LixeiraPresenter(new LixeiraView());
-        for (TarefaCallBackListener callbackListener : callbackListeneres) {
+        for (CallBackListener callbackListener : callbackListeneres) {
             popUpRemocaoTarefaPresenter.addTarefaCallBackListener(callbackListener);
         }
         popUpRemocaoTarefaPresenter.addTarefaCallBackListener(this);
@@ -1093,9 +1091,28 @@ public class TarefaPresenter implements Serializable, TaskViewListener, TarefaCa
     }
 
     @Override
-    public boolean verificaPermissaoAcessoRemocaoTarefa(Tarefa tarefa) {
+    public void metaRemovida(Meta meta) {
+        throw new UnsupportedOperationException("Not supported"); 
+    }
 
-        return LixeiraModel.verificaPermissaoAcessoRemocaoTarefa(tarefa, PresenterUtils.getUsuarioLogado());
+    @Override
+    public void addCallbackListener(CallBackListener callBackListener) {
+        callbackListeneres.add(callBackListener);
+    }
+
+    @Override
+    public void atualizarApresentacaoMeta(Meta meta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void tarefaRestaurada(Tarefa tarefa) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void metaRestaurada(Meta meta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

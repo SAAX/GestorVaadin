@@ -1,6 +1,5 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.callback.MetaCallBackListener;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Participante;
@@ -15,8 +14,6 @@ public interface MetaViewListener {
 
     public void empresaSelecionada(Empresa empresa);
     
-    public void setCallBackListener(MetaCallBackListener callback);
-
     public void gravarButtonClicked();
 
     public void cancelarButtonClicked();
@@ -30,6 +27,8 @@ public interface MetaViewListener {
     public void adicionarParticipante(Usuario usuario);
 
     public void removerParticipante(Participante participante);
+
+    public void removerMetaButtonClicked(Meta meta);
     
     
 }

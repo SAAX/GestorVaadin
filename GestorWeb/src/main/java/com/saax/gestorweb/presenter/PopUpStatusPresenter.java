@@ -38,12 +38,11 @@ import org.vaadin.hene.popupbutton.PopupButton;
  */
 public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListener {
 
-    // Todo presenter mantem acesso à view e ao model
+    // Todo presenter mantem acesso à view 
     private final transient PopUpStatusView view;
 
     // Referencia ao recurso das mensagens e imagens:
-    private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final transient ResourceBundle mensagens = PresenterUtils.getMensagensResource();
 
     private Tarefa tarefa = null;
     private PopupButton statusButton = null;

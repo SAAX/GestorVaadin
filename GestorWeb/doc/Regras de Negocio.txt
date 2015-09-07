@@ -1,14 +1,16 @@
 
-RN: REMOÇÃO DE TAREFAS
-1. Somente o usuário solicitante poderá remover uma tarefa
-2. Toda tarefa removida irá para lixeira, onde permanecerá por 30 dias.
-3. Toda tarefa da lixeira poderá ser recuperada, mas apenas pelo usuário que a removeu.
-4. Nenhuma tarefa da lixeira poderá aparecer nas buscas (a não ser a própria busca da lixeira)
-5. A remoção de tarefas se dará por um botão "Remover" posicionado no canto superior esquerdo (junto após o botão de adicionar sub)
+RN: REMOÇÃO DE METAS E TAREFAS
+1. Somente o usuário solicitante que criou a meta/tarefa poderá removê-la
+2. Toda meta/tarefa removida irá para lixeira, onde permanecerá por 30 dias.
+3. Toda meta/tarefa da lixeira poderá ser recuperada, mas apenas pelo usuário que a removeu.
+4. Nenhuma meta/tarefa da lixeira poderá aparecer nas buscas (a não ser a própria busca da lixeira)
+5. A remoção se dará por um botão "Remover" posicionado no canto superior esquerdo (junto após o botão de adicionar tarefa/sub)
 6. Para remoção, será solicitada confirmação do usuário
 7. O sistema deverá registrar data e hora da remoção.
-8. No dashboard haverá um botão de comando para consulta da lixeira. Ao consultar a lixeira deverão aparecer apenas as tarefas removidas pelo usuário logado ( que serão as que ele pode recuperar 
-9. Tarefas concluidas não poderão ser removidas.
+8. No dashboard haverá um botão de comando para consulta da lixeira. 
+Ao consultar a lixeira deverão aparecer apenas as metas/tarefas removidas pelo usuário logado ( que serão as que ele pode recuperar  )
+9. Tarefas concluídas não poderão ser removidas, a não ser que a meta em que estejam inseridas seja removida.
+10. Metas concluídas não poderão ser removidas
 
 
 

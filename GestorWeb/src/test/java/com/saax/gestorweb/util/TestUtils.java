@@ -9,18 +9,22 @@ import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.UsuarioModel;
+import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.presenter.MetaPresenter;
 import com.saax.gestorweb.presenter.TarefaPresenter;
+import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
+import org.junit.Assert;
 import static org.junit.Assert.fail;
 
 /**
@@ -124,4 +128,49 @@ public class TestUtils {
 
     }
 
+    public static Meta cadastrarMetaSimples(String nome){
+        
+        // prepare
+        String nomeEsperado = nome;
+        HierarquiaProjeto h = (HierarquiaProjeto) PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager().createNamedQuery("HierarquiaProjeto.findByNome")
+                .setParameter("nome", "Projeto")
+                .getSingleResult();
+        
+        HierarquiaProjetoDetalhe categoria = null;
+        for (HierarquiaProjetoDetalhe c : h.getCategorias()) {
+            if (c.getNivel()==1){
+                categoria = c;
+            }
+        }
+        
+        MetaView view = new MetaView();
+        MetaPresenter presenter = new MetaPresenter(view);
+        
+        presenter.criarNovaMeta(categoria);
+        
+        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresaAtiva());
+        view.getNomeMetaTextField().setValue(nomeEsperado);
+        view.getDataInicioDateField().setValue(new Date());
+        
+        // commit 
+        try {
+            view.getMetaFieldGroup().commit();
+        } catch (FieldGroup.CommitException ex) {
+            fail(ex.getMessage());
+        }
+        
+        presenter.gravarButtonClicked();
+        
+        // gets the persisted Target (to compare)
+        Meta m = (Meta) PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager()
+                .createNamedQuery("Meta.findByNome")
+                .setParameter("nome", nomeEsperado)
+                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresaAtiva())
+                .getSingleResult();
+
+        return m;
+    }
+
+    
+    
 }

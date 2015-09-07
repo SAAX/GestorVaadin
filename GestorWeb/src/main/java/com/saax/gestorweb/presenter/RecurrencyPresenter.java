@@ -11,7 +11,6 @@ import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.RecurrencyView;
 import com.saax.gestorweb.view.RecurrencyViewListener;
-import com.saax.gestorweb.callback.RecurrencyDoneCallBackListener;
 import com.vaadin.data.Property;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
@@ -48,11 +47,11 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
     /**
      * Listener to be called back when the recurrency task creation is done
      */
-    private RecurrencyDoneCallBackListener callBackListener;
+    private CallBackListener callBackListener;
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    public void setCallBackListener(RecurrencyDoneCallBackListener callBackListener) {
+    public void addCallBackListener(CallBackListener callBackListener) {
         this.callBackListener = callBackListener;
     }
 

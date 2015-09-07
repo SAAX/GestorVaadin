@@ -17,6 +17,7 @@ import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.PrioridadeMeta;
 import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusMeta;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * Classe de negócios do cadastro de Metas <br><br>
@@ -38,7 +40,6 @@ import javax.persistence.EntityManager;
  * @author Rodrigo
  */
 public class MetaModel {
-
 
     /**
      * Cria uma nova meta na categoria informada, com valores default
@@ -208,6 +209,9 @@ public class MetaModel {
 
     public static boolean userHasAccessToTarget(Usuario loggedUser, Meta target) {
 
+        if (target.getUsuarioRemocao()!=null) {
+            return true;
+        }
         if (target.getUsuarioInclusao().equals(loggedUser)) {
             return true;
         }
@@ -236,7 +240,7 @@ public class MetaModel {
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         final List<Meta> metasUsuarioResponsavel = new ArrayList<>();
-        
+
         for (Usuario usuarioResponsavel : usuariosResponsaveis) {
 
             usuarioResponsavel = em.find(Usuario.class, usuarioResponsavel.getId());
@@ -244,8 +248,6 @@ public class MetaModel {
 
         }
 
-        
-        
         List<Meta> metasUsuarioSolicitante = new ArrayList<>();
         for (Usuario usuariosSolicitante : usuariosSolicitantes) {
             usuariosSolicitante = em.find(Usuario.class, usuariosSolicitante.getId());
@@ -298,7 +300,6 @@ public class MetaModel {
 
             metas.addAll(metasDataFim);
 
-
         } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
 
             metas.addAll(em.createNamedQuery("Meta.findAll")
@@ -329,31 +330,87 @@ public class MetaModel {
         List<Meta> result = new ArrayList<>();
         for (Meta meta : metas) {
             if (userHasAccessToTarget(loggedUser, meta)) {
+                // filtra as tarefas removidas
+                meta.setTarefas(LixeiraModel.filtrarTarefasRemovidas(meta.getTarefas()));
                 result.add(meta);
             }
         }
-    
 
-    return result ;
-}
+        return result;
+    }
 
-/**
- * Obtém as metas sob responsabilidade do usuário logado
- *
- * @param loggedUser
- * @return
- */
-public static List<Meta> listarMetas(Usuario loggedUser) {
+    /**
+     * Obtém as metas sob responsabilidade do usuário logado <br>
+     * filtrando para não exibir as metas removidas <br>
+     * ou as tarefas removidas
+     * @param loggedUser
+     * @return
+     */
+    public static List<Meta> listarMetas(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         List<Meta> metas = em.createNamedQuery("Meta.findByUsuarioResponsavelDashboard")
                 .setParameter("usuarioResponsavel", loggedUser)
-                //.setParameter("empresa", loggedUser.getEmpresaAtiva())
                 .getResultList();
 
+        metas.stream().forEach((meta) -> {
+            meta.setTarefas(LixeiraModel.filtrarTarefasRemovidas(meta.getTarefas()));
+        });
         return metas;
 
     }
-    
+
+    /**
+     * Remove uma meta
+     *
+     * @param meta
+     * @param usuarioLogado
+     */
+    public static void removerMeta(Meta meta, Usuario usuarioLogado) {
+
+        meta.setUsuarioRemocao(usuarioLogado);
+        meta.setDataHoraRemocao(LocalDateTime.now());
+
+        if (meta.getTarefas() != null) {
+            for (Tarefa subtarefa : meta.getTarefas()) {
+                TarefaModel.removerTarefa(subtarefa, usuarioLogado);
+            }
+        }
+    }
+
+    public static List<Meta> listarMetasRemovidas(Usuario usuarioLogado) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        Empresa empresa = usuarioLogado.getEmpresaAtiva();
+
+        Query q = em.createNamedQuery("Meta.findMetaRemovidas", Meta.class)
+                .setParameter("empresa", empresa)
+                .setParameter("usuarioRemocao", usuarioLogado);
+
+        return q.getResultList();
+    }
+
+    public static void restaurarMeta(Meta meta, Usuario usuarioLogado) {
+        meta.setUsuarioRemocao(null);
+        meta.setDataHoraRemocao(null);
+
+        for (Tarefa subtarefa : meta.getTarefas()) {
+            TarefaModel.restaurarTarefa(subtarefa, usuarioLogado);
+        }
+
+    }
+
+    public static Meta refresh(Meta meta) {
+        if (meta.getId() != null) {
+            EntityManager em = GestorEntityManagerProvider.getEntityManager();
+            Meta m = em.find(Meta.class, meta.getId());
+            m.setTarefas(LixeiraModel.filtrarTarefasRemovidas(m.getTarefas()));
+            return m;
+        } else {
+            return meta;
+        }
+
+    }
 }

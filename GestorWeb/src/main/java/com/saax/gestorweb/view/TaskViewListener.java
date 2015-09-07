@@ -1,6 +1,5 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.model.datamodel.AnexoTarefa;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -64,7 +63,5 @@ public interface TaskViewListener {
     public void assigneeUserChanged(Tarefa task, Usuario usuario);
 
     public void removerTarefaButtonClicked(Tarefa tarefa);
-
-    public boolean verificaPermissaoAcessoRemocaoTarefa(Tarefa tarefa);
 
 }

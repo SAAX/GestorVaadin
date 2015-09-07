@@ -15,12 +15,11 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.FormatterUtil;
-import com.saax.gestorweb.callback.TarefaCallBackListener;
 import com.saax.gestorweb.view.TarefaView;
 import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.data.Item;
-import com.saax.gestorweb.callback.MetaCallBackListener;
+import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.LixeiraView;
@@ -51,11 +50,48 @@ import org.vaadin.hene.popupbutton.PopupButton;
  *
  * @author Rodrigo
  */
-public class DashboardPresenter implements DashboardViewListenter, TarefaCallBackListener, MetaCallBackListener, PopUpStatusListener, Serializable {
+public class DashboardPresenter implements DashboardViewListenter, CallBackListener, PopUpStatusListener, Serializable {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient DashboardView view;
-    private final List<TarefaCallBackListener> callbackListeneres;
+    private final List<CallBackListener> callbackListeneres;
+
+    @Override
+    public void recurrencyCreationDone(RecurrencySet recurrencySet) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void recurrencyRemoved(Tarefa task) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addCallbackListener(CallBackListener callBackListener) {
+        callbackListeneres.add(callBackListener);
+    }
+
+    @Override
+    public void atualizarApresentacaoMeta(Meta meta) {
+        if (view.getTargetTable().getItemIds().contains(meta)) {
+            updateTargetTable(meta);
+
+        } else {
+            adicionarMetaTable(meta);
+
+        }
+        organizeTree(view.getTargetTable(), meta, meta.getTarefas());
+    }
+
+    @Override
+    public void tarefaRestaurada(Tarefa tarefa) {
+        reload();
+    }
+
+    @Override
+    public void metaRestaurada(Meta meta) {
+        reload();
+    }
 
     // enumeracao do tipo de pesquisa
     public enum TipoPesquisa {
@@ -64,12 +100,10 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     };
 
     @Override
-    public List<TarefaCallBackListener> getCallbackListeneres() {
+    public List<CallBackListener> getCallbackListeneres() {
         return callbackListeneres;
     }
 
-    
-    
     /**
      * Cria o presenter ligando o Model ao View
      *
@@ -153,7 +187,6 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         }
     }
 
-
     private void atualizarTarefaTable(Tarefa tarefa) {
 
         if (tarefa == null || tarefa.getGlobalID() == null) {
@@ -212,16 +245,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
 
     }
 
-    /**
-     * Trata o evento disparado via callback quando uma tarefa é removida <br>
-     * recarrega a lista de tarefas em exibição PS: não é possível remover itens
-     * de uma treetable A propria busca vai filtrar a removida
-     *
-     * @param tarefaRemovida
-     */
-    @Override
-    public void tarefaRemovida(Tarefa tarefaRemovida) {
-
+    private void reload() {
         // se a view estiver com um filtro de pequisa customizado
         if (view.getSwitchAndOrFilters().isVisible()) {
             // reexecuta a pesquina nos mesmos filtros
@@ -231,8 +255,27 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
         } else {
             // reexecuta a pesquina padrão
             carregarListaTarefasUsuarioLogado();
+            carregarListaMetasUsuarioLogado();
         }
 
+    }
+
+    @Override
+    public void metaRemovida(Meta meta) {
+        reload();
+    }
+
+    /**
+     * Trata o evento disparado via callback quando uma tarefa é removida <br>
+     * recarrega a lista de tarefas em exibição <br>
+     * PS: não é possível remover itens de uma treetable A propria busca vai
+     * filtrar a removida
+     *
+     * @param tarefaRemovida
+     */
+    @Override
+    public void tarefaRemovida(Tarefa tarefaRemovida) {
+        reload();
     }
 
     /**
@@ -278,7 +321,7 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
 
         if (categoria.getNivel() == 1) {
             MetaPresenter presenter = new MetaPresenter(new MetaView());
-            presenter.setCallBackListener(this);
+            presenter.addCallbackListener(this);
             presenter.criarNovaMeta(categoria);
         } else if (categoria.getNivel() == 2) {
             TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
@@ -286,18 +329,6 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
             presenter.createTask(categoria);
         }
 
-    }
-
-    @Override
-    public void metaCriada(Meta metaCriada) {
-        adicionarMetaTable(metaCriada);
-        organizeTree(view.getTargetTable(), metaCriada, metaCriada.getTarefas());
-    }
-
-    @Override
-    public void metaAlterada(Meta meta) {
-        updateTargetTable(meta);
-        organizeTree(view.getTargetTable(), meta, meta.getTarefas());
     }
 
     /**
@@ -357,6 +388,18 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     public boolean verificaPermissaoAcessoRemocaoTarefa(Tarefa tarefa) {
 
         return LixeiraModel.verificaPermissaoAcessoRemocaoTarefa(tarefa, PresenterUtils.getUsuarioLogado());
+    }
+
+    @Override
+    public void removerMetaButtonClicked(Meta meta) {
+        LixeiraPresenter popUpRemocaoTarefaPresenter = new LixeiraPresenter(new LixeiraView());
+        popUpRemocaoTarefaPresenter.addTarefaCallBackListener(this);
+        popUpRemocaoTarefaPresenter.apresentaConfirmacaoRemocaoMeta(meta);
+    }
+
+    @Override
+    public boolean verificaPermissaoAcessoRemocaoMeta(Meta meta) {
+        return LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getUsuarioLogado());
     }
 
     /**
@@ -677,11 +720,11 @@ public class DashboardPresenter implements DashboardViewListenter, TarefaCallBac
     private Button buildButtonEditarMeta(Meta meta, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
-        MetaCallBackListener callback = this;
+        CallBackListener callback = this;
         link.addClickListener((Button.ClickEvent event) -> {
             view.getTargetTable().setValue(meta);
             MetaPresenter presenter = new MetaPresenter(new MetaView());
-            presenter.setCallBackListener(callback);
+            presenter.addCallbackListener(callback);
             presenter.editarMeta(meta);
         });
         return link;

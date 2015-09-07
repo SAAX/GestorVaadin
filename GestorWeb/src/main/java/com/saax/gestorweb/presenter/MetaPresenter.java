@@ -14,11 +14,11 @@ import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
-import com.saax.gestorweb.callback.MetaCallBackListener;
 import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.MetaViewListener;
 import com.saax.gestorweb.view.PopUpStatusListener;
-import com.saax.gestorweb.callback.TarefaCallBackListener;
+import com.saax.gestorweb.model.LixeiraModel;
+import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.Item;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -35,7 +35,7 @@ import java.util.ResourceBundle;
  *
  * @author Rodrigo
  */
-public class MetaPresenter implements Serializable, MetaViewListener, TarefaCallBackListener, PopUpStatusListener {
+public class MetaPresenter implements Serializable, CallBackListener, MetaViewListener, PopUpStatusListener {
 
     // Todo presenter mantem acesso à view e ao model
     private final transient MetaView view;
@@ -43,13 +43,13 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
     // recursos de aplicação
     private final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     private final transient GestorWebImagens imagens = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
-    private final List<TarefaCallBackListener> callbackListeneres;
+    private final List<CallBackListener> callbackListeneres;
 
     // usuario logado
     private final Usuario loggedUser;
-    private MetaCallBackListener callbackListener;
 
-    public List<TarefaCallBackListener> getCallbackListeneres() {
+    @Override
+    public List<CallBackListener> getCallbackListeneres() {
         return callbackListeneres;
     }
 
@@ -94,6 +94,8 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
     @Override
     public void editarMeta(Meta meta) {
 
+        meta = MetaModel.refresh(meta);
+        
         // sets the title
         view.exibeTituloEdicao(meta);
 
@@ -190,16 +192,6 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         
     }
 
-    /**
-     * Configura um listener para ser chamado quando o cadastro for concluido
-     *
-     * @param callback
-     */
-    @Override
-    public void setCallBackListener(MetaCallBackListener callback) {
-        this.callbackListener = callback;
-    }
-
     @Override
     public void gravarButtonClicked() {
         Meta meta = view.getMeta();
@@ -216,12 +208,8 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
         }
 
         // notica (se existir) algum listener interessado em saber que o cadastro foi finalizado.
-        if (callbackListener != null) {
-            if (novaMeta) {
-                callbackListener.metaCriada(meta);
-            } else {
-                callbackListener.metaAlterada(meta);
-            }
+        for (CallBackListener callbackListener : callbackListeneres) {
+            callbackListener.atualizarApresentacaoMeta(meta);
         }
         view.close();
         Notification.show(meta.getCategoria().getCategoria() + mensagens.getString("CadastroMetaPresenter.mensagem.gravadoComSucesso"), Notification.Type.HUMANIZED_MESSAGE);
@@ -416,6 +404,48 @@ public class MetaPresenter implements Serializable, MetaViewListener, TarefaCall
 
         view.setEditAllowed(usuarioLogadoEhOSolicitante || usuarioLogadoEhOResponsavel);
         view.getResponsavelCombo().setEnabled(usuarioLogadoEhOSolicitante);
+        
+        view.getRemoverMetaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getUsuarioLogado()));
+    }
+
+    @Override
+    public void removerMetaButtonClicked(Meta meta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void metaRemovida(Meta meta) {
+        view.close();
+    }
+
+    @Override
+    public void recurrencyCreationDone(RecurrencySet recurrencySet) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void recurrencyRemoved(Tarefa task) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addCallbackListener(CallBackListener callBackListener) {
+        this.callbackListeneres.add(callBackListener);
+    }
+
+    @Override
+    public void atualizarApresentacaoMeta(Meta meta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void tarefaRestaurada(Tarefa tarefa) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void metaRestaurada(Meta meta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 

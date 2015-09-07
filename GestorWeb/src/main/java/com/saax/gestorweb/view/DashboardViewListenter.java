@@ -1,5 +1,6 @@
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 
 /**
@@ -21,6 +22,10 @@ public interface DashboardViewListenter {
     void removerTarefaButtonClicked(Tarefa tarefa);
     boolean verificaPermissaoAcessoRemocaoTarefa(Tarefa tarefa);
     void trashButtonPressed();
+
+    public void removerMetaButtonClicked(Meta meta);
+
+    public boolean verificaPermissaoAcessoRemocaoMeta(Meta meta);
 
     
 

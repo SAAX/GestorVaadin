@@ -19,6 +19,7 @@ import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Accordion;
@@ -73,7 +74,8 @@ public class MetaView extends Window implements Serializable {
     private HorizontalLayout topButtonsBar;
     private Button addTaskButton;
     private Button forecast​Button;
-
+    private Button removerMetaButton;
+    
     // -----------------------------------------------------------------------------------
     // Bean Biding
     // -----------------------------------------------------------------------------------
@@ -246,6 +248,15 @@ public class MetaView extends Window implements Serializable {
         });
         topButtonsBar.addComponent(addTaskButton);
 
+        removerMetaButton = new Button("Remover");
+        removerMetaButton.setEnabled(false);
+        removerMetaButton.addClickListener((ClickEvent event) -> {
+            listener.removerMetaButtonClicked(getMeta());
+        });
+
+        removerMetaButton.setIcon(FontAwesome.TRASH_O);
+        topButtonsBar.addComponent(removerMetaButton);
+        
 //       Projeção será inserida na V2           
 //        forecast​Button = new Button("[Projeção]", (Button.ClickEvent event) -> {
 //            listener.forecastButtonClickedd();
@@ -536,6 +547,7 @@ public class MetaView extends Window implements Serializable {
 
                 
                 notification.show(Page.getCurrent());
+                Logger.getLogger(TarefaView.class.getName()).log(Level.WARNING, null, ex);
 
             } catch (Exception ex) {
 
@@ -724,5 +736,11 @@ public class MetaView extends Window implements Serializable {
         centroCustoCombo.setEnabled(editAllowed);
 
     }
+
+    public Button getRemoverMetaButton() {
+        return removerMetaButton;
+    }
+    
+    
 
 }

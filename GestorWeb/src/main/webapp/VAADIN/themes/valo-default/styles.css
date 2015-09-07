@@ -945,7 +945,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "7.5.1";
+	content: "7.5.4";
 }
 
 .v-widget {
@@ -4280,6 +4280,7 @@ div.v-layout.v-horizontal.v-widget {
 	outline: none;
 	padding: 0 4px;
 	text-align: right;
+	line-height: 1;
 }
 
 .valo-default .v-grid-sidebar.v-contextmenu .v-grid-sidebar-button::-moz-focus-inner {
@@ -4302,8 +4303,8 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .valo-default .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-button:after {
-	content: "\00d7";
-	font-size: 16px;
+	content: "\f0c9";
+	font-size: 12px;
 	line-height: 1;
 }
 
@@ -4312,11 +4313,12 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .v-ie8 .valo-default .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-button:after {
+	vertical-align: middle;
+	text-align: center;
 	display: inline;
 }
 
 .valo-default .v-grid-sidebar.v-contextmenu .v-grid-sidebar-content {
-	border-top: 1px solid #d4d4d4;
 	padding: 4px 0;
 }
 
@@ -4356,6 +4358,13 @@ div.v-layout.v-horizontal.v-widget {
 }
 
 .valo-default .v-grid-row > td:first-child, .valo-default .v-grid-editor-cells > div:first-child {
+	border-left: none;
+}
+
+.valo-default .v-grid-editor-cells.frozen > div {
+	-webkit-box-shadow: 1px 0 2px rgba(0, 0, 0, 0.1);
+	box-shadow: 1px 0 2px rgba(0, 0, 0, 0.1);
+	border-right: 1px solid #d4d4d4;
 	border-left: none;
 }
 
@@ -4479,6 +4488,10 @@ div.v-layout.v-horizontal.v-widget {
 .valo-default .v-grid-editor-cells {
 	position: relative;
 	white-space: nowrap;
+}
+
+.valo-default .v-grid-editor-cells.frozen {
+	z-index: 2;
 }
 
 .valo-default .v-grid-editor-cells  > div {
@@ -4791,10 +4804,6 @@ div.v-layout.v-horizontal.v-widget {
 
 .valo-default .v-grid-spacer {
 	margin-top: -1px;
-}
-
-.valo-default .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-button:after {
-	font-size: 20px;
 }
 
 .valo-default .v-grid-sidebar.v-contextmenu.open .v-grid-sidebar-content {

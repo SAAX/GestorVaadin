@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.PresenterUtils;
@@ -334,6 +335,7 @@ public class DashboardView extends VerticalLayout {
         autoFilterSearchContainer.addComponent(advancedSearchButton);
 
         HorizontalLayout autoFilterRightContainer = new HorizontalLayout();
+        autoFilterRightContainer.addComponent(autoFilterSearchContainer);
 
         trashButton = new Button(PresenterUtils.getMensagensResource().getString("DashboardView.trashButton"));
         trashButton.addClickListener((ClickEvent event) -> {
@@ -341,7 +343,6 @@ public class DashboardView extends VerticalLayout {
         });
         trashButton.setIcon(FontAwesome.TRASH_O);
         autoFilterRightContainer.addComponent(trashButton);
-        autoFilterRightContainer.addComponent(autoFilterSearchContainer);
 
         autoFiltersContainer.addComponent(autoFilterLeftContainer);
         autoFiltersContainer.setComponentAlignment(autoFilterLeftContainer, Alignment.MIDDLE_LEFT);
@@ -534,6 +535,26 @@ public class DashboardView extends VerticalLayout {
         targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.forecast"), 30);
         targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.email"), Button.class, "");
         targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.email"), 30);
+        targetTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button();
+            removeButton.addClickListener((ClickEvent event) -> {
+                if (itemId instanceof Meta){
+                    listener.removerMetaButtonClicked((Meta) itemId);
+                } else {
+                    listener.removerTarefaButtonClicked((Tarefa) itemId);
+                }
+            });
+            if (itemId instanceof Meta){
+                removeButton.setEnabled(listener.verificaPermissaoAcessoRemocaoMeta((Meta) itemId));
+            } else {
+                removeButton.setEnabled(listener.verificaPermissaoAcessoRemocaoTarefa((Tarefa) itemId));
+            }
+
+            removeButton.setIcon(FontAwesome.TRASH_O);
+
+            return removeButton;
+        });
+        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.colunaBotaoRemover"), 30);
 
         targetTable.setPageLength(0);
         targetTable.setSelectable(true);

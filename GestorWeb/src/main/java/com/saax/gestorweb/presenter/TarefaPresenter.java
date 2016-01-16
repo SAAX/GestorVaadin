@@ -5,7 +5,8 @@ import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.LixeiraModel;
 import com.saax.gestorweb.model.RecurrencyModel;
 import com.saax.gestorweb.model.TarefaModel;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.UsuarioModel;
+import com.saax.gestorweb.model.datamodel.Anexo;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
@@ -53,6 +54,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -107,9 +110,9 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
         // Cria uma nova tarefa com valores default
         tarefa = new Tarefa();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
-        tarefa.setEmpresa(PresenterUtils.getUsuarioLogado().getEmpresaAtiva());
-        tarefa.setUsuarioInclusao(PresenterUtils.getUsuarioLogado());
-        tarefa.setUsuarioSolicitante(PresenterUtils.getUsuarioLogado());
+        tarefa.setEmpresa(tarefaPai.getEmpresa());
+        tarefa.setUsuarioInclusao(PresenterUtils.getInstance().getUsuarioLogado());
+        tarefa.setUsuarioSolicitante(PresenterUtils.getInstance().getUsuarioLogado());
         tarefa.setDataHoraInclusao(LocalDateTime.now());
 
         // configuras as caracteristicas de sub-tarefa
@@ -144,7 +147,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
 
         view.ocultaPopUpEvolucaoStatusEAndamento();
 
-        view.setCaption(PresenterUtils.getMensagensResource().getString("TaskView.titulo.cadastro") + nomesProximasCategorias);
+        view.setCaption(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.titulo.cadastro") + nomesProximasCategorias);
 
         init(tarefa);
 
@@ -178,9 +181,11 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
         // Cria uma nova tarefa com valores default
         tarefa = new Tarefa();
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
-        tarefa.setEmpresa(PresenterUtils.getUsuarioLogado().getEmpresaAtiva());
-        tarefa.setUsuarioInclusao(PresenterUtils.getUsuarioLogado());
-        tarefa.setUsuarioSolicitante(PresenterUtils.getUsuarioLogado());
+        if (target!=null){
+            tarefa.setEmpresa(target.getEmpresa());
+        }
+        tarefa.setUsuarioInclusao(PresenterUtils.getInstance().getUsuarioLogado());
+        tarefa.setUsuarioSolicitante(PresenterUtils.getInstance().getUsuarioLogado());
         tarefa.setDataHoraInclusao(LocalDateTime.now());
         tarefa.setSubTarefas(new ArrayList<>());
         if (possibleCategories.size() == 1) {
@@ -202,7 +207,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
         view.ocultaPopUpEvolucaoStatusEAndamento();
 
         if (possibleCategories.size() == 1) {
-            view.setCaption(PresenterUtils.getMensagensResource().getString("TaskView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
+            view.setCaption(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.titulo.cadastro") + possibleCategories.get(0).getCategoria());
             view.getHierarchyCombo().setEnabled(false);
         }
 
@@ -222,8 +227,8 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
     @Override
     public void editar(Tarefa taskToEdit) {
 
-        if (!TarefaModel.verificaAcesso(PresenterUtils.getUsuarioLogado(), taskToEdit)) {
-            Notification.show(PresenterUtils.getMensagensResource().getString("TaskView.accessDenied"), Notification.Type.WARNING_MESSAGE);
+        if (!TarefaModel.verificaAcesso(PresenterUtils.getInstance().getUsuarioLogado(), taskToEdit)) {
+            Notification.show(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.accessDenied"), Notification.Type.WARNING_MESSAGE);
             return;
         }
 
@@ -241,7 +246,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
 
         //Caso usuário logado não seja o solicitante, não deixar que ele clique nos controle de horas
         //e apontamento da tarefa
-        if (!PresenterUtils.getUsuarioLogado().equals(taskToEdit.getUsuarioSolicitante())) {
+        if (!PresenterUtils.getInstance().getUsuarioLogado().equals(taskToEdit.getUsuarioSolicitante())) {
             view.getApontamentoHorasCheckBox().setReadOnly(true);
             view.getBudgetControlCheckBox().setReadOnly(true);
 
@@ -257,11 +262,13 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
         view.getFollowersContainer().addAll(taskToEdit.getParticipantes());
         view.getTaskAttachContainer().addAll(taskToEdit.getAnexos());
         view.getHoursControlContainer().addAll(taskToEdit.getApontamentos());
+        view.getHoursControlContainer().sort(new String[]{"dataHoraInclusao"},new boolean[]{true});
         view.getBudgetContainer().addAll(taskToEdit.getOrcamentos());
+        view.getBudgetContainer().sort(new String[]{"dataHoraInclusao"},new boolean[]{true});
 
         configPermissions(taskToEdit);
 
-        view.setCaption(PresenterUtils.getMensagensResource().getString("TaskView.titulo.edicao") + taskToEdit.getHierarquia().getCategoria());
+        view.setCaption(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.titulo.edicao") + taskToEdit.getHierarquia().getCategoria());
 
     }
 
@@ -272,8 +279,8 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
      */
     private void configPermissions(Tarefa task) {
 
-        boolean isTheAssignee = task.getUsuarioResponsavel() != null && task.getUsuarioResponsavel().equals(PresenterUtils.getUsuarioLogado());
-        boolean isTheRequestor = task.getUsuarioSolicitante() != null && task.getUsuarioSolicitante().equals(PresenterUtils.getUsuarioLogado());
+        boolean isTheAssignee = task.getUsuarioResponsavel() != null && task.getUsuarioResponsavel().equals(PresenterUtils.getInstance().getUsuarioLogado());
+        boolean isTheRequestor = task.getUsuarioSolicitante() != null && task.getUsuarioSolicitante().equals(PresenterUtils.getInstance().getUsuarioLogado());
 
         switch (task.getStatus()) {
 
@@ -328,7 +335,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
                 throw new RuntimeException("Falha ao identificar status.");
         }
 
-        view.getRemoverTarefaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoTarefa(task, PresenterUtils.getUsuarioLogado()));
+        view.getRemoverTarefaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoTarefa(task, PresenterUtils.getInstance().getUsuarioLogado()));
 
     }
 
@@ -339,17 +346,17 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
         // Carrega os combos de seleção
         carregaComboEmpresa();
         carregaComboPrioridade();
-        carregaComboResponsavel();
-        carregaComboParticipante();
-        PresenterUtils.carregaComboEmpresaCliente(view.getCustomerCompanyCombo());
+        carregaComboResponsavel(tarefa);
+        carregaComboParticipante(tarefa);
+        PresenterUtils.getInstance().carregaComboEmpresaCliente(view.getCustomerCompanyCombo());
         setPopUpEvolucaoStatusEAndamento(tarefa);
 //Projeção será inserida na V2
 //        carregaApontamento(tarefa);
         view.getRecurrencyMessage().setVisible(tarefa.getTipoRecorrencia() == TipoTarefa.RECORRENTE);
 
         // Configuras os beans de 1-N
-        view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, PresenterUtils.getUsuarioLogado()));
-        view.setOrcamentoTarefa(new OrcamentoTarefa(tarefa, PresenterUtils.getUsuarioLogado()));
+        view.setApontamentoTarefa(new ApontamentoTarefa(tarefa, PresenterUtils.getInstance().getUsuarioLogado()));
+        view.setOrcamentoTarefa(new OrcamentoTarefa(tarefa, PresenterUtils.getInstance().getUsuarioLogado()));
 
         view.setAbaControleHorasVisible(tarefa.isApontamentoHoras());
         view.setAbaControleOrcamentoVisible(tarefa.isOrcamentoControlado());
@@ -461,17 +468,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
         return resultado;
     }
 
-    /**
-     * Carrega o combo de seleçao com os status possiveis para a tarefa
-     */
-//    private void carregaComboTipoRecorrenciaTarefa() {
-//
-//        ComboBox tipo = view.getTipoRecorrenciaCombo();
-//        for (TipoTarefa tipoTarefaValue : TipoTarefa.values()) {
-//            tipo.addItem(tipoTarefaValue);
-//            tipo.setItemCaption(tipoTarefaValue, tipoTarefaValue.getLocalizedString());
-//        }
-//    }
+   
     /**
      * Carrega o combo de seleção da empresa com todas as empresas relacionadas
      * ao usuário logado
@@ -481,7 +478,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
 
         EmpresaModel empresaModel = new EmpresaModel();
 
-        List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(PresenterUtils.getUsuarioLogado());
+        List<Empresa> empresas = empresaModel.listarEmpresasAtivasUsuarioLogado(PresenterUtils.getInstance().getUsuarioLogado());
         for (Empresa empresa : empresas) {
 
             empresaCombo.addItem(empresa);
@@ -530,9 +527,9 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
      * Carrega o combo de responsáveis com todos os usuários ativos da mesma
      * empresa do usuário logado
      */
-    private void carregaComboResponsavel() {
+    private void carregaComboResponsavel(Tarefa tarefa) {
         ComboBox responsavel = view.getAssigneeUserCombo();
-        for (Usuario usuario : TarefaModel.listarUsuariosEmpresa()) {
+        for (Usuario usuario : UsuarioModel.listarUsuariosEmpresa(tarefa.getEmpresa())) {
             responsavel.addItem(usuario);
             responsavel.setItemCaption(usuario, usuario.getNome());
 
@@ -545,7 +542,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
     private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
 
         for (Tarefa subTask : subTasks) {
-            view.getSubTasksTable().setParent(subTask, parentTask);
+            view.getSubTarefasTable().setParent(subTask, parentTask);
             if (subTask.getSubTarefas() != null && !subTask.getSubTarefas().isEmpty()) {
                 organizeTree(subTask, subTask.getSubTarefas());
             }
@@ -556,9 +553,9 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
      * Carrega o combo de participante com todos os usuários ativos da mesma
      * empresa do usuário logado
      */
-    private void carregaComboParticipante() {
+    private void carregaComboParticipante(Tarefa tarefa) {
         ComboBox participante = view.getFollowersCombo();
-        for (Usuario usuario : TarefaModel.listarUsuariosEmpresa()) {
+        for (Usuario usuario : UsuarioModel.listarUsuariosEmpresa(tarefa.getEmpresa())) {
             participante.addItem(usuario);
             participante.setItemCaption(usuario, usuario.getNome());
 
@@ -589,7 +586,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
      */
     private void carregaComboEmpresaCliente() {
         ComboBox empresaCliente = view.getCustomerCompanyCombo();
-        for (EmpresaCliente cliente : TarefaModel.listarEmpresasCliente(PresenterUtils.getUsuarioLogado())) {
+        for (EmpresaCliente cliente : TarefaModel.listarEmpresasCliente(PresenterUtils.getInstance().getUsuarioLogado())) {
             empresaCliente.addItem(cliente);
             empresaCliente.setItemCaption(cliente, cliente.getNome());
         }
@@ -663,10 +660,10 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
         // compare the Tarefa's initial and final dates with its parent Tarefa (only if there is a parent Tarefa)
         if (task.getTarefaPai() != null) {
             if (task.getDataInicio().isBefore(task.getTarefaPai().getDataInicio())) {
-                throw new RuntimeException(PresenterUtils.getMensagensResource().getString("CadastroTarefaPresenter.mensagem.dataInicio"));
+                throw new RuntimeException(PresenterUtils.getInstance().getMensagensResource().getString("CadastroTarefaPresenter.mensagem.dataInicio"));
             }
             if (task.getDataFim() != null && task.getTarefaPai().getDataFim() != null && task.getDataFim().isAfter(task.getTarefaPai().getDataFim())) {
-                throw new RuntimeException(PresenterUtils.getMensagensResource().getString("CadastroTarefaPresenter.mensagem.dataFim"));
+                throw new RuntimeException(PresenterUtils.getInstance().getMensagensResource().getString("CadastroTarefaPresenter.mensagem.dataFim"));
             }
         }
 
@@ -719,7 +716,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
                 view.getTarefa().setCustoHoraApontamento(apontamentoTarefa.getCustoHora());
             }
             // criar um novo apontamento em branco para o usuario adicionar um novo:
-            view.setApontamentoTarefa(new ApontamentoTarefa(view.getTarefa(), PresenterUtils.getUsuarioLogado()));
+            view.setApontamentoTarefa(new ApontamentoTarefa(view.getTarefa(), PresenterUtils.getInstance().getUsuarioLogado()));
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
@@ -736,7 +733,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
     @Override
     public void removePointingTime(ApontamentoTarefa taskPointingTime) {
 
-        if (!taskPointingTime.getUsuarioInclusao().equals(PresenterUtils.getUsuarioLogado())) {
+        if (!taskPointingTime.getUsuarioInclusao().equals(PresenterUtils.getInstance().getUsuarioLogado())) {
             Notification.show("Ops, apenas " + taskPointingTime.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
         } else {
             view.getPointingTimeTable().removeItem(taskPointingTime);
@@ -759,7 +756,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
             view.getBudgetContainer().addItem(orcamentoTarefa);
 
             // criar um novo apontamento de orçamento em branco para o usuario adicionar um novo:
-            view.setOrcamentoTarefa(new OrcamentoTarefa(view.getTarefa(), PresenterUtils.getUsuarioLogado()));
+            view.setOrcamentoTarefa(new OrcamentoTarefa(view.getTarefa(), PresenterUtils.getInstance().getUsuarioLogado()));
 
         } catch (Exception ex) {
             Notification.show(ex.getLocalizedMessage(), Notification.Type.WARNING_MESSAGE);
@@ -770,7 +767,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
     @Override
     public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa) {
 
-        if (!orcamentoTarefa.getUsuarioInclusao().equals(PresenterUtils.getUsuarioLogado())) {
+        if (!orcamentoTarefa.getUsuarioInclusao().equals(PresenterUtils.getInstance().getUsuarioLogado())) {
             Notification.show("Ops, apenas " + orcamentoTarefa.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
         } else {
             view.getBudgetControlTable().removeItem(orcamentoTarefa);
@@ -781,8 +778,8 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
     }
 
     @Override
-    public void removerAnexo(AnexoTarefa anexoTarefa) {
-        if (!(anexoTarefa.getUsuarioInclusao().equals(PresenterUtils.getUsuarioLogado()))) {
+    public void removerAnexo(Anexo anexoTarefa) {
+        if (!(anexoTarefa.getUsuarioInclusao().equals(PresenterUtils.getInstance().getUsuarioLogado()))) {
             Notification.show("Ops, apenas " + anexoTarefa.getUsuarioInclusao().getNome() + " pode remover este apontamento.", Notification.Type.WARNING_MESSAGE);
         } else {
             view.getAttachmentsAddedTable().removeItem(anexoTarefa);
@@ -843,22 +840,22 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
 
         // monta os dados para adicionar na grid
         Object[] linha = new Object[]{
-            PresenterUtils.buildButtonEditarTarefa(view.getSubTasksTable(), this, sub, sub.getGlobalID()),
-            PresenterUtils.buildButtonEditarTarefa(view.getSubTasksTable(), this, sub, sub.getHierarquia().getCategoria()),
-            PresenterUtils.buildButtonEditarTarefa(view.getSubTasksTable(), this, sub, sub.getNome()),
+            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getSubTarefasTable(), this, sub, sub.getGlobalID()),
+            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getSubTarefasTable(), this, sub, sub.getHierarquia().getCategoria()),
+            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getSubTarefasTable(), this, sub, sub.getNome()),
             sub.getEmpresa().getNome()
             + (sub.getFilialEmpresa() != null ? "/" + sub.getFilialEmpresa().getNome() : ""),
             sub.getUsuarioSolicitante().getNome(),
             sub.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(sub.getDataInicio()),
             FormatterUtil.formatDate(sub.getDataFim()),
-            TarefaView.buildPopUpStatusProgressTask(view.getSubTasksTable(), sub, this),
+            TarefaView.buildPopUpStatusProgressTask(view.getSubTarefasTable(), sub, this),
             sub.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
 
         };
-        view.getSubTasksTable().addItem(linha, sub);
+        view.getSubTarefasTable().addItem(linha, sub);
 
         for (Tarefa subTarefa : sub.getSubTarefas()) {
             adicionarSubTarefa(subTarefa);
@@ -878,10 +875,10 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
     public void tarefaRemovida(Tarefa tarefaRemovida) {
 
         // Se a tarefa removida for uma sub da que está sendo editada
-        if (view.getSubTasksTable().getItemIds().contains(tarefaRemovida)) {
+        if (view.getSubTarefasTable().getItemIds().contains(tarefaRemovida)) {
 
             // recarrega a lista de subs
-            view.getSubTasksTable().removeAllItems();
+            view.getSubTarefasTable().removeAllItems();
 
             view.setTarefa(TarefaModel.refresh(view.getTarefa()));
             
@@ -910,7 +907,7 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
     @Override
     public void atualizarApresentacaoTarefa(Tarefa tarefa) {
 
-        if (view.getSubTasksTable().getItemIds().contains(tarefa)) {
+        if (view.getSubTarefasTable().getItemIds().contains(tarefa)) {
 
             atualizarsubTarefa(tarefa);
             organizeTree(tarefa, tarefa.getSubTarefas());
@@ -925,19 +922,19 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
 
     public void atualizarsubTarefa(Tarefa tarefa) {
 
-        Item it = view.getSubTasksTable().getItem(tarefa);
+        Item it = view.getSubTarefasTable().getItem(tarefa);
 
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaCod")).setValue(PresenterUtils.buildButtonEditarTarefa(view.getSubTasksTable(), this, tarefa, tarefa.getGlobalID()));
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaTitulo")).setValue(PresenterUtils.buildButtonEditarTarefa(view.getSubTasksTable(), this, tarefa, tarefa.getHierarquia().getCategoria()));
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaNome")).setValue(PresenterUtils.buildButtonEditarTarefa(view.getSubTasksTable(), this, tarefa, tarefa.getNome()));
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaEmpresaFilial")).setValue(tarefa.getEmpresa().getNome()
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaCod")).setValue(PresenterUtils.getInstance().buildButtonEditarTarefa(view.getSubTarefasTable(), this, tarefa, tarefa.getGlobalID()));
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaTitulo")).setValue(PresenterUtils.getInstance().buildButtonEditarTarefa(view.getSubTarefasTable(), this, tarefa, tarefa.getHierarquia().getCategoria()));
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaNome")).setValue(PresenterUtils.getInstance().buildButtonEditarTarefa(view.getSubTarefasTable(), this, tarefa, tarefa.getNome()));
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaEmpresaFilial")).setValue(tarefa.getEmpresa().getNome()
                 + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaSolicitante")).setValue(tarefa.getUsuarioSolicitante().getNome());
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaStatus")).setValue(TarefaView.buildPopUpStatusProgressTask(view.getSubTasksTable(), tarefa, this));
-        it.getItemProperty(PresenterUtils.getMensagensResource().getString("TaskView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaSolicitante")).setValue(tarefa.getUsuarioSolicitante().getNome());
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaResponsavel")).setValue(tarefa.getUsuarioResponsavel().getNome());
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaStatus")).setValue(TarefaView.buildPopUpStatusProgressTask(view.getSubTarefasTable(), tarefa, this));
+        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
 
@@ -953,8 +950,8 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
     @Override
     public void adicionarParticipante(Usuario usuario) {
 
-        if (usuario.equals(view.getAssigneeUserCombo().getValue()) || usuario.equals(PresenterUtils.getUsuarioLogado())) {
-            Notification.show(PresenterUtils.getMensagensResource().getString("Notificacao.ParticipanteUsuarioResponsavel"));
+        if (usuario.equals(view.getAssigneeUserCombo().getValue()) || usuario.equals(PresenterUtils.getInstance().getUsuarioLogado())) {
+            Notification.show(PresenterUtils.getInstance().getMensagensResource().getString("Notificacao.ParticipanteUsuarioResponsavel"));
         } else {
             Participante participanteTarefa = TarefaModel.criarParticipante(usuario, view.getTarefa());
             view.getFollowersContainer().addBean(participanteTarefa);
@@ -971,10 +968,10 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
 
     @Override
     public void anexoAdicionado(File anexo) {
-        AnexoTarefa anexoTarefa = new AnexoTarefa();
+        Anexo anexoTarefa = new Anexo();
         anexoTarefa.setNome(anexo.getName());
         anexoTarefa.setDataHoraInclusao(LocalDateTime.now());
-        anexoTarefa.setUsuarioInclusao(PresenterUtils.getUsuarioLogado());
+        anexoTarefa.setUsuarioInclusao(PresenterUtils.getInstance().getUsuarioLogado());
         anexoTarefa.setTarefa(view.getTarefa());
         anexoTarefa.setArquivoTemporario(anexo);
         anexoTarefa.setCaminhoCompleto(anexo.getAbsolutePath());
@@ -995,14 +992,14 @@ public class TarefaPresenter implements Serializable, TaskViewListener, CallBack
                 view.getAddSubButton().setEnabled(false);
             }
 
-            view.setCaption(PresenterUtils.getMensagensResource().getString("TaskView.titulo.cadastro") + hierarquiaProjetoDetalhe.getCategoria());
+            view.setCaption(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.titulo.cadastro") + hierarquiaProjetoDetalhe.getCategoria());
         }
     }
 
     @Override
     public void empresaSelecionada(Empresa empresa) {
-        PresenterUtils.carregaComboDepartamento(view.getDepartamentCombo(), empresa);
-        PresenterUtils.carregaComboCentroCusto(view.getCostCenterCombo(), empresa);
+        PresenterUtils.getInstance().carregaComboDepartamento(view.getDepartamentCombo(), empresa);
+        PresenterUtils.getInstance().carregaComboCentroCusto(view.getCostCenterCombo(), empresa);
     }
 
     private boolean isStartDateValidForRecurrency() {

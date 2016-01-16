@@ -1,7 +1,7 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.datamodel.Anexo;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
@@ -87,9 +87,6 @@ import org.vaadin.hene.popupbutton.PopupButton;
  * @author rodrigo
  */
 public class TarefaView extends Window {
-
-    // Reference to the use of the messages:
-    private final transient ResourceBundle messages = PresenterUtils.getMensagensResource();
 
     // The view maintains access to the listener (Presenter) to notify events
     // This access is through an interface to maintain the abstraction layers
@@ -178,7 +175,7 @@ public class TarefaView extends Window {
     private ComboBox costCenterCombo;
 
     private Upload addAttach;
-    private BeanItemContainer<AnexoTarefa> taskAttachContainer;
+    private BeanItemContainer<Anexo> taskAttachContainer;
 
     // -------------------------------------------------------------------------
     // Tab Hours Control Components
@@ -207,7 +204,7 @@ public class TarefaView extends Window {
     // -------------------------------------------------------------------------
     // Components subtask Tab
     // -------------------------------------------------------------------------
-    private TreeTable subTasksTable;
+    private TreeTable subTarefasTable;
     private Table pointingTimeTable;
     private Table followersTable;
     private Table attachmentsAddedTable;
@@ -305,17 +302,17 @@ public class TarefaView extends Window {
         accordion = new Accordion();
         accordion.setWidth("100%");
         // Add the tab of initial data
-        accordion.addTab(buildInitialTaskDataSheet(), messages.getString("TaskView.InitialTaskData.title"), null);
+        accordion.addTab(buildInitialTaskDataSheet(), PresenterUtils.getInstance().getMensagensResource().getString("TaskView.InitialTaskData.title"), null);
         // Add the description tab and responsible
-        accordion.addTab(buildDescriptionAndAssigneeSheet(), messages.getString("TaskView.DescriptionAndAssignee.title"), null);
+        accordion.addTab(buildDescriptionAndAssigneeSheet(), PresenterUtils.getInstance().getMensagensResource().getString("TaskView.DescriptionAndAssignee.title"), null);
         // Add the task detail tab
-        accordion.addTab(buildDetailsSheet(), messages.getString("TaskView.DetailsSheet.title"), null);
+        accordion.addTab(buildDetailsSheet(), PresenterUtils.getInstance().getMensagensResource().getString("TaskView.DetailsSheet.title"), null);
         // Add the optional tab hours control
-        accordion.addTab(buildPointingHoursSheet(), messages.getString("TaskView.PointingHours.title"), null);
+        accordion.addTab(buildPointingHoursSheet(), PresenterUtils.getInstance().getMensagensResource().getString("TaskView.PointingHours.title"), null);
         // Add the optional tab budget control
-        accordion.addTab(buildBudgetSheet(), messages.getString("TaskView.BudgetSheet.title"), null);
+        accordion.addTab(buildBudgetSheet(), PresenterUtils.getInstance().getMensagensResource().getString("TaskView.BudgetSheet.title"), null);
         // adiciona a aba sub tarefas
-        accordion.addTab(buildSubTasksSheet(), messages.getString("TaskView.SubTasks.tittle"), null);
+        accordion.addTab(buildSubTasksSheet(), PresenterUtils.getInstance().getMensagensResource().getString("TaskView.SubTasks.tittle"), null);
 
         principalContainer.addComponent(accordion);
         principalContainer.setExpandRatio(accordion, 1);
@@ -348,7 +345,7 @@ public class TarefaView extends Window {
     private Component buildInitialTaskDataSheet() {
 
         // Combo: Company
-        companyCombo = new ComboBox(messages.getString("TaskView.companyCombo.label"));
+        companyCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.companyCombo.label"));
         companyCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.empresaSelecionada((Empresa) event.getProperty().getValue());
         });
@@ -357,8 +354,10 @@ public class TarefaView extends Window {
         requiredFields.add(companyCombo);
 
         // Combo: Hierarchy
-        hierarchyCombo = new ComboBox(messages.getString("TaskView.hierarchyCombo.label"));
+        hierarchyCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.hierarchyCombo.label"));
         hierarchyCombo.setWidth("140px");
+        hierarchyCombo.setTextInputAllowed(false);
+        
         hierarchyCombo.addValidator(new BeanValidator(Tarefa.class, "hierarquia"));
         hierarchyCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.hierarquiaSelecionada((HierarquiaProjetoDetalhe) event.getProperty().getValue());
@@ -366,30 +365,30 @@ public class TarefaView extends Window {
         requiredFields.add(hierarchyCombo);
 
         // TextField: task Name
-        taskNameTextField = new TextField(messages.getString("TaskView.nomeTarefaTextField.label"));
+        taskNameTextField = new TextField(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.nomeTarefaTextField.label"));
         taskNameTextField.setWidth("100%");
-        taskNameTextField.setInputPrompt(messages.getString("TaskView.nomeTarefaTextField.inputPrompt"));
+        taskNameTextField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.nomeTarefaTextField.inputPrompt"));
         taskNameTextField.setNullRepresentation("");
         taskNameTextField.addValidator(new BeanValidator(Tarefa.class, "nome"));
         requiredFields.add(taskNameTextField);
 
         // TextField: Start Date
-        startDateDateField = new PopupDateField(messages.getString("TaskView.startDateTextField.label"));
+        startDateDateField = new PopupDateField(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.startDateTextField.label"));
         startDateDateField.setWidth("100%");
-        startDateDateField.setInputPrompt(messages.getString("TaskView.dataInicioDateField.inputPrompt"));
+        startDateDateField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.dataInicioDateField.inputPrompt"));
         startDateDateField.setConverter(new DateToLocalDateConverter());
         startDateDateField.addValidator(new BeanValidator(Tarefa.class, "dataInicio"));
         //dataInicioDateField.addValidator(new DataFuturaValidator(true, "Data de Início"));
         requiredFields.add(startDateDateField);
 
         // Button Recurrence
-        recurrencyButton = new Button(messages.getString("TaskView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
+        recurrencyButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
             listener.recurrenceClicked();
         });
         recurrencyButton.setWidth("100%");
 
         // Combo Priority
-        priorityCombo = new ComboBox(messages.getString("TaskView.prioridadeCombo.label"));
+        priorityCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.prioridadeCombo.label"));
         priorityCombo.setWidth("100%");
 
         // task status pop-up
@@ -397,7 +396,7 @@ public class TarefaView extends Window {
         taskStatusPopUpButton.setWidth("100%");
 
         // TextField: End Date
-        endDateDateField = new PopupDateField(messages.getString("TaskView.dataFimTextField.label"));
+        endDateDateField = new PopupDateField(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.dataFimTextField.label"));
         endDateDateField.setWidth("100%");
         endDateDateField.setConverter(new DateToLocalDateConverter());
 
@@ -449,18 +448,18 @@ public class TarefaView extends Window {
         buttonsSuperiorBar.setSpacing(true);
         buttonsSuperiorBar.setSizeUndefined();
 
-        templateCheckBox = new CheckBox(messages.getString("TaskView.templateCheckBox.caption"));
+        templateCheckBox = new CheckBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.templateCheckBox.caption"));
 
         buttonsSuperiorBar.addComponent(templateCheckBox);
 
-        pointingHoursCheckBox = new CheckBox(messages.getString("TaskView.apontamentoHorasCheckBox.caption"));
+        pointingHoursCheckBox = new CheckBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.apontamentoHorasCheckBox.caption"));
         pointingHoursCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.apontamentoHorasSwitched(event);
         });
 
         buttonsSuperiorBar.addComponent(pointingHoursCheckBox);
 
-        budgetControlCheckBox = new CheckBox(messages.getString("TaskView.orcamentoControladoCheckBox.caption"));
+        budgetControlCheckBox = new CheckBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.orcamentoControladoCheckBox.caption"));
         budgetControlCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.controleOrcamentoSwitched(event);
         });
@@ -505,13 +504,13 @@ public class TarefaView extends Window {
         lowerButtonsBar.setSizeUndefined();
         lowerButtonsBar.setSpacing(true);
 
-        saveButton = new Button(messages.getString("TaskView.gravarButton.caption"), (Button.ClickEvent event) -> {
+        saveButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.gravarButton.caption"), (Button.ClickEvent event) -> {
             try {
                 setValidatorsVisible(true);
                 taskFieldGroup.commit();
                 listener.gravarButtonClicked();
             } catch (RuntimeException ex) {
-                Notification notification = new Notification("Erro", (ex.getMessage() == null ? messages.getString("ErrorUtils.errogenerico") : ex.getMessage()),
+                Notification notification = new Notification("Erro", (ex.getMessage() == null ? PresenterUtils.getInstance().getMensagensResource().getString("ErrorUtils.errogenerico") : ex.getMessage()),
                         Notification.Type.WARNING_MESSAGE, true);
 
                 notification.show(Page.getCurrent());
@@ -525,7 +524,7 @@ public class TarefaView extends Window {
 
         lowerButtonsBar.addComponent(saveButton);
 
-        cancelButton = new Button(messages.getString("TaskView.cancelarButton.caption"), (Button.ClickEvent event) -> {
+        cancelButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.cancelarButton.caption"), (Button.ClickEvent event) -> {
             listener.cancelarButtonClicked();
         });
         lowerButtonsBar.addComponent(cancelButton);
@@ -540,17 +539,17 @@ public class TarefaView extends Window {
      */
     private Component buildDescriptionAndAssigneeSheet() {
 
-        taskDescriptionTextArea = new RichTextArea(messages.getString("TaskView.descricaoTarefaTextArea.caption"));
+        taskDescriptionTextArea = new RichTextArea(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.descricaoTarefaTextArea.caption"));
         taskDescriptionTextArea.setNullRepresentation("");
 
-        assigneeUserCombo = new ComboBox(messages.getString("TaskView.responsavelCombo.label"));
+        assigneeUserCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.responsavelCombo.label"));
         assigneeUserCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.assigneeUserChanged(getTarefa(), (Usuario) event.getProperty().getValue());
         });
 
         requiredFields.add(assigneeUserCombo);
 
-        followersCombo = new ComboBox(messages.getString("TaskView.participantesCombo.label"));
+        followersCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.participantesCombo.label"));
 
         followersCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.adicionarParticipante((Usuario) event.getProperty().getValue());
@@ -576,13 +575,13 @@ public class TarefaView extends Window {
         followersTable.setContainerDataSource(followersContainer);
 
         followersTable.setColumnWidth("usuarioParticipante", 120);
-        followersTable.setColumnHeader("usuarioParticipante", messages.getString("TaskView.participantesTable.colunaParticipante"));
+        followersTable.setColumnHeader("usuarioParticipante", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.participantesTable.colunaParticipante"));
 
         followersTable.setVisibleColumns("usuarioParticipante");
 
         // Adicionar coluna do botão "remover"
-        followersTable.addGeneratedColumn(messages.getString("TaskView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(messages.getString("TaskView.participantesTable.colunaBotaoRemover"));
+        followersTable.addGeneratedColumn(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.participantesTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerParticipante((Participante) itemId);
             });
@@ -596,7 +595,7 @@ public class TarefaView extends Window {
         followersTable.setWidth("100%");
         followersTable.setPageLength(3);
 
-        Label labelCliente = new Label("<b>" + messages.getString("TaskView.empresaClienteCombo.label") + "</b>", ContentMode.HTML);
+        Label labelCliente = new Label("<b>" + PresenterUtils.getInstance().getMensagensResource().getString("TaskView.empresaClienteCombo.label") + "</b>", ContentMode.HTML);
         customerCompanyCombo = new ComboBox();
 
         // do layout :
@@ -624,10 +623,10 @@ public class TarefaView extends Window {
     private Component buildDetailsSheet() {
 
         // department Combo
-        departamentCombo = new ComboBox(messages.getString("TaskView.departamentoCombo.caption"));
+        departamentCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.departamentoCombo.caption"));
 
         // Cost Center combo
-        costCenterCombo = new ComboBox(messages.getString("TaskView.centroCustoCombo.caption"));
+        costCenterCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.centroCustoCombo.caption"));
 
         // upload Progress Bar
         uploadHorizontalLayout = new HorizontalLayout();
@@ -636,7 +635,7 @@ public class TarefaView extends Window {
         attachProgressBar = new ProgressBar();
         attachProgressBar.setWidth("100%");
 
-        addAttach = new Upload(messages.getString("TaskView.adicionarAnexoButton.filechooser.caption"), (String filename, String mimeType) -> {
+        addAttach = new Upload(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.adicionarAnexoButton.filechooser.caption"), (String filename, String mimeType) -> {
             FileOutputStream fos = null;
             try {
                 File randomFolder = new File(System.getProperty("user.dir") + "/tmp/" + String.valueOf(Math.abs(new Random().nextInt())));
@@ -653,7 +652,7 @@ public class TarefaView extends Window {
             }
             return fos;
         });
-        addAttach.setButtonCaption(messages.getString("TaskView.adicionarAnexoButton.caption"));
+        addAttach.setButtonCaption(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.adicionarAnexoButton.caption"));
 
         addAttach.addSucceededListener((Upload.SucceededEvent event) -> {
             listener.anexoAdicionado((File) event.getUpload().getData());
@@ -666,7 +665,7 @@ public class TarefaView extends Window {
         });
         addAttach.addFinishedListener((Upload.FinishedEvent event) -> {
             uploadHorizontalLayout.removeComponent(attachProgressBar);
-            Notification.show(messages.getString("TaskView.adicionarAnexoButton.uploadConcluido.mensagem"), Notification.Type.TRAY_NOTIFICATION);
+            Notification.show(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.adicionarAnexoButton.uploadConcluido.mensagem"), Notification.Type.TRAY_NOTIFICATION);
         });
         addAttach.addStartedListener((Upload.StartedEvent event) -> {
             uploadHorizontalLayout.addComponent(attachProgressBar);
@@ -674,38 +673,38 @@ public class TarefaView extends Window {
 
         uploadHorizontalLayout.addComponent(addAttach);
 
-        taskAttachContainer = new BeanItemContainer<>(AnexoTarefa.class);
+        taskAttachContainer = new BeanItemContainer<>(Anexo.class);
 
         attachmentsAddedTable = new Table();
         attachmentsAddedTable.setContainerDataSource(taskAttachContainer);
 
         attachmentsAddedTable.setColumnWidth("nome", 350);
 
-        attachmentsAddedTable.setColumnHeader("nome", messages.getString("TaskView.anexosAdicionadosTable.colunaNome"));
+        attachmentsAddedTable.setColumnHeader("nome", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.anexosAdicionadosTable.colunaNome"));
 
         attachmentsAddedTable.setVisibleColumns("nome");
 
         // Adicionar coluna do botão "download"
-        attachmentsAddedTable.addGeneratedColumn(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
-            Button downloadButton = new Button(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"));
-            AnexoTarefa anexoTarefa = (AnexoTarefa) itemId;
+        attachmentsAddedTable.addGeneratedColumn(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
+            Button downloadButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"));
+            Anexo anexoTarefa = (Anexo) itemId;
             FileDownloader fd = new FileDownloader(new FileResource(new File(anexoTarefa.getCaminhoCompleto())));
 
             fd.extend(downloadButton);
             downloadButton.setEnabled(true);
             return downloadButton;
         });
-        attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
+        attachmentsAddedTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
 
-        attachmentsAddedTable.addGeneratedColumn(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"));
+        attachmentsAddedTable.addGeneratedColumn(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
-                listener.removerAnexo((AnexoTarefa) itemId);
+                listener.removerAnexo((Anexo) itemId);
             });
             removeButton.setEnabled(true);
             return removeButton;
         });
-        attachmentsAddedTable.setColumnWidth(messages.getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
+        attachmentsAddedTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
         attachmentsAddedTable.setSelectable(true);
         attachmentsAddedTable.setImmediate(true);
         attachmentsAddedTable.setWidth("100%");
@@ -768,19 +767,19 @@ public class TarefaView extends Window {
 
         // Hours control fields
         hourCostTextField = new TextField();
-        hourCostTextField.setInputPrompt(messages.getString("TaskView.custoHoraTextField.inputPrompt"));
+        hourCostTextField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.custoHoraTextField.inputPrompt"));
         hourCostTextField.setNullRepresentation("");
         hourCostTextField.setConverter(new StringToBigDecimalConverter());
 
         hoursAddTextField = new TextField();
-        hoursAddTextField.setInputPrompt(messages.getString("TaskView.imputarHorasTextField.inputPrompt"));
+        hoursAddTextField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.imputarHorasTextField.inputPrompt"));
         hoursAddTextField.setNullRepresentation("");
 
         hoursObservationTextField = new TextField();
-        hoursObservationTextField.setInputPrompt(messages.getString("TaskView.observacaoHorasTextField.inputPrompt"));
+        hoursObservationTextField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.observacaoHorasTextField.inputPrompt"));
         hoursObservationTextField.setNullRepresentation("");
 
-        hoursAddButton = new Button(messages.getString("TaskView.imputarHorasButton.caption"));
+        hoursAddButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.imputarHorasButton.caption"));
         hoursAddButton.addClickListener((Button.ClickEvent event) -> {
             listener.imputarHorasClicked();
         });
@@ -825,29 +824,32 @@ public class TarefaView extends Window {
         pointingTimeTable.setContainerDataSource(hoursControlContainer);
 
         pointingTimeTable.setColumnWidth("dataHoraInclusao", 150);
-        pointingTimeTable.setColumnHeader("dataHoraInclusao", messages.getString("TaskView.controleHorasTable.colunaData"));
+        pointingTimeTable.setColumnHeader("dataHoraInclusao", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaData"));
         pointingTimeTable.setColumnWidth("observacoes", 150);
-        pointingTimeTable.setColumnHeader("observacoes", messages.getString("TaskView.controleHorasTable.colunaObservacoes"));
+        pointingTimeTable.setColumnHeader("observacoes", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaObservacoes"));
         pointingTimeTable.setColumnWidth("creditoHoras", 80);
-        pointingTimeTable.setColumnHeader("creditoHoras", messages.getString("TaskView.controleHorasTable.colunaCreditoHoras"));
+        pointingTimeTable.setColumnHeader("creditoHoras", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaCreditoHoras"));
         pointingTimeTable.setColumnWidth("debitoHoras", 80);
-        pointingTimeTable.setColumnHeader("debitoHoras", messages.getString("TaskView.controleHorasTable.colunaDebitoHoras"));
+        pointingTimeTable.setColumnHeader("debitoHoras", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaDebitoHoras"));
         pointingTimeTable.setColumnWidth("saldoHoras", 80);
-        pointingTimeTable.setColumnHeader("saldoHoras", messages.getString("TaskView.controleHorasTable.colunaSaldoHoras"));
+        pointingTimeTable.setColumnHeader("saldoHoras", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaSaldoHoras"));
         pointingTimeTable.setColumnWidth("creditoValor", 80);
         pointingTimeTable.setColumnAlignment("creditoValor", Table.Align.RIGHT);
-        pointingTimeTable.setColumnHeader("creditoValor", messages.getString("TaskView.controleHorasTable.colunaCreditoValor"));
+        pointingTimeTable.setColumnHeader("creditoValor", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaCreditoValor"));
         pointingTimeTable.setColumnWidth("debitoValor", 80);
         pointingTimeTable.setColumnAlignment("debitoValor", Table.Align.RIGHT);
-        pointingTimeTable.setColumnHeader("debitoValor", messages.getString("TaskView.controleHorasTable.colunaDebitoValor"));
+        pointingTimeTable.setColumnHeader("debitoValor", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaDebitoValor"));
         pointingTimeTable.setColumnWidth("saldoValor", 80);
         pointingTimeTable.setColumnAlignment("saldoValor", Table.Align.RIGHT);
-        pointingTimeTable.setColumnHeader("saldoValor", messages.getString("TaskView.controleHorasTable.colunaSaldoValor"));
+        pointingTimeTable.setColumnHeader("saldoValor", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaSaldoValor"));
         pointingTimeTable.setColumnAlignment("custoHora", Table.Align.RIGHT);
-        pointingTimeTable.setColumnHeader("custoHora", messages.getString("TaskView.controleHorasTable.colunaCustoHora"));
+        pointingTimeTable.setColumnHeader("custoHora", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleHorasTable.colunaCustoHora"));
         pointingTimeTable.setColumnWidth("custoHora", 80);
 
         pointingTimeTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor", "custoHora");
+        pointingTimeTable.setSortContainerPropertyId("dataHoraInclusao");
+        pointingTimeTable.setSortEnabled(false);
+                
         // Adicionar coluna do botão "remover"
         pointingTimeTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("x");
@@ -916,15 +918,15 @@ public class TarefaView extends Window {
     private Component buildBudgetSheet() {
 
         budgetAddTextField = new TextField();
-        budgetAddTextField.setInputPrompt(messages.getString("TaskView.imputarOrcamentoTextField.inputPrompt"));
+        budgetAddTextField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.imputarOrcamentoTextField.inputPrompt"));
         budgetAddTextField.setNullRepresentation("");
         budgetAddTextField.setConverter(new StringToBigDecimalConverter());
 
         observationBudgetTextField = new TextField();
-        observationBudgetTextField.setInputPrompt(messages.getString("TaskView.observacaoOrcamentoTextField.inputPrompt"));
+        observationBudgetTextField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.observacaoOrcamentoTextField.inputPrompt"));
         observationBudgetTextField.setNullRepresentation("");
 
-        budgetAddButton = new Button(messages.getString("TaskView.imputarOrcamentoButton.caption"), (Button.ClickEvent event) -> {
+        budgetAddButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.imputarOrcamentoButton.caption"), (Button.ClickEvent event) -> {
             listener.imputarOrcamentoClicked();
         });
 
@@ -977,23 +979,25 @@ public class TarefaView extends Window {
         };
         budgetControlTable.setContainerDataSource(budgetContainer);
         budgetControlTable.setColumnWidth("dataHoraInclusao", 150);
-        budgetControlTable.setColumnHeader("dataHoraInclusao", messages.getString("TaskView.controleOrcamentoTable.colunaData"));
+        budgetControlTable.setColumnHeader("dataHoraInclusao", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleOrcamentoTable.colunaData"));
         budgetControlTable.setColumnWidth("observacoes", 150);
-        budgetControlTable.setColumnHeader("observacoes", messages.getString("TaskView.controleOrcamentoTable.colunaObservacoes"));
+        budgetControlTable.setColumnHeader("observacoes", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleOrcamentoTable.colunaObservacoes"));
         budgetControlTable.setColumnWidth("credito", 80);
-        budgetControlTable.setColumnHeader("credito", messages.getString("TaskView.controleOrcamentoTable.colunaCredito"));
+        budgetControlTable.setColumnHeader("credito", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleOrcamentoTable.colunaCredito"));
         budgetControlTable.setColumnAlignment("credito", Table.Align.RIGHT);
         budgetControlTable.setColumnWidth("debito", 80);
-        budgetControlTable.setColumnHeader("debito", messages.getString("TaskView.controleOrcamentoTable.colunaDebito"));
+        budgetControlTable.setColumnHeader("debito", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleOrcamentoTable.colunaDebito"));
         budgetControlTable.setColumnAlignment("debito", Table.Align.RIGHT);
         budgetControlTable.setColumnWidth("saldo", 80);
-        budgetControlTable.setColumnHeader("saldo", messages.getString("TaskView.controleOrcamentoTable.colunaSaldo"));
+        budgetControlTable.setColumnHeader("saldo", PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleOrcamentoTable.colunaSaldo"));
         budgetControlTable.setColumnAlignment("saldo", Table.Align.RIGHT);
 
         budgetControlTable.setVisibleColumns("dataHoraInclusao", "credito", "debito", "saldo", "observacoes");
+        budgetControlTable.setSortContainerPropertyId("dataHoraInclusao");
+        budgetControlTable.setSortEnabled(false);
 
-        budgetControlTable.addGeneratedColumn(messages.getString("TaskView.controleOrcamentoTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(messages.getString("TaskView.controleOrcamentoTable.colunaBotaoRemover"));
+        budgetControlTable.addGeneratedColumn(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleOrcamentoTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.controleOrcamentoTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerRegistroOrcamento((OrcamentoTarefa) itemId);
             });
@@ -1054,45 +1058,44 @@ public class TarefaView extends Window {
      */
     private Component buildSubTasksSheet() {
 
-        subTasksTable = new TreeTable();
-        subTasksTable.setWidth("100%");
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaCod"), Button.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaCod"), 70);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaTitulo"), Button.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaTitulo"), 50);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaNome"), Button.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaNome"), 250);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaEmpresaFilial"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaEmpresaFilial"), 200);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaSolicitante"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaSolicitante"), 80);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaResponsavel"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaResponsavel"), 80);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaDataInicio"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaDataInicio"), 80);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaDataFim"), String.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaDataFim"), 80);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaStatus"), PopupButton.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaStatus"), 200);
-        subTasksTable.addContainerProperty(messages.getString("TaskView.subTarefasTable.colunaProjecao"), Character.class, "");
-        subTasksTable.setColumnWidth(messages.getString("TaskView.subTarefasTable.colunaProjecao"), 30);
-        subTasksTable.addContainerProperty("[E]", Button.class, "");
-        subTasksTable.setColumnWidth("[E]", 30);
-        subTasksTable.addContainerProperty("[C]", Button.class, "");
-        subTasksTable.setColumnWidth("[C]", 30);
+        subTarefasTable = new TreeTable(){
+            {
+                this.alwaysRecalculateColumnWidths = true;
+            }
+        };
+        PresenterUtils.configuraExpansaoColunaCodigo(subTarefasTable, PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaCod"));
 
-        subTasksTable.setPageLength(4);
-        subTasksTable.setSelectable(true);
-        subTasksTable.setImmediate(true);
+        subTarefasTable.setWidth("100%");
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaCod"), Button.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaCod"), 70);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaTitulo"), Button.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaTitulo"), 50);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaNome"), Button.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaNome"), 250);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaEmpresaFilial"), String.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaEmpresaFilial"), 200);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaSolicitante"), String.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaSolicitante"), 80);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaResponsavel"), String.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaResponsavel"), 80);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaDataInicio"), String.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaDataInicio"), 80);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaDataFim"), String.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaDataFim"), 80);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaStatus"), PopupButton.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaStatus"), 200);
+        subTarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaProjecao"), Character.class, "");
+        subTarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.subTarefasTable.colunaProjecao"), 30);
+        subTarefasTable.addContainerProperty("[E]", Button.class, "");
+        subTarefasTable.setColumnWidth("[E]", 30);
+        subTarefasTable.addContainerProperty("[C]", Button.class, "");
+        subTarefasTable.setColumnWidth("[C]", 30);
 
-        return subTasksTable;
-    }
+        subTarefasTable.setPageLength(4);
+        subTarefasTable.setSelectable(true);
+        subTarefasTable.setImmediate(true);
 
-    /**
-     * @return the messages
-     */
-    public ResourceBundle getMessages() {
-        return messages;
+        return subTarefasTable;
     }
 
     /**
@@ -1285,10 +1288,10 @@ public class TarefaView extends Window {
     }
 
     /**
-     * @return the subTasksTable
+     * @return the subTarefasTable
      */
-    public TreeTable getSubTasksTable() {
-        return subTasksTable;
+    public TreeTable getSubTarefasTable() {
+        return subTarefasTable;
     }
 
     /**
@@ -1351,7 +1354,7 @@ public class TarefaView extends Window {
         return followersTable;
     }
 
-    public BeanItemContainer<AnexoTarefa> getTaskAttachContainer() {
+    public BeanItemContainer<Anexo> getTaskAttachContainer() {
         return taskAttachContainer;
     }
 

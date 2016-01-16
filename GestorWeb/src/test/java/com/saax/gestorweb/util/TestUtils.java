@@ -91,7 +91,6 @@ public class TestUtils {
 
     public static void setUsuarioLogado(Usuario usuario) {
         GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO, usuario);
-        usuario.setEmpresaAtiva(LoginModel.getEmpresaUsuarioLogado());
     }
 
     public static Usuario getUsuarioLogado() {
@@ -111,7 +110,7 @@ public class TestUtils {
         view.getTaskNameTextField().setValue(nome);
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         try {
             view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
@@ -121,7 +120,7 @@ public class TestUtils {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         return t;
@@ -148,7 +147,7 @@ public class TestUtils {
         
         presenter.criarNovaMeta(categoria);
         
-        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
         view.getNomeMetaTextField().setValue(nomeEsperado);
         view.getDataInicioDateField().setValue(new Date());
         
@@ -165,7 +164,7 @@ public class TestUtils {
         Meta m = (Meta) PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager()
                 .createNamedQuery("Meta.findByNome")
                 .setParameter("nome", nomeEsperado)
-                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresaAtiva())
+                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         return m;

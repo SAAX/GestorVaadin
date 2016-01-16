@@ -15,7 +15,6 @@
     <class>com.saax.gestorweb.model.datamodel.Cidade</class>
     <class>com.saax.gestorweb.model.datamodel.Endereco</class>
     <class>com.saax.gestorweb.model.datamodel.Estado</class>
-    <class>com.saax.gestorweb.model.datamodel.AnexoTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.ApontamentoTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta</class>
     <class>com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa</class>
@@ -32,6 +31,12 @@
     <class>com.saax.gestorweb.model.datamodel.ChatTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa</class>
     <class>com.saax.gestorweb.model.datamodel.Participante</class>
+    <class>com.saax.gestorweb.model.datamodel.PublicacaoAnexo</class>
+    <class>com.saax.gestorweb.model.datamodel.PublicacaoReferencia</class>
+    <class>com.saax.gestorweb.model.datamodel.PublicacaoTipo</class>
+    <class>com.saax.gestorweb.model.datamodel.Publicacao</class>
+    <class>com.saax.gestorweb.model.datamodel.PublicacaoStatus</class>
+    <class>com.saax.gestorweb.model.datamodel.Anexo</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor"/>
@@ -40,11 +45,10 @@
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
       <!-- <property name="eclipselink.logging.level.sql" value="FINE"/> -->
-      
-        <property name="eclipselink.cache.shared.default" value="false"/>
-        <property name="eclipselink.cache.size.default" value="0"/>
-        <property name="eclipselink.cache.type.default" value="None"/>
-        <property name="eclipselink.query-results-cache" value="false"/>
+      <property name="eclipselink.cache.shared.default" value="false"/>
+      <property name="eclipselink.cache.size.default" value="0"/>
+      <property name="eclipselink.cache.type.default" value="None"/>
+      <property name="eclipselink.query-results-cache" value="false"/>
     </properties>
   </persistence-unit>
 </persistence>

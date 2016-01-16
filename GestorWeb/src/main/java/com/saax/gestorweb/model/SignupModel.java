@@ -4,6 +4,8 @@ import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
+import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.Cipher;
@@ -33,7 +35,7 @@ public class SignupModel {
      * @return true se existe este email cadastrado como login
      */
     public boolean verificaLoginExistente(String login) {
-        return new LoginModel().verificaLoginExistente(login);
+        return LoginModel.verificaLoginExistente(login);
     }
 
     /**
@@ -56,9 +58,9 @@ public class SignupModel {
             if (!FormatterUtil.validarCNPJ(cpf_cnpj)) {
                 throw new RuntimeException("CNPJ fora do formato correto (##.###.###/####-##): " + cpf_cnpj);
             }
-            
-             List<Empresa> empresas = null;
-             
+
+            List<Empresa> empresas = null;
+
             empresas = em.createNamedQuery("Empresa.findByCnpj")
                     .setParameter("cnpj", cpf_cnpj)
                     .getResultList();
@@ -104,12 +106,39 @@ public class SignupModel {
                 .setParameter("cnpj", cnpj)
                 .getResultList();
 
-        if (e.isEmpty()){
+        if (e.isEmpty()) {
             return (false);
-        }else{
+        } else {
             return (true);
         }
-        
+
+    }
+
+    public Usuario atualizaUsuario(Usuario usuario, String nome, String sobreNome, String email, String senha) {
+
+        usuario.setNome(nome);
+        usuario.setSobrenome(sobreNome);
+        usuario.setLogin(email);
+
+        // senha pode ser nula no caso de usuarios adicionados por outro usuario
+        if (senha != null) {
+            // criptografa a senha informada
+            String senhaCriptografada;
+            try {
+                senhaCriptografada = new Cipher().md5Sum(senha);
+
+            }
+            catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(SignupModel.class
+                        .getName()).log(Level.SEVERE, "Não encontrado algorítimo MD5", ex);
+
+                return null;
+            }
+
+            usuario.setSenha(senhaCriptografada);
+        }
+
+        return usuario;
 
     }
 
@@ -125,31 +154,11 @@ public class SignupModel {
      */
     public Usuario criarNovoUsuario(String nome, String sobreNome, String email, String senha, Usuario usuarioAdm) {
 
-        Usuario usuario = new Usuario();
-        usuario.setNome(nome);
-        usuario.setSobrenome(sobreNome);
-        usuario.setLogin(email);
-        usuario.setUsuarioInclusao(usuarioAdm==null?usuario:usuarioAdm);
+        Usuario usuario = atualizaUsuario(new Usuario(), nome, sobreNome, email, senha);
+
+        usuario.setUsuarioInclusao(usuarioAdm == null ? usuario : usuarioAdm);
         usuario.setDataHoraInclusao(LocalDateTime.now());
-        
-        
 
-        // senha pode ser nula no caso de usuarios adicionados por outro usuario
-        if (senha != null) {
-            // criptografa a senha informada
-            String senhaCriptografada;
-            try {
-                senhaCriptografada = new Cipher().md5Sum(senha);
-
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(SignupModel.class
-                        .getName()).log(Level.SEVERE, "Não encontrado algorítimo MD5", ex);
-
-                return null;
-            }
-
-            usuario.setSenha(senhaCriptografada);
-        }
         return usuario;
     }
 
@@ -166,7 +175,6 @@ public class SignupModel {
     public Usuario criarNovoUsuario(String nome, String sobreNome, String email, Usuario usuarioAdm) {
 
         String senha = "123456";
-        
 
         return criarNovoUsuario(nome, sobreNome, email, senha, usuarioAdm);
     }
@@ -191,7 +199,7 @@ public class SignupModel {
         usuarioEmpresa.setAdministrador(administrador);
         usuarioEmpresa.setUsuarioInclusao(usuarioADM);
         usuarioEmpresa.setDataHoraInclusao(LocalDateTime.now());
-        
+
         if (usuario.getEmpresas() == null) {
             usuario.setEmpresas(new ArrayList<>());
         }
@@ -214,22 +222,30 @@ public class SignupModel {
      * @param razaosocial
      * @param cnpjCpf
      * @param tipoPessoa
+     * @param usuarioADM
      *
      * @return nova empresa criada
      */
     public Empresa criarNovaEmpresa(String nomeFantasia, String razaosocial, String cnpjCpf, char tipoPessoa, Usuario usuarioADM) {
         Empresa empresa = new Empresa();
-
-        empresa.setNome(nomeFantasia);
-        empresa.setRazaoSocial(razaosocial);
         empresa.setUsuarioInclusao(usuarioADM);
         empresa.setDataHoraInclusao(LocalDateTime.now());
+        empresa = atualizarEmpresa(empresa, nomeFantasia, razaosocial, cnpjCpf, tipoPessoa, usuarioADM);
+
+        return empresa;
+
+    }
+
+    public Empresa atualizarEmpresa(Empresa empresa,
+            String nomeFantasia, String razaosocial, String cpfCnpj, char tipoPessoa, Usuario usuarioADM) {
+        empresa.setNome(nomeFantasia);
+        empresa.setRazaoSocial(razaosocial);
 
         if (tipoPessoa == 'F') {
-            empresa.setCpf((FormatterUtil.removeNonDigitChars(cnpjCpf)));
+            empresa.setCpf((FormatterUtil.removeNonDigitChars(cpfCnpj)));
             empresa.setCnpj(null);
         } else {
-            empresa.setCnpj((FormatterUtil.removeNonDigitChars(cnpjCpf)));
+            empresa.setCnpj((FormatterUtil.removeNonDigitChars(cpfCnpj)));
             empresa.setCpf(null);
         }
         empresa.setTipoPessoa(tipoPessoa);
@@ -252,7 +268,7 @@ public class SignupModel {
         Empresa empresa = new Empresa();
 
         char tipoPessoa = 'J';
-        
+
         empresa.setNome(nomeFantasia);
         empresa.setCpf(FormatterUtil.removeNonDigitChars(cnpjCpf));
         empresa.setTipoPessoa(tipoPessoa);
@@ -323,57 +339,50 @@ public class SignupModel {
 
     }
 
-  
-
     /**
      * Cadastra um novo usuario com a empresa (conta) principal, sub empresas
      * filiais e demais usuarios.
      *
      * @param empresaPrincipal
+     * @param coligadasRemovidasNaEdicao
      * @return
      */
-    public Empresa criarNovaConta(Empresa empresaPrincipal) throws RuntimeException {
+    public Empresa gravarConta(Empresa empresaPrincipal, List<Empresa> coligadasRemovidasNaEdicao) throws RuntimeException {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
         // Verifica se o parametro é válido antes de começar a transação
         // assim, se não for válido já para o método
-        if (empresaPrincipal == null){
+        if (empresaPrincipal == null) {
             throw new IllegalArgumentException("Empresa para persistencia está NULA.");
         }
-        
-        
+
         try {
 
             em.getTransaction().begin();
 
+            for (Empresa coligada : coligadasRemovidasNaEdicao) {
+                moverTarefasMetasParaMatriz(coligada, empresaPrincipal);
+                desrelacionarEmpresaColigada(empresaPrincipal, coligada);
+                em.remove(coligada);
+            }
+
             em.persist(empresaPrincipal);
-            
+
             em.getTransaction().commit();
 
-        } catch (RuntimeException ex) {
+        }
+        catch (RuntimeException ex) {
             // Caso ocorra alguma exceção durante a transação, efetua o rollback
-            GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();            
+            GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
             // E propaga a exceção pra cima:
             throw ex; // Nota: caso não fosse necessário fazer o rollback, também não seria necessário o try-catch, nem o throw
-            
-            
-            // Não é viável logar aki, o log deve estar no topo da pilha de chamada (que nao é este método e sim o 
-            // signupPresenter.okButtonClicked()
-            // Logger.getLogger(SignupModel.class.getName()).log(Level.SEVERE, null, ex);
-            
-            
-            // Não faz sentido este "throw new", se vc já esta pegando uma exceção basta propagá-la
-            // throw new RuntimeException(ex.getMessage());
-            
-            
-            
         }
 
         return empresaPrincipal;
 
     }
-    
+
     /**
      * Cria um endereco com os parametros informados
      *
@@ -387,14 +396,18 @@ public class SignupModel {
     public Endereco criarEndereco(String logradouro, String numero, String complemento,
             String cep, Cidade cidade, Usuario usuarioADM) {
         Endereco endereco = new Endereco();
+        endereco.setUsuarioInclusao(usuarioADM);
+        endereco.setDataHoraInclusao(LocalDateTime.now());
+        endereco = atualizarEndereco(endereco, logradouro, numero, complemento, cep, cidade, usuarioADM);
+        return endereco;
+    }
+
+    public Endereco atualizarEndereco(Endereco endereco, String logradouro, String numero, String complemento, String cep, Cidade cidade, Usuario usuarioADM) {
         endereco.setLogradouro(logradouro);
         endereco.setComplemento(complemento);
         endereco.setNumero(numero);
         endereco.setCep(FormatterUtil.removeNonDigitChars(cep));
         endereco.setCidade(cidade);
-        endereco.setUsuarioInclusao(usuarioADM);
-        endereco.setDataHoraInclusao(LocalDateTime.now());
-
         return endereco;
     }
 
@@ -413,6 +426,71 @@ public class SignupModel {
         empresa.setEndereco(endereco);
         endereco.getEmpresas().add(empresa);
 
+    }
+
+    public boolean verificaTarefasColigadaRemocao(Empresa empresa, String idColigadaString) {
+        // se a empresa é nula significa que este é um cadastro novo, e portanto a coligada 
+        // (que nem existe ainda) não tem nenhuma tarefa.
+        if (empresa == null) {
+            return false;
+        }
+
+        // verifica se a coligada nao é nova (tem id temporario)
+        // e neste caso também não terá tarefas
+        if (idColigadaString.startsWith("TEMP_")) {
+            return false;
+        }
+
+        // caso nenhumas das opções acima ocorra,
+        // a coligada já existe na base e o sistema verifica
+        // se ela possui tarefas
+        Empresa coligada = getColigada(empresa, idColigadaString);
+        if (!coligada.getTarefas().isEmpty()) {
+            return true;
+        }
+        if (!coligada.getMetas().isEmpty()) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    public Empresa getColigada(Empresa empresa, String idColigadaString) {
+
+        int idColigada = Integer.parseInt(idColigadaString);
+        for (Empresa coligada : empresa.getSubEmpresas()) {
+            if (coligada.getId().equals(idColigada)) {
+                return coligada;
+            }
+        }
+
+        return null;
+    }
+
+    private void moverTarefasMetasParaMatriz(Empresa coligada, Empresa matriz) {
+        for (Tarefa tarefa : coligada.getTarefas()) {
+            tarefa.setEmpresa(matriz);
+        }
+        for (Meta meta : coligada.getMetas()) {
+            meta.setEmpresa(matriz);
+        }
+    }
+
+    private void desrelacionarEmpresaColigada(Empresa empresaPrincipal, Empresa coligada) {
+        coligada.setEmpresaPrincipal(null);
+        empresaPrincipal.getSubEmpresas().remove(coligada);
+    }
+
+    public FilialEmpresa getFilial(Empresa empresa, String id) {
+        int idColigada = Integer.parseInt(id);
+        for (FilialEmpresa filial : empresa.getFiliais()) {
+            if (filial.getId().equals(idColigada)) {
+                return filial;
+            }
+        }
+
+        return null;
     }
 
 }

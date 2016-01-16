@@ -370,3 +370,20 @@ VALUES (NULL, 2, 1, 1,  'Tarefa Exemplo 27', 'Tarefa 3 onde o solicitante eh o t
     1, 4, 1, FALSE, FALSE, NULL, NULL, 1, '2014-05-01 10:12:34', 'ASCENDENTE', true);
 
 
+-- PublicacaoReferencia
+/** INSERT INTO PublicacaoReferencia ( publicacaoreferencia, idusuario ) VALUES ( 'SPED', 1 );
+INSERT INTO PublicacaoReferencia ( publicacaoreferencia, idusuario ) VALUES ( 'NFE', 1 );
+
+INSERT INTO PublicacaoTipo ( PublicacaoTipo, idusuario ) VALUES ( 'NORMA TECNICA', 1 );
+INSERT INTO PublicacaoTipo ( PublicacaoTipo, idusuario ) VALUES ( 'LEI', 1 );
+
+INSERT INTO Publicacao ( nome, idempresa, idpublicacaoreferencia, idpublicacaotipo, datareuniao, deadlineleitura, descricao, 
+    datapublicacao, idpublicacaostatus, idusuario ) VALUES ( 'Publicacao Teste 02', 1, 1, 1, now(), '2015-10-21', 'Descricao',
+    '2015-10-21', 1, 1);
+
+INSERT INTO Publicacao ( nome, idempresa, idpublicacaoreferencia, idpublicacaotipo, datareuniao, deadlineleitura, descricao, 
+    datapublicacao, idpublicacaostatus, idusuario  ) VALUES ( 'Publicacao Teste 02', 1, 2, 2, now(), '2015-10-21', 'Descricao',
+    '2015-10-21', 1, 1);
+
+
+*/

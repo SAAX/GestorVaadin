@@ -60,8 +60,6 @@ public class OrcamentoTarefa implements Serializable {
     @Column(name = "saldo", precision = 10, scale = 2)
     private BigDecimal saldo;
     
-    @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 60)
     @Column(name = "observacoes")
     private String observacoes;

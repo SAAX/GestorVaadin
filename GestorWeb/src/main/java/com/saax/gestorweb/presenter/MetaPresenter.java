@@ -18,6 +18,7 @@ import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.MetaViewListener;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.model.LixeiraModel;
+import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.Item;
@@ -118,9 +119,9 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
         carregaComboCategoria(meta);
         carregaComboEmpresa();
-        carregaComboResponsavel();
-        PresenterUtils.carregaComboEmpresaCliente(view.getEmpresaClienteCombo());
-        carregaComboParticipante();
+        carregaComboResponsavel(meta);
+        PresenterUtils.getInstance().carregaComboEmpresaCliente(view.getEmpresaClienteCombo());
+        carregaComboParticipante(meta);
 
         // Abre o formulário
         UI.getCurrent().addWindow(view);
@@ -143,7 +144,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
         EmpresaModel empresaModel = new EmpresaModel();
 
-        List<Empresa> empresas = empresaModel.listarEmpresasParaSelecao(loggedUser);
+        List<Empresa> empresas = empresaModel.listarEmpresasAtivasUsuarioLogado(loggedUser);
         for (Empresa empresa : empresas) {
 
             empresaCombo.addItem(empresa);
@@ -169,9 +170,9 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
      * Carrega o combo de responsáveis com todos os usuários ativos da mesma
      * empresa do usuário logado
      */
-    private void carregaComboResponsavel() {
+    private void carregaComboResponsavel(Meta meta) {
         ComboBox responsavel = view.getResponsavelCombo();
-        for (Usuario usuario : MetaModel.listarUsuariosEmpresa()) {
+        for (Usuario usuario : UsuarioModel.listarUsuariosEmpresa(meta.getEmpresa())) {
             responsavel.addItem(usuario);
             responsavel.setItemCaption(usuario, usuario.getNome());
 
@@ -187,8 +188,8 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
      */
     @Override
     public void empresaSelecionada(Empresa empresa) {
-        PresenterUtils.carregaComboDepartamento(view.getDepartamentoCombo(), empresa);
-        PresenterUtils.carregaComboCentroCusto(view.getCentroCustoCombo(), empresa);
+        PresenterUtils.getInstance().carregaComboDepartamento(view.getDepartamentoCombo(), empresa);
+        PresenterUtils.getInstance().carregaComboCentroCusto(view.getCentroCustoCombo(), empresa);
         
     }
 
@@ -357,9 +358,9 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
      * Carrega o combo de participante com todos os usuários ativos da mesma
      * empresa do usuário logado
      */
-    private void carregaComboParticipante() {
+    private void carregaComboParticipante(Meta meta) {
         ComboBox participante = view.getParticipantesCombo();
-        for (Usuario usuario : MetaModel.listarUsuariosEmpresa()) {
+        for (Usuario usuario : UsuarioModel.listarUsuariosEmpresa(meta.getEmpresa())) {
             participante.addItem(usuario);
             participante.setItemCaption(usuario, usuario.getNome());
 
@@ -405,7 +406,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
         view.setEditAllowed(usuarioLogadoEhOSolicitante || usuarioLogadoEhOResponsavel);
         view.getResponsavelCombo().setEnabled(usuarioLogadoEhOSolicitante);
         
-        view.getRemoverMetaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getUsuarioLogado()));
+        view.getRemoverMetaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getInstance().getUsuarioLogado()));
     }
 
     @Override

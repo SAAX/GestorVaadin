@@ -289,10 +289,12 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
     @Override
     public void removeAllRecurrency() {
 
-        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.title"),
-                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.text"),
-                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.OKButton"),
-                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
+        ConfirmDialog.show(
+                UI.getCurrent(), 
+                PresenterUtils.getInstance().getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.title"),
+                PresenterUtils.getInstance().getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.text"),
+                PresenterUtils.getInstance().getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.OKButton"),
+                PresenterUtils.getInstance().getMensagensResource().getString("RecorrencyPresenter.removeAllRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
                         task = RecurrencyModel.removeAllRecurrency(task, loggedUser);
                         UI.getCurrent().removeWindow(view);
@@ -308,10 +310,10 @@ public class RecurrencyPresenter implements Serializable, RecurrencyViewListener
     @Override
     public void removeAllNextRecurrency() {
         ConfirmDialog.show(UI.getCurrent(),
-                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.title"),
-                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.text"),
-                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.OKButton"),
-                PresenterUtils.getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
+                PresenterUtils.getInstance().getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.title"),
+                PresenterUtils.getInstance().getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.text"),
+                PresenterUtils.getInstance().getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.OKButton"),
+                PresenterUtils.getInstance().getMensagensResource().getString("RecorrencyPresenter.removeAllNextRecurrency.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
                         task = RecurrencyModel.removeAllNextRecurrency(task, loggedUser);
                         UI.getCurrent().removeWindow(view);

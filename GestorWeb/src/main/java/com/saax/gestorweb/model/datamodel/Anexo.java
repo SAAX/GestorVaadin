@@ -12,8 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -28,19 +26,15 @@ import javax.validation.constraints.Size;
  * @author rodrigo
  */
 @Entity
-@Table(name = "anexotarefa")
-@NamedQueries({
-    @NamedQuery(name = "AnexoTarefa.findAll", query = "SELECT a FROM AnexoTarefa a"),
-    @NamedQuery(name = "AnexoTarefa.findByIdanexotarefa", query = "SELECT a FROM AnexoTarefa a WHERE a.id = :idanexotarefa"),
-    @NamedQuery(name = "AnexoTarefa.findByNome", query = "SELECT a FROM AnexoTarefa a WHERE a.nome = :nome")})
-public class AnexoTarefa implements Serializable {
+@Table(name = "anexo")
+public class Anexo implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "idanexotarefa")
+    @Column(name = "idanexo")
     private Integer id;
     
     @Basic(optional = false)
@@ -50,8 +44,12 @@ public class AnexoTarefa implements Serializable {
     private String nome;
     
     @JoinColumn(name = "idtarefa", referencedColumnName = "idtarefa")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private Tarefa tarefa;
+    
+    @JoinColumn(name = "idpublicacao", referencedColumnName = "idpublicacao")
+    @ManyToOne(optional = true)
+    private Publicacao publicacao;
     
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
@@ -70,14 +68,14 @@ public class AnexoTarefa implements Serializable {
     transient File arquivo;
     transient File arquivoTemporario;
 
-    public AnexoTarefa() {
+    public Anexo() {
     }
 
-    public AnexoTarefa(Integer idanexotarefa) {
+    public Anexo(Integer idanexotarefa) {
         this.id = idanexotarefa;
     }
 
-    public AnexoTarefa(Integer idanexotarefa, String path, String nome, LocalDateTime dataHoraInclusao) {
+    public Anexo(Integer idanexotarefa, String path, String nome, LocalDateTime dataHoraInclusao) {
         this.id = idanexotarefa;
         this.caminhoCompleto = path;
         this.nome = nome;
@@ -117,6 +115,14 @@ public class AnexoTarefa implements Serializable {
         this.tarefa = tarefa;
     }
 
+    public Publicacao getPublicacao() {
+        return publicacao;
+    }
+
+    public void setPublicacao(Publicacao publicacao) {
+        this.publicacao = publicacao;
+    }
+
     public Usuario getUsuarioInclusao() {
         return usuarioInclusao;
     }
@@ -134,10 +140,10 @@ public class AnexoTarefa implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof AnexoTarefa)) {
+        if (!(object instanceof Anexo)) {
             return false;
         }
-        AnexoTarefa other = (AnexoTarefa) object;
+        Anexo other = (Anexo) object;
         if ( this == other) return true;
 
         // se o ID estiver setado, compara por ele

@@ -25,6 +25,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -42,7 +43,7 @@ import org.apache.commons.beanutils.BeanUtils;
 @Table(name = "tarefa")
 @NamedQueries({
     @NamedQuery(name = "Tarefa.findAll", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.dataHoraRemocao IS NULL"),
-    @NamedQuery(name = "Tarefa.findTarefasRemovidas", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.usuarioRemocao = :usuarioRemocao ORDER BY t.dataHoraRemocao DESC"),
+    @NamedQuery(name = "Tarefa.findTarefasRemovidas", query = "SELECT t FROM Tarefa t WHERE t.usuarioRemocao = :usuarioRemocao ORDER BY t.dataHoraRemocao DESC"),
     @NamedQuery(name = "Tarefa.findTarefasPrincipais", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.usuarioSolicitante = :usuarioSolicitante AND t.dataHoraRemocao IS NULL ORDER BY t.dataFim DESC"),
     @NamedQuery(name = "Tarefa.findByNome", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND  t.nome = :nome AND t.dataHoraRemocao IS NULL"),
     @NamedQuery(name = "Tarefa.findByEmpresa", query = "SELECT t FROM Tarefa t WHERE t.empresa = :empresa AND t.dataHoraRemocao IS NULL"),
@@ -194,13 +195,15 @@ public class Tarefa implements Serializable {
     private List<AvaliacaoMetaTarefa> avaliacoes;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
+    @OrderBy("dataHoraInclusao ASC")
     private List<OrcamentoTarefa> orcamentos;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
+    @OrderBy("dataHoraInclusao ASC")
     private List<ApontamentoTarefa> apontamentos;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
-    private List<AnexoTarefa> anexos;
+    private List<Anexo> anexos;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tarefa", orphanRemoval = true)
     private List<AndamentoTarefa> andamentos;
@@ -493,6 +496,8 @@ public class Tarefa implements Serializable {
         if (orcamentos == null) {
             setOrcamentos(new ArrayList<>());
         }
+        
+  
         return orcamentos;
     }
 
@@ -503,7 +508,10 @@ public class Tarefa implements Serializable {
     public List<ApontamentoTarefa> getApontamentos() {
         if (apontamentos == null) {
             setApontamentos(new ArrayList<>());
-        }
+        } 
+                
+
+        
         return apontamentos;
     }
 
@@ -511,14 +519,14 @@ public class Tarefa implements Serializable {
         this.apontamentos = apontamentos;
     }
 
-    public List<AnexoTarefa> getAnexos() {
+    public List<Anexo> getAnexos() {
         if (anexos == null) {
             setAnexos(new ArrayList<>());
         }
         return anexos;
     }
 
-    public void setAnexos(List<AnexoTarefa> anexos) {
+    public void setAnexos(List<Anexo> anexos) {
         this.anexos = anexos;
     }
 

@@ -9,6 +9,7 @@ import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 
@@ -31,21 +32,26 @@ import org.apache.commons.beanutils.BeanUtils;
 public class DashboardModel {
 
     // Classes do modelo acessórias acessadas por este model
-
     public static List<Tarefa> getTarefasTemplate() {
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
-        List<Tarefa> templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
-                .setParameter("template", true)
-                .getResultList();
+        List<Tarefa> templates = null;
+        for (UsuarioEmpresa usuarioEmpresa : loggedUser.getEmpresas()) {
+            if (usuarioEmpresa.getAtivo()) {
+                Empresa empresa = usuarioEmpresa.getEmpresa();
+                templates = GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
+                        .setParameter("empresa", empresa)
+                        .setParameter("template", true)
+                        .getResultList();
 
-        for (Empresa subEmpresa : loggedUser.getEmpresaAtiva().getSubEmpresas()) {
-            templates.addAll(GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
-                    .setParameter("empresa", subEmpresa)
-                    .setParameter("template", true)
-                    .getResultList());
+                for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                    templates.addAll(GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByTemplate", Tarefa.class)
+                            .setParameter("empresa", subEmpresa)
+                            .setParameter("template", true)
+                            .getResultList());
+                }
+
+            }
         }
-
         return templates;
     }
 
@@ -66,7 +72,7 @@ public class DashboardModel {
         // Obtem as hiearquias da empresa do usuário logad
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         List<HierarquiaProjeto> hierarquiasEmpresa = em.createNamedQuery("HierarquiaProjeto.findByEmpresa")
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getResultList();
 
         List<HierarquiaProjeto> hierarquiasCadastradas = new ArrayList<>();
@@ -90,7 +96,8 @@ public class DashboardModel {
 
                 hierarquiasParaSelecao.add(hierarquiaParaSelecao);
 
-            } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
+            }
+            catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException ex) {
                 Logger.getLogger(DashboardModel.class.getName()).log(Level.SEVERE, null, ex);
                 throw new RuntimeException(ex);
             }
@@ -119,9 +126,6 @@ public class DashboardModel {
         return null;
     }
 
-    public static List<Usuario> listarUsuariosEmpresa() {
-        return TarefaModel.listarUsuariosEmpresa();
-    }
 
     public static List<Tarefa> listarTarefas(Usuario loggedUser) {
         return TarefaModel.listarTarefas(loggedUser);
@@ -148,6 +152,4 @@ public class DashboardModel {
 
     }
 
-
-    
 }

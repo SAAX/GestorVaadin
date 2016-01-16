@@ -19,6 +19,7 @@ import com.saax.gestorweb.model.datamodel.ProjecaoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusMeta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 
@@ -60,15 +61,7 @@ public class MetaModel {
 
     }
 
-    /**
-     * Listar todos os usuários ativos da mesma empresa do usuário logado Delega
-     * chamada ao model responsavel (UsuarioModel)
-     *
-     * @return
-     */
-    public static List<Usuario> listarUsuariosEmpresa() {
-        return UsuarioModel.listarUsuariosEmpresa();
-    }
+  
 
     /**
      * Delega chamada ao model responsavel (EmpresaModel)
@@ -129,7 +122,8 @@ public class MetaModel {
 
             em.getTransaction().commit();
 
-        } catch (RuntimeException ex) {
+        }
+        catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
             if (GestorEntityManagerProvider.getEntityManager().getTransaction().isActive()) {
                 GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
@@ -209,7 +203,7 @@ public class MetaModel {
 
     public static boolean userHasAccessToTarget(Usuario loggedUser, Meta target) {
 
-        if (target.getUsuarioRemocao()!=null) {
+        if (target.getUsuarioRemocao() != null) {
             return true;
         }
         if (target.getUsuarioInclusao().equals(loggedUser)) {
@@ -302,9 +296,21 @@ public class MetaModel {
 
         } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
 
-            metas.addAll(em.createNamedQuery("Meta.findAll")
-                    .setParameter("empresa", loggedUser.getEmpresaAtiva())
-                    .getResultList());
+            for (UsuarioEmpresa usuarioEmpresa : loggedUser.getEmpresas()) {
+                if (usuarioEmpresa.getAtivo()) {
+                    Empresa empresa = usuarioEmpresa.getEmpresa();
+                    metas.addAll(em.createNamedQuery("Meta.findAll")
+                            .setParameter("empresa", empresa)
+                            .getResultList());
+
+                    for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                        metas.addAll(em.createNamedQuery("Meta.findAll")
+                                .setParameter("empresa", subEmpresa)
+                                .getResultList());
+                    }
+
+                }
+            }
 
             if (!metasUsuarioResponsavel.isEmpty()) {
                 metas.retainAll(metasUsuarioResponsavel);
@@ -343,6 +349,7 @@ public class MetaModel {
      * Obtém as metas sob responsabilidade do usuário logado <br>
      * filtrando para não exibir as metas removidas <br>
      * ou as tarefas removidas
+     *
      * @param loggedUser
      * @return
      */
@@ -383,10 +390,7 @@ public class MetaModel {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        Empresa empresa = usuarioLogado.getEmpresaAtiva();
-
         Query q = em.createNamedQuery("Meta.findMetaRemovidas", Meta.class)
-                .setParameter("empresa", empresa)
                 .setParameter("usuarioRemocao", usuarioLogado);
 
         return q.getResultList();

@@ -117,7 +117,7 @@ public class TarefaTest {
         view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         try {
             view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
@@ -127,7 +127,7 @@ public class TarefaTest {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         
@@ -159,7 +159,7 @@ public class TarefaTest {
         view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
 
         File anexoTeste = new File(System.getProperty("user.dir") + "/anexoTeste.pdf");
         try {
@@ -178,7 +178,7 @@ public class TarefaTest {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         
@@ -222,7 +222,7 @@ public class TarefaTest {
             }
         }
         //        private Empresa empresa;
-        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         //        private String nome;
         view.getTaskNameTextField().setValue(nome);
         //        private PrioridadeTarefa prioridade;
@@ -240,11 +240,11 @@ public class TarefaTest {
         CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio (GestorEntityManagerProvider.getEntityManager());
         view.getCostCenterCombo().setValue(centroCusto);
         //        private Departamento departamento;
-        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresaAtiva());
+        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresas().get(0).getEmpresa());
         view.getDepartamentCombo().setValue(departamento);
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
-        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresaAtiva());
+        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresas().get(0).getEmpresa());
         view.getCustomerCompanyCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
         //        private Tarefa proximaTarefa;
@@ -323,7 +323,7 @@ public class TarefaTest {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         
@@ -356,7 +356,7 @@ public class TarefaTest {
         //        private Departamento departamento;
         Assert.assertEquals(departamento, t.getDepartamento());
         //        private Empresa empresa;
-        Assert.assertEquals(loggedUser.getEmpresaAtiva(), t.getEmpresa());
+        Assert.assertEquals(loggedUser.getEmpresas().get(0).getEmpresa(), t.getEmpresa());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
@@ -431,7 +431,7 @@ public class TarefaTest {
         view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis -> Sub 1
@@ -505,7 +505,7 @@ public class TarefaTest {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome_principal)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         
@@ -550,7 +550,7 @@ public class TarefaTest {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         Assert.assertNotNull(t);
@@ -577,13 +577,13 @@ public class TarefaTest {
         CentroCusto centroCusto = DAOAleatorio.getCentroCustoAleatorio (GestorEntityManagerProvider.getEntityManager());
         view.getCostCenterCombo().setValue(centroCusto);
         //        private Departamento departamento;
-        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresaAtiva());
+        Departamento departamento = DAOAleatorio.getDepartamentoAleatorio (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresas().get(0).getEmpresa());
         view.getDepartamentCombo().setValue(departamento);
         //        private Empresa empresa;
-        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
-        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresaAtiva());
+        EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresas().get(0).getEmpresa());
         view.getCustomerCompanyCombo().setValue(empresaCliente);
         //        private List<Tarefa> subTarefas;
         //        private Tarefa proximaTarefa;
@@ -613,7 +613,7 @@ public class TarefaTest {
         // obtem novamente a tarefa do banco
         t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", novonome)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         // ---------------------------------------------------------------------
@@ -644,7 +644,7 @@ public class TarefaTest {
         //        private Departamento departamento;
         Assert.assertEquals(departamento, t.getDepartamento());
         //        private Empresa empresa;
-        Assert.assertEquals(loggedUser.getEmpresaAtiva(), t.getEmpresa());
+        Assert.assertEquals(loggedUser.getEmpresas().get(0).getEmpresa(), t.getEmpresa());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         Assert.assertEquals(empresaCliente, t.getEmpresaCliente());
@@ -687,7 +687,7 @@ public class TarefaTest {
         view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
+        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         try {
             view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
@@ -697,7 +697,7 @@ public class TarefaTest {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         t.addHistorico(new HistoricoTarefa("teste", "comentario", loggedUser, t, LocalDateTime.now()));
@@ -706,7 +706,7 @@ public class TarefaTest {
 
         t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         Assert.assertEquals(1, t.getHistorico().size());

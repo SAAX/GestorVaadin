@@ -2,6 +2,7 @@ package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -91,6 +92,9 @@ public class Empresa implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
     private List<Meta> metas;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
+    private List<Publicacao> publicacoes;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "empresa")
     private List<Departamento> departamentos;
@@ -193,11 +197,22 @@ public class Empresa implements Serializable {
         return usuarios;
     }
 
+    public void setPublicacoes(List<Publicacao> publicacoes) {
+        this.publicacoes = publicacoes;
+    }
+
+    public List<Publicacao> getPublicacoes() {
+        return publicacoes;
+    }
+
     public void setUsuarios(List<UsuarioEmpresa> usuarios) {
         this.usuarios = usuarios;
     }
 
     public List<Meta> getMetas() {
+        if (metas == null){
+            metas = new ArrayList<>();
+        }
         return metas;
     }
 
@@ -248,12 +263,12 @@ public class Empresa implements Serializable {
         if (this.getId() != null && other.getId() != null) {
             return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
 
-        } else if (this.getCnpj()!=null && other.getCnpj()!=null) {
+        } else if (this.getCnpj() != null && other.getCnpj() != null) {
             // senao compara pelo cnpj
             return this.getCnpj().equals(other.getCnpj());
 
         } else {
-            
+
             // senao compara pelo ponteiro
             return super.equals(object);
         }
@@ -307,6 +322,9 @@ public class Empresa implements Serializable {
     }
 
     public List<Tarefa> getTarefas() {
+        if (tarefas == null) {
+            tarefas = new ArrayList<>();
+        }
         return tarefas;
     }
 

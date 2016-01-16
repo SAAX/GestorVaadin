@@ -1,8 +1,8 @@
 package com.saax.gestorweb.model.datamodel;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -38,7 +38,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login"),
     @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")})
 public class Usuario implements Serializable {
-    
+
     @Transient
     private String globalID;
 
@@ -80,11 +80,15 @@ public class Usuario implements Serializable {
     @Size(min = 1, max = 32)
     @Column(name = "senha")
     private String senha;
+    
+    @Column(name = "datahorainclusao")
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
+    private LocalDateTime dataHoraInclusao;
 
     private transient Empresa empresaAtiva;
         
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
-    private Collection<UsuarioEmpresa> empresas;
+    private List<UsuarioEmpresa> empresas;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioResponsavel")
     private Collection<Meta> metasSobResponsabilidade;
@@ -92,9 +96,6 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioSolicitante")
     private Collection<Meta> metasSolicitadas;
 
-    @Column(name = "datahorainclusao")
-    @Convert(converter = LocalDateTimePersistenceConverter.class)
-    private LocalDateTime dataHoraInclusao;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<FavoritosTarefaMeta> favoritosIncluidos;
@@ -161,7 +162,7 @@ public class Usuario implements Serializable {
     private List<EmpresaCliente> empresasClienteIncluidas;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
-    private List<AnexoTarefa> anexosTarefaIncluidos;
+    private List<Anexo> anexosTarefaIncluidos;
     
     
     public Usuario() {
@@ -232,12 +233,8 @@ public class Usuario implements Serializable {
             return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
             
         } else {
-            // senao compara por campos setados na criação da tarefa
-            return this.getUsuarioInclusao().equals(other.getUsuarioInclusao())
-                   && this. getDataHoraInclusao().equals(other.getDataHoraInclusao());
-
+            return false;
         }
-
     }
 
     @Override
@@ -245,11 +242,11 @@ public class Usuario implements Serializable {
         return nome + " [ idusuario=" + id + " ]";
     }
 
-    public Collection<UsuarioEmpresa> getEmpresas() {
+    public List<UsuarioEmpresa> getEmpresas() {
         return empresas;
     }
 
-    public void setEmpresas(Collection<UsuarioEmpresa> empresas) {
+    public void setEmpresas(List<UsuarioEmpresa> empresas) {
         this.empresas = empresas;
     }
 
@@ -261,13 +258,6 @@ public class Usuario implements Serializable {
         this.metasSobResponsabilidade = metasSobResponsabilidade;
     }
 
-    public LocalDateTime getDataHoraInclusao() {
-        return dataHoraInclusao;
-    }
-
-    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
-        this.dataHoraInclusao = dataHoraInclusao;
-    }
 
     public List<FavoritosTarefaMeta> getFavoritosIncluidos() {
         return favoritosIncluidos;
@@ -430,11 +420,11 @@ public class Usuario implements Serializable {
         this.empresasClienteIncluidas = empresasClienteIncluidas;
     }
 
-    public List<AnexoTarefa> getAnexosTarefaIncluidos() {
+    public List<Anexo> getAnexosTarefaIncluidos() {
         return anexosTarefaIncluidos;
     }
 
-    public void setAnexosTarefaIncluidos(List<AnexoTarefa> anexosTarefaIncluidos) {
+    public void setAnexosTarefaIncluidos(List<Anexo> anexosTarefaIncluidos) {
         this.anexosTarefaIncluidos = anexosTarefaIncluidos;
     }
 
@@ -446,20 +436,20 @@ public class Usuario implements Serializable {
         this.historicosTarefa = historicosTarefa;
     }
 
-    public void setEmpresaAtiva(Empresa empresaAtiva) {
-        this.empresaAtiva = empresaAtiva;
-    }
-
-    public Empresa getEmpresaAtiva() {
-        return empresaAtiva;
-    }
-
     public void setMetasSolicitadas(Collection<Meta> metasSolicitadas) {
         this.metasSolicitadas = metasSolicitadas;
     }
 
     public Collection<Meta> getMetasSolicitadas() {
         return metasSolicitadas;
+    }
+
+    public LocalDateTime getDataHoraInclusao() {
+        return dataHoraInclusao;
+    }
+
+    public void setDataHoraInclusao(LocalDateTime dataHoraInclusao) {
+        this.dataHoraInclusao = dataHoraInclusao;
     }
 
     

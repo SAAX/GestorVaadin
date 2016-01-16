@@ -1,11 +1,11 @@
 package com.saax.gestorweb.presenter;
 
-import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
+import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
@@ -14,28 +14,51 @@ import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.TreeTable;
-import com.vaadin.ui.UI;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Está classe é responsavel pela apresentação de itens comuns à vários outros presenters do projeto.
- * É uma biblioteca de métodos estáticos, cujo objetivo é resolver as duplicações de código, por exemplo, 
- * para carregar combos ou fazer configurações comuns de apresentação.
+ * Está classe é responsavel pela apresentação de itens comuns à vários outros
+ * presenters do projeto. É uma biblioteca de métodos estáticos, cujo objetivo é
+ * resolver as duplicações de código, por exemplo, para carregar combos ou fazer
+ * configurações comuns de apresentação.
+ *
  * @author rodrigo
  */
 public class PresenterUtils {
 
     // Referencia ao recurso das mensagens:
-    private static final transient ResourceBundle mensagensResource = ((GestorMDI) UI.getCurrent()).getMensagens();
-    private static final transient GestorWebImagens imagensResource = ((GestorMDI) UI.getCurrent()).getGestorWebImagens();
+    private final ResourceBundle mensagensResource;
+    private final GestorWebImagens imagensResource;
 
-    public static ResourceBundle getMensagensResource() {
+    private static PresenterUtils instance;
+
+    private PresenterUtils() {
+        try {
+            mensagensResource = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", new Locale("pt", "BR")));
+            imagensResource = new GestorWebImagens();
+        }
+        catch (Exception ex) {
+            throw new RuntimeException("Falha ao inicializar recursos", ex);
+        }
+    }
+
+    public static PresenterUtils getInstance() {
+        if (instance == null) {
+            instance = new PresenterUtils();
+        }
+        return instance;
+    }
+
+    public ResourceBundle getMensagensResource() {
         return mensagensResource;
     }
 
-    public static GestorWebImagens getImagensResource() {
+    public GestorWebImagens getImagensResource() {
         return imagensResource;
     }
 
@@ -43,13 +66,11 @@ public class PresenterUtils {
         return (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
     }
 
-    
-    
-    
     /**
-     * Carrega o combo box de departamento informado, com todas os departamentos ativos da empresas 
-     * Ou desabilita se não houver departamentos ativos para esta empresa
-     * 
+     * Carrega o combo box de departamento informado, com todas os departamentos
+     * ativos da empresas Ou desabilita se não houver departamentos ativos para
+     * esta empresa
+     *
      * @param departamentoCombo o combo a ser carregado
      * @param empresa a empresa
      */
@@ -81,22 +102,22 @@ public class PresenterUtils {
         }
 
     }
-    
-    
+
     /**
-     * Carrega o combo box de centro de custo informado, com todas os centros de custos ativos da empresa
-     * Ou desabilita se não houver centros de custo ativos 
-     * 
+     * Carrega o combo box de centro de custo informado, com todas os centros de
+     * custos ativos da empresa Ou desabilita se não houver centros de custo
+     * ativos
+     *
      * @param centroCustoCombo o combo a ser carregado
      * @param empresa a empresa
      */
     public static void carregaComboCentroCusto(ComboBox centroCustoCombo, Empresa empresa) {
-        
+
         // Verify if the company is already set
         if (empresa != null) {
 
             // Retrieves the list of active departments for this company
-            EmpresaModel empresaModel = new EmpresaModel();            
+            EmpresaModel empresaModel = new EmpresaModel();
             List<CentroCusto> centroCustoList = empresaModel.obterListaCentroCustosAtivos(empresa);
 
             if (centroCustoList.isEmpty()) {
@@ -123,24 +144,24 @@ public class PresenterUtils {
 
     }
 
-    
     /**
      * Carrega o combo de clientes com todos os clientes ativos de todas as
      * empresas (empresa pricipal + subs ) do usuario logado
+     *
      * @param empresaClienteCombo o combo a ser carregado
      */
     public static void carregaComboEmpresaCliente(ComboBox empresaClienteCombo) {
-        
-        EmpresaModel empresaModel = new EmpresaModel();            
+
+        EmpresaModel empresaModel = new EmpresaModel();
         Usuario usuarioLogado = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
-        
+
         for (EmpresaCliente cliente : empresaModel.listarEmpresasCliente(usuarioLogado)) {
             empresaClienteCombo.addItem(cliente);
             empresaClienteCombo.setItemCaption(cliente, cliente.getNome());
         }
 
     }
-    
+
     public static Button buildButtonEditarTarefa(TreeTable tabela, CallBackListener callbackListener, Tarefa subTarefa, String caption) {
         Button link = new Button(caption);
         link.setStyleName("quiet");
@@ -149,15 +170,43 @@ public class PresenterUtils {
             TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
             for (CallBackListener callBack : callbackListener.getCallbackListeneres()) {
                 presenter.addCallBackListener(callBack);
-                
+
             }
             presenter.addCallBackListener(callbackListener);
             presenter.editar(subTarefa);
         });
         return link;
-        
+
     }
-    
-    
-    
+
+    /**
+     * Configura a coluna da a tabela informadas de modo que ao
+     * expandir/colapsar o tamanho seja aumentado ou reduzido em 20px
+     *
+     * @param treeTable
+     * @param columnID
+     */
+    public static void configuraExpansaoColunaCodigo(TreeTable treeTable, Object columnID) {
+
+        final int INCREMENTO = 20;
+
+        treeTable.addExpandListener((Tree.ExpandEvent event) -> {
+            Collection<?> subTarefas = treeTable.getChildren(event.getItemId());
+
+            if (subTarefas != null && !subTarefas.isEmpty()) {
+                treeTable.setColumnWidth(columnID, treeTable.getColumnWidth(columnID) + INCREMENTO);
+            }
+        });
+        
+        treeTable.addCollapseListener((Tree.CollapseEvent event) -> {
+            Collection<?> subTarefas = treeTable.getChildren(event.getItemId());
+
+            if (subTarefas != null && !subTarefas.isEmpty()) {
+                treeTable.setColumnWidth(columnID, treeTable.getColumnWidth(columnID) - INCREMENTO);
+            }
+
+        });
+
+    }
+
 }

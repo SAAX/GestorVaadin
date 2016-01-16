@@ -39,7 +39,7 @@ public class PresenterUtilsTest {
         Usuario rodrigo = TestUtils.getUsuarioRodrigo();
         TestUtils.setUsuarioLogado(rodrigo);
         
-        Assert.assertEquals(rodrigo,PresenterUtils.getUsuarioLogado());
+        Assert.assertEquals(rodrigo,PresenterUtils.getInstance().getUsuarioLogado());
         
         
     }

@@ -9,8 +9,8 @@ public interface SignupViewListener {
 
     public void cancelButtonClicked();
     public void incluirUsuario();
-    public void incluirColigadas();
-    public void incluirFiliais();
+    public void incluirColigada(String nomeColigada, String cnpjColigada, String id);
+    public void incluirFilial(String nomeFilial, String cnpjFilial, String id);
     public void okButtonClicked();
     public void personTypeSelected();
 

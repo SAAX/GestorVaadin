@@ -42,7 +42,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
     private final transient PopUpStatusView view;
 
     // Referencia ao recurso das mensagens e imagens:
-    private final transient ResourceBundle mensagens = PresenterUtils.getMensagensResource();
+    private final transient ResourceBundle mensagens = PresenterUtils.getInstance().getMensagensResource();
 
     private Tarefa tarefa = null;
     private PopupButton statusButton = null;
@@ -564,7 +564,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
 
     @Override
     public List<ParametroAndamentoTarefa> listAndamento() {
-        return PopUpStatusModel.listParametroAndamentoTarefa(usuario.getEmpresaAtiva());
+        return PopUpStatusModel.listParametroAndamentoTarefa(tarefa.getEmpresa());
     }
    
 }

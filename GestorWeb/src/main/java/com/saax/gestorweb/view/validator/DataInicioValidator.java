@@ -1,6 +1,7 @@
 package com.saax.gestorweb.view.validator;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.presenter.PresenterUtils;
 import com.saax.gestorweb.util.DateTimeConverters;
 import com.vaadin.data.Validator;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -19,7 +20,7 @@ public class DataInicioValidator implements Validator {
 
     private final String dataInicioCaption;
     private final PopupDateField dataFimDateField;
-    private final transient ResourceBundle messages = ((GestorMDI) UI.getCurrent()).getMensagens();
+    private final transient ResourceBundle messages = PresenterUtils.getInstance().getMensagensResource();
 
     /**
      * Cria o validador

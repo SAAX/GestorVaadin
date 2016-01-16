@@ -37,7 +37,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Meta.findAll", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataHoraRemocao IS NULL"),
     @NamedQuery(name = "Meta.findByNome", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.nome = :nome AND m.dataHoraRemocao IS NULL"),
-    @NamedQuery(name = "Meta.findMetaRemovidas", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.usuarioRemocao = :usuarioRemocao ORDER BY m.dataHoraRemocao DESC "),    
+    @NamedQuery(name = "Meta.findMetaRemovidas", query = "SELECT m FROM Meta m WHERE m.usuarioRemocao = :usuarioRemocao ORDER BY m.dataHoraRemocao DESC "),    
     @NamedQuery(name = "Meta.findByDescricao", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.descricao = :descricao AND m.dataHoraRemocao IS NULL"),
     @NamedQuery(name = "Meta.findByDatainicio", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataInicio = :datainicio AND m.dataHoraRemocao IS NULL"),
     @NamedQuery(name = "Meta.findByDataFim", query = "SELECT m FROM Meta m WHERE m.empresa = :empresa AND m.dataFim = :datafim AND m.dataHoraRemocao IS NULL"),

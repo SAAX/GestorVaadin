@@ -18,17 +18,42 @@ import javax.persistence.EntityManager;
  *
  * @author rodrigo
  */
-public  class UsuarioModel {
+public class UsuarioModel {
+
+    /**
+     * Obtém o relacionamento entre um usuário e uma empresa 
+     * A empresa informada
+     * pode ser coligada a uma matriz
+     *
+     * @param usuario
+     * @param empresa
+     * @return
+     */
+    public static UsuarioEmpresa getRelacionamentoUsuarioEmpresa(Usuario usuario, Empresa empresa) {
+
+        for (UsuarioEmpresa empresaUsuario : usuario.getEmpresas()) {
+            if (empresaUsuario.getEmpresa().equals(empresa) || empresaUsuario.getEmpresa().equals(empresa.getEmpresaPrincipal())) {
+                if (empresaUsuario.getAtivo()) {
+                    return empresaUsuario;
+                }
+            }
+        }
+        return null;
+    }
 
     /**
      * Listar todos os usuários ativos da mesma empresa do usuário logado
      *
+     * @param empresa
      * @return
      */
-    public static List<Usuario> listarUsuariosEmpresa() {
-
+    public static List<Usuario> listarUsuariosEmpresa(Empresa empresa) {
+        
+        if (empresa == null){
+            return new ArrayList<>();
+        }
+        
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
-        Empresa empresa = loggedUser.getEmpresaAtiva();
 
         List<Usuario> usuarios = new ArrayList<>();
 
@@ -48,7 +73,7 @@ public  class UsuarioModel {
                 .getSingleResult();
 
     }
-    
+
     /**
      * Obtém um usuário pelo seu login
      *
@@ -66,9 +91,8 @@ public  class UsuarioModel {
                     .setParameter("login", login)
                     .getSingleResult();
 
-            usuario.setEmpresaAtiva(getEmpresaAtiva(usuario));
-            
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 
             Logger.getLogger(LoginModel.class.getName()).log(Level.SEVERE, "", e);
 
@@ -77,54 +101,5 @@ public  class UsuarioModel {
         return usuario;
 
     }
-    
-    /**
-     * Obtém a empresa do usuario logado Só pode have uma
-     *
-     * @return empresa
-     * @throws Runtime se empresa não for encontrada ou existir mais que uma
-     */
-    public static Empresa getEmpresaUsuarioLogado() {
 
-        // obtem o usuario logado
-        Usuario usuario = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
-
-        return getEmpresaAtiva(usuario);
-    }
-
-    
-    /**
-     * Obtém a empresa do usuario passado por parametro Só pode have uma
-     *
-     * @param usuario
-     * @return empresa
-     * @throws Runtime se empresa não for encontrada ou existir mais que uma
-     */
-    public static Empresa getEmpresaAtiva(Usuario usuario) {
-
-        // obtem a empresa ativa do usuario logado 
-        // so pode haver uma
-        Empresa empresa = null;
-        if (usuario.getEmpresas() != null) {
-            for (UsuarioEmpresa usuarioEmpresa : usuario.getEmpresas()) {
-
-                if (usuarioEmpresa.getAtivo()) {
-                    if (empresa == null) {
-                        empresa = usuarioEmpresa.getEmpresa();
-
-                    } else {
-                        throw new RuntimeException("Usuario esta ativo em mais de uma empresa.");
-                    }
-                }
-            }
-        }
-
-        // dispara exceção se nao encontrar a empresa do usuario logado
-        if (empresa == null) {
-            throw new RuntimeException("Não foram encontrados os usuarios da empresa");
-        }
-
-        return empresa;
-    }
-    
 }

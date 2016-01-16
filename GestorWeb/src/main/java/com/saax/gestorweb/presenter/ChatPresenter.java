@@ -7,7 +7,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatSingletonModel;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.datamodel.Anexo;
 import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
@@ -71,8 +71,8 @@ public class ChatPresenter implements Serializable, ChatViewListener {
         this.task = task;
 
         Table attachmentsTable = view.getAttachmentsAddedTable();
-        List<AnexoTarefa> anexosTarefa = task.getAnexos();
-        for (AnexoTarefa anexo : anexosTarefa) {
+        List<Anexo> anexosTarefa = task.getAnexos();
+        for (Anexo anexo : anexosTarefa) {
 
             attachmentsTable.addItem(anexo);
             attachmentsTable.getContainerProperty(anexo, "Arquivo:").setValue(anexo.getNome());
@@ -85,7 +85,7 @@ public class ChatPresenter implements Serializable, ChatViewListener {
     /**
      * Cria botao para download de anexo
      */
-    private Button buildButtonDownload(AnexoTarefa anexos) {
+    private Button buildButtonDownload(Anexo anexos) {
         Button exportar = new Button();
         exportar.setIcon(FontAwesome.DOWNLOAD);
         exportar.addStyleName(ValoTheme.BUTTON_ICON_ONLY);

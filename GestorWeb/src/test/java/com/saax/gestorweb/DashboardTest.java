@@ -76,7 +76,7 @@ public class DashboardTest {
         
 
         // assert
-        Assert.assertTrue(view.getTaskTable().getItemIds().contains(expected));
+        Assert.assertTrue(view.getTarefaTable().getItemIds().contains(expected));
         
         
         

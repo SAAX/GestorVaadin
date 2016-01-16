@@ -1,5 +1,6 @@
 package com.saax.gestorweb.view;
 
+import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 
@@ -26,6 +27,8 @@ public interface DashboardViewListenter {
     public void removerMetaButtonClicked(Meta meta);
 
     public boolean verificaPermissaoAcessoRemocaoMeta(Meta meta);
+
+    public void configContaClicked(Empresa empresa);
 
     
 

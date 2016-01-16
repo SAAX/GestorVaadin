@@ -86,7 +86,7 @@ public class EvolucaoStatusTest {
             view.getTaskNameTextField().setValue(nome);
             view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
             view.getStartDateDateField().setValue(new Date());
-            view.getCompanyCombo().setValue(loggedUser.getEmpresaAtiva());
+            view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
             view.getAssigneeUserCombo().select(usuarioResponsavel);
             try {
                 view.getTaskFieldGroup().commit();
@@ -136,7 +136,7 @@ public class EvolucaoStatusTest {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", getNomeTarefa())
-                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresaAtiva())
+                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
         return t;
 
@@ -153,7 +153,7 @@ public class EvolucaoStatusTest {
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", getNomeTarefa())
-                .setParameter("empresa", loggedUser.getEmpresaAtiva())
+                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
         Assert.assertNotNull(t);

@@ -1,7 +1,7 @@
 package com.saax.gestorweb.model;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.datamodel.Anexo;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
@@ -19,6 +19,7 @@ import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.DashboardPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -30,12 +31,14 @@ import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -75,15 +78,6 @@ public class TarefaModel {
         usuarioModel = new UsuarioModel();
         empresaModel = new EmpresaModel();
 
-    }
-
-    /**
-     * Lista todos os usuários ativos da mesma empresa do usuário logado <br>
-     *
-     * @return a lista de usuários
-     */
-    public static List<Usuario> listarUsuariosEmpresa() {
-        return UsuarioModel.listarUsuariosEmpresa();
     }
 
     /**
@@ -166,7 +160,8 @@ public class TarefaModel {
 
             primeiraTarefaRecorrenteThreadLocal.remove();
 
-        } catch (RuntimeException ex) {
+        }
+        catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
             if (GestorEntityManagerProvider.getEntityManager().getTransaction().isActive()) {
                 GestorEntityManagerProvider.getEntityManager().getTransaction().rollback();
@@ -198,7 +193,7 @@ public class TarefaModel {
      * @throws IllegalStateException se o arquivo anexo nao existir
      * @throws RuntimeException se ocorrer algum erro na gravação do anexo
      */
-    public static void moverAnexoTemporario(AnexoTarefa anexoTarefa) {
+    public static void moverAnexoTemporario(Anexo anexoTarefa) {
 
         if (anexoTarefa.getTarefa() == null) {
             throw new IllegalArgumentException(mensagens.getString("TarefaModel.moverAnexoTemporario.anexoNulo"));
@@ -298,6 +293,19 @@ public class TarefaModel {
 
     }
 
+    private static ApontamentoTarefa obtemUltimoApontamento(Tarefa tarefa) {
+
+        if (tarefa.getApontamentos().size() == 1) {
+            return tarefa.getApontamentos().get(0);
+        }
+        ArrayList<ApontamentoTarefa> apontamentos = new ArrayList<>(tarefa.getApontamentos());
+        Collections.sort(apontamentos, (ApontamentoTarefa o1, ApontamentoTarefa o2) -> o1.getDataHoraInclusao().compareTo(o2.getDataHoraInclusao()));
+        int indiceUltimoApontamento = apontamentos.size() - 1;
+        ApontamentoTarefa ultimoApontamentoTarefa = apontamentos.get(indiceUltimoApontamento);
+        return ultimoApontamentoTarefa;
+
+    }
+
     /**
      * Verifica se o apontamento é de DEBITO e neste caso, verifica se há saldo
      * suficiente para registrar este debito. <br>
@@ -324,9 +332,7 @@ public class TarefaModel {
         }
 
         // obtem o ultimo registro de apontamento inserido (registro anterior), para verificar o saldo disponivel
-        List<ApontamentoTarefa> apontamentos = apontamentoTarefa.getTarefa().getApontamentos();
-        int indiceUltimoApontamento = apontamentos.size() - 1;
-        ApontamentoTarefa ultimoApontamentoTarefa = apontamentos.get(indiceUltimoApontamento);
+        ApontamentoTarefa ultimoApontamentoTarefa = obtemUltimoApontamento(apontamentoTarefa.getTarefa());
 
         // Inicialmente verifica se o saldo em Horas é suficiente para receber um débito de InputHoras
         if (ultimoApontamentoTarefa.getSaldoHoras().compareTo(inputHoras) < 0) {
@@ -350,6 +356,21 @@ public class TarefaModel {
         }
 
         // Fim da verificação de saldo em valor
+    }
+
+    private static OrcamentoTarefa obtemUltimoOrcamento(Tarefa tarefa) {
+
+        if (tarefa.getOrcamentos().size() == 1) {
+            return tarefa.getOrcamentos().get(0);
+        }
+
+        ArrayList<OrcamentoTarefa> orcamentos = new ArrayList<>(tarefa.getOrcamentos());
+        Collections.sort(orcamentos, (OrcamentoTarefa o1, OrcamentoTarefa o2) -> o1.getDataHoraInclusao().compareTo(o2.getDataHoraInclusao()));
+        int indiceUltimoApontamento = orcamentos.size() - 1;
+        OrcamentoTarefa ultimoOrcamentoTarefa = orcamentos.get(indiceUltimoApontamento);
+
+        return ultimoOrcamentoTarefa;
+
     }
 
     /**
@@ -379,12 +400,10 @@ public class TarefaModel {
         }
 
         // obtem o ultimo registro de apontamento inserido (registro anterior), para verificar o saldo disponivel
-        List<OrcamentoTarefa> orcamentos = orcamentoTarefa.getTarefa().getOrcamentos();
-        int indiceUltimoApontamento = orcamentos.size() - 1;
-        OrcamentoTarefa ultimoApontamentoTarefa = orcamentos.get(indiceUltimoApontamento);
+        OrcamentoTarefa ultimoOrcamentoTarefa = obtemUltimoOrcamento(orcamentoTarefa.getTarefa());
 
         // obtem Saldo disponível no último apontamento
-        BigDecimal saldoDisponivel = ultimoApontamentoTarefa.getSaldo();
+        BigDecimal saldoDisponivel = ultimoOrcamentoTarefa.getSaldo();
 
         if ((saldoDisponivel.compareTo(orcamentoTarefa.getDebito())) < 0) {
             throw new RuntimeException(mensagens.getString("CadastroTarefaModel.validaSaldoSuficiente.erroSaldoValorInsuficiente"));
@@ -413,7 +432,8 @@ public class TarefaModel {
             long hour = Long.parseLong(input[0]);
             long minutes = Long.parseLong(input[1]);
             inputHoras = Duration.ofHours(hour).plus(minutes, ChronoUnit.MINUTES);
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             throw new RuntimeException("Hora deve ser informada como HH:MM");
         }
 
@@ -483,7 +503,7 @@ public class TarefaModel {
 
             // Calcula saldo = saldoAnterior + Credito - Debito
             //      1. Saldo = Saldo Anterior
-            BigDecimal saldoValor = saldoAnteriorValor.setScale(2);
+            BigDecimal saldoValor = saldoAnteriorValor.setScale(2, RoundingMode.HALF_UP);
 
             //      2. Saldo = Saldo + Credito
             if (creditoValor != null) {
@@ -497,7 +517,7 @@ public class TarefaModel {
             apontamentoElement.setSaldoValor(saldoValor);
 
             // configura o saldo alterior a ser usado na proxima iteraçao
-            saldoAnteriorValor = saldoValor.setScale(2);
+            saldoAnteriorValor = saldoValor.setScale(2, RoundingMode.HALF_UP);
         }
 
     }
@@ -534,10 +554,11 @@ public class TarefaModel {
         BigDecimal inputValor = null;
         try {
             inputValor = new BigDecimal(orcamentoTarefa.getInputValor().replaceAll(",", "."));
-            inputValor.setScale(2);
+            inputValor.setScale(2, RoundingMode.HALF_UP);
             inputValor.doubleValue();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException("Não foi possível identificar o valor informado: " + orcamentoTarefa.getInputValor());
         }
 
@@ -575,7 +596,7 @@ public class TarefaModel {
 
             // Calcula saldo = saldoAnterior + Credito - Debito
             //      1. Saldo = Saldo Anterior
-            BigDecimal saldo = saldoAnterior.setScale(2);
+            BigDecimal saldo = saldoAnterior.setScale(2, RoundingMode.HALF_UP);
             //      2. Saldo = Saldo + Credito
             if (credito != null) {
                 saldo = saldo.add(credito);
@@ -588,7 +609,7 @@ public class TarefaModel {
             orcamentoElement.setSaldo(saldo);
 
             // configura o saldo alterior a ser usado na proxima iteraçao
-            saldoAnterior = saldo.setScale(2);
+            saldoAnterior = saldo.setScale(2, RoundingMode.HALF_UP);
 
         }
 
@@ -719,9 +740,17 @@ public class TarefaModel {
 
     public static boolean verificaAcesso(Usuario loggedUser, Tarefa tarefaToEdit) {
 
-        if (tarefaToEdit.getUsuarioRemocao()!=null) {
+        if (tarefaToEdit.getUsuarioRemocao() != null) {
             return false;
         }
+
+        // verifica se o usuário ainda está ativo na empresa da tarefa
+        // se ele tiver sido desativado, não pode ver a tarefa
+        UsuarioEmpresa empresaUsuario = UsuarioModel.getRelacionamentoUsuarioEmpresa(loggedUser, tarefaToEdit.getEmpresa());
+        if (empresaUsuario == null || !empresaUsuario.getAtivo()) {
+            return false;
+        }
+
         if (tarefaToEdit.getUsuarioInclusao().equals(loggedUser)) {
             return true;
         }
@@ -798,7 +827,7 @@ public class TarefaModel {
 
         List<Tarefa> tarefas = em.createNamedQuery("Tarefa.findByUsuarioResponsavelDashboard")
                 .setParameter("usuarioResponsavel", usuarioLogado)
-                //.setParameter("empresa", loggedUser.getEmpresaAtiva())
+                //.setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
                 .getResultList();
 
         return filtrarTarefas(tarefas, usuarioLogado);
@@ -898,10 +927,21 @@ public class TarefaModel {
             tarefas.addAll(tarefasProjecao);
 
         } else if (tipoPesquisa == DashboardPresenter.TipoPesquisa.EXCLUSIVA_E) {
+            for (UsuarioEmpresa usuarioEmpresa : usuarioLogado.getEmpresas()) {
+                if (usuarioEmpresa.getAtivo()) {
+                    Empresa empresa = usuarioEmpresa.getEmpresa();
+                    tarefas.addAll(em.createNamedQuery("Tarefa.findAll")
+                            .setParameter("empresa", empresa)
+                            .getResultList());
 
-            tarefas.addAll(em.createNamedQuery("Tarefa.findAll")
-                    .setParameter("empresa", usuarioLogado.getEmpresaAtiva())
-                    .getResultList());
+                    for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                        tarefas.addAll(em.createNamedQuery("Tarefa.findAll")
+                                .setParameter("empresa", subEmpresa)
+                                .getResultList());
+                    }
+
+                }
+            }
 
             if (!tarefasUsuarioResponsavel.isEmpty()) {
                 tarefas.retainAll(tarefasUsuarioResponsavel);
@@ -954,14 +994,26 @@ public class TarefaModel {
     public static List<Tarefa> listarTarefasPrincipais(Usuario loggedUser) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        List<Tarefa> tarefas = new ArrayList<>();
 
-        Empresa empresa = loggedUser.getEmpresaAtiva();
+        for (UsuarioEmpresa usuarioEmpresa : loggedUser.getEmpresas()) {
+            if (usuarioEmpresa.getAtivo()) {
+                Empresa empresa = usuarioEmpresa.getEmpresa();
+                Query q = em.createNamedQuery("Tarefa.findTarefasPrincipais")
+                        .setParameter("empresa", empresa)
+                        .setParameter("usuarioSolicitante", loggedUser);
 
-        Query q = em.createNamedQuery("Tarefa.findTarefasPrincipais")
-                .setParameter("empresa", empresa)
-                .setParameter("usuarioSolicitante", loggedUser);
+                tarefas.addAll(q.getResultList());
 
-        List<Tarefa> tarefas = q.getResultList();
+                for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                    q = em.createNamedQuery("Tarefa.findTarefasPrincipais")
+                            .setParameter("empresa", subEmpresa)
+                            .setParameter("usuarioSolicitante", loggedUser);
+                    tarefas.addAll(q.getResultList());
+                }
+
+            }
+        }
 
         return tarefas;
 
@@ -1002,7 +1054,8 @@ public class TarefaModel {
             novaTarefa.setTemplate(false);
 
             return novaTarefa;
-        } catch (CloneNotSupportedException ex) {
+        }
+        catch (CloneNotSupportedException ex) {
             Logger.getLogger(TarefaModel.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
@@ -1044,10 +1097,7 @@ public class TarefaModel {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        Empresa empresa = usuarioLogado.getEmpresaAtiva();
-
         Query q = em.createNamedQuery("Tarefa.findTarefasRemovidas")
-                .setParameter("empresa", empresa)
                 .setParameter("usuarioRemocao", usuarioLogado);
 
         List<Tarefa> tarefas = new ArrayList<>();

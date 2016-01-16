@@ -7,7 +7,7 @@ package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.ChatSingletonModel;
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.datamodel.Anexo;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
@@ -48,7 +48,7 @@ public class ChatView extends Window{
     private Panel containerUserTable;
     private Table userTable;
     private Table attachmentsAddedTable;
-    private BeanItemContainer<AnexoTarefa> taskAttachContainer;
+    private BeanItemContainer<Anexo> taskAttachContainer;
     
     private Accordion accordion;
     private final HorizontalSplitPanel hsplit;
@@ -178,7 +178,7 @@ public class ChatView extends Window{
         this.userTable = userTable;
     }
     
-    public BeanItemContainer<AnexoTarefa> getTaskAttachContainer() {
+    public BeanItemContainer<Anexo> getTaskAttachContainer() {
         return taskAttachContainer;
     }
 

@@ -1,10 +1,8 @@
 package com.saax.gestorweb.view;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
@@ -18,7 +16,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import java.util.ResourceBundle;
 
 /**
@@ -84,7 +81,6 @@ public class StartPageView extends HorizontalLayout {
         final Button previewDashboardButton = new Button("dashboard preview", (Button.ClickEvent event) -> {
             Usuario usuarioTeste = LoginModel.getUsuario("teste-user@gmail.com");
             GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO, usuarioTeste);
-            usuarioTeste.setEmpresaAtiva( LoginModel.getEmpresaUsuarioLogado());
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
         });
         previewDashboardButton.setIcon(FontAwesome.SEARCH);

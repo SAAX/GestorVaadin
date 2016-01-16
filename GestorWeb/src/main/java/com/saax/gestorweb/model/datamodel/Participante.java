@@ -50,6 +50,10 @@ public class Participante implements Serializable {
     @ManyToOne()
     private Meta meta;
     
+    @JoinColumn(name = "idpublicacao", referencedColumnName = "idpublicacao")
+    @ManyToOne()
+    private Publicacao publicacao;
+    
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne(optional = false)
     private Usuario usuarioInclusao;
@@ -100,6 +104,14 @@ public class Participante implements Serializable {
 
     public void setMeta(Meta Meta) {
         this.meta = Meta;
+    }
+
+    public Publicacao getPublicacao() {
+        return publicacao;
+    }
+
+    public void setPublicacao(Publicacao publicacao) {
+        this.publicacao = publicacao;
     }
 
     public Usuario getUsuarioInclusao() {

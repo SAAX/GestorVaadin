@@ -1,6 +1,6 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.model.datamodel.AnexoTarefa;
+import com.saax.gestorweb.model.datamodel.Anexo;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
@@ -48,7 +48,7 @@ public interface TaskViewListener {
 
     public void adicionarParticipante(Usuario participanteTarefa);
 
-    public void removerAnexo(AnexoTarefa anexoTarefa);
+    public void removerAnexo(Anexo anexoTarefa);
 
     public void removerRegistroOrcamento(OrcamentoTarefa orcamentoTarefa);
 

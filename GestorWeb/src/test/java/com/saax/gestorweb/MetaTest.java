@@ -108,7 +108,7 @@ public class MetaTest {
         
         presenter.criarNovaMeta(categoria);
         
-        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
         view.getNomeMetaTextField().setValue(nomeEsperado);
         view.getDataInicioDateField().setValue(new Date());
         
@@ -128,7 +128,7 @@ public class MetaTest {
         Meta m = (Meta) PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager()
                 .createNamedQuery("Meta.findByNome")
                 .setParameter("nome", nomeEsperado)
-                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresaAtiva())
+                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
 
@@ -165,7 +165,7 @@ public class MetaTest {
         Assert.assertEquals(2, view.getEmpresaCombo().getItemIds().size());
 
         // selects a company
-        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresaAtiva());
+        view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
         
         // fills the required fields
         view.getNomeMetaTextField().setValue("Target Test: createsNewTaskUnderTheTarget");
@@ -221,7 +221,7 @@ public class MetaTest {
         Meta m = (Meta) PostgresConnection.getInstance().getEntityManagerFactory().createEntityManager()
                 .createNamedQuery("Meta.findByNome")
                 .setParameter("nome", "Target Test: createsNewTaskUnderTheTarget")
-                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresaAtiva())
+                .setParameter("empresa", TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa())
                 .getSingleResult();
 
 

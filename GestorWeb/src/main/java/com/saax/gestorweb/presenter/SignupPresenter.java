@@ -21,6 +21,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -29,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
+import org.vaadin.dialogs.ConfirmDialog;
 
 /**
  * SignUP Presenter <br>
@@ -47,8 +49,18 @@ public class SignupPresenter implements Serializable, SignupViewListener {
     // Every presenter keeps access to view and model
     private final transient SignupView view;
     private final transient SignupModel model;
-    
+
     private final Usuario loggedUser;
+    private Empresa empresa;
+    private final boolean novoCadastro;
+
+    List<Empresa> coligadasRemovidasNaEdicao = new ArrayList<>();
+    List<String> coligadasInseridasNaEdicao = new ArrayList<>();
+    List<Empresa> coligadasAlteradasNaEdicao = new ArrayList<>();
+
+    List<FilialEmpresa> filiaisRemovidasNaEdicao = new ArrayList<>();
+    List<String> filiaisInseridasNaEdicao = new ArrayList<>();
+    List<FilialEmpresa> filiaisAlteradasNaEdicao = new ArrayList<>();
 
     /**
      * Creates the presenter linking the Model View
@@ -60,8 +72,10 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
         this.model = model;
         this.view = view;
-        
+
         loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
+
+        novoCadastro = loggedUser == null;
 
         view.setListener(this);
 
@@ -71,6 +85,64 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         // Load the state combos
         carregaComboEstado();
 
+    }
+
+    public void open(Empresa empresa) {
+
+        open();
+
+        this.empresa = empresa;
+
+        // campos do usuario logado
+        view.getNameTextField().setValue(loggedUser.getNome());
+        view.getSurnameTextField().setValue(loggedUser.getSobrenome());
+        view.getUserEmailTextField().setValue(loggedUser.getLogin());
+        view.getConfirmeUserEmailTextField().setValue(loggedUser.getLogin());
+        view.getAcceptTermsCheckBox().setValue(true);
+        view.removerPassword();
+
+        // campos da empresa
+        view.getFancyNameTextField().setValue(empresa.getNome());
+        view.getCompanyNameTextField().setValue(empresa.getNome());
+        if (empresa.getTipoPessoa() == 'F') {
+            view.getPersonTypeOptionGroup().setValue(messages.getString("SignupView.pessoaFisicaCheckBox.label"));
+            view.getNationalEntityRegistrationCodeTextField().setValue(empresa.getCpf());
+        } else {
+            view.getPersonTypeOptionGroup().setValue(messages.getString("SignupView.pessoaJuridicaCheckBox.label"));
+            view.getNationalEntityRegistrationCodeTextField().setValue(empresa.getCnpj());
+        }
+
+        if (empresa.getEndereco()!=null){
+            Endereco endereco = empresa.getEndereco();
+            view.getAdressTextField().setValue(endereco.getLogradouro());
+            view.getNumberTextField().setValue(endereco.getNumero());
+            view.getComplementTextField().setValue(endereco.getComplemento());
+            view.getZipCodeTextField().setValue(endereco.getCep());
+            view.getCityComboBox().setValue(endereco.getCidade());
+
+        }
+    
+        // Coligadas
+        for (Empresa coligada : empresa.getSubEmpresas()) {
+            incluirColigada(coligada.getNome(), coligada.getCnpj(), coligada.getId().toString());
+        }
+        
+        // Filiais
+        for (FilialEmpresa filial : empresa.getFiliais()) {
+            incluirFilial(filial.getNome(), filial.getCnpj(), filial.getId().toString());
+        }
+        
+
+        /*
+         // Tab 4: Add more users to the company
+         private TextField userNameTextField;
+         private TextField userSurnameTextField;
+         private TextField emailTextField;
+         private TextField emailConfirmTextField;
+         private Table usersTable;
+         private CheckBox userAdmCheckBox;
+     
+         */
     }
 
     @Override
@@ -272,8 +344,8 @@ public class SignupPresenter implements Serializable, SignupViewListener {
     }
 
     /**
-     * Fetch all view of the data needed to set the initial registration
-     * with the main company subsidiaries and affiliates + users
+     * Fetch all view of the data needed to set the initial registration with
+     * the main company subsidiaries and affiliates + users
      *
      */
     private Empresa buildConta() {
@@ -281,15 +353,25 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         Empresa empresaPrincipal;
 
         // ---------------------------------------------------------------------
-        // creates the main User
+        // creates/updates the Logged User
         // ---------------------------------------------------------------------
-        Usuario usuarioADM = model.criarNovoUsuario(
-                view.getNameTextField().getValue(),
-                view.getSurnameTextField().getValue(),
-                view.getUserEmailTextField().getValue(),
-                view.getPasswordTextField().getValue(),
-                null
-        );
+        Usuario usuarioADM;
+        if (novoCadastro) {
+            usuarioADM = model.criarNovoUsuario(
+                    view.getNameTextField().getValue(),
+                    view.getSurnameTextField().getValue(),
+                    view.getUserEmailTextField().getValue(),
+                    view.getPasswordTextField().getValue(),
+                    null
+            );
+        } else {
+            usuarioADM = model.atualizaUsuario(loggedUser,
+                    view.getNameTextField().getValue(),
+                    view.getSurnameTextField().getValue(),
+                    view.getUserEmailTextField().getValue(),
+                    view.getPasswordTextField().getValue()
+            );
+        }
 
         // ---------------------------------------------------------------------
         // creates the main company
@@ -297,7 +379,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         String nomeFantasia = view.getFancyNameTextField().getValue();
         String razaosocial = view.getCompanyNameTextField().getValue();
         String cpfCnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
-        
+
         char tipoPessoa = '\0';
         if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaFisicaCheckBox.label"))) { // @ATENCAO
             tipoPessoa = 'F';
@@ -307,7 +389,13 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             return null;
         }
 
-        empresaPrincipal = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
+        if (novoCadastro) {
+            empresaPrincipal = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
+
+        } else {
+            empresaPrincipal = model.atualizarEmpresa(empresa, nomeFantasia, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
+
+        }
 
         String logradouro = view.getAdressTextField().getValue();
         String numero = view.getNumberTextField().getValue();
@@ -315,20 +403,27 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         String cep = view.getZipCodeTextField().getValue();
         Cidade cidade = (Cidade) view.getCityComboBox().getValue();
         if (StringUtils.isNotBlank(logradouro)) {
-            Endereco endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade, usuarioADM);
-            model.relacionarEmpresaEndereco(empresaPrincipal, endereco);
+
+            if (novoCadastro) {
+                Endereco endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade, usuarioADM);
+                model.relacionarEmpresaEndereco(empresaPrincipal, endereco);
+            } else {
+                Endereco endereco = model.atualizarEndereco(empresa.getEndereco(), logradouro, numero, complemento, cep, cidade, usuarioADM);
+                empresa.setEndereco(endereco);
+            }
         }
 
-        model.relacionarUsuarioEmpresa(usuarioADM, empresaPrincipal, true, usuarioADM);
+        if (novoCadastro) {
+            model.relacionarUsuarioEmpresa(usuarioADM, empresaPrincipal, empresa == null, usuarioADM);
+        }
 
         // ---------------------------------------------------------------------
         // creates the list of sub companies 
         // ---------------------------------------------------------------------
         Table empresasColigadasTable = view.getAssociatedTable();
+        for (String coligadaID : coligadasInseridasNaEdicao) {
 
-        empresasColigadasTable.getItemIds().stream().forEach((itemID) -> {
-
-            Item linhaEmpresaColigada = empresasColigadasTable.getItem(itemID);
+            Item linhaEmpresaColigada = empresasColigadasTable.getItem(coligadaID);
 
             String nomeFantasiaEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(messages.getString("SignupView.coligadasTable.nome")).getValue();
             String cpfCnpjEmpresaColigada = (String) linhaEmpresaColigada.getItemProperty(messages.getString("SignupView.coligadasTable.cnpj")).getValue();
@@ -337,10 +432,10 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
             model.relacionarEmpresaColigada(empresaPrincipal, subempresa);
 
-        });
+        }
 
         // ---------------------------------------------------------------------
-            // creates the branch list
+        // creates the branch list
         // ---------------------------------------------------------------------
         Table filiaisTable = view.getSubsidiariesTable();
         filiaisTable.getItemIds().stream().forEach((itemID) -> {
@@ -407,29 +502,29 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         // Validations successful !!!
         // proceeds with the recording of data
         // ---------------------------------------------------------------------
-        // Get all data from view and assembles objects
-        Empresa empresa = buildConta();
-
         try {
 
-            model.criarNovaConta(empresa);
+            empresa = buildConta();
+            model.gravarConta(empresa, coligadasRemovidasNaEdicao);
             view.close();
             ((GestorMDI) UI.getCurrent()).carregarDashBoard();
-        } catch (RuntimeException ex) {
+
+        }
+        catch (RuntimeException ex) {
             // This is the top of the call stack (the highest try catch) bearing this must log the exception:
-            Logger.getLogger(SignupPresenter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SignupPresenter.class
+                    .getName()).log(Level.SEVERE, null, ex);
             Notification.show(messages.getString("Gestor.mensagemErroGenerica"), Notification.Type.WARNING_MESSAGE);
 
         }
 
         //fernando: Precisei comentar pq não há usuário logado até então
         //GestorSession.setAttribute("loggedUser", empresa.getUsuarioInclusao());
-
     }
 
     /**
-     * Event fired when clicked the button to make the inclusion of
-     * User in grid Gets the name, surname and email
+     * Event fired when clicked the button to make the inclusion of User in grid
+     * Gets the name, surname and email
      */
     @Override
     public void incluirUsuario() {
@@ -469,67 +564,112 @@ public class SignupPresenter implements Serializable, SignupViewListener {
     }
 
     /**
-     * Event fired when clicked the button to make the inclusion of
-     * Related in the grid Gets the name, surname and email
+     * Exibe confirmação de que ao remover a coligada as meta/tarefas serão
+     * migradas para a empresa principal
+     *
+     * @param idColigadaString
+     */
+    private void confirmaRemocaoColigadaComMetasTarefas(String idColigadaString) {
+
+        if (model.verificaTarefasColigadaRemocao(empresa, idColigadaString)) {
+            ConfirmDialog.show(UI.getCurrent(),
+                    PresenterUtils.getInstance().getMensagensResource().getString("SingupPresenter.validaRemocaoColigada.title"),
+                    PresenterUtils.getInstance().getMensagensResource().getString("SingupPresenter.validaRemocaoColigada.text"),
+                    PresenterUtils.getInstance().getMensagensResource().getString("SingupPresenter.validaRemocaoColigada.OKButton"),
+                    PresenterUtils.getInstance().getMensagensResource().getString("SingupPresenter.validaRemocaoColigada.CancelButton"), (ConfirmDialog dialog) -> {
+                        if (dialog.isConfirmed()) {
+                            coligadasRemovidasNaEdicao.add(model.getColigada(empresa, idColigadaString));
+                            view.getAssociatedTable().removeItem(idColigadaString);
+                            view.getAssociatedTable().refreshRowCache();
+                        }
+                    });
+
+        }
+
+    }
+
+    /**
+     * Event fired when clicked the button to make the inclusion of Related in
+     * the grid Gets the name, surname and email
      */
     @Override
-    public void incluirColigadas() {
-
-        String nomeColigada = view.getAssociatedNameTextField().getValue();
-        view.getNationalEntityRegistrationAssociatedTextField().commit();
-        String cnpjColigada = view.getNationalEntityRegistrationAssociatedTextField().getValue();
-
-        System.out.println("cnpj: " + cnpjColigada);
+    public void incluirColigada(String nomeColigada, String cnpjColigada, String id) {
 
         Button removerColigadasButton = new Button(messages.getString("SignupPresenter.removerButton.label"));
         removerColigadasButton.setId(nomeColigada);
         removerColigadasButton.addClickListener((Button.ClickEvent event) -> {
-            String nomeColigadaBotao = event.getButton().getId();
+            String identificadorLinha = event.getButton().getId();
 
-            view.getAssociatedTable().removeItem(nomeColigadaBotao);
-            view.getAssociatedTable().refreshRowCache();
-            Notification.show((messages.getString("Notificacao.Sucesso")), (messages.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE); // @ATENCAO
+            // Na remoção de coligadas verifica se a empresa coligada não tem metas ou tarefas cadastradas, 
+            //  e neste caso, exibe mensagem de alerta.
+            if (model.verificaTarefasColigadaRemocao(empresa, identificadorLinha)) {
+                confirmaRemocaoColigadaComMetasTarefas(identificadorLinha);
+
+            } else {
+                view.getAssociatedTable().removeItem(identificadorLinha);
+                view.getAssociatedTable().refreshRowCache();
+
+            }
 
         });
 
-        view.getAssociatedTable().addItem(new Object[]{nomeColigada, cnpjColigada, removerColigadasButton}, nomeColigada);
+        // para que a linha tenha um ID unico é gerado um numero randomico
+        view.getAssociatedTable().addItem(new Object[]{nomeColigada, cnpjColigada, removerColigadasButton}, id);
 
         view.getAssociatedNameTextField().setValue("");
         view.getNationalEntityRegistrationAssociatedTextField().setValue("");
 
+        if (id.startsWith("TEMP")) {
+            coligadasInseridasNaEdicao.add(id);
+        } else {
+            Empresa coligada = model.getColigada(empresa, id);
+            coligada.setNome(nomeColigada);
+            coligada.setCnpj(cnpjColigada);
+            coligadasAlteradasNaEdicao.add(coligada);
+
+        }
     }
 
     /**
-     * Event fired when clicked the button to make the inclusion of
-     * Related in the grid Gets the name, surname and email
+     * Event fired when clicked the button to make the inclusion of Related in
+     * the grid Gets the name, surname and email
      */
     @Override
-    public void incluirFiliais() {
+    public void incluirFilial(String nomeFilial, String cnpjFilial, String id) {
 
-        String nomeFilial = view.getSubsidiaryNameTextField().getValue();
-        String cnpjFilial = view.getNationalEntityRegistrationSubsidiaryTextField().getValue();
 
         Button removerFiliaisButton = new Button(messages.getString("SignupPresenter.removerButton.label"));
         removerFiliaisButton.setId(nomeFilial);
         removerFiliaisButton.addClickListener((Button.ClickEvent event) -> {
-            String nomeFilialBotao = event.getButton().getId();
+            String identificadorLinha = event.getButton().getId();            
 
-            view.getSubsidiariesTable().removeItem(nomeFilialBotao);
+            view.getSubsidiariesTable().removeItem(identificadorLinha);
             view.getSubsidiariesTable().refreshRowCache();
-            Notification.show((messages.getString("Notificacao.Sucesso")), (messages.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
+            filiaisRemovidasNaEdicao.add(model.getFilial(empresa, id));
 
         });
 
-        view.getSubsidiariesTable().addItem(new Object[]{nomeFilial, cnpjFilial, removerFiliaisButton}, nomeFilial);
+        view.getSubsidiariesTable().addItem(new Object[]{nomeFilial, cnpjFilial, removerFiliaisButton}, id);
 
         view.getSubsidiaryNameTextField().setValue("");
         view.getNationalEntityRegistrationSubsidiaryTextField().setValue("");
 
+        if (id.startsWith("TEMP")) {
+            filiaisInseridasNaEdicao.add(id);
+        } else {
+            FilialEmpresa filial = model.getFilial(empresa, id);
+            filial.setNome(nomeFilial);
+            filial.setCnpj(cnpjFilial);
+            filiaisAlteradasNaEdicao.add(filial);
+
+        }
+        
+        
     }
 
     /**
-     * Event fired when clicked the button to select the state of the Company
-     * be registered
+     * Event fired when clicked the button to select the state of the Company be
+     * registered
      *
      */
     private void carregaComboEstado() {
@@ -549,8 +689,8 @@ public class SignupPresenter implements Serializable, SignupViewListener {
     }
 
     /**
-     * Event fired after being selected the company's state to be
-     * registered and carries the comboBox with belonging to this state cities
+     * Event fired after being selected the company's state to be registered and
+     * carries the comboBox with belonging to this state cities
      */
     @Override
     public void estadoSelecionado() {

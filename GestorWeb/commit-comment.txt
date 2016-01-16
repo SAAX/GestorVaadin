@@ -1,25 +1,22 @@
+próximo commit:
+
+Correção nas tabelas de tarefa: ao expandir/reduzir itens que não tem filhos, não aciona o evento.
+
 
 próximo commit:
 
-1. Implementada alteração na RN de remoção de tarefas pra englobar também as metas, de acordo com:
-    RN: REMOÇÃO DE METAS E TAREFAS
-    1. Somente o usuário solicitante que criou a meta/tarefa poderá removê-la
-    2. Toda meta/tarefa removida irá para lixeira, onde permanecerá por 30 dias.
-    3. Toda meta/tarefa da lixeira poderá ser recuperada, mas apenas pelo usuário que a removeu.
-    4. Nenhuma meta/tarefa da lixeira poderá aparecer nas buscas (a não ser a própria busca da lixeira)
-    5. A remoção se dará por um botão "Remover" posicionado no canto superior esquerdo (junto após o botão de adicionar tarefa/sub)
-    6. Para remoção, será solicitada confirmação do usuário
-    7. O sistema deverá registrar data e hora da remoção.
-    8. No dashboard haverá um botão de comando para consulta da lixeira. 
-    Ao consultar a lixeira deverão aparecer apenas as metas/tarefas removidas pelo usuário logado ( que serão as que ele pode recuperar  )
-    9. Tarefas concluídas não poderão ser removidas, a não ser que a meta em que estejam inseridas seja removida.
-    10. Metas concluídas não poderão ser removidas
+** Publicações: 
+ * Criação das tabelas
+ * Criação dos entitie beans
 
-2. Melhoria técnica: Unificação dos callbac listeners (fase final da reestruturação dos callbacks)
+** Alteração no Relacionamento Usuário <-> Empresa
+ * Alterada a regra de relacionamento, agora o usuário pode estar ativo em mais de uma empresa
+   Com isto:
+        1. As empresas que estarão disponíveis para o usuário selecionar ao criar uma meta/tarefa serão todas as empresas onde ele estiver ativo, e suas coligadas.
+	2. Os usuários disponíveis nos filtros de pesquisa serão todos os usuários das empresas acima.
+	3. O usuário logado poderá visualizar tarefas de todas as empresas onde estiver ativo, respeitando as demais regras de acesso: 
+	Ele deve ser participante, responsável ou solicitante e a meta/tarefa não pode estar na lixeira.
 
-3. Melhoria técnica: Evolução dos testes unitários 
-
-4. Melhoria técnica: Separação do tratamento de parâmetros de entrada em outra classe
-
-
-
+** Criação de regra para remoção de subsidiárias com metas/tarefas cadastradas
+ * Na gestão de contas, ao remover uma subsidiária que possui metas/tarefas, o sistema move estes dados
+    para a empresa matriz. É exibida uma confirmação ao usuário para ciência no mesmo.

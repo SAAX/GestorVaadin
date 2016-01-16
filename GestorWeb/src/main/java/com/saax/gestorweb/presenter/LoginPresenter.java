@@ -93,7 +93,6 @@ public class LoginPresenter implements Serializable, LoginViewListener {
         
         // Configura o usuáio logado na seção
         GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO,u);
-        u.setEmpresaAtiva(LoginModel.getEmpresaUsuarioLogado());
         
 
         // verifica se o usuário quer gravar o login na sessão e grava o cookie

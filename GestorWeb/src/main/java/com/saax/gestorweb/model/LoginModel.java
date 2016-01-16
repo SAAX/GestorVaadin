@@ -20,16 +20,6 @@ import javax.persistence.EntityManager;
  */
 public  class LoginModel {
 
-    /**
-     * Obtém a empresa do usuario logado Só pode have uma
-     *
-     * @return empresa
-     * @throws Runtime se empresa não for encontrada ou existir mais que uma
-     */
-    public static Empresa getEmpresaUsuarioLogado() {
-
-        return UsuarioModel.getEmpresaUsuarioLogado();
-    }
 
     /**
      * Verifica se um usuario está cadastrado pelo seu login

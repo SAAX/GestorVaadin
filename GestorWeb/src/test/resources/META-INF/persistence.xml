@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-  <persistence-unit name="GestorWebTestPU" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="GestorWebTestPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>com.saax.gestorweb.model.datamodel.Tarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.Usuario</class>
-    <class>com.saax.gestorweb.model.datamodel.UsuarioEmpresa</class>
-    <class>com.saax.gestorweb.model.datamodel.Empresa</class>
-    <class>com.saax.gestorweb.model.datamodel.CentroCusto</class>
-    <class>com.saax.gestorweb.model.datamodel.Meta</class>
-    <class>com.saax.gestorweb.model.datamodel.Departamento</class>
-    <class>com.saax.gestorweb.model.datamodel.FilialCliente</class>
-    <class>com.saax.gestorweb.model.datamodel.FilialEmpresa</class>
-    <class>com.saax.gestorweb.model.datamodel.EmpresaCliente</class>
-    <class>com.saax.gestorweb.model.datamodel.Cidade</class>
-    <class>com.saax.gestorweb.model.datamodel.Endereco</class>
-    <class>com.saax.gestorweb.model.datamodel.Estado</class>
-    <class>com.saax.gestorweb.model.datamodel.AnexoTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.ApontamentoTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta</class>
-    <class>com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.OrcamentoTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.DurationConverter</class>
-    <class>com.saax.gestorweb.model.datamodel.LocalDatePersistenceConverter</class>
-    <class>com.saax.gestorweb.model.datamodel.LocalDateTimePersistenceConverter</class>
-    <class>com.saax.gestorweb.model.datamodel.LocalTimePersistenceConverter</class>
-    <class>com.saax.gestorweb.model.datamodel.AndamentoTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.BloqueioTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.HistoricoTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe</class>
-    <class>com.saax.gestorweb.model.datamodel.HierarquiaProjeto</class>
-    <class>com.saax.gestorweb.model.datamodel.ChatTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa</class>
-    <class>com.saax.gestorweb.model.datamodel.Participante</class>
+        <class>com.saax.gestorweb.model.datamodel.Tarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.Usuario</class>
+        <class>com.saax.gestorweb.model.datamodel.UsuarioEmpresa</class>
+        <class>com.saax.gestorweb.model.datamodel.Empresa</class>
+        <class>com.saax.gestorweb.model.datamodel.CentroCusto</class>
+        <class>com.saax.gestorweb.model.datamodel.Meta</class>
+        <class>com.saax.gestorweb.model.datamodel.Departamento</class>
+        <class>com.saax.gestorweb.model.datamodel.FilialCliente</class>
+        <class>com.saax.gestorweb.model.datamodel.FilialEmpresa</class>
+        <class>com.saax.gestorweb.model.datamodel.EmpresaCliente</class>
+        <class>com.saax.gestorweb.model.datamodel.Cidade</class>
+        <class>com.saax.gestorweb.model.datamodel.Endereco</class>
+        <class>com.saax.gestorweb.model.datamodel.Estado</class>
+        <class>com.saax.gestorweb.model.datamodel.AnexoTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.ApontamentoTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.FavoritosTarefaMeta</class>
+        <class>com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.OrcamentoTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.DurationConverter</class>
+        <class>com.saax.gestorweb.model.datamodel.LocalDatePersistenceConverter</class>
+        <class>com.saax.gestorweb.model.datamodel.LocalDateTimePersistenceConverter</class>
+        <class>com.saax.gestorweb.model.datamodel.LocalTimePersistenceConverter</class>
+        <class>com.saax.gestorweb.model.datamodel.AndamentoTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.BloqueioTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.HistoricoTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe</class>
+        <class>com.saax.gestorweb.model.datamodel.HierarquiaProjeto</class>
+        <class>com.saax.gestorweb.model.datamodel.ChatTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa</class>
+        <class>com.saax.gestorweb.model.datamodel.Participante</class>
+        <class>com.saax.gestorweb.model.datamodel.PublicacaoParticipante</class>
+        <class>com.saax.gestorweb.model.datamodel.PublicacaoAnexo</class>
+        <class>com.saax.gestorweb.model.datamodel.PublicacaoReferencia</class>
+        <class>com.saax.gestorweb.model.datamodel.PublicacaoTipo</class>
+        <class>com.saax.gestorweb.model.datamodel.Publicacao</class>
+        <class>com.saax.gestorweb.model.datamodel.PublicacaoStatus</class>
+        <class>com.saax.gestorweb.model.datamodel.Anexo</class>    
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
-    <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor_test"/>
-      <property name="javax.persistence.jdbc.user" value="postgres"/>
-      <property name="javax.persistence.jdbc.password" value="43DG19K8712"/>
-      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-      <!-- <property name="eclipselink.logging.level" value="FINE"/> -->
-    </properties>
-  </persistence-unit>
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gestor_test"/>
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="43DG19K8712"/>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            <!-- <property name="eclipselink.logging.level" value="FINE"/> -->
+        </properties>
+    </persistence-unit>
 </persistence>

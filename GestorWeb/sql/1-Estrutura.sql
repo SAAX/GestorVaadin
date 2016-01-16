@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS Tarefa CASCADE;
 DROP TABLE IF EXISTS Participante CASCADE;
 DROP TABLE IF EXISTS AndamentoTarefa CASCADE;
 DROP TABLE IF EXISTS BloqueioTarefa CASCADE;
-DROP TABLE IF EXISTS AnexoTarefa CASCADE;
+DROP TABLE IF EXISTS Anexo CASCADE;
 DROP TABLE IF EXISTS ApontamentoTarefa CASCADE;
 DROP TABLE IF EXISTS OrcamentoTarefa CASCADE;
 DROP TABLE IF EXISTS AvaliacaoMetaTarefa CASCADE;
@@ -31,6 +31,8 @@ DROP TABLE IF EXISTS FavoritosTarefaMeta CASCADE;
 DROP TABLE IF EXISTS HistoricoTarefa CASCADE;
 DROP TABLE IF EXISTS ChatTarefa CASCADE;
 DROP SEQUENCE RecurrencySequence;
+
+
 -- Usuário
 CREATE TABLE usuario (
 	idUsuario SERIAL NOT NULL PRIMARY KEY,
@@ -247,6 +249,7 @@ INSERT INTO PrioridadeMeta VALUES ('ALTA');
 CREATE TABLE Meta (
     idMeta SERIAL NOT NULL PRIMARY KEY, 
     idEmpresa BIGINT NOT NULL, 
+    FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
     idFilialEmpresa BIGINT, 
     nome CHARACTER VARYING (150) NOT NULL,
     dataInicio DATE NOT NULL,
@@ -269,7 +272,6 @@ CREATE TABLE Meta (
     FOREIGN KEY (idHierarquiaProjetoDetalhe) REFERENCES HierarquiaProjetoDetalhe(idHierarquiaProjetoDetalhe),
     FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
     FOREIGN KEY (idUsuarioRemocao) REFERENCES Usuario(idUsuario),
-    FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
     FOREIGN KEY (idFilialEmpresa) REFERENCES FilialEmpresa(idFilialEmpresa),	
     FOREIGN KEY (status) REFERENCES statusMeta (statusMeta),	
     FOREIGN KEY (Prioridade) REFERENCES PrioridadeMeta (PrioridadeMeta),	
@@ -386,19 +388,6 @@ CREATE TABLE Tarefa (
 
 CREATE SEQUENCE RecurrencySequence;
 
--- Participante meta / tarefa
-CREATE TABLE Participante (
-    idParticipante SERIAL NOT NULL PRIMARY KEY, 
-    idTarefa BIGINT, 
-    idMeta BIGINT, 
-    idUsuarioParticipante INTEGER NOT NULL,
-    idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
-    FOREIGN KEY (idMeta) REFERENCES Meta(idMeta),
-    FOREIGN KEY (idUsuarioParticipante) REFERENCES Usuario(idUsuario),
-    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
-);
 
 
 -- Andamento tarefa
@@ -429,18 +418,6 @@ CREATE TABLE BloqueioTarefa (
     FOREIGN KEY (idUsuarioRemocao) REFERENCES Usuario(idUsuario)
 );
 
--- Anexos Tarefa
-CREATE TABLE AnexoTarefa (
-    idAnexoTarefa SERIAL NOT NULL PRIMARY KEY, 
-    idTarefa BIGINT NOT NULL, 
-    nome  CHARACTER VARYING (255) NOT NULL,
-    caminhocompleto CHARACTER VARYING (255) NOT NULL,
-    idUsuarioInclusao INTEGER NOT NULL,
-    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
-    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
-);
-
 
 -- Apontamento Tarefa
 CREATE TABLE ApontamentoTarefa (
@@ -467,7 +444,7 @@ CREATE TABLE OrcamentoTarefa (
     credito NUMERIC(10,2),
     debito NUMERIC(10,2),
     saldo NUMERIC(10,2) NOT NULL,
-    observacoes  CHARACTER VARYING (60) NOT NULL,
+    observacoes  CHARACTER VARYING (60),
     idUsuarioInclusao INTEGER NOT NULL,
     dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
@@ -528,6 +505,106 @@ CREATE TABLE ChatTarefa (
     FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa)
        
 );
+
+
+
+DROP TABLE IF EXISTS PublicacaoParticipante CASCADE;
+DROP TABLE IF EXISTS PublicacaoReferencia CASCADE;
+DROP TABLE IF EXISTS PublicacaoTipo CASCADE;
+DROP TABLE IF EXISTS PublicacaoStatus CASCADE;
+DROP TABLE IF EXISTS Publicacao CASCADE;
+DROP TABLE IF EXISTS PublicacaoAnexo CASCADE;
+
+
+CREATE TABLE PublicacaoTipo (
+	idPublicacaoTipo SERIAL NOT NULL PRIMARY KEY,
+	PublicacaoTipo VARCHAR(150) NOT NULL, 
+	DataHoraInclusao  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+	idUsuario INTEGER NOT NULL, 
+	FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)
+);
+
+CREATE TABLE PublicacaoStatus (
+	idPublicacaoStatus SERIAL NOT NULL PRIMARY KEY,
+	PublicacaoStatus VARCHAR(150) NOT NULL
+);
+
+INSERT INTO PublicacaoStatus (PublicacaoStatus) VALUES ('PENDENTE');
+INSERT INTO PublicacaoStatus (PublicacaoStatus) VALUES ('EM ANDAMENTO');
+INSERT INTO PublicacaoStatus (PublicacaoStatus) VALUES ('FECHADO');
+
+CREATE TABLE publicacaoreferencia (
+	idPublicacaoReferencia SERIAL NOT NULL PRIMARY KEY,
+	PublicacaoReferencia VARCHAR(150) NOT NULL
+);
+
+
+
+CREATE TABLE Publicacao (
+	idPublicacao SERIAL NOT NULL PRIMARY KEY,
+        idEmpresa BIGINT NOT NULL, 
+        FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
+	nome VARCHAR(150) NOT NULL, 
+	idPublicacaoReferencia INTEGER,
+	FOREIGN KEY (idPublicacaoReferencia) REFERENCES PublicacaoReferencia (idPublicacaoReferencia),
+	idPublicacaoTipo INTEGER NOT NULL,
+	FOREIGN KEY (idPublicacaoTipo) REFERENCES PublicacaoTipo (idPublicacaoTipo),
+	DataReuniao DATE,
+	DeadLineLeitura DATE,
+	Descricao TEXT NOT NULL, 
+	DataPublicacao DATE,
+	idPublicacaoStatus INTEGER NOT NULL,
+	FOREIGN KEY (idPublicacaoStatus) REFERENCES PublicacaoStatus (idPublicacaoStatus),
+	DataHoraInclusao  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+	idUsuario INTEGER NOT NULL, 
+	FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)
+);
+
+CREATE TABLE PublicacaoParticipante (
+	idPublicacaoParticipante SERIAL NOT NULL PRIMARY KEY,
+	idPublicacao INTEGER NOT NULL, 
+	FOREIGN KEY (idPublicacao) REFERENCES Publicacao (idPublicacao),
+	idParticipante INTEGER NOT NULL, 
+	FOREIGN KEY (idParticipante) REFERENCES Usuario(idUsuario),
+	DataLeitura DATE NOT NULL,
+	DataHoraInclusao  TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+	idUsuario INTEGER NOT NULL, 
+	FOREIGN KEY (idUsuario) REFERENCES Usuario(idUsuario)
+);
+
+
+-- Participante meta / tarefa
+CREATE TABLE Participante (
+    idParticipante SERIAL NOT NULL PRIMARY KEY, 
+    idTarefa BIGINT, 
+    idMeta BIGINT, 
+    idPublicacao BIGINT, 
+    idUsuarioParticipante INTEGER NOT NULL,
+    idUsuarioInclusao INTEGER NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
+    FOREIGN KEY (idMeta) REFERENCES Meta(idMeta),
+    FOREIGN KEY (idPublicacao) REFERENCES Publicacao(idPublicacao),
+    FOREIGN KEY (idUsuarioParticipante) REFERENCES Usuario(idUsuario),
+    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
+);
+
+
+-- Anexos 
+CREATE TABLE Anexo (
+    idAnexo SERIAL NOT NULL PRIMARY KEY, 
+    idTarefa BIGINT , 
+    idPublicacao BIGINT , 
+    nome  CHARACTER VARYING (255) NOT NULL,
+    caminhocompleto CHARACTER VARYING (255) NOT NULL,
+    idUsuarioInclusao INTEGER NOT NULL,
+    dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idTarefa) REFERENCES Tarefa(idTarefa),
+    FOREIGN KEY (idPublicacao) REFERENCES Publicacao(idPublicacao),
+    FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario)
+);
+
+
 
 -- 100 chars
 -- 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890

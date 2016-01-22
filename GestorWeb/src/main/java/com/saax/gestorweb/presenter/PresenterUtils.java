@@ -1,21 +1,25 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.model.EmpresaModel;
+import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.CentroCusto;
 import com.saax.gestorweb.model.datamodel.Departamento;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.EmpresaCliente;
 import com.saax.gestorweb.model.datamodel.Meta;
+import com.saax.gestorweb.model.datamodel.Participante;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.TarefaView;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.TreeTable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -30,6 +34,7 @@ import java.util.ResourceBundle;
  * @author rodrigo
  */
 public class PresenterUtils {
+
 
     // Referencia ao recurso das mensagens:
     private final ResourceBundle mensagensResource;
@@ -78,8 +83,7 @@ public class PresenterUtils {
 
         if (empresa != null) {
 
-            EmpresaModel empresaModel = new EmpresaModel();
-            List<Departamento> departamentoList = empresaModel.obterListaDepartamentosAtivos(empresa);
+            List<Departamento> departamentoList = EmpresaModel.obterListaDepartamentosAtivos(empresa);
 
             if (departamentoList.isEmpty()) {
 
@@ -100,6 +104,29 @@ public class PresenterUtils {
             departamentoCombo.setEnabled(false);
 
         }
+
+    }
+
+    public static void carregaComboParticipante(ComboBox participante, Empresa empresa) {
+        for (Usuario usuario : UsuarioModel.listarUsuariosEmpresa(empresa)) {
+            participante.addItem(usuario);
+            participante.setItemCaption(usuario, usuario.getNome());
+        }
+    }
+    
+    public static void carregaComboResponsavel(ComboBox combo, Empresa empresa) {
+        for (Usuario usuario : UsuarioModel.listarUsuariosEmpresa(empresa)) {
+            combo.addItem(usuario);
+            combo.setItemCaption(usuario, usuario.getNome());
+        }
+    }
+
+
+    
+    public static void resetaComboDepartamento(ComboBox departamentoCombo) {
+
+        departamentoCombo.select(null);
+        departamentoCombo.removeAllItems();
 
     }
 
@@ -144,6 +171,15 @@ public class PresenterUtils {
 
     }
 
+    public static void resetaComboCentroCusto(ComboBox centroCustoCombo) {
+
+        centroCustoCombo.select(null);
+        centroCustoCombo.removeAllItems();
+
+    }
+
+    
+    
     /**
      * Carrega o combo de clientes com todos os clientes ativos de todas as
      * empresas (empresa pricipal + subs ) do usuario logado
@@ -209,4 +245,16 @@ public class PresenterUtils {
 
     }
 
+    public static void resetaSelecaoUsuarioResponsavel(ComboBox responsavel) {
+        responsavel.select(null);
+        responsavel.removeAllItems();
+    }
+
+
+    public static void resetaSelecaoParticipantes(ComboBox participanteCombo, BeanItemContainer<Participante> participanteContainer) {
+        participanteCombo.select(null);
+        participanteCombo.removeAllItems();
+        participanteContainer.removeAllItems();
+    }
+    
 }

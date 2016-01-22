@@ -312,6 +312,7 @@ public class MetaView extends Window implements Serializable {
         // Combo: Categoria
         hierarquiaCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.hierarquiaCombo.label"));
         hierarquiaCombo.addValidator(new BeanValidator(Meta.class, "categoria"));
+        hierarquiaCombo.setTextInputAllowed(false);
         requiredFields.add(hierarquiaCombo);
         containerCabecalhoLinha2.addComponent(hierarquiaCombo);
 
@@ -458,7 +459,9 @@ public class MetaView extends Window implements Serializable {
         participantesCombo = new ComboBox("Participantes");
 
         participantesCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.adicionarParticipante((Usuario) event.getProperty().getValue());
+            if (event.getProperty().getValue() != null) {
+                listener.adicionarParticipante((Usuario) event.getProperty().getValue());
+            }
         });
 
         participantesContainer = new BeanItemContainer<>(Participante.class);

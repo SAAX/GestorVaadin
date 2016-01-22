@@ -1,0 +1,29 @@
+
+1. Cadastro/Edição de tarefa
+2. Cadastro/Edição de meta
+3. Dashboard
+
+** RECORRENCIA
+
+
+
+**************************************************
+
+TODO:
+
+1. Concluir alteração da relação usuario-empresa.
+Agora um usuário pode estar ativo em mais de uma empresa, o que muda o comportamento dos combos de seleção de responsável e participantes.
+Alterar os cadastros de meta e tarefa
+
+DONE!!!
+
+
+
+
+BUG CORRIGIDOS: 
+
+
+BUG PENDENTES: 
+
+REFACTORING PENDENTE:
+

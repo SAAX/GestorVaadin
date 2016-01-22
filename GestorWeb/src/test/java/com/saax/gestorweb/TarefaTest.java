@@ -117,7 +117,7 @@ public class TarefaTest {
         view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         try {
             view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
@@ -159,9 +159,9 @@ public class TarefaTest {
         view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
 
-        File anexoTeste = new File(System.getProperty("user.dir") + "/anexoTeste.pdf");
+        File anexoTeste = new File(System.getProperty("user.home") + System.getProperty("file.separator") + "anexoTeste.pdf");
         try {
             anexoTeste.createNewFile();
             presenter.anexoAdicionado(anexoTeste);
@@ -222,7 +222,7 @@ public class TarefaTest {
             }
         }
         //        private Empresa empresa;
-        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         //        private String nome;
         view.getTaskNameTextField().setValue(nome);
         //        private PrioridadeTarefa prioridade;
@@ -431,7 +431,7 @@ public class TarefaTest {
         view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
 
         // -------------------------------------------------------------------------------------
         // Tarefa:  Teste Multiplos Niveis -> Sub 1
@@ -580,7 +580,7 @@ public class TarefaTest {
         Departamento departamento = DAOAleatorio.getDepartamentoAleatorio (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresas().get(0).getEmpresa());
         view.getDepartamentCombo().setValue(departamento);
         //        private Empresa empresa;
-        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         //        private FilialEmpresa filialEmpresa;
         //        private EmpresaCliente empresaCliente;
         EmpresaCliente empresaCliente = DAOAleatorio.getEmpresaClienteAleatoria (GestorEntityManagerProvider.getEntityManager(), loggedUser.getEmpresas().get(0).getEmpresa());
@@ -687,7 +687,7 @@ public class TarefaTest {
         view.getRecurrencyButton().getCaption().equals("RECORRENTE");
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         try {
             view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {

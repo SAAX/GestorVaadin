@@ -82,7 +82,6 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
         init(meta);
 
         view.getHierarquiaCombo().setEnabled(false);
-        
 
     }
 
@@ -90,19 +89,19 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
      * Edita uma Meta existente
      *
      * @param meta a ser alterada
-     * 
+     *
      */
     @Override
     public void editarMeta(Meta meta) {
 
         meta = MetaModel.refresh(meta);
-        
+
         // sets the title
         view.exibeTituloEdicao(meta);
 
         // inits the UI
         init(meta);
-        
+
         view.getParticipantesContainer().addAll(meta.getParticipantes());
         for (Tarefa task : meta.getTarefas()) {
             addTaskInTable(task);
@@ -111,7 +110,6 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
     }
 
-    
     /**
      * Inicializa o formulário carregando a meta informada
      */
@@ -119,9 +117,9 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
         carregaComboCategoria(meta);
         carregaComboEmpresa();
-        carregaComboResponsavel(meta);
-        PresenterUtils.getInstance().carregaComboEmpresaCliente(view.getEmpresaClienteCombo());
-        carregaComboParticipante(meta);
+        PresenterUtils.carregaComboResponsavel(view.getResponsavelCombo(), meta.getEmpresa());
+        PresenterUtils.carregaComboEmpresaCliente(view.getEmpresaClienteCombo());
+        PresenterUtils.carregaComboParticipante(view.getParticipantesCombo(), meta.getEmpresa());
 
         // Abre o formulário
         UI.getCurrent().addWindow(view);
@@ -130,7 +128,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
         view.setMeta(meta);
 
         configPermissions(meta);
-        
+
         view.setCaption(mensagens.getString("CadastroMetaView.tituloBase") + meta.getCategoria().getCategoria());
 
     }
@@ -170,27 +168,44 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
      * Carrega o combo de responsáveis com todos os usuários ativos da mesma
      * empresa do usuário logado
      */
-    private void carregaComboResponsavel(Meta meta) {
-        ComboBox responsavel = view.getResponsavelCombo();
-        for (Usuario usuario : UsuarioModel.listarUsuariosEmpresa(meta.getEmpresa())) {
-            responsavel.addItem(usuario);
-            responsavel.setItemCaption(usuario, usuario.getNome());
-
-        }
-    }
-
-
     /**
      * Trata o evento disparado ao soelecionar uma empresa e carrega a lista de
      * departamentos
      *
-     * @param empresa
+     * @param empresaSelecionada
      */
     @Override
-    public void empresaSelecionada(Empresa empresa) {
-        PresenterUtils.getInstance().carregaComboDepartamento(view.getDepartamentoCombo(), empresa);
-        PresenterUtils.getInstance().carregaComboCentroCusto(view.getCentroCustoCombo(), empresa);
-        
+    public void empresaSelecionada(Empresa empresaSelecionada) {
+
+        Empresa empresaAnterior = view.getMeta().getEmpresa();
+
+        boolean empresaSendoDeSelecionada = (empresaSelecionada == null);
+        boolean empresaSendoAlterada = (empresaSelecionada != null) && (!empresaSelecionada.equals(empresaAnterior));
+
+        view.getMeta().setEmpresa(empresaSelecionada);
+
+        if (empresaSendoDeSelecionada || empresaSendoAlterada) {
+
+            PresenterUtils.resetaSelecaoUsuarioResponsavel(view.getResponsavelCombo());
+            view.getMeta().setUsuarioResponsavel(null);
+
+            PresenterUtils.resetaSelecaoParticipantes(view.getParticipantesCombo(), view.getParticipantesContainer());
+            view.getMeta().setParticipantes(new ArrayList<>());
+
+            PresenterUtils.resetaComboDepartamento(view.getDepartamentoCombo());
+            PresenterUtils.resetaComboCentroCusto(view.getCentroCustoCombo());
+
+        }
+
+        if (empresaSendoAlterada) {
+
+            PresenterUtils.carregaComboResponsavel(view.getResponsavelCombo(), empresaSelecionada);
+            PresenterUtils.carregaComboParticipante(view.getParticipantesCombo(), empresaSelecionada);
+            PresenterUtils.carregaComboDepartamento(view.getDepartamentoCombo(), empresaSelecionada);
+            PresenterUtils.carregaComboCentroCusto(view.getCentroCustoCombo(), empresaSelecionada);
+
+        }
+
     }
 
     @Override
@@ -200,12 +215,10 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
         if (meta.getUsuarioResponsavel() == null) {
             meta.setUsuarioResponsavel(meta.getUsuarioInclusao());
         }
-        boolean novaMeta = meta.getId() == null;
         meta = MetaModel.gravarMeta(meta);
 
-        TarefaModel tarefaModel = new TarefaModel();
         for (Tarefa tarefa : meta.getTarefas()) {
-            tarefaModel.gravarTarefa(tarefa);
+            TarefaModel.gravarTarefa(tarefa);
         }
 
         // notica (se existir) algum listener interessado em saber que o cadastro foi finalizado.
@@ -246,7 +259,8 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
             // Tells the presenter which is gonna be the Tarefa's category
             presenter.createTask(view.getMeta(), tasksCategories);
 
-        } catch (FieldGroup.CommitException ex) {
+        }
+        catch (FieldGroup.CommitException ex) {
             Notification.show(mensagens.getString("CadastroMetaPresenter.addTaskButtonClicked.commitException"), Notification.Type.HUMANIZED_MESSAGE);
         }
     }
@@ -260,8 +274,6 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 //    public void forecastButtonClickedd() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-    
-
     private void organizeTree(Tarefa parentTask, List<Tarefa> subTasks) {
 
         for (Tarefa subTask : subTasks) {
@@ -297,7 +309,6 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
     }
 
-    
     /**
      * Trata o evento disparado via callback quando uma tarefa é removida
      *
@@ -311,7 +322,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
             view.getTarefasTable().getItemIds().remove(tarefaRemovida);
         }
     }
-    
+
     /**
      * Trata o evento disparado ao concluir a criação de uma nova tarefa ou
      * alteração de uma
@@ -321,11 +332,11 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     @Override
     public void atualizarApresentacaoTarefa(Tarefa tarefaCriada) {
 
-        if (view.getTarefasTable().getItemIds().contains(tarefaCriada)){
+        if (view.getTarefasTable().getItemIds().contains(tarefaCriada)) {
             atualizarTarefaTable(tarefaCriada);
         } else {
             addTaskInTable(tarefaCriada);
-            
+
         }
         organizeTree(tarefaCriada, tarefaCriada.getSubTarefas());
 
@@ -354,20 +365,6 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
     }
 
-    /**
-     * Carrega o combo de participante com todos os usuários ativos da mesma
-     * empresa do usuário logado
-     */
-    private void carregaComboParticipante(Meta meta) {
-        ComboBox participante = view.getParticipantesCombo();
-        for (Usuario usuario : UsuarioModel.listarUsuariosEmpresa(meta.getEmpresa())) {
-            participante.addItem(usuario);
-            participante.setItemCaption(usuario, usuario.getNome());
-
-        }
-    }
-
-    
     @Override
     public void taskStatusChanged(Tarefa task) {
         atualizarTarefaTable(task);
@@ -392,10 +389,13 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
     @Override
     public void removerParticipante(Participante participante) {
-        view.getParticipantesContainer().removeItem(participante);
-        Meta meta = view.getMeta();
-        meta.getParticipantes().remove(participante);
-
+        if (!participante.getUsuarioInclusao().equals(PresenterUtils.getUsuarioLogado())) {
+            Notification.show("Ops, apenas " + participante.getUsuarioInclusao().getNome() + " pode remover este participante.", Notification.Type.WARNING_MESSAGE);
+        } else {
+            view.getParticipantesContainer().removeItem(participante);
+            Meta meta = view.getMeta();
+            meta.getParticipantes().remove(participante);
+        }
     }
 
     private void configPermissions(Meta meta) {
@@ -405,7 +405,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
         view.setEditAllowed(usuarioLogadoEhOSolicitante || usuarioLogadoEhOResponsavel);
         view.getResponsavelCombo().setEnabled(usuarioLogadoEhOSolicitante);
-        
+
         view.getRemoverMetaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getInstance().getUsuarioLogado()));
     }
 
@@ -448,6 +448,5 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     public void metaRestaurada(Meta meta) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
 }

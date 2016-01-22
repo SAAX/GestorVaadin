@@ -21,6 +21,7 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.DashboardPresenter;
+import com.saax.gestorweb.presenter.PresenterUtils;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 
 import com.saax.gestorweb.util.GestorSession;
@@ -60,8 +61,6 @@ public class MetaModel {
         return meta;
 
     }
-
-  
 
     /**
      * Delega chamada ao model responsavel (EmpresaModel)
@@ -274,9 +273,25 @@ public class MetaModel {
         List<Meta> metasDataFim = new ArrayList<>();
         if (dataFim != null) {
 
-            metasDataFim.addAll(em.createNamedQuery("Meta.findByDataFim")
-                    .setParameter("datafim", dataFim)
-                    .getResultList());
+            for (UsuarioEmpresa usuarioEmpresa : PresenterUtils.getUsuarioLogado().getEmpresas()) {
+                if (usuarioEmpresa.getAtivo()) {
+                    Empresa empresa = usuarioEmpresa.getEmpresa();
+                    metasDataFim.addAll(em.createNamedQuery("Meta.findByDataFim")
+                            .setParameter("datafim", dataFim)
+                            .setParameter("empresa", empresa)
+                            .getResultList());
+
+                    for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                        metasDataFim.addAll(em.createNamedQuery("Meta.findByDataFim")
+                                .setParameter("datafim", dataFim)
+                                .setParameter("empresa", subEmpresa)
+                                .getResultList());
+                    }
+
+                }
+
+            }
+
         }
 
         List<Meta> metas = new ArrayList<>();

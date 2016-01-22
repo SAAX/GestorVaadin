@@ -125,7 +125,7 @@ public class TarefaView extends Window {
     // Data Tab basic components
     // -------------------------------------------------------------------------
     @PropertyId("empresa")
-    private ComboBox companyCombo;
+    private ComboBox empresaCombo;
 
     @PropertyId("hierarquia")
     private ComboBox hierarchyCombo;
@@ -345,19 +345,19 @@ public class TarefaView extends Window {
     private Component buildInitialTaskDataSheet() {
 
         // Combo: Company
-        companyCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.companyCombo.label"));
-        companyCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
+        empresaCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.companyCombo.label"));
+        empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.empresaSelecionada((Empresa) event.getProperty().getValue());
         });
-        companyCombo.setWidth("100%");
-        companyCombo.addValidator(new BeanValidator(Tarefa.class, "empresa"));
-        requiredFields.add(companyCombo);
+        empresaCombo.setWidth("100%");
+        empresaCombo.addValidator(new BeanValidator(Tarefa.class, "empresa"));
+        requiredFields.add(empresaCombo);
 
         // Combo: Hierarchy
         hierarchyCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.hierarchyCombo.label"));
         hierarchyCombo.setWidth("140px");
         hierarchyCombo.setTextInputAllowed(false);
-        
+
         hierarchyCombo.addValidator(new BeanValidator(Tarefa.class, "hierarquia"));
         hierarchyCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.hierarquiaSelecionada((HierarquiaProjetoDetalhe) event.getProperty().getValue());
@@ -389,6 +389,7 @@ public class TarefaView extends Window {
 
         // Combo Priority
         priorityCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.prioridadeCombo.label"));
+        priorityCombo.setTextInputAllowed(false);
         priorityCombo.setWidth("100%");
 
         // task status pop-up
@@ -422,7 +423,7 @@ public class TarefaView extends Window {
         categoriaENomeContainer.setExpandRatio(taskNameTextField, 1);
         categoriaENomeContainer.setComponentAlignment(hierarchyCombo, Alignment.BOTTOM_CENTER);
 
-        grid.addComponent(companyCombo);
+        grid.addComponent(empresaCombo);
         grid.addComponent(categoriaENomeContainer, 1, 0, 2, 0);
         grid.addComponent(startDateDateField);
         grid.addComponent(recurrencyButton);
@@ -509,14 +510,16 @@ public class TarefaView extends Window {
                 setValidatorsVisible(true);
                 taskFieldGroup.commit();
                 listener.gravarButtonClicked();
-            } catch (RuntimeException ex) {
+            }
+            catch (RuntimeException ex) {
                 Notification notification = new Notification("Erro", (ex.getMessage() == null ? PresenterUtils.getInstance().getMensagensResource().getString("ErrorUtils.errogenerico") : ex.getMessage()),
                         Notification.Type.WARNING_MESSAGE, true);
 
                 notification.show(Page.getCurrent());
                 Logger.getLogger(TarefaView.class.getName()).log(Level.WARNING, null, ex);
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 ErrorUtils.showComponentErrors(this.taskFieldGroup.getFields());
                 Logger.getLogger(TarefaView.class.getName()).log(Level.WARNING, null, ex);
             }
@@ -544,7 +547,9 @@ public class TarefaView extends Window {
 
         assigneeUserCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.responsavelCombo.label"));
         assigneeUserCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.assigneeUserChanged(getTarefa(), (Usuario) event.getProperty().getValue());
+            if (event.getProperty().getValue() != null) {
+                listener.assigneeUserChanged(getTarefa(), (Usuario) event.getProperty().getValue());
+            }
         });
 
         requiredFields.add(assigneeUserCombo);
@@ -552,7 +557,9 @@ public class TarefaView extends Window {
         followersCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.participantesCombo.label"));
 
         followersCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
-            listener.adicionarParticipante((Usuario) event.getProperty().getValue());
+            if (event.getProperty().getValue() != null) {
+                listener.adicionarParticipante((Usuario) event.getProperty().getValue());
+            }
         });
 
         followersContainer = new BeanItemContainer<>(Participante.class);
@@ -638,7 +645,11 @@ public class TarefaView extends Window {
         addAttach = new Upload(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.adicionarAnexoButton.filechooser.caption"), (String filename, String mimeType) -> {
             FileOutputStream fos = null;
             try {
-                File randomFolder = new File(System.getProperty("user.dir") + "/tmp/" + String.valueOf(Math.abs(new Random().nextInt())));
+                if(!new File(System.getProperty("user.home") + System.getProperty("file.separator") +"tmp").canWrite() || !new File(System.getProperty("user.home") + System.getProperty("file.separator") + "tmp").isDirectory() ){
+                    new File(System.getProperty("user.home") + System.getProperty("file.separator") + "tmp").mkdir();
+                }
+                
+                File randomFolder = new File(System.getProperty("user.home") + System.getProperty("file.separator") + "tmp" + System.getProperty("file.separator") + String.valueOf(Math.abs(new Random().nextInt())));
                 randomFolder.mkdirs();
 
                 File file = new File(randomFolder, filename);
@@ -646,7 +657,8 @@ public class TarefaView extends Window {
 
                 addAttach.setData(file);
 
-            } catch (FileNotFoundException e) {
+            }
+            catch (FileNotFoundException e) {
                 Notification.show(e.getMessage(), Notification.Type.WARNING_MESSAGE);
                 return null;
             }
@@ -849,7 +861,7 @@ public class TarefaView extends Window {
         pointingTimeTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor", "custoHora");
         pointingTimeTable.setSortContainerPropertyId("dataHoraInclusao");
         pointingTimeTable.setSortEnabled(false);
-                
+
         // Adicionar coluna do botão "remover"
         pointingTimeTable.addGeneratedColumn("Remove", (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button("x");
@@ -1058,7 +1070,7 @@ public class TarefaView extends Window {
      */
     private Component buildSubTasksSheet() {
 
-        subTarefasTable = new TreeTable(){
+        subTarefasTable = new TreeTable() {
             {
                 this.alwaysRecalculateColumnWidths = true;
             }
@@ -1113,10 +1125,10 @@ public class TarefaView extends Window {
     }
 
     /**
-     * @return the companyCombo
+     * @return the empresaCombo
      */
-    public ComboBox getCompanyCombo() {
-        return companyCombo;
+    public ComboBox getEmpresaCombo() {
+        return empresaCombo;
     }
 
     /**
@@ -1465,7 +1477,7 @@ public class TarefaView extends Window {
         addSubButton.setEnabled(editAllowed);
 
         // Basic Data:
-        companyCombo.setEnabled(editAllowed);
+        empresaCombo.setEnabled(editAllowed);
         hierarchyCombo.setEnabled(editAllowed);
         taskNameTextField.setEnabled(editAllowed);
         startDateDateField.setEnabled(editAllowed);

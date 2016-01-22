@@ -86,7 +86,7 @@ public class EvolucaoStatusTest {
             view.getTaskNameTextField().setValue(nome);
             view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
             view.getStartDateDateField().setValue(new Date());
-            view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
+            view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
             view.getAssigneeUserCombo().select(usuarioResponsavel);
             try {
                 view.getTaskFieldGroup().commit();

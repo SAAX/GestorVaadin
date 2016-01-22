@@ -1,22 +1,3 @@
 próximo commit:
 
-Correção nas tabelas de tarefa: ao expandir/reduzir itens que não tem filhos, não aciona o evento.
 
-
-próximo commit:
-
-** Publicações: 
- * Criação das tabelas
- * Criação dos entitie beans
-
-** Alteração no Relacionamento Usuário <-> Empresa
- * Alterada a regra de relacionamento, agora o usuário pode estar ativo em mais de uma empresa
-   Com isto:
-        1. As empresas que estarão disponíveis para o usuário selecionar ao criar uma meta/tarefa serão todas as empresas onde ele estiver ativo, e suas coligadas.
-	2. Os usuários disponíveis nos filtros de pesquisa serão todos os usuários das empresas acima.
-	3. O usuário logado poderá visualizar tarefas de todas as empresas onde estiver ativo, respeitando as demais regras de acesso: 
-	Ele deve ser participante, responsável ou solicitante e a meta/tarefa não pode estar na lixeira.
-
-** Criação de regra para remoção de subsidiárias com metas/tarefas cadastradas
- * Na gestão de contas, ao remover uma subsidiária que possui metas/tarefas, o sistema move estes dados
-    para a empresa matriz. É exibida uma confirmação ao usuário para ciência no mesmo.

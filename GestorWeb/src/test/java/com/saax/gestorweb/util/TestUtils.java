@@ -110,7 +110,7 @@ public class TestUtils {
         view.getTaskNameTextField().setValue(nome);
         view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
         view.getStartDateDateField().setValue(new Date());
-        view.getCompanyCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
+        view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         try {
             view.getTaskFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {

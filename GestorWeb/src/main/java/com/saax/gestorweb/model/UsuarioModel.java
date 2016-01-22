@@ -62,7 +62,7 @@ public class UsuarioModel {
                 usuarios.add(usuarioEmpresa.getUsuario());
             }
         }
-
+        
         return usuarios;
     }
 

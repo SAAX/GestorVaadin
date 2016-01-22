@@ -1,10 +1,8 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.StartPageModel;
-import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.presenter.DashboardPresenter;
-import com.saax.gestorweb.presenter.LoginPresenter;
 import com.saax.gestorweb.presenter.StartPagePresenter;
 import com.saax.gestorweb.util.CookiesManager;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
@@ -14,8 +12,8 @@ import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.saax.gestorweb.view.DashboardView;
-import com.saax.gestorweb.view.LoginView;
 import com.saax.gestorweb.view.StartPageView;
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.Page;
@@ -45,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Rodrigo
  */
 @Theme("valo-default")
+@Push
 public class GestorMDI extends UI {
 
     private transient StartPageModel startPageModel;

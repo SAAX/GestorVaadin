@@ -207,7 +207,7 @@ public class TarefaModel {
             throw new IllegalStateException(mensagens.getString("TarefaModel.moverAnexoTemporario.pastaBaseNaoEncontrada"));
         }
 
-        String path = System.getProperty("user.dir") + "/" + relativePath;
+        String path = System.getProperty("user.home") + System.getProperty("file.separator") + relativePath;
 
         String cnpj = FormatterUtil.removeNonDigitChars(tarefa.getEmpresa().getCnpj());
 
@@ -834,6 +834,20 @@ public class TarefaModel {
 
     }
 
+    private static List<Tarefa> obtemTarefasPorUsuarioResponsavel(List<Usuario> usuariosResponsaveis) {
+        
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        List<Tarefa> tarefasUsuarioResponsavel = new ArrayList<>();
+        for (Usuario usuarioResponsavel : usuariosResponsaveis) {
+
+            usuarioResponsavel = em.find(Usuario.class, usuarioResponsavel.getId());
+            tarefasUsuarioResponsavel.addAll(usuarioResponsavel.getTarefasSobResponsabilidade());
+
+        }
+        return tarefasUsuarioResponsavel;
+    }
+
+    
     /**
      * Lista as tarefas que correspondam aos filtros informados
      *
@@ -848,21 +862,14 @@ public class TarefaModel {
      * @param usuarioLogado
      * @return
      */
-    public static List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa,
+    public static List<Tarefa> pesquisarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa,
             List<Usuario> usuariosResponsaveis,
             List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas,
             List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario usuarioLogado) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
-        final List<Tarefa> tarefasUsuarioResponsavel = new ArrayList<>();
-
-        for (Usuario usuarioResponsavel : usuariosResponsaveis) {
-
-            usuarioResponsavel = em.find(Usuario.class, usuarioResponsavel.getId());
-            tarefasUsuarioResponsavel.addAll(usuarioResponsavel.getTarefasSobResponsabilidade());
-
-        }
+        List<Tarefa> tarefasUsuarioResponsavel = obtemTarefasPorUsuarioResponsavel(usuariosResponsaveis);
 
         List<Tarefa> tarefasUsuarioSolicitante = new ArrayList<>();
         for (Usuario usuariosSolicitante : usuariosSolicitantes) {
@@ -896,17 +903,49 @@ public class TarefaModel {
         List<Tarefa> tarefasDataFim = new ArrayList<>();
         if (dataFim != null) {
 
-            tarefasDataFim.addAll(em.createNamedQuery("Tarefa.findByDataFim")
-                    .setParameter("dataFim", dataFim)
-                    .getResultList());
+            for (UsuarioEmpresa usuarioEmpresa : usuarioLogado.getEmpresas()) {
+                if (usuarioEmpresa.getAtivo()) {
+                    Empresa empresa = usuarioEmpresa.getEmpresa();
+                    tarefasDataFim.addAll(em.createNamedQuery("Tarefa.findByDataFim")
+                            .setParameter("dataFim", dataFim)
+                            .setParameter("empresa", empresa)
+                            .getResultList());
+
+                    for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                        tarefasDataFim.addAll(em.createNamedQuery("Tarefa.findByDataFim")
+                                .setParameter("dataFim", dataFim)
+                                .setParameter("empresa", subEmpresa)
+                                .getResultList());
+                    }
+
+                }
+
+            }
         }
 
         List<Tarefa> tarefasProjecao = new ArrayList<>();
         for (ProjecaoTarefa projecao : projecoes) {
-            tarefasProjecao.addAll(
-                    em.createNamedQuery("Tarefa.findByProjecao")
-                    .setParameter("projecao", projecao)
-                    .getResultList());
+
+            for (UsuarioEmpresa usuarioEmpresa : usuarioLogado.getEmpresas()) {
+                if (usuarioEmpresa.getAtivo()) {
+                    Empresa empresa = usuarioEmpresa.getEmpresa();
+                    tarefasProjecao.addAll(
+                            em.createNamedQuery("Tarefa.findByProjecao")
+                            .setParameter("empresa", empresa)
+                            .setParameter("projecao", projecao)
+                            .getResultList());
+
+                    for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                        tarefasProjecao.addAll(
+                                em.createNamedQuery("Tarefa.findByProjecao")
+                                .setParameter("empresa", subEmpresa)
+                                .setParameter("projecao", projecao)
+                                .getResultList());
+                    }
+
+                }
+
+            }
         }
 
         List<Tarefa> tarefas = new ArrayList<>();
@@ -971,6 +1010,7 @@ public class TarefaModel {
     }
 
     private static List<Tarefa> filtrarTarefas(List<Tarefa> tarefas, Usuario usuarioLogado) {
+        
 
         List<Tarefa> result = new ArrayList<>();
         for (Tarefa tarefa : tarefas) {

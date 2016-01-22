@@ -15,3 +15,20 @@ Ao consultar a lixeira deverão aparecer apenas as metas/tarefas removidas pelo 
 
 
 http://fortawesome.github.io/Font-Awesome/icons/
+
+
+
+RN: Seleção de usuário responsável
+
+No cadastro/edição de metas e tarefas é disponibilizado uma lista (combo) para seleção do único usuário responsável pela meta/tarefa
+A existência de um usuário responsável é obrigatória, mas sua indicação é opcional. Caso o usuário operador (logado) não selecione o responsável o sistema automaticamente indica o próprio como reponsável pela Meta/Tarefa;
+A lista de usuários disponíveis para seleção é a lista de usuários ativos da empresa indicada para Meta/Tarefa, sendo considerada apenas a empresa selecionada e não suas coligadas ou matriz (ag. confirmação da regra)
+Ao ser alterada a empresa o sistema remove o usuário responsável pré-selecionado (se existir), visto que na nova empresa este usuário pode não existir.
+
+RN: Seleção de usuários participantes
+
+No cadastro/edição de metas e tarefas é disponibilizado uma lista (combo) para seleção dos usuários participantes da meta/tarefa.
+A indicação de um ou mais participantes é opcional, a meta/tarefa pode existir sem usuários participantes.
+A lista de usuários disponíveis para seleção é a lista de usuários ativos da empresa indicada para Meta/Tarefa, sendo considerada apenas a empresa selecionada e não suas coligadas ou matriz (ag. confirmação da regra)
+Ao ser alterada a empresa o sistema remove os usuários participantes pré-selecionados (se existirem), visto que na nova empresa este usuário pode não existir.
+

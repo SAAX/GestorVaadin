@@ -107,16 +107,16 @@ public class TestUtils {
         HierarquiaProjetoDetalhe categoriaDefaultMeta = TarefaModel.getCategoriaDefaultTarefa();
         presenter.createTask(categoriaDefaultMeta);
 
-        view.getTaskNameTextField().setValue(nome);
-        view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
-        view.getStartDateDateField().setValue(new Date());
+        view.getNomeTarefaTextField().setValue(nome);
+        view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
+        view.getDataInicioDateField().setValue(new Date());
         view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
         try {
-            view.getTaskFieldGroup().commit();
+            view.getTarefaFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
-        presenter.gravarButtonClicked();
+        view.getGravarButton().click();
 
         Tarefa t = (Tarefa) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Tarefa.findByNome")
                 .setParameter("nome", nome)

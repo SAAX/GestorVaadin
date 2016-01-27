@@ -179,8 +179,8 @@ public class MetaTest {
         }
         
         // open a presenter to create a task under the target
-        TarefaView taskView = new TarefaView();
-        TarefaPresenter taskPresenter = new TarefaPresenter(taskView);
+        TarefaView TarefaView = new TarefaView();
+        TarefaPresenter taskPresenter = new TarefaPresenter(TarefaView);
         
         // sets the taskPresenter's call back to the targetPresenter
         taskPresenter.addCallBackListener(presenter);
@@ -192,22 +192,22 @@ public class MetaTest {
         taskPresenter.createTask(view.getMeta(), tasksCategories);
             
         // fills the required fields of Task
-        taskView.getTaskNameTextField().setValue("Task under a target");
-        //taskView.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
-        taskView.getRecurrencyButton().getCaption().equals("RECORRENTE");
-        taskView.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
-        taskView.getStartDateDateField().setValue(new Date());
-        taskView.getHierarchyCombo().setValue(taskView.getHierarchyCombo().getItemIds().toArray()[0]);
+        TarefaView.getNomeTarefaTextField().setValue("Task under a target");
+        //TarefaView.getTipoRecorrenciaCombo().select(TipoTarefa.RECORRENTE);
+        TarefaView.getControleRecorrenciaButton().getCaption().equals("RECORRENTE");
+        TarefaView.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
+        TarefaView.getDataInicioDateField().setValue(new Date());
+        TarefaView.getHierarquiaCombo().setValue(TarefaView.getHierarquiaCombo().getItemIds().toArray()[0]);
         
         // commits the task
         try {
-            taskView.getTaskFieldGroup().commit();
+            TarefaView.getTarefaFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
         
         // save the task
-        taskPresenter.gravarButtonClicked();
+        TarefaView.getGravarButton().click();
 
         // saves the target
         try {

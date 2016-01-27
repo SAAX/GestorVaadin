@@ -1,3 +1,12 @@
 próximo commit:
 
 
+
+1. [Cadastro/Edição de Tarefas] Problema na gravação de tarefas recorrentes com sub-tarefas
+2. [Dashboard] Problema de paginação com lista de tarefas muito grande ( mais de 50 )
+3. Remoção (Comentada) da projeção
+4. Refactoring completo da classe TarefaView (organização do código fonte, documentações de comentários, etc)
+5. Correção de débito técnico: Referencia cíclica na dependência entre a TarefaView e o TarefaPresenter
+6. Correção de débito técnico: Métodos utilitários dentro da TarefaView (estava gerando dependencia entre views)
+
+

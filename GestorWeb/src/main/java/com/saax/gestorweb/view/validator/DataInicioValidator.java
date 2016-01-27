@@ -20,7 +20,7 @@ public class DataInicioValidator implements Validator {
 
     private final String dataInicioCaption;
     private final PopupDateField dataFimDateField;
-    private final transient ResourceBundle messages = PresenterUtils.getInstance().getMensagensResource();
+    private final transient ResourceBundle messages = PresenterUtils.getMensagensResource();
 
     /**
      * Cria o validador

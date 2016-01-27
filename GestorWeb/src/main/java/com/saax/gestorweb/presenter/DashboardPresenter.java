@@ -6,7 +6,6 @@ import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.LixeiraModel;
 import com.saax.gestorweb.model.SignupModel;
-import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
@@ -215,19 +214,22 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         if (it != null) {
 
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.cod")).setValue(PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getGlobalID()));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.title")).setValue(PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getHierarquia().getCategoria()));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.name")).setValue(PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome()));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.company")).setValue(tarefa.getEmpresa().getNome()
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.cod")).setValue(PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getGlobalID()));
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.title")).setValue(PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getHierarquia().getCategoria()));
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.name")).setValue(PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome()));
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.company")).setValue(tarefa.getEmpresa().getNome()
                     + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.requestor")).setValue(tarefa.getUsuarioSolicitante().getNome());
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.assingee")).setValue(tarefa.getUsuarioResponsavel().getNome());
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.startDate")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.endDate")).setValue(FormatterUtil.formatDate(tarefa.getDataFim()));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.state")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.email")).setValue(new Button("E"));
-            it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.taskTable.chat")).setValue(new Button("C"));
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.requestor")).setValue(tarefa.getUsuarioSolicitante().getNome());
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.assingee")).setValue(tarefa.getUsuarioResponsavel().getNome());
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.startDate")).setValue(FormatterUtil.formatDate(tarefa.getDataInicio()));
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.endDate")).setValue(FormatterUtil.formatDate(tarefa.getDataFim()));
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.state")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
+            /**
+             * COMENTADO: Projeção postergada para v2
+             * it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
+             */
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.email")).setValue(new Button("E"));
+            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.chat")).setValue(new Button("C"));
 
             // se a tarefa possui subs, chama recursivamente
             for (Tarefa subTarefa : tarefa.getSubTarefas()) {
@@ -244,17 +246,17 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
     private void updateTargetTable(Meta target) {
         Item it = view.getTargetTable().getItem(target);
 
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.cod")).setValue(buildButtonEditarMeta(target, target.getGlobalID()));
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.title")).setValue(buildButtonEditarMeta(target, target.getCategoria().getCategoria()));
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.name")).setValue(buildButtonEditarMeta(target, target.getNome()));
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.company")).setValue(target.getEmpresa().getNome()
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.cod")).setValue(buildButtonEditarMeta(target, target.getGlobalID()));
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.title")).setValue(buildButtonEditarMeta(target, target.getCategoria().getCategoria()));
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.name")).setValue(buildButtonEditarMeta(target, target.getNome()));
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.company")).setValue(target.getEmpresa().getNome()
                 + (target.getFilialEmpresa() != null ? "/" + target.getFilialEmpresa().getNome() : ""));
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.requestor")).setValue(target.getUsuarioSolicitante().getNome());
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.assingee")).setValue(target.getUsuarioResponsavel().getNome());
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.startDate")).setValue(FormatterUtil.formatDate(target.getDataInicio()));
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.endDate")).setValue(FormatterUtil.formatDate(target.getDataFim()));
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.forecast")).setValue('F');
-        it.getItemProperty(PresenterUtils.getInstance().getMensagensResource().getString("DashboardView.targetTable.email")).setValue(new Button("E"));
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.requestor")).setValue(target.getUsuarioSolicitante().getNome());
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.assingee")).setValue(target.getUsuarioResponsavel().getNome());
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.startDate")).setValue(FormatterUtil.formatDate(target.getDataInicio()));
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.endDate")).setValue(FormatterUtil.formatDate(target.getDataFim()));
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.forecast")).setValue('F');
+        it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.email")).setValue(new Button("E"));
 
         // se a meta possui tarefas, chama recursivamente
         for (Tarefa subTarefa : target.getTarefas()) {
@@ -405,7 +407,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
     @Override
     public boolean verificaPermissaoAcessoRemocaoTarefa(Tarefa tarefa) {
 
-        return LixeiraModel.verificaPermissaoAcessoRemocaoTarefa(tarefa, PresenterUtils.getInstance().getUsuarioLogado());
+        return LixeiraModel.verificaPermissaoAcessoRemocaoTarefa(tarefa, PresenterUtils.getUsuarioLogado());
     }
 
     @Override
@@ -417,7 +419,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
     @Override
     public boolean verificaPermissaoAcessoRemocaoMeta(Meta meta) {
-        return LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getInstance().getUsuarioLogado());
+        return LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getUsuarioLogado());
     }
 
     /**
@@ -456,7 +458,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         }
 
         EmpresaModel empresaModel = new EmpresaModel();
-        List<Empresa> empresas = empresaModel.listarEmpresasAtivasUsuarioLogado(PresenterUtils.getInstance().getUsuarioLogado());
+        List<Empresa> empresas = empresaModel.listarEmpresasAtivasUsuarioLogado(PresenterUtils.getUsuarioLogado());
         for (Empresa empresa : empresas) {
 
             view.getCompanyFilterOptionGroup().addItem(empresa);
@@ -468,11 +470,13 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
             }
         }
-
-        for (ProjecaoTarefa projecao : ProjecaoTarefa.values()) {
-            view.getForecastFilterOptionGroup().addItem(projecao);
-            view.getForecastFilterOptionGroup().setItemCaption(projecao, projecao.toString());
-        }
+        /**
+         * COMENTADO: Projeção postergada para v2 Button projecaoButton; for
+         * (ProjecaoTarefa projecao : ProjecaoTarefa.values()) {
+         * view.getForecastFilterOptionGroup().addItem(projecao);
+         * view.getForecastFilterOptionGroup().setItemCaption(projecao,
+         * projecao.toString()); }
+         */
 
         view.getSwitchAndOrFilters().addItem(TipoPesquisa.EXCLUSIVA_E);
         view.getSwitchAndOrFilters().setItemCaption(TipoPesquisa.EXCLUSIVA_E, "Todos os filtros");
@@ -487,7 +491,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
     @Override
     public void carregarListaTarefasUsuarioLogado() {
 
-        List<Tarefa> listaTarefas = DashboardModel.listarTarefas(PresenterUtils.getInstance().getUsuarioLogado());
+        List<Tarefa> listaTarefas = DashboardModel.listarTarefas(PresenterUtils.getUsuarioLogado());
 
         exibirListaTarefas(listaTarefas);
 
@@ -498,13 +502,13 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
      */
     private void carregarListaTarefasPrincipais() {
 
-        List<Tarefa> tarefasPrincipais = DashboardModel.listarTarefasPrincipais(PresenterUtils.getInstance().getUsuarioLogado());
+        List<Tarefa> tarefasPrincipais = DashboardModel.listarTarefasPrincipais(PresenterUtils.getUsuarioLogado());
 
         view.getBottomTasksContainer().removeAllComponents();
         for (int i = 0; i < tarefasPrincipais.size() && i < 5; i++) {
             Tarefa tarefa = tarefasPrincipais.get(i);
 
-            Button tarefaButton = PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome().length() > 25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
+            Button tarefaButton = PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome().length() > 25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
             tarefaButton.setStyleName("v-button-link");
             view.getBottomTasksContainer().addComponent(tarefaButton);
         }
@@ -565,9 +569,9 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
     private void adicionarTarefaTable(Tarefa tarefa) {
 
         Object[] linha = new Object[]{
-            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getGlobalID()),
-            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getHierarquia().getCategoria()),
-            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome()),
+            PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getGlobalID()),
+            PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getHierarquia().getCategoria()),
+            PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome()),
             tarefa.getEmpresa().getNome()
             + (tarefa.getFilialEmpresa() != null ? "/" + tarefa.getFilialEmpresa().getNome() : ""),
             tarefa.getUsuarioSolicitante().getNome(),
@@ -575,7 +579,9 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             FormatterUtil.formatDate(tarefa.getDataInicio()),
             FormatterUtil.formatDate(tarefa.getDataFim()),
             buildPopUpEvolucaoStatusEAndamento(tarefa),
-            tarefa.getProjecao().toString().charAt(0),
+            /** Projecao: Contingenciado para V2
+             * tarefa.getProjecao().toString().charAt(0),
+             */
             new Button("E"),
             new Button("Chat", (Button.ClickEvent event) -> {
                 chatButtonClicked(tarefa);
@@ -623,9 +629,9 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
     private void addTaskInTargetTable(Tarefa taskToInsert) {
 
         Object[] linha = new Object[]{
-            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, taskToInsert, taskToInsert.getGlobalID()),
-            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, taskToInsert, taskToInsert.getHierarquia().getCategoria()),
-            PresenterUtils.getInstance().buildButtonEditarTarefa(view.getTarefaTable(), this, taskToInsert, taskToInsert.getNome()),
+            PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, taskToInsert, taskToInsert.getGlobalID()),
+            PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, taskToInsert, taskToInsert.getHierarquia().getCategoria()),
+            PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, taskToInsert, taskToInsert.getNome()),
             taskToInsert.getEmpresa().getNome()
             + (taskToInsert.getFilialEmpresa() != null ? "/" + taskToInsert.getFilialEmpresa().getNome() : ""),
             taskToInsert.getUsuarioSolicitante().getNome(),
@@ -702,20 +708,27 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         }
 
         // Projecoes
-        List<ProjecaoTarefa> projecoes = new ArrayList<>((Collection<ProjecaoTarefa>) view.getForecastFilterOptionGroup().getValue());
-
+        /**
+         * Postergado para V2
+         *
+         * List<ProjecaoTarefa> projecoes = new
+         * ArrayList<>((Collection<ProjecaoTarefa>)
+         * view.getForecastFilterOptionGroup().getValue());
+         */
         // recarrega a visualizacao
+        List<ProjecaoTarefa> projecoes = new ArrayList<>();
         List<Tarefa> listaTarefas = DashboardModel.filtrarTarefas(tipoPesquisa, usuariosResponsaveis,
-                usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, PresenterUtils.getInstance().getUsuarioLogado());
+                usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, PresenterUtils.getUsuarioLogado());
 
         exibirListaTarefas(listaTarefas);
 
         List<Meta> listaMetas = DashboardModel.filtrarMetas(tipoPesquisa, usuariosResponsaveis,
-                usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, PresenterUtils.getInstance().getUsuarioLogado());
+                usuariosSolicitantes, usuariosParticipantes, empresas, filiais, dataFim, projecoes, PresenterUtils.getUsuarioLogado());
 
         exibirListaMetas(listaMetas);
 
         view.getCleanFiltersButton().setVisible(true);
+        view.getCleanFiltersButton().setEnabled(true);
         view.getSwitchAndOrFilters().setVisible(true);
 
     }
@@ -731,7 +744,11 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         view.getAssigneesFilterOptionGroup().setValue(null);
         view.getCompanyFilterOptionGroup().setValue(null);
         view.getEndDateFilterDateField().setValue(null);
-        view.getForecastFilterOptionGroup().setValue(null);
+        /**
+         * Postergado para V2
+         *
+         * view.getForecastFilterOptionGroup().setValue(null);
+         */
 
         carregarListaTarefasUsuarioLogado();
 
@@ -761,7 +778,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
     public void carregarListaMetasUsuarioLogado() {
 
         // Usuario logado
-        List<Meta> listaMetas = DashboardModel.listarMetas(PresenterUtils.getInstance().getUsuarioLogado());
+        List<Meta> listaMetas = DashboardModel.listarMetas(PresenterUtils.getUsuarioLogado());
 
         exibirListaMetas(listaMetas);
 

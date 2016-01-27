@@ -61,24 +61,10 @@ import javax.persistence.Query;
  */
 public class TarefaModel {
 
-    // Classes do modelo acessórias utilizadas por este model
-    private final UsuarioModel usuarioModel;
-    private final EmpresaModel empresaModel;
-
     // Reference to the use of the messages:
     private static final transient ResourceBundle mensagens = ((GestorMDI) UI.getCurrent()).getMensagens();
     // Controle da primeira tafarefa da lista de tarefas recorrentes, usado na gravação de tarefas
     private static final ThreadLocal<Tarefa> primeiraTarefaRecorrenteThreadLocal = new ThreadLocal<>();
-
-    /**
-     * Cria um novo model para Tarefa e instancia todos os models acessórios
-     * necessários
-     */
-    public TarefaModel() {
-        usuarioModel = new UsuarioModel();
-        empresaModel = new EmpresaModel();
-
-    }
 
     /**
      * Lista e retorna todos os clientes de todas as empresas de usuario logado
@@ -150,15 +136,12 @@ public class TarefaModel {
                     }
                 } else {
                     em.getTransaction().commit();
+                    primeiraTarefaRecorrenteThreadLocal.remove();
                 }
             }
 
-            // mover anexos das pastas temporarias para as oficiais
-            tarefa.getAnexos().stream().filter((anexo) -> (anexo.getArquivoTemporario() != null)).forEach((anexo) -> {
-                moverAnexoTemporario(anexo);
-            });
+            moverAnexos(tarefa);
 
-            primeiraTarefaRecorrenteThreadLocal.remove();
 
         }
         catch (RuntimeException ex) {
@@ -173,6 +156,18 @@ public class TarefaModel {
         return tarefa;
     }
 
+    private static void moverAnexos(Tarefa tarefa){
+        for (Anexo anexo : tarefa.getAnexos()) {
+            if (anexo.getArquivoTemporario() != null){
+                moverAnexoTemporario(anexo);
+            }
+        }
+        if (tarefa.getSubTarefas()!= null && !tarefa.getSubTarefas().isEmpty()){
+            for (Tarefa sub : tarefa.getSubTarefas()) {
+                moverAnexos(sub);
+            }
+        }
+    }
     /**
      * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ,
      * e do ID Tarefa. <br> <br>

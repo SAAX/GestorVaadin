@@ -83,17 +83,17 @@ public class EvolucaoStatusTest {
             HierarquiaProjetoDetalhe categoriaDefaultTarefa = TarefaModel.getCategoriaDefaultTarefa();
             presenter.createTask(categoriaDefaultTarefa);
 
-            view.getTaskNameTextField().setValue(nome);
-            view.getPriorityCombo().setValue(PrioridadeTarefa.ALTA);
-            view.getStartDateDateField().setValue(new Date());
+            view.getNomeTarefaTextField().setValue(nome);
+            view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
+            view.getDataInicioDateField().setValue(new Date());
             view.getEmpresaCombo().setValue(loggedUser.getEmpresas().get(0).getEmpresa());
-            view.getAssigneeUserCombo().select(usuarioResponsavel);
+            view.getUsuarioResponsavelCombo().select(usuarioResponsavel);
             try {
-                view.getTaskFieldGroup().commit();
+                view.getTarefaFieldGroup().commit();
             } catch (FieldGroup.CommitException ex) {
                 fail(ex.getMessage());
             }
-            presenter.gravarButtonClicked();
+            view.getGravarButton().click();
 
         } catch (Exception ex) {
             ex.printStackTrace();

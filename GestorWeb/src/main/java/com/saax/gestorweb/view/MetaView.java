@@ -140,7 +140,7 @@ public class MetaView extends Window implements Serializable {
 
         requiredFields = new ArrayList();
 
-        setCaption(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tituloBase"));
+        setCaption(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tituloBase"));
         setModal(true);
         setWidth(1000, Unit.PIXELS);
         setHeight(600, Unit.PIXELS);
@@ -278,8 +278,8 @@ public class MetaView extends Window implements Serializable {
         containerCabecalhoLinha1.setWidth("100%");// ocupar todo espaço disponível na largura
 
         // combo de seleção da empresa
-        empresaCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.empresaCombo.label"));
-        empresaCombo.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.empresaCombo.inputPrompt"));
+        empresaCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("CadastroMetaView.empresaCombo.label"));
+        empresaCombo.setInputPrompt(PresenterUtils.getMensagensResource().getString("CadastroMetaView.empresaCombo.inputPrompt"));
         empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.empresaSelecionada((Empresa) event.getProperty().getValue());
         });
@@ -290,9 +290,9 @@ public class MetaView extends Window implements Serializable {
         containerCabecalhoLinha1.setExpandRatio(empresaCombo, 0);
 
         // TextField: Nome da meta 
-        nomeMetaTextField = new TextField(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.nomeMetaTextField.caption"));
+        nomeMetaTextField = new TextField(PresenterUtils.getMensagensResource().getString("CadastroMetaView.nomeMetaTextField.caption"));
         nomeMetaTextField.setWidth("100%");// ocupar todo espaço disponível na largura
-        nomeMetaTextField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.nomeMetaTextField.inputPrompt"));
+        nomeMetaTextField.setInputPrompt(PresenterUtils.getMensagensResource().getString("CadastroMetaView.nomeMetaTextField.inputPrompt"));
         nomeMetaTextField.setNullRepresentation("");
         nomeMetaTextField.addValidator(new BeanValidator(Meta.class, "nome"));
         requiredFields.add(nomeMetaTextField);
@@ -310,23 +310,23 @@ public class MetaView extends Window implements Serializable {
         containerCabecalhoLinha2.setSpacing(true); // coloca um espaçamento entre os elementos internos (30px)
 
         // Combo: Categoria
-        hierarquiaCombo = new ComboBox(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.hierarquiaCombo.label"));
+        hierarquiaCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("CadastroMetaView.hierarquiaCombo.label"));
         hierarquiaCombo.addValidator(new BeanValidator(Meta.class, "categoria"));
         hierarquiaCombo.setTextInputAllowed(false);
         requiredFields.add(hierarquiaCombo);
         containerCabecalhoLinha2.addComponent(hierarquiaCombo);
 
         // TextField: Data de Inicio 
-        dataInicioDateField = new PopupDateField(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.dataInicioTextField.label"));
-        dataInicioDateField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
+        dataInicioDateField = new PopupDateField(PresenterUtils.getMensagensResource().getString("CadastroMetaView.dataInicioTextField.label"));
+        dataInicioDateField.setInputPrompt(PresenterUtils.getMensagensResource().getString("CadastroMetaView.dataInicioDateField.inputPrompt"));
         dataInicioDateField.setConverter(new DateToLocalDateConverter());
         dataInicioDateField.addValidator(new BeanValidator(Meta.class, "dataInicio"));
         requiredFields.add(dataInicioDateField);
         containerCabecalhoLinha2.addComponent(dataInicioDateField);
 
         // TextField: Data Fim
-        dataFimDateField = new PopupDateField(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.dataFimTextField.label"));
-        dataFimDateField.setInputPrompt(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.dataFimDateField.inputPrompt"));
+        dataFimDateField = new PopupDateField(PresenterUtils.getMensagensResource().getString("CadastroMetaView.dataFimTextField.label"));
+        dataFimDateField.setInputPrompt(PresenterUtils.getMensagensResource().getString("CadastroMetaView.dataFimDateField.inputPrompt"));
         dataFimDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
 
@@ -334,7 +334,7 @@ public class MetaView extends Window implements Serializable {
         dataFimDateField.addValidator(new DataFimValidator(dataInicioDateField, "Data Fim"));
 
         // TextField: Data Termino
-        dataTerminoDateField = new PopupDateField(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.dataTerminoDateField.label"));
+        dataTerminoDateField = new PopupDateField(PresenterUtils.getMensagensResource().getString("CadastroMetaView.dataTerminoDateField.label"));
         dataTerminoDateField.setWidth("100%");
         dataTerminoDateField.setConverter(new DateToLocalDateConverter());
         containerCabecalhoLinha2.addComponent(dataFimDateField);
@@ -395,31 +395,31 @@ public class MetaView extends Window implements Serializable {
                 this.alwaysRecalculateColumnWidths = true;
             }
         };
-        PresenterUtils.configuraExpansaoColunaCodigo(tarefasTable, PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaCod"));
+        PresenterUtils.configuraExpansaoColunaCodigo(tarefasTable, PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaCod"));
         
         containerTabelaTarefas.setContent(tarefasTable);
         tarefasTable.setSizeFull();
 
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaCod"), Button.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaCod"), 70);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaTitulo"), Button.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaTitulo"), 50);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaNome"), Button.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaNome"), 250);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), String.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), 200);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaSolicitante"), String.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaSolicitante"), 80);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaResponsavel"), String.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaResponsavel"), 80);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaDataInicio"), String.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaStatus"), PopupButton.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
-        tarefasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
-        tarefasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaCod"), Button.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaCod"), 70);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaTitulo"), Button.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaTitulo"), 50);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaNome"), Button.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaNome"), 250);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), String.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial"), 200);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaSolicitante"), String.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaSolicitante"), 80);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaResponsavel"), String.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaResponsavel"), 80);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaDataInicio"), String.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaDataInicio"), 80);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaDataFim"), String.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaDataFim"), 80);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaStatus"), PopupButton.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
+        tarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
+        tarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
         
         tarefasTable.addContainerProperty("[E]", Button.class, "");
         tarefasTable.setColumnWidth("[E]", 30);
@@ -538,13 +538,13 @@ public class MetaView extends Window implements Serializable {
         barraBotoesInferior.setSizeUndefined();
         barraBotoesInferior.setSpacing(true);
 
-        gravarButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.gravarButton.caption"), (Button.ClickEvent event) -> {
+        gravarButton = new Button(PresenterUtils.getMensagensResource().getString("CadastroMetaView.gravarButton.caption"), (Button.ClickEvent event) -> {
             try {
                 setValidatorsVisible(true);
                 metaFieldGroup.commit();
                 listener.gravarButtonClicked();
             } catch (RuntimeException ex) {
-                Notification notification = new Notification("Erro", (ex.getMessage() == null ? PresenterUtils.getInstance().getMensagensResource().getString("ErrorUtils.errogenerico") : ex.getMessage()),
+                Notification notification = new Notification("Erro", (ex.getMessage() == null ? PresenterUtils.getMensagensResource().getString("ErrorUtils.errogenerico") : ex.getMessage()),
                         Notification.Type.WARNING_MESSAGE, true);
 
                 
@@ -561,7 +561,7 @@ public class MetaView extends Window implements Serializable {
 
         barraBotoesInferior.addComponent(gravarButton);
 
-        cancelarButton = new Button(PresenterUtils.getInstance().getMensagensResource().getString("CadastroMetaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
+        cancelarButton = new Button(PresenterUtils.getMensagensResource().getString("CadastroMetaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
             listener.cancelarButtonClicked();
         });
         barraBotoesInferior.addComponent(cancelarButton);
@@ -650,7 +650,7 @@ public class MetaView extends Window implements Serializable {
     }
 
     public void exibeTituloEdicao(Meta metapai) {
-        setCaption(PresenterUtils.getInstance().getMensagensResource().getString("TaskView.titulo.edicao"));
+        setCaption(PresenterUtils.getMensagensResource().getString("TarefaView.titulo.edicao"));
     }
 
     // -------------------------------------------------------------------------

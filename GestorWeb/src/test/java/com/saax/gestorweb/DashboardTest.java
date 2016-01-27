@@ -136,14 +136,14 @@ public class DashboardTest {
         TarefaPresenter tarefaPresenter = new TarefaPresenter(tarefaView);
         
         tarefaPresenter.editar(tarefaCriada);
-        tarefaView.getTaskNameTextField().setValue(nomeTarefa);
+        tarefaView.getNomeTarefaTextField().setValue(nomeTarefa);
         try {
-            tarefaView.getTaskFieldGroup().commit();
+            tarefaView.getTarefaFieldGroup().commit();
         } catch (FieldGroup.CommitException ex) {
             fail(ex.getMessage());
         }
         
-        tarefaPresenter.gravarButtonClicked();
+        tarefaView.getGravarButton().click();
 
         // -------------------------------------------------------------------------------------------------
         // Verificação

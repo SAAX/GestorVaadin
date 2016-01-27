@@ -37,10 +37,10 @@ public class LixeiraView {
      */
     public void apresentaConfirmacaoRemocaoTarefa(Tarefa tarefa) {
 
-        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.removerTarefa.title"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.removerTarefa.text"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.removerTarefa.OKButton"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.removerTarefa.CancelButton"), (ConfirmDialog dialog) -> {
+        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getMensagensResource().getString("LixeiraView.removerTarefa.title"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.removerTarefa.text"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.removerTarefa.OKButton"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.removerTarefa.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
                         listener.remocaoTarefaConfirmada(tarefa);
 
@@ -54,10 +54,10 @@ public class LixeiraView {
      */
     public void apresentaConfirmacaoRemocaoMeta(Meta meta) {
 
-        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.removerMeta.title"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.removerMeta.text"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.removerMeta.OKButton"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.removerMeta.CancelButton"), (ConfirmDialog dialog) -> {
+        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getMensagensResource().getString("LixeiraView.removerMeta.title"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.removerMeta.text"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.removerMeta.OKButton"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.removerMeta.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
                         listener.remocaoMetaConfirmada(meta);
 
@@ -68,7 +68,7 @@ public class LixeiraView {
     private Table constroiTabelaTarefasRemovidas(){
 
         tarefaRemovidasTable = new Table();
-        tarefaRemovidasTable.addGeneratedColumn(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+        tarefaRemovidasTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button();
             removeButton.addClickListener((Button.ClickEvent event) -> {
                 listener.restaurarTarefaClicked((Tarefa) itemId);
@@ -78,26 +78,26 @@ public class LixeiraView {
 
             return removeButton;
         });
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.cod"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.cod"), 100);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.title"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.title"), 100);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.name"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.name"), 250);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.company"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.company"), 200);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.requestor"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.requestor"), 80);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.assingee"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.assingee"), 80);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.startDate"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.startDate"), 80);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.endDate"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.endDate"), 80);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.state"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.state"), 200);
-        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.dataHoraRemocao"), String.class, "");
-        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.dataHoraRemocao"), 100);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.cod"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.cod"), 100);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.title"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.title"), 100);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.name"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.name"), 250);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.company"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.company"), 200);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.requestor"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.requestor"), 80);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.assingee"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.assingee"), 80);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.startDate"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.startDate"), 80);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.endDate"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.endDate"), 80);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.state"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.state"), 200);
+        tarefaRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.dataHoraRemocao"), String.class, "");
+        tarefaRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.tarefaRemovidasTable.dataHoraRemocao"), 100);
 
 
         tarefaRemovidasTable.setPageLength(0);
@@ -111,7 +111,7 @@ public class LixeiraView {
     private Table constroiTabelaMetasRemovidas(){
 
         metasRemovidasTable = new Table();
-        metasRemovidasTable.addGeneratedColumn(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+        metasRemovidasTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button();
             removeButton.addClickListener((Button.ClickEvent event) -> {
                 listener.restaurarMetaClicked((Meta) itemId);
@@ -121,26 +121,26 @@ public class LixeiraView {
 
             return removeButton;
         });
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.cod"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.cod"), 100);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.title"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.title"), 100);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.name"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.name"), 250);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.company"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.company"), 200);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.requestor"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.requestor"), 80);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.assingee"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.assingee"), 80);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.startDate"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.startDate"), 80);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.endDate"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.endDate"), 80);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.state"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.state"), 200);
-        metasRemovidasTable.addContainerProperty(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.dataHoraRemocao"), String.class, "");
-        metasRemovidasTable.setColumnWidth(PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.metasRemovidasTable.dataHoraRemocao"), 100);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.cod"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.cod"), 100);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.title"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.title"), 100);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.name"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.name"), 250);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.company"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.company"), 200);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.requestor"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.requestor"), 80);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.assingee"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.assingee"), 80);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.startDate"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.startDate"), 80);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.endDate"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.endDate"), 80);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.state"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.state"), 200);
+        metasRemovidasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.dataHoraRemocao"), String.class, "");
+        metasRemovidasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("LixeiraView.metasRemovidasTable.dataHoraRemocao"), 100);
 
 
         metasRemovidasTable.setPageLength(0);
@@ -236,10 +236,10 @@ public class LixeiraView {
     }
     
     public void apresentaConfirmacaoRestauracaoTarefa(Tarefa tarefa) {
-        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.restaurarTarefa.title"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.restaurarTarefa.text"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.restaurarTarefa.OKButton"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.restaurarTarefa.CancelButton"), (ConfirmDialog dialog) -> {
+        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getMensagensResource().getString("LixeiraView.restaurarTarefa.title"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.restaurarTarefa.text"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.restaurarTarefa.OKButton"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.restaurarTarefa.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
                         listener.restaurarTarefaConfirmada(tarefa);
                         tarefaRemovidasTable.removeItem(tarefa);
@@ -248,10 +248,10 @@ public class LixeiraView {
     }
 
     public void apresentaConfirmacaoRestauracaoMeta(Meta meta) {
-        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.restaurarMeta.title"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.restaurarMeta.text"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.restaurarMeta.OKButton"),
-                PresenterUtils.getInstance().getMensagensResource().getString("LixeiraView.restaurarMeta.CancelButton"), (ConfirmDialog dialog) -> {
+        ConfirmDialog.show(UI.getCurrent(), PresenterUtils.getMensagensResource().getString("LixeiraView.restaurarMeta.title"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.restaurarMeta.text"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.restaurarMeta.OKButton"),
+                PresenterUtils.getMensagensResource().getString("LixeiraView.restaurarMeta.CancelButton"), (ConfirmDialog dialog) -> {
                     if (dialog.isConfirmed()) {
                         listener.restaurarMetaConfirmada(meta);
                         metasRemovidasTable.removeItem(meta);

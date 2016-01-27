@@ -13,10 +13,13 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.util.SessionAttributesEnum;
+import com.saax.gestorweb.view.PopUpStatusListener;
+import com.saax.gestorweb.view.PopUpStatusView;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.TreeTable;
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  * Está classe é responsavel pela apresentação de itens comuns à vários outros
@@ -37,20 +41,10 @@ public class PresenterUtils {
 
 
     // Referencia ao recurso das mensagens:
-    private final ResourceBundle mensagensResource;
-    private final GestorWebImagens imagensResource;
+    private static final ResourceBundle mensagensResource = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", new Locale("pt", "BR")));
+    private static final GestorWebImagens imagensResource = new GestorWebImagens();
 
     private static PresenterUtils instance;
-
-    private PresenterUtils() {
-        try {
-            mensagensResource = (ResourceBundle.getBundle("ResourceBundles.Messages.Messages", new Locale("pt", "BR")));
-            imagensResource = new GestorWebImagens();
-        }
-        catch (Exception ex) {
-            throw new RuntimeException("Falha ao inicializar recursos", ex);
-        }
-    }
 
     public static PresenterUtils getInstance() {
         if (instance == null) {
@@ -59,11 +53,11 @@ public class PresenterUtils {
         return instance;
     }
 
-    public ResourceBundle getMensagensResource() {
+    public static ResourceBundle getMensagensResource() {
         return mensagensResource;
     }
 
-    public GestorWebImagens getImagensResource() {
+    public static GestorWebImagens getImagensResource() {
         return imagensResource;
     }
 
@@ -144,8 +138,7 @@ public class PresenterUtils {
         if (empresa != null) {
 
             // Retrieves the list of active departments for this company
-            EmpresaModel empresaModel = new EmpresaModel();
-            List<CentroCusto> centroCustoList = empresaModel.obterListaCentroCustosAtivos(empresa);
+            List<CentroCusto> centroCustoList = EmpresaModel.obterListaCentroCustosAtivos(empresa);
 
             if (centroCustoList.isEmpty()) {
 
@@ -160,6 +153,7 @@ public class PresenterUtils {
                     centroCustoCombo.addItem(cc);
                     centroCustoCombo.setItemCaption(cc, cc.getCentroCusto());
                 }
+                centroCustoCombo.setEnabled(true);
             }
         } else {
 
@@ -255,6 +249,53 @@ public class PresenterUtils {
         participanteCombo.select(null);
         participanteCombo.removeAllItems();
         participanteContainer.removeAllItems();
+    }
+    
+    /**
+     * 
+     * Static method that builds a link button, that when clicked open a window
+     * with the given task to edit
+     *
+     * @param callback the callback listener that must be called when the update
+     * were done
+     * @param table the view table (used to auto select the row)
+     * @param task the task that will be openned
+     * @param caption the button caption
+     * @return
+     */
+    public static Button buildButtonOpenTask(CallBackListener callback, Table table, Tarefa task, String caption) {
+        Button link = new Button(caption);
+        link.setStyleName("quiet");
+        link.addClickListener((Button.ClickEvent event) -> {
+            table.setValue(task);
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
+            presenter.addCallBackListener(callback);
+            presenter.editar(task);
+        });
+        return link;
+    }    
+    
+    public static PopupButton buildPopUpStatusProgressTask(Table table, Tarefa task, PopUpStatusListener listener) {
+
+        PopUpStatusView viewPopUP = new PopUpStatusView();
+
+        PopUpStatusPresenter presenter = new PopUpStatusPresenter(viewPopUP);
+
+        presenter.load(task, null, listener);
+
+        // Event fired when the pop-up becomes visible:
+        presenter.getStatusButton().addPopupVisibilityListener((PopupButton.PopupVisibilityEvent event) -> {
+            if (event.isPopupVisible()) {
+                Tarefa tarefaEditada = (Tarefa) event.getPopupButton().getData();
+                table.setValue(tarefaEditada);
+            }
+        });
+
+        // Correção: 
+        // Só habilita o botão de status em parcelas já gravadas no banco.
+        presenter.getStatusButton().setEnabled(task.getId() != null);
+
+        return presenter.getStatusButton();
     }
     
 }

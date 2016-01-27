@@ -140,9 +140,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     private void carregaComboEmpresa() {
         ComboBox empresaCombo = view.getEmpresaCombo();
 
-        EmpresaModel empresaModel = new EmpresaModel();
-
-        List<Empresa> empresas = empresaModel.listarEmpresasAtivasUsuarioLogado(loggedUser);
+        List<Empresa> empresas = EmpresaModel.listarEmpresasAtivasUsuarioLogado(loggedUser);
         for (Empresa empresa : empresas) {
 
             empresaCombo.addItem(empresa);
@@ -286,16 +284,16 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
     private void addTaskInTable(Tarefa task) {
         Object[] gridRow = new Object[]{
-            TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
-            TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
-            TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()),
+            PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
+            PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
+            PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()),
             task.getEmpresa().getNome()
             + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""),
             task.getUsuarioSolicitante().getNome(),
             task.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(task.getDataInicio()),
             FormatterUtil.formatDate(task.getDataFim()),
-            TarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this),
+            PresenterUtils.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this),
             task.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -345,16 +343,16 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     private void atualizarTarefaTable(Tarefa task) {
         Item it = view.getTarefasTable().getItem(task);
 
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(TarefaView.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial")).setValue(task.getEmpresa().getNome()
                 + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante")).setValue(task.getUsuarioSolicitante().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel")).setValue(task.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(TarefaView.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(PresenterUtils.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao")).setValue(task.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
@@ -406,7 +404,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
         view.setEditAllowed(usuarioLogadoEhOSolicitante || usuarioLogadoEhOResponsavel);
         view.getResponsavelCombo().setEnabled(usuarioLogadoEhOSolicitante);
 
-        view.getRemoverMetaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getInstance().getUsuarioLogado()));
+        view.getRemoverMetaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getUsuarioLogado()));
     }
 
     @Override

@@ -46,7 +46,7 @@ import org.vaadin.teemu.ratingstars.RatingStars;
 public class PopUpStatusView extends CustomComponent {
 
     // Referencia ao recurso das mensagens e imagens:
-    private final transient ResourceBundle mensagens = PresenterUtils.getInstance().getMensagensResource();
+    private final transient ResourceBundle mensagens = PresenterUtils.getMensagensResource();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas

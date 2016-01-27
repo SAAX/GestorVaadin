@@ -545,7 +545,7 @@ public  class RecurrencyModel {
 
                 Tarefa recurrentTask = task.clone();
 
-                recurrentTask.setRecurrencyMessage(recurrencyMessage);
+                recurrentTask.setMensagemRecorrencia(recurrencyMessage);
                 recurrentTask.setTipoRecorrencia(TipoTarefa.RECORRENTE);
                 recurrentTask.setUsuarioInclusao(task.getUsuarioInclusao());
                 recurrentTask.setUsuarioSolicitante(task.getUsuarioSolicitante());

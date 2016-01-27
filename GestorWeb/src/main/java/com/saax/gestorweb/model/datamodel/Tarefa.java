@@ -109,8 +109,8 @@ public class Tarefa implements Serializable {
     @Column(name = "andamento")
     private int andamento;
 
-    @Column(name = "recurrencyMessage")
-    private String recurrencyMessage;
+    @Column(name = "mensagemRecorrencia")
+    private String mensagemRecorrencia;
 
     @Column(name = "template")
     private boolean template;
@@ -124,6 +124,9 @@ public class Tarefa implements Serializable {
     @Column(name = "apontamentohoras")
     private boolean apontamentoHoras;
 
+    @Column(name = "custohoraapontamento", precision = 10, scale = 2)
+    private BigDecimal custoHoraApontamento;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "orcamentocontrolado")
@@ -246,14 +249,6 @@ public class Tarefa implements Serializable {
     @Column(name = "datahoraremocao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraRemocao;
-
-    // ----------------------------------------------------------------------------------------------------------------
-    // ATRIBUTOS TRANSIENTES
-    // ----------------------------------------------------------------------------------------------------------------
-    /**
-     * Custo de hora para todos os apontamentos
-     */
-    private transient BigDecimal custoHoraApontamento;
 
     // ----------------------------------------------------------------------------------------------------------------
     // CONSTRUTORES
@@ -703,12 +698,12 @@ public class Tarefa implements Serializable {
     }
 
     
-    public void setRecurrencyMessage(String recurrencyMessage) {
-        this.recurrencyMessage = recurrencyMessage;
+    public void setMensagemRecorrencia(String mensagemRecorrencia) {
+        this.mensagemRecorrencia = mensagemRecorrencia;
     }
 
-    public String getRecurrencyMessage() {
-        return recurrencyMessage;
+    public String getMensagemRecorrencia() {
+        return mensagemRecorrencia;
     }
 
     // ----------------------------------------------------------------------------------------------------------------

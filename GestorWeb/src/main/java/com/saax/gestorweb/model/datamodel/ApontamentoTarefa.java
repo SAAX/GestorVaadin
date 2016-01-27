@@ -50,7 +50,7 @@ public class ApontamentoTarefa implements Serializable {
     @Convert(converter = DurationConverter.class)
     private Duration saldoHoras;
         
-    @Column(name = "custohora", precision = 10, scale = 3)
+    @Column(name = "custohora", precision = 10, scale = 2)
     private BigDecimal custoHora;
     
     @Column(name = "creditovalor", precision = 10, scale = 2)

@@ -154,7 +154,7 @@ public class RecurrencyView extends Window {
         VerticalLayout containerPrincipal = null;
         
         if (isRecurrent){
-            containerPrincipal = buildRemoveRecurrencyContainer(task.getRecurrencyMessage());
+            containerPrincipal = buildRemoveRecurrencyContainer(task.getMensagemRecorrencia());
             
         } else {
             containerPrincipal = buildRecurrencyParametersContainer();

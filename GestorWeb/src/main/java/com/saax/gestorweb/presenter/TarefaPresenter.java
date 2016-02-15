@@ -5,8 +5,6 @@ import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.LixeiraModel;
 import com.saax.gestorweb.model.RecurrencyModel;
 import com.saax.gestorweb.model.TarefaModel;
-import static com.saax.gestorweb.model.TarefaModel.recalculaSaldoApontamentoHoras;
-import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Anexo;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -55,8 +53,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -595,7 +591,8 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
 
             presenter.criarNovaSubTarefa(proximasCategorias, tarefa);
 
-        } catch (FieldGroup.CommitException ex) {
+        }
+        catch (FieldGroup.CommitException ex) {
             Notification.show("Preencha os campos obrigatórios da tarefa antes de criar uma sub.", Notification.Type.HUMANIZED_MESSAGE);
         }
     }
@@ -961,8 +958,14 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
     @Override
     public void adicionarParticipante(Tarefa tarefa, Usuario usuario) {
 
+        /*
+        Adicionei o Notification.TYPE_WARNING_MESSAGE ao método Notification.show()
+        pois no default, a notificação sumia ao mover o mouse.
+        Com Notification.TYPE_WARNING_MESSAGE como Type da Notification, 
+        a mensagem é exibida por alguns instantes, independente do movimento do mouse.
+         */
         if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || usuario.equals(PresenterUtils.getUsuarioLogado())) {
-            Notification.show(PresenterUtils.getMensagensResource().getString("Notificacao.ParticipanteUsuarioResponsavel"));
+            Notification.show(PresenterUtils.getMensagensResource().getString("Notificacao.ParticipanteUsuarioResponsavel"), Notification.TYPE_WARNING_MESSAGE);
         } else {
             Participante participanteTarefa = TarefaModel.criarParticipante(usuario, tarefa);
             view.getParticipantesContainer().addBean(participanteTarefa);
@@ -1117,9 +1120,11 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
     public void removerTarefaButtonClicked(Tarefa tarefa) {
 
         LixeiraPresenter popUpRemocaoTarefaPresenter = new LixeiraPresenter(new LixeiraView());
+
         for (CallBackListener callbackListener : callbackListeneres) {
             popUpRemocaoTarefaPresenter.addTarefaCallBackListener(callbackListener);
         }
+
         popUpRemocaoTarefaPresenter.addTarefaCallBackListener(this);
         popUpRemocaoTarefaPresenter.apresentaConfirmacaoRemocaoTarefa(tarefa);
 

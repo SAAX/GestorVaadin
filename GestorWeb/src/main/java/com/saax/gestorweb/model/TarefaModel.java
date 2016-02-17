@@ -21,24 +21,26 @@ import com.saax.gestorweb.model.datamodel.TipoTarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.DashboardPresenter;
+import com.saax.gestorweb.presenter.PresenterUtils;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Upload;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -142,7 +144,6 @@ public class TarefaModel {
 
             moverAnexos(tarefa);
 
-
         }
         catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
@@ -156,18 +157,19 @@ public class TarefaModel {
         return tarefa;
     }
 
-    private static void moverAnexos(Tarefa tarefa){
+    private static void moverAnexos(Tarefa tarefa) {
         for (Anexo anexo : tarefa.getAnexos()) {
-            if (anexo.getArquivoTemporario() != null){
+            if (anexo.getArquivoTemporario() != null) {
                 moverAnexoTemporario(anexo);
             }
         }
-        if (tarefa.getSubTarefas()!= null && !tarefa.getSubTarefas().isEmpty()){
+        if (tarefa.getSubTarefas() != null && !tarefa.getSubTarefas().isEmpty()) {
             for (Tarefa sub : tarefa.getSubTarefas()) {
                 moverAnexos(sub);
             }
         }
     }
+
     /**
      * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ,
      * e do ID Tarefa. <br> <br>
@@ -552,9 +554,13 @@ public class TarefaModel {
             inputValor.setScale(2, RoundingMode.HALF_UP);
             inputValor.doubleValue();
 
+            if (inputValor.doubleValue() <= 0) {
+                throw new IllegalArgumentException("Valor negativo para orçamento.");
+            }
         }
+        
         catch (Exception e) {
-            throw new RuntimeException("Não foi possível identificar o valor informado: " + orcamentoTarefa.getInputValor());
+            throw new RuntimeException("Valor inválido para Orçamento: " + orcamentoTarefa.getInputValor());
         }
 
         // se o usuário for o responsavel os valores inputadas são "debito"
@@ -830,7 +836,7 @@ public class TarefaModel {
     }
 
     private static List<Tarefa> obtemTarefasPorUsuarioResponsavel(List<Usuario> usuariosResponsaveis) {
-        
+
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
         List<Tarefa> tarefasUsuarioResponsavel = new ArrayList<>();
         for (Usuario usuarioResponsavel : usuariosResponsaveis) {
@@ -842,7 +848,6 @@ public class TarefaModel {
         return tarefasUsuarioResponsavel;
     }
 
-    
     /**
      * Lista as tarefas que correspondam aos filtros informados
      *
@@ -1005,7 +1010,6 @@ public class TarefaModel {
     }
 
     private static List<Tarefa> filtrarTarefas(List<Tarefa> tarefas, Usuario usuarioLogado) {
-        
 
         List<Tarefa> result = new ArrayList<>();
         for (Tarefa tarefa : tarefas) {

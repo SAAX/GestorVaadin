@@ -167,8 +167,10 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         // adiciona cada hierarquia customizada
         for (HierarquiaProjeto hierarquia : hierarquias) {
+
             MenuBar.MenuItem menuProjeto = menuCriar.addItemBefore(hierarquia.getNome(), null, null, view.getCreateNewByTemplate());
             Collections.sort(hierarquia.getCategorias());
+
             for (HierarquiaProjetoDetalhe categoria : hierarquia.getCategorias()) {
                 menuProjeto.addItem(categoria.getCategoria(), (MenuBar.MenuItem selectedItem) -> {
                     criarNova(categoria);
@@ -228,8 +230,14 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
              * COMENTADO: Projeção postergada para v2
              * it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
              */
-            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.email")).setValue(new Button("E"));
-            it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.chat")).setValue(new Button("C"));
+            it.getItemProperty(PresenterUtils.getMensagensResource().
+                    getString("DashboardView.taskTable.email")).setValue(new Button("E"));
+
+            it.getItemProperty(PresenterUtils.getMensagensResource().
+                    getString("DashboardView.taskTable.chat")).
+                    setValue(new Button("Chat", (Button.ClickEvent event) -> {
+                        chatButtonClicked(tarefa);
+                    }));
 
             // se a tarefa possui subs, chama recursivamente
             for (Tarefa subTarefa : tarefa.getSubTarefas()) {
@@ -579,7 +587,8 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             FormatterUtil.formatDate(tarefa.getDataInicio()),
             FormatterUtil.formatDate(tarefa.getDataFim()),
             buildPopUpEvolucaoStatusEAndamento(tarefa),
-            /** Projecao: Contingenciado para V2
+            /**
+             * Projecao: Contingenciado para V2
              * tarefa.getProjecao().toString().charAt(0),
              */
             new Button("E"),

@@ -371,7 +371,9 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     @Override
     public void adicionarParticipante(Usuario usuario) {
         if (usuario.equals(view.getResponsavelCombo().getValue()) || usuario.equals(loggedUser)) {
-            Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
+            Notification.show(PresenterUtils.getMensagensResource().
+                    getString("Notificacao.ParticipanteUsuarioResponsavel"),
+                    Notification.TYPE_WARNING_MESSAGE);
         } else {
             Participante participante = MetaModel.criarParticipante(usuario, view.getMeta());
             view.getParticipantesContainer().addBean(participante);

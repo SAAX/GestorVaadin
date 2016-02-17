@@ -120,7 +120,7 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
             tarefaPai.setSubTarefas(new ArrayList<>());
         }
         tarefaPai.getSubTarefas().add(tarefa);
-        view.getChatButton().setVisible(false);
+//        view.getChatButton().setVisible(false);
 
         /**
          * COMENTADO: Projeção postergada para v2
@@ -967,14 +967,33 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
         if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || usuario.equals(PresenterUtils.getUsuarioLogado())) {
             Notification.show(PresenterUtils.getMensagensResource().getString("Notificacao.ParticipanteUsuarioResponsavel"), Notification.TYPE_WARNING_MESSAGE);
         } else {
-            Participante participanteTarefa = TarefaModel.criarParticipante(usuario, tarefa);
-            view.getParticipantesContainer().addBean(participanteTarefa);
+            List<Participante> participantesTarefaList = tarefa.getParticipantes();
 
-            if (tarefa.getParticipantes() == null) {
-                tarefa.setParticipantes(new ArrayList<>());
+            /*Approach necessário para não permitir incluir 
+            várias vezes o mesmo usuario como participante*/
+            boolean usuarioParticipa = false;
+            for (Participante participanteTarefa : participantesTarefaList) {
+                if (participanteTarefa.getUsuarioParticipante().equals(usuario)) {
+                    usuarioParticipa = true;
+                }
+            }
+            
+            if (usuarioParticipa) {
+                Notification.show(PresenterUtils.getMensagensResource().
+                        getString("Notificacao.UsuarioJaParticipa"),
+                        Notification.TYPE_WARNING_MESSAGE);
+            } else {
+
+                Participante participanteTarefa = TarefaModel.criarParticipante(usuario, tarefa);
+                view.getParticipantesContainer().addBean(participanteTarefa);
+
+                if (tarefa.getParticipantes() == null) {
+                    tarefa.setParticipantes(new ArrayList<>());
+                }
+
+                tarefa.getParticipantes().add(participanteTarefa);
             }
 
-            tarefa.getParticipantes().add(participanteTarefa);
         }
 
     }

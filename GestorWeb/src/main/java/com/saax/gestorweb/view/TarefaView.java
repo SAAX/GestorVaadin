@@ -73,6 +73,7 @@ import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
  * Cadastro/Edição de tarefas.<br>
+ *
  * @author rodrigo
  */
 public class TarefaView extends Window {
@@ -104,8 +105,7 @@ public class TarefaView extends Window {
     private Button chatButton;
     private Label caminhoTarefaLabel;
     /**
-     * COMENTADO: Projeção postergada para v2 
-     * private Button projectionButton;
+     * COMENTADO: Projeção postergada para v2 private Button projectionButton;
      */
 
     // -----------------------------------------------------------------------------------
@@ -178,7 +178,7 @@ public class TarefaView extends Window {
 
     @PropertyId("custoHoraApontamento")
     private TextField custoHoraApontamentoTextField;
-    
+
     private TextField horasApontadasTextField;
     private TextField observacaoApontamentoTextField;
     private Button adicionarApontamentoButton;
@@ -263,7 +263,6 @@ public class TarefaView extends Window {
         caminhoTarefaLabel.setValue(getCaminhoTarefa(tarefa));
     }
 
-   
     /**
      * Builds the main container that will hold all other
      *
@@ -544,7 +543,7 @@ public class TarefaView extends Window {
 
         participantesCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             if (event.getProperty().getValue() != null) {
-                listener.adicionarParticipante(tarefaBeanItem.getBean(),(Usuario) event.getProperty().getValue());
+                listener.adicionarParticipante(tarefaBeanItem.getBean(), (Usuario) event.getProperty().getValue());
             }
         });
 
@@ -871,9 +870,8 @@ public class TarefaView extends Window {
         apontamentosTable.setPageLength(5);
         apontamentosTable.setWidth("100%");
 
-        
         HorizontalLayout controleHorasLayout = new HorizontalLayout();
-        
+
         HorizontalLayout inputApontamentoLayout = new HorizontalLayout();
         inputApontamentoLayout.setSpacing(true);
         inputApontamentoLayout.addComponent(horasApontadasTextField);
@@ -890,7 +888,7 @@ public class TarefaView extends Window {
 
         controleHorasLayout.addComponent(alteraCustoHoraLayout);
         controleHorasLayout.setComponentAlignment(alteraCustoHoraLayout, Alignment.MIDDLE_RIGHT);
-        
+
         this.controleHorasLayout = new VerticalLayout();
         this.controleHorasLayout.setSpacing(true);
         this.controleHorasLayout.setMargin(true);
@@ -1468,5 +1466,4 @@ public class TarefaView extends Window {
         return alteraCustoHoraButton;
     }
 
-    
 }

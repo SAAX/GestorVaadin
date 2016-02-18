@@ -439,6 +439,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         carregarListaMetasUsuarioLogado();
         carregarFiltrosPesquisa();
         carregarListaTarefasPrincipais();
+        carregarConvitesPrincipais();
     }
 
     /**
@@ -513,12 +514,30 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         List<Tarefa> tarefasPrincipais = DashboardModel.listarTarefasPrincipais(PresenterUtils.getUsuarioLogado());
 
         view.getBottomTasksContainer().removeAllComponents();
-        for (int i = 0; i < tarefasPrincipais.size() && i < 5; i++) {
+        for (int i = 0; i < tarefasPrincipais.size(); i++) {
             Tarefa tarefa = tarefasPrincipais.get(i);
 
             Button tarefaButton = PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome().length() > 25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
             tarefaButton.setStyleName("v-button-link");
             view.getBottomTasksContainer().addComponent(tarefaButton);
+        }
+
+    }
+
+    /**
+     * Carrega o box inferior direito com as principais tarefas a serem aceitas
+     */
+    private void carregarConvitesPrincipais() {
+
+        List<Tarefa> tarefasAguardandoAceite = DashboardModel.listarTarefasAguardandoAceite(PresenterUtils.getUsuarioLogado());
+
+        view.getBottomInvitesContainer().removeAllComponents();
+        for (int i = 0; i < tarefasAguardandoAceite.size(); i++) {
+            Tarefa tarefa = tarefasAguardandoAceite.get(i);
+
+            Button tarefaButton = PresenterUtils.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome().length() > 25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
+            tarefaButton.setStyleName("v-button-link");
+            view.getBottomInvitesContainer().addComponent(tarefaButton);
         }
 
     }

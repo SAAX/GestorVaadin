@@ -558,7 +558,7 @@ public class TarefaModel {
                 throw new IllegalArgumentException("Valor negativo para orçamento.");
             }
         }
-        
+
         catch (Exception e) {
             throw new RuntimeException("Valor inválido para Orçamento: " + orcamentoTarefa.getInputValor());
         }
@@ -1056,6 +1056,38 @@ public class TarefaModel {
 
         return tarefas;
 
+    }
+
+    /**
+     * Obtém as tarefas não aceitas pelo usuário logado, ordenadas por data FIM
+     *
+     * @param loggedUser
+     * @return
+     */
+    public static List<Tarefa> listarTarefasAguardandoAceite(Usuario loggedUser) {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        List<Tarefa> tarefas = new ArrayList<>();
+
+        for (UsuarioEmpresa usuarioEmpresa : loggedUser.getEmpresas()) {
+            if (usuarioEmpresa.getAtivo()) {
+                Empresa empresa = usuarioEmpresa.getEmpresa();
+                Query q = em.createNamedQuery("Tarefa.findTarefasAguardandoAceite")
+                        .setParameter("empresa", empresa)
+                        .setParameter("usuarioSolicitante", loggedUser)
+                        .setParameter("status", StatusTarefa.NAO_INICIADA);
+
+                tarefas.addAll(q.getResultList());
+
+                for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                    q = em.createNamedQuery("Tarefa.findTarefasAguardandoAceite")
+                            .setParameter("empresa", subEmpresa)
+                            .setParameter("usuarioSolicitante", loggedUser)
+                            .setParameter("status", StatusTarefa.NAO_INICIADA);
+                    tarefas.addAll(q.getResultList());
+                }
+            }
+        }
+        return tarefas;
     }
 
     /**

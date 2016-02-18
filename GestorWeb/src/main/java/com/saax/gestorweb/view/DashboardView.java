@@ -1,12 +1,10 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.PresenterUtils;
-import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
@@ -28,7 +26,6 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Tree;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -550,7 +547,10 @@ public class DashboardView extends VerticalLayout {
 
     /**
      * Builds the bottom container with its 3 inner components (tasks,
-     * forecasts, invites)
+     * forecasts, invites).
+     *
+     * The containers are populatted on DashboardPresenter.
+     * carregaVisualizacaoInicial();
      *
      * @return the bottom container
      */
@@ -580,13 +580,6 @@ public class DashboardView extends VerticalLayout {
         bottomInvitesContainer.setStyleName("blue");
         bottomInvitesContainer.setWidth("20%");
         bottomContainer.addComponent(bottomInvitesContainer);
-
-        Button conviteButton;
-        for (int i = 0; i < 5; i++) {
-            conviteButton = new Button("Convite  " + (i + 1));
-            conviteButton.setStyleName("v-button-link");
-            bottomInvitesContainer.addComponent(conviteButton);
-        }
 
         return bottomContainer;
     }
@@ -678,6 +671,10 @@ public class DashboardView extends VerticalLayout {
 
     public VerticalLayout getBottomTasksContainer() {
         return bottomTasksContainer;
+    }
+
+    public VerticalLayout getBottomInvitesContainer() {
+        return bottomInvitesContainer;
     }
 
     public InlineDateField getEndDateFilterDateField() {

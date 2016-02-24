@@ -125,7 +125,7 @@ public class DashboardModel {
 
         return null;
     }
-
+    
 
     public static List<Tarefa> listarTarefas(Usuario loggedUser) {
         return TarefaModel.listarTarefas(loggedUser);
@@ -155,5 +155,5 @@ public class DashboardModel {
         return TarefaModel.criarNovaTarefaPeloTemplate(template);
 
     }
-
+    
 }

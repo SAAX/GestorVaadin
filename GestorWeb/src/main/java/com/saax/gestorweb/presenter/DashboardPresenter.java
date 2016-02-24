@@ -42,6 +42,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -161,20 +163,26 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         // obtem as hierarquias customizadas
         List<HierarquiaProjeto> hierarquias = DashboardModel.getHierarquiasProjeto();
-
+        List<Empresa> listarEmpresasAtivasUsuarioLogado = EmpresaModel.listarEmpresasAtivasUsuarioLogado(PresenterUtils.getUsuarioLogado());
+        
         // menu "Criar"
-        MenuBar.MenuItem menuCriar = view.getCreateNewByCategoryMenuItem();
+        Map<Empresa, MenuBar.MenuItem> mapEmpresasMenuCriar = view.getMapEmpresasMenuItemCriar();
 
-        // adiciona cada hierarquia customizada
-        for (HierarquiaProjeto hierarquia : hierarquias) {
+        for (Empresa empresa : listarEmpresasAtivasUsuarioLogado) {
 
-            MenuBar.MenuItem menuProjeto = menuCriar.addItemBefore(hierarquia.getNome(), null, null, view.getCreateNewByTemplate());
-            Collections.sort(hierarquia.getCategorias());
+            // adiciona cada hierarquia customizada
+            for (HierarquiaProjeto hierarquia : hierarquias) {
 
-            for (HierarquiaProjetoDetalhe categoria : hierarquia.getCategorias()) {
-                menuProjeto.addItem(categoria.getCategoria(), (MenuBar.MenuItem selectedItem) -> {
-                    criarNova(categoria);
-                });
+                MenuBar.MenuItem menuProjeto = mapEmpresasMenuCriar.get(empresa).
+                        addItemBefore(hierarquia.getNome(), null, null, view.getCreateNewByTemplate());
+
+                Collections.sort(hierarquia.getCategorias());
+
+                for (HierarquiaProjetoDetalhe categoria : hierarquia.getCategorias()) {
+                    menuProjeto.addItem(categoria.getCategoria(), (MenuBar.MenuItem selectedItem) -> {
+                        criarNova(categoria, empresa);
+                    });
+                }
             }
 
         }
@@ -350,11 +358,26 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         if (categoria.getNivel() == 1) {
             MetaPresenter presenter = new MetaPresenter(new MetaView());
             presenter.addCallbackListener(this);
-            presenter.criarNovaMeta(categoria);
+            presenter.criarNovaMeta(categoria, null);
         } else if (categoria.getNivel() == 2) {
             TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
             presenter.addCallBackListener(this);
-            presenter.createTask(categoria);
+            presenter.createTask(categoria, null);
+        }
+
+    }
+
+    private void criarNova(HierarquiaProjetoDetalhe categoria, Empresa empresa) {
+
+        if (categoria.getNivel() == 1) {
+            MetaPresenter presenter = new MetaPresenter(new MetaView());
+            presenter.addCallbackListener(this);
+            presenter.criarNovaMeta(categoria, empresa);
+            
+        } else if (categoria.getNivel() == 2) {
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
+            presenter.addCallBackListener(this);
+            presenter.createTask(categoria, empresa);
         }
 
     }

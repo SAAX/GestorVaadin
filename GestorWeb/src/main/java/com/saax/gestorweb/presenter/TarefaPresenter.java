@@ -151,17 +151,20 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
 
     /**
      * Creates a new default Tarefa, with a specific category Just overloaded:
-     * createTask(List) <br>
+     * createTask(List). <br>
      *
+     * If empresa isn't null, it's setted in the task.
      *
      * @param category in wich the task'll be created
+     * @param empresa
      */
-    public void createTask(HierarquiaProjetoDetalhe category) {
+    public void createTask(HierarquiaProjetoDetalhe category, Empresa empresa) {
         // builds a list to use the main method: createTask
         List<HierarquiaProjetoDetalhe> categories = new ArrayList<>();
         categories.add(category);
         // call the main method to create a task
-        createTask(null, categories);
+
+        createTask(null, categories, empresa);
     }
 
     /**
@@ -169,17 +172,23 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
      *
      * @param target the main target to be attached with the new task
      * @param possibleCategories
+     * @param empresa if not null, setted as initial Empresa
      */
-    public void createTask(Meta target, List<HierarquiaProjetoDetalhe> possibleCategories) {
+    public void createTask(Meta target, List<HierarquiaProjetoDetalhe> possibleCategories, Empresa empresa) {
 
         Tarefa tarefa;
 
         // Cria uma nova tarefa com valores default
         tarefa = new Tarefa();
+
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
-        if (target != null) {
+        if (empresa != null) {
+            tarefa.setEmpresa(empresa);
+        } else if (target != null) {
             tarefa.setEmpresa(target.getEmpresa());
         }
+
+        //Ver com o Rodrigo qual deve deixar
         tarefa.setUsuarioInclusao(PresenterUtils.getUsuarioLogado());
         tarefa.setUsuarioSolicitante(PresenterUtils.getUsuarioLogado());
         tarefa.setDataHoraInclusao(LocalDateTime.now());
@@ -971,14 +980,14 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
 
             /*Approach necessário para não permitir incluir 
             várias vezes o mesmo usuario como participante*/
-            boolean usuarioParticipa = false;
+            boolean repetindoParticipante = false;
             for (Participante participanteTarefa : participantesTarefaList) {
                 if (participanteTarefa.getUsuarioParticipante().equals(usuario)) {
-                    usuarioParticipa = true;
+                    repetindoParticipante = true;
                 }
             }
-            
-            if (usuarioParticipa) {
+
+            if (repetindoParticipante) {
                 Notification.show(PresenterUtils.getMensagensResource().
                         getString("Notificacao.UsuarioJaParticipa"),
                         Notification.TYPE_WARNING_MESSAGE);

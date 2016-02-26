@@ -6,7 +6,7 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.PresenterUtils;
+import com.saax.gestorweb.presenter.GestorPresenter;
 import com.saax.gestorweb.util.TestUtils;
 import junit.framework.Assert;
 import org.junit.AfterClass;
@@ -39,7 +39,7 @@ public class PresenterUtilsTest {
         Usuario rodrigo = TestUtils.getUsuarioRodrigo();
         TestUtils.setUsuarioLogado(rodrigo);
         
-        Assert.assertEquals(rodrigo,PresenterUtils.getUsuarioLogado());
+        Assert.assertEquals(rodrigo,GestorPresenter.getUsuarioLogado());
         
         
     }

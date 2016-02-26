@@ -55,6 +55,8 @@ public class DashboardModel {
         return templates;
     }
 
+    
+    
     /**
      * Obtem as hierarquias que podem ser selecionadas pelo usuário (até nível
      * 2)

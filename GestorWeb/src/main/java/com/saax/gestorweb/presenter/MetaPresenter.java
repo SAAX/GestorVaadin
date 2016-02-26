@@ -1,6 +1,7 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
+import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.MetaModel;
 import com.saax.gestorweb.model.TarefaModel;
@@ -115,11 +116,10 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
      */
     private void init(Meta meta) {
 
-        carregaComboCategoria(meta);
         carregaComboEmpresa();
-        PresenterUtils.carregaComboResponsavel(view.getResponsavelCombo(), meta.getEmpresa());
-        PresenterUtils.carregaComboEmpresaCliente(view.getEmpresaClienteCombo());
-        PresenterUtils.carregaComboParticipante(view.getParticipantesCombo(), meta.getEmpresa());
+        GestorPresenter.carregaComboUsuarios(view.getResponsavelCombo(), meta.getEmpresa());
+        GestorPresenter.carregaComboEmpresaCliente(view.getEmpresaClienteCombo());
+        GestorPresenter.carregaComboUsuarios(view.getParticipantesCombo(), meta.getEmpresa());
 
         // Abre o formulário
         UI.getCurrent().addWindow(view);
@@ -151,18 +151,6 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     }
 
     /**
-     * Carrega o combo de seleção da empresa com todas as empresas relacionadas
-     * ao usuário logado
-     */
-    private void carregaComboCategoria(Meta meta) {
-        // configura a categoria
-        ComboBox combo = view.getHierarquiaCombo();
-        combo.addItem(meta.getCategoria());
-        combo.setItemCaption(meta.getCategoria(), meta.getCategoria().getCategoria());
-
-    }
-
-    /**
      * Carrega o combo de responsáveis com todos os usuários ativos da mesma
      * empresa do usuário logado
      */
@@ -184,23 +172,25 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
         if (empresaSendoDeSelecionada || empresaSendoAlterada) {
 
-            PresenterUtils.resetaSelecaoUsuarioResponsavel(view.getResponsavelCombo());
+            GestorPresenter.resetaCombo(view.getResponsavelCombo());
             view.getMeta().setUsuarioResponsavel(null);
 
-            PresenterUtils.resetaSelecaoParticipantes(view.getParticipantesCombo(), view.getParticipantesContainer());
+            GestorPresenter.resetaCombo(view.getParticipantesCombo(), view.getParticipantesContainer());
             view.getMeta().setParticipantes(new ArrayList<>());
 
-            PresenterUtils.resetaComboDepartamento(view.getDepartamentoCombo());
-            PresenterUtils.resetaComboCentroCusto(view.getCentroCustoCombo());
-
+            GestorPresenter.resetaCombo(view.getDepartamentoCombo());
+            GestorPresenter.resetaCombo(view.getCentroCustoCombo());
+            GestorPresenter.resetaCombo(view.getHierarquiaCombo());
         }
 
         if (empresaSendoAlterada) {
 
-            PresenterUtils.carregaComboResponsavel(view.getResponsavelCombo(), empresaSelecionada);
-            PresenterUtils.carregaComboParticipante(view.getParticipantesCombo(), empresaSelecionada);
-            PresenterUtils.carregaComboDepartamento(view.getDepartamentoCombo(), empresaSelecionada);
-            PresenterUtils.carregaComboCentroCusto(view.getCentroCustoCombo(), empresaSelecionada);
+            GestorPresenter.carregaComboUsuarios(view.getResponsavelCombo(), empresaSelecionada);
+            GestorPresenter.carregaComboUsuarios(view.getParticipantesCombo(), empresaSelecionada);
+            GestorPresenter.carregaComboDepartamento(view.getDepartamentoCombo(), empresaSelecionada);
+            GestorPresenter.carregaComboCentroCusto(view.getCentroCustoCombo(), empresaSelecionada);
+            GestorPresenter.carregaComboCategoria(view.getHierarquiaCombo(), empresaSelecionada, 1);
+          
 
         }
 
@@ -284,16 +274,16 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
     private void addTaskInTable(Tarefa task) {
         Object[] gridRow = new Object[]{
-            PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()),
-            PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
-            PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()),
+            GestorPresenter.buildButtonEditarTarefa(this, view.getTarefasTable(), task, task.getGlobalID()),
+            GestorPresenter.buildButtonEditarTarefa(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()),
+            GestorPresenter.buildButtonEditarTarefa(this, view.getTarefasTable(), task, task.getNome()),
             task.getEmpresa().getNome()
             + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""),
             task.getUsuarioSolicitante().getNome(),
             task.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(task.getDataInicio()),
             FormatterUtil.formatDate(task.getDataFim()),
-            PresenterUtils.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this),
+            GestorPresenter.buildPopUpStatusTarefa(view.getTarefasTable(), task, this),
             task.getProjecao().toString().charAt(0),
             new Button("E"),
             new Button("C")
@@ -343,16 +333,16 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     private void atualizarTarefaTable(Tarefa task) {
         Item it = view.getTarefasTable().getItem(task);
 
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getGlobalID()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(PresenterUtils.buildButtonOpenTask(this, view.getTarefasTable(), task, task.getNome()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaCod")).setValue(GestorPresenter.buildButtonEditarTarefa(this, view.getTarefasTable(), task, task.getGlobalID()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaTitulo")).setValue(GestorPresenter.buildButtonEditarTarefa(this, view.getTarefasTable(), task, task.getHierarquia().getCategoria()));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaNome")).setValue(GestorPresenter.buildButtonEditarTarefa(this, view.getTarefasTable(), task, task.getNome()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaEmpresaFilial")).setValue(task.getEmpresa().getNome()
                 + (task.getFilialEmpresa() != null ? "/" + task.getFilialEmpresa().getNome() : ""));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaSolicitante")).setValue(task.getUsuarioSolicitante().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaResponsavel")).setValue(task.getUsuarioResponsavel().getNome());
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataInicio")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaDataFim")).setValue(FormatterUtil.formatDate(task.getDataInicio()));
-        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(PresenterUtils.buildPopUpStatusProgressTask(view.getTarefasTable(), task, this));
+        it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaStatus")).setValue(GestorPresenter.buildPopUpStatusTarefa(view.getTarefasTable(), task, this));
         it.getItemProperty(mensagens.getString("CadastroMetaView.tarefasTable.colunaProjecao")).setValue(task.getProjecao().toString().charAt(0));
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
@@ -387,7 +377,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
 
     @Override
     public void removerParticipante(Participante participante) {
-        if (!participante.getUsuarioInclusao().equals(PresenterUtils.getUsuarioLogado())) {
+        if (!participante.getUsuarioInclusao().equals(GestorPresenter.getUsuarioLogado())) {
             Notification.show("Ops, apenas " + participante.getUsuarioInclusao().getNome() + " pode remover este participante.", Notification.Type.WARNING_MESSAGE);
         } else {
             view.getParticipantesContainer().removeItem(participante);
@@ -404,7 +394,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
         view.setEditAllowed(usuarioLogadoEhOSolicitante || usuarioLogadoEhOResponsavel);
         view.getResponsavelCombo().setEnabled(usuarioLogadoEhOSolicitante);
 
-        view.getRemoverMetaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, PresenterUtils.getUsuarioLogado()));
+        view.getRemoverMetaButton().setEnabled(LixeiraModel.verificaPermissaoAcessoRemocaoMeta(meta, GestorPresenter.getUsuarioLogado()));
     }
 
     @Override

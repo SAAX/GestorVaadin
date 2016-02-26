@@ -21,7 +21,7 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.DashboardPresenter;
-import com.saax.gestorweb.presenter.PresenterUtils;
+import com.saax.gestorweb.presenter.GestorPresenter;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 
 import com.saax.gestorweb.util.GestorSession;
@@ -273,7 +273,7 @@ public class MetaModel {
         List<Meta> metasDataFim = new ArrayList<>();
         if (dataFim != null) {
 
-            for (UsuarioEmpresa usuarioEmpresa : PresenterUtils.getUsuarioLogado().getEmpresas()) {
+            for (UsuarioEmpresa usuarioEmpresa : GestorPresenter.getUsuarioLogado().getEmpresas()) {
                 if (usuarioEmpresa.getAtivo()) {
                     Empresa empresa = usuarioEmpresa.getEmpresa();
                     metasDataFim.addAll(em.createNamedQuery("Meta.findByDataFim")

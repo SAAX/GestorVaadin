@@ -1,7 +1,7 @@
 package com.saax.gestorweb.model.datamodel;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.presenter.PresenterUtils;
+import com.saax.gestorweb.presenter.GestorPresenter;
 import com.vaadin.ui.UI;
 import java.util.ResourceBundle;
 
@@ -17,7 +17,7 @@ public enum PrioridadeTarefa {
     ALTA;
 
     public String getLocalizedString() {
-        ResourceBundle mensagens = PresenterUtils.getMensagensResource();
+        ResourceBundle mensagens = GestorPresenter.getMENSAGENS();
 
         switch (this) {
             case ALTA:

@@ -8,7 +8,7 @@ import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.presenter.PresenterUtils;
+import com.saax.gestorweb.presenter.GestorPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
@@ -46,7 +46,7 @@ import org.vaadin.teemu.ratingstars.RatingStars;
 public class PopUpStatusView extends CustomComponent {
 
     // Referencia ao recurso das mensagens e imagens:
-    private final transient ResourceBundle mensagens = PresenterUtils.getMensagensResource();
+    private final transient ResourceBundle mensagens = GestorPresenter.getMENSAGENS();
 
     // A view mantem acesso ao listener (Presenter) para notificar os eventos
     // Este acesso se dá por uma interface para manter a abstração das camadas

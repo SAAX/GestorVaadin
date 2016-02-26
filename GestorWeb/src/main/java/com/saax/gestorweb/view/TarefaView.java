@@ -11,7 +11,7 @@ import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.CallBackListener;
 import com.saax.gestorweb.presenter.TarefaPresenter;
 import com.saax.gestorweb.presenter.PopUpStatusPresenter;
-import com.saax.gestorweb.presenter.PresenterUtils;
+import com.saax.gestorweb.presenter.GestorPresenter;
 import com.saax.gestorweb.util.ErrorUtils;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.view.PopUpStatusListener;
@@ -109,7 +109,7 @@ public class TarefaView extends Window {
      */
 
     // -----------------------------------------------------------------------------------
-    // Bean Biding
+    // Bean Bidingset
     // -----------------------------------------------------------------------------------
     private BeanItem<Tarefa> tarefaBeanItem;
     private FieldGroup tarefaFieldGroup;
@@ -288,17 +288,17 @@ public class TarefaView extends Window {
         accordion = new Accordion();
         accordion.setWidth("100%");
         // Add the tab of initial data
-        accordion.addTab(buildInitialTaskDataSheet(), PresenterUtils.getMensagensResource().getString("TarefaView.InitialTaskData.title"), null);
+        accordion.addTab(buildInitialTaskDataSheet(), GestorPresenter.getMENSAGENS().getString("TarefaView.InitialTaskData.title"), null);
         // Add the description tab and responsible
-        accordion.addTab(buildDescriptionAndAssigneeSheet(), PresenterUtils.getMensagensResource().getString("TarefaView.DescriptionAndAssignee.title"), null);
+        accordion.addTab(buildDescriptionAndAssigneeSheet(), GestorPresenter.getMENSAGENS().getString("TarefaView.DescriptionAndAssignee.title"), null);
         // Add the task detail tab
-        accordion.addTab(buildDetailsSheet(), PresenterUtils.getMensagensResource().getString("TarefaView.DetailsSheet.title"), null);
+        accordion.addTab(buildDetailsSheet(), GestorPresenter.getMENSAGENS().getString("TarefaView.DetailsSheet.title"), null);
         // Add the optional tab hours control
-        accordion.addTab(buildPointingHoursSheet(), PresenterUtils.getMensagensResource().getString("TarefaView.PointingHours.title"), null);
+        accordion.addTab(buildPointingHoursSheet(), GestorPresenter.getMENSAGENS().getString("TarefaView.PointingHours.title"), null);
         // Add the optional tab budget control
-        accordion.addTab(buildBudgetSheet(), PresenterUtils.getMensagensResource().getString("TarefaView.BudgetSheet.title"), null);
+        accordion.addTab(buildBudgetSheet(), GestorPresenter.getMENSAGENS().getString("TarefaView.BudgetSheet.title"), null);
         // adiciona a aba sub tarefas
-        accordion.addTab(buildSubTasksSheet(), PresenterUtils.getMensagensResource().getString("TarefaView.SubTasks.tittle"), null);
+        accordion.addTab(buildSubTasksSheet(), GestorPresenter.getMENSAGENS().getString("TarefaView.SubTasks.tittle"), null);
 
         principalContainer.addComponent(accordion);
         principalContainer.setExpandRatio(accordion, 1);
@@ -331,7 +331,7 @@ public class TarefaView extends Window {
     private Component buildInitialTaskDataSheet() {
 
         // Combo: Company
-        empresaCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("TarefaView.companyCombo.label"));
+        empresaCombo = new ComboBox(GestorPresenter.getMENSAGENS().getString("TarefaView.companyCombo.label"));
         empresaCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.empresaSelecionada(tarefaBeanItem.getBean(), (Empresa) event.getProperty().getValue());
         });
@@ -340,7 +340,7 @@ public class TarefaView extends Window {
         camposObrigatorios.add(empresaCombo);
 
         // Combo: Hierarchy
-        hierarquiaCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("TarefaView.hierarchyCombo.label"));
+        hierarquiaCombo = new ComboBox(GestorPresenter.getMENSAGENS().getString("TarefaView.hierarchyCombo.label"));
         hierarquiaCombo.setWidth("140px");
         hierarquiaCombo.setTextInputAllowed(false);
 
@@ -351,30 +351,30 @@ public class TarefaView extends Window {
         camposObrigatorios.add(hierarquiaCombo);
 
         // TextField: task Name
-        nomeTarefaTextField = new TextField(PresenterUtils.getMensagensResource().getString("TarefaView.nomeTarefaTextField.label"));
+        nomeTarefaTextField = new TextField(GestorPresenter.getMENSAGENS().getString("TarefaView.nomeTarefaTextField.label"));
         nomeTarefaTextField.setWidth("100%");
-        nomeTarefaTextField.setInputPrompt(PresenterUtils.getMensagensResource().getString("TarefaView.nomeTarefaTextField.inputPrompt"));
+        nomeTarefaTextField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("TarefaView.nomeTarefaTextField.inputPrompt"));
         nomeTarefaTextField.setNullRepresentation("");
         nomeTarefaTextField.addValidator(new BeanValidator(Tarefa.class, "nome"));
         camposObrigatorios.add(nomeTarefaTextField);
 
         // TextField: Start Date
-        dataInicioDateField = new PopupDateField(PresenterUtils.getMensagensResource().getString("TarefaView.startDateTextField.label"));
+        dataInicioDateField = new PopupDateField(GestorPresenter.getMENSAGENS().getString("TarefaView.startDateTextField.label"));
         dataInicioDateField.setWidth("100%");
-        dataInicioDateField.setInputPrompt(PresenterUtils.getMensagensResource().getString("TarefaView.dataInicioDateField.inputPrompt"));
+        dataInicioDateField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("TarefaView.dataInicioDateField.inputPrompt"));
         dataInicioDateField.setConverter(new DateToLocalDateConverter());
         dataInicioDateField.addValidator(new BeanValidator(Tarefa.class, "dataInicio"));
         //dataInicioDateField.addValidator(new DataFuturaValidator(true, "Data de Início"));
         camposObrigatorios.add(dataInicioDateField);
 
         // Button Recurrence
-        controleRecorrenciaButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
+        controleRecorrenciaButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.tipoRecorrenciaCombo.label"), (Button.ClickEvent event) -> {
             listener.recurrenceClicked(tarefaBeanItem.getBean());
         });
         controleRecorrenciaButton.setWidth("100%");
 
         // Combo Priority
-        prioridadeCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("TarefaView.prioridadeCombo.label"));
+        prioridadeCombo = new ComboBox(GestorPresenter.getMENSAGENS().getString("TarefaView.prioridadeCombo.label"));
         prioridadeCombo.setTextInputAllowed(false);
         prioridadeCombo.setWidth("100%");
 
@@ -383,7 +383,7 @@ public class TarefaView extends Window {
         statusTarefaPopUpButton.setWidth("100%");
 
         // TextField: End Date
-        dataFimDateField = new PopupDateField(PresenterUtils.getMensagensResource().getString("TarefaView.dataFimTextField.label"));
+        dataFimDateField = new PopupDateField(GestorPresenter.getMENSAGENS().getString("TarefaView.dataFimTextField.label"));
         dataFimDateField.setWidth("100%");
         dataFimDateField.setConverter(new DateToLocalDateConverter());
 
@@ -435,18 +435,18 @@ public class TarefaView extends Window {
         barraSuperiorLayout.setSpacing(true);
         barraSuperiorLayout.setSizeUndefined();
 
-        templateCheckBox = new CheckBox(PresenterUtils.getMensagensResource().getString("TarefaView.templateCheckBox.caption"));
+        templateCheckBox = new CheckBox(GestorPresenter.getMENSAGENS().getString("TarefaView.templateCheckBox.caption"));
 
         barraSuperiorLayout.addComponent(templateCheckBox);
 
-        apontamentoHorasCheckBox = new CheckBox(PresenterUtils.getMensagensResource().getString("TarefaView.apontamentoHorasCheckBox.caption"));
+        apontamentoHorasCheckBox = new CheckBox(GestorPresenter.getMENSAGENS().getString("TarefaView.apontamentoHorasCheckBox.caption"));
         apontamentoHorasCheckBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.apontamentoHorasSwitched(event);
         });
 
         barraSuperiorLayout.addComponent(apontamentoHorasCheckBox);
 
-        controleOrcamentoChechBox = new CheckBox(PresenterUtils.getMensagensResource().getString("TarefaView.orcamentoControladoCheckBox.caption"));
+        controleOrcamentoChechBox = new CheckBox(GestorPresenter.getMENSAGENS().getString("TarefaView.orcamentoControladoCheckBox.caption"));
         controleOrcamentoChechBox.addValueChangeListener((Property.ValueChangeEvent event) -> {
             listener.controleOrcamentoSwitched(event);
         });
@@ -491,14 +491,14 @@ public class TarefaView extends Window {
         lowerButtonsBar.setSizeUndefined();
         lowerButtonsBar.setSpacing(true);
 
-        gravarButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.gravarButton.caption"), (Button.ClickEvent event) -> {
+        gravarButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.gravarButton.caption"), (Button.ClickEvent event) -> {
             try {
                 setValidatorsVisible(true);
                 tarefaFieldGroup.commit();
                 listener.gravarButtonClicked(tarefaBeanItem.getBean());
             }
             catch (RuntimeException ex) {
-                Notification notification = new Notification("Erro", (ex.getMessage() == null ? PresenterUtils.getMensagensResource().getString("ErrorUtils.errogenerico") : ex.getMessage()),
+                Notification notification = new Notification("Erro", (ex.getMessage() == null ? GestorPresenter.getMENSAGENS().getString("ErrorUtils.errogenerico") : ex.getMessage()),
                         Notification.Type.WARNING_MESSAGE, true);
 
                 notification.show(Page.getCurrent());
@@ -513,7 +513,7 @@ public class TarefaView extends Window {
 
         lowerButtonsBar.addComponent(gravarButton);
 
-        cancelarButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
+        cancelarButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.cancelarButton.caption"), (Button.ClickEvent event) -> {
             listener.cancelarButtonClicked();
         });
         lowerButtonsBar.addComponent(cancelarButton);
@@ -528,10 +528,10 @@ public class TarefaView extends Window {
      */
     private Component buildDescriptionAndAssigneeSheet() {
 
-        descricaoTextArea = new RichTextArea(PresenterUtils.getMensagensResource().getString("TarefaView.descricaoTarefaTextArea.caption"));
+        descricaoTextArea = new RichTextArea(GestorPresenter.getMENSAGENS().getString("TarefaView.descricaoTarefaTextArea.caption"));
         descricaoTextArea.setNullRepresentation("");
 
-        usuarioResponsavelCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("TarefaView.responsavelCombo.label"));
+        usuarioResponsavelCombo = new ComboBox(GestorPresenter.getMENSAGENS().getString("TarefaView.responsavelCombo.label"));
         usuarioResponsavelCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             if (event.getProperty().getValue() != null) {
                 listener.assigneeUserChanged(tarefaBeanItem.getBean(), (Usuario) event.getProperty().getValue());
@@ -540,7 +540,7 @@ public class TarefaView extends Window {
 
         camposObrigatorios.add(usuarioResponsavelCombo);
 
-        participantesCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("TarefaView.participantesCombo.label"));
+        participantesCombo = new ComboBox(GestorPresenter.getMENSAGENS().getString("TarefaView.participantesCombo.label"));
 
         participantesCombo.addValueChangeListener((Property.ValueChangeEvent event) -> {
             if (event.getProperty().getValue() != null) {
@@ -568,13 +568,13 @@ public class TarefaView extends Window {
         participantesTable.setContainerDataSource(participantesContainer);
 
         participantesTable.setColumnWidth("usuarioParticipante", 120);
-        participantesTable.setColumnHeader("usuarioParticipante", PresenterUtils.getMensagensResource().getString("TarefaView.participantesTable.colunaParticipante"));
+        participantesTable.setColumnHeader("usuarioParticipante", GestorPresenter.getMENSAGENS().getString("TarefaView.participantesTable.colunaParticipante"));
 
         participantesTable.setVisibleColumns("usuarioParticipante");
 
         // Adicionar coluna do botão "remover"
-        participantesTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("TarefaView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.participantesTable.colunaBotaoRemover"));
+        participantesTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("TarefaView.participantesTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.participantesTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerParticipante((Participante) itemId);
             });
@@ -588,7 +588,7 @@ public class TarefaView extends Window {
         participantesTable.setWidth("100%");
         participantesTable.setPageLength(3);
 
-        Label labelCliente = new Label("<b>" + PresenterUtils.getMensagensResource().getString("TarefaView.empresaClienteCombo.label") + "</b>", ContentMode.HTML);
+        Label labelCliente = new Label("<b>" + GestorPresenter.getMENSAGENS().getString("TarefaView.empresaClienteCombo.label") + "</b>", ContentMode.HTML);
         empresaClienteCombo = new ComboBox();
 
         // do layout :
@@ -616,10 +616,10 @@ public class TarefaView extends Window {
     private Component buildDetailsSheet() {
 
         // department Combo
-        departamentoCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("TarefaView.departamentoCombo.caption"));
+        departamentoCombo = new ComboBox(GestorPresenter.getMENSAGENS().getString("TarefaView.departamentoCombo.caption"));
 
         // Cost Center combo
-        centroCustoCombo = new ComboBox(PresenterUtils.getMensagensResource().getString("TarefaView.centroCustoCombo.caption"));
+        centroCustoCombo = new ComboBox(GestorPresenter.getMENSAGENS().getString("TarefaView.centroCustoCombo.caption"));
 
         // upload Progress Bar
         uploadHorizontalLayout = new HorizontalLayout();
@@ -628,7 +628,7 @@ public class TarefaView extends Window {
         attachProgressBar = new ProgressBar();
         attachProgressBar.setWidth("100%");
 
-        adicionarAnexoUploadButton = new Upload(PresenterUtils.getMensagensResource().getString("TarefaView.adicionarAnexoButton.filechooser.caption"), (String filename, String mimeType) -> {
+        adicionarAnexoUploadButton = new Upload(GestorPresenter.getMENSAGENS().getString("TarefaView.adicionarAnexoButton.filechooser.caption"), (String filename, String mimeType) -> {
             FileOutputStream fos = null;
             try {
                 if (!new File(System.getProperty("user.home") + System.getProperty("file.separator") + "tmp").canWrite() || !new File(System.getProperty("user.home") + System.getProperty("file.separator") + "tmp").isDirectory()) {
@@ -650,7 +650,7 @@ public class TarefaView extends Window {
             }
             return fos;
         });
-        adicionarAnexoUploadButton.setButtonCaption(PresenterUtils.getMensagensResource().getString("TarefaView.adicionarAnexoButton.caption"));
+        adicionarAnexoUploadButton.setButtonCaption(GestorPresenter.getMENSAGENS().getString("TarefaView.adicionarAnexoButton.caption"));
 
         adicionarAnexoUploadButton.addSucceededListener((Upload.SucceededEvent event) -> {
             listener.anexoAdicionado(tarefaBeanItem.getBean(), (File) event.getUpload().getData());
@@ -663,7 +663,7 @@ public class TarefaView extends Window {
         });
         adicionarAnexoUploadButton.addFinishedListener((Upload.FinishedEvent event) -> {
             uploadHorizontalLayout.removeComponent(attachProgressBar);
-            Notification.show(PresenterUtils.getMensagensResource().getString("TarefaView.adicionarAnexoButton.uploadConcluido.mensagem"), Notification.Type.TRAY_NOTIFICATION);
+            Notification.show(GestorPresenter.getMENSAGENS().getString("TarefaView.adicionarAnexoButton.uploadConcluido.mensagem"), Notification.Type.TRAY_NOTIFICATION);
         });
         adicionarAnexoUploadButton.addStartedListener((Upload.StartedEvent event) -> {
             uploadHorizontalLayout.addComponent(attachProgressBar);
@@ -678,13 +678,13 @@ public class TarefaView extends Window {
 
         anexosTarefaTable.setColumnWidth("nome", 350);
 
-        anexosTarefaTable.setColumnHeader("nome", PresenterUtils.getMensagensResource().getString("TarefaView.anexosAdicionadosTable.colunaNome"));
+        anexosTarefaTable.setColumnHeader("nome", GestorPresenter.getMENSAGENS().getString("TarefaView.anexosAdicionadosTable.colunaNome"));
 
         anexosTarefaTable.setVisibleColumns("nome");
 
         // Adicionar coluna do botão "download"
-        anexosTarefaTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("TarefaView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
-            Button downloadButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.anexosAdicionadosTable.colunaBotaoDownload"));
+        anexosTarefaTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("TarefaView.anexosAdicionadosTable.colunaBotaoDownload"), (Table source, final Object itemId, Object columnId) -> {
+            Button downloadButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.anexosAdicionadosTable.colunaBotaoDownload"));
             Anexo anexoTarefa = (Anexo) itemId;
             FileDownloader fd = new FileDownloader(new FileResource(new File(anexoTarefa.getCaminhoCompleto())));
 
@@ -692,17 +692,17 @@ public class TarefaView extends Window {
             downloadButton.setEnabled(true);
             return downloadButton;
         });
-        anexosTarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
+        anexosTarefaTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.anexosAdicionadosTable.colunaBotaoDownload"), 50);
 
-        anexosTarefaTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("TarefaView.anexosAdicionadosTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.anexosAdicionadosTable.colunaBotaoRemover"));
+        anexosTarefaTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("TarefaView.anexosAdicionadosTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.anexosAdicionadosTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerAnexo((Anexo) itemId);
             });
             removeButton.setEnabled(true);
             return removeButton;
         });
-        anexosTarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
+        anexosTarefaTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.anexosAdicionadosTable.colunaBotaoRemover"), 50);
         anexosTarefaTable.setSelectable(true);
         anexosTarefaTable.setImmediate(true);
         anexosTarefaTable.setWidth("100%");
@@ -765,7 +765,7 @@ public class TarefaView extends Window {
 
         // Hours control fields
         custoHoraApontamentoTextField = new TextField();
-        custoHoraApontamentoTextField.setInputPrompt(PresenterUtils.getMensagensResource().getString("TarefaView.custoHoraTextField.inputPrompt"));
+        custoHoraApontamentoTextField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("TarefaView.custoHoraTextField.inputPrompt"));
         custoHoraApontamentoTextField.setNullRepresentation("");
         custoHoraApontamentoTextField.setConverter(new StringToBigDecimalConverter());
         custoHoraApontamentoTextField.addValueChangeListener((Property.ValueChangeEvent event) -> {
@@ -773,14 +773,14 @@ public class TarefaView extends Window {
         });
 
         horasApontadasTextField = new TextField();
-        horasApontadasTextField.setInputPrompt(PresenterUtils.getMensagensResource().getString("TarefaView.imputarHorasTextField.inputPrompt"));
+        horasApontadasTextField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("TarefaView.imputarHorasTextField.inputPrompt"));
         horasApontadasTextField.setNullRepresentation("");
 
         observacaoApontamentoTextField = new TextField();
-        observacaoApontamentoTextField.setInputPrompt(PresenterUtils.getMensagensResource().getString("TarefaView.observacaoHorasTextField.inputPrompt"));
+        observacaoApontamentoTextField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("TarefaView.observacaoHorasTextField.inputPrompt"));
         observacaoApontamentoTextField.setNullRepresentation("");
 
-        adicionarApontamentoButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.imputarHorasButton.caption"));
+        adicionarApontamentoButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.imputarHorasButton.caption"));
         adicionarApontamentoButton.addClickListener((Button.ClickEvent event) -> {
             listener.imputarHorasClicked(tarefaBeanItem.getBean());
         });
@@ -830,26 +830,26 @@ public class TarefaView extends Window {
         apontamentosTable.setContainerDataSource(apontamentoTarefaContainer);
 
         apontamentosTable.setColumnWidth("dataHoraInclusao", 150);
-        apontamentosTable.setColumnHeader("dataHoraInclusao", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaData"));
+        apontamentosTable.setColumnHeader("dataHoraInclusao", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaData"));
         apontamentosTable.setColumnWidth("observacoes", 150);
-        apontamentosTable.setColumnHeader("observacoes", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaObservacoes"));
+        apontamentosTable.setColumnHeader("observacoes", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaObservacoes"));
         apontamentosTable.setColumnWidth("creditoHoras", 80);
-        apontamentosTable.setColumnHeader("creditoHoras", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaCreditoHoras"));
+        apontamentosTable.setColumnHeader("creditoHoras", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaCreditoHoras"));
         apontamentosTable.setColumnWidth("debitoHoras", 80);
-        apontamentosTable.setColumnHeader("debitoHoras", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaDebitoHoras"));
+        apontamentosTable.setColumnHeader("debitoHoras", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaDebitoHoras"));
         apontamentosTable.setColumnWidth("saldoHoras", 80);
-        apontamentosTable.setColumnHeader("saldoHoras", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaSaldoHoras"));
+        apontamentosTable.setColumnHeader("saldoHoras", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaSaldoHoras"));
         apontamentosTable.setColumnWidth("creditoValor", 80);
         apontamentosTable.setColumnAlignment("creditoValor", Table.Align.RIGHT);
-        apontamentosTable.setColumnHeader("creditoValor", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaCreditoValor"));
+        apontamentosTable.setColumnHeader("creditoValor", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaCreditoValor"));
         apontamentosTable.setColumnWidth("debitoValor", 80);
         apontamentosTable.setColumnAlignment("debitoValor", Table.Align.RIGHT);
-        apontamentosTable.setColumnHeader("debitoValor", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaDebitoValor"));
+        apontamentosTable.setColumnHeader("debitoValor", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaDebitoValor"));
         apontamentosTable.setColumnWidth("saldoValor", 80);
         apontamentosTable.setColumnAlignment("saldoValor", Table.Align.RIGHT);
-        apontamentosTable.setColumnHeader("saldoValor", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaSaldoValor"));
+        apontamentosTable.setColumnHeader("saldoValor", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaSaldoValor"));
         apontamentosTable.setColumnAlignment("custoHora", Table.Align.RIGHT);
-        apontamentosTable.setColumnHeader("custoHora", PresenterUtils.getMensagensResource().getString("TarefaView.controleHorasTable.colunaCustoHora"));
+        apontamentosTable.setColumnHeader("custoHora", GestorPresenter.getMENSAGENS().getString("TarefaView.controleHorasTable.colunaCustoHora"));
         apontamentosTable.setColumnWidth("custoHora", 80);
 
         apontamentosTable.setVisibleColumns("dataHoraInclusao", "observacoes", "creditoHoras", "debitoHoras", "saldoHoras", "creditoValor", "debitoValor", "saldoValor", "custoHora");
@@ -937,15 +937,15 @@ public class TarefaView extends Window {
     private Component buildBudgetSheet() {
 
         valorOrcadoRealizadoTextField = new TextField();
-        valorOrcadoRealizadoTextField.setInputPrompt(PresenterUtils.getMensagensResource().getString("TarefaView.imputarOrcamentoTextField.inputPrompt"));
+        valorOrcadoRealizadoTextField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("TarefaView.imputarOrcamentoTextField.inputPrompt"));
         valorOrcadoRealizadoTextField.setNullRepresentation("");
         valorOrcadoRealizadoTextField.setConverter(new StringToBigDecimalConverter());
 
         observacaoOrcamentoTextField = new TextField();
-        observacaoOrcamentoTextField.setInputPrompt(PresenterUtils.getMensagensResource().getString("TarefaView.observacaoOrcamentoTextField.inputPrompt"));
+        observacaoOrcamentoTextField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("TarefaView.observacaoOrcamentoTextField.inputPrompt"));
         observacaoOrcamentoTextField.setNullRepresentation("");
 
-        imputarOrcamentoButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.imputarOrcamentoButton.caption"), (Button.ClickEvent event) -> {
+        imputarOrcamentoButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.imputarOrcamentoButton.caption"), (Button.ClickEvent event) -> {
             listener.imputarOrcamentoClicked(tarefaBeanItem.getBean());
         });
 
@@ -988,25 +988,25 @@ public class TarefaView extends Window {
         };
         orcamentoTable.setContainerDataSource(orcamentoContainer);
         orcamentoTable.setColumnWidth("dataHoraInclusao", 150);
-        orcamentoTable.setColumnHeader("dataHoraInclusao", PresenterUtils.getMensagensResource().getString("TarefaView.controleOrcamentoTable.colunaData"));
+        orcamentoTable.setColumnHeader("dataHoraInclusao", GestorPresenter.getMENSAGENS().getString("TarefaView.controleOrcamentoTable.colunaData"));
         orcamentoTable.setColumnWidth("observacoes", 150);
-        orcamentoTable.setColumnHeader("observacoes", PresenterUtils.getMensagensResource().getString("TarefaView.controleOrcamentoTable.colunaObservacoes"));
+        orcamentoTable.setColumnHeader("observacoes", GestorPresenter.getMENSAGENS().getString("TarefaView.controleOrcamentoTable.colunaObservacoes"));
         orcamentoTable.setColumnWidth("credito", 80);
-        orcamentoTable.setColumnHeader("credito", PresenterUtils.getMensagensResource().getString("TarefaView.controleOrcamentoTable.colunaCredito"));
+        orcamentoTable.setColumnHeader("credito", GestorPresenter.getMENSAGENS().getString("TarefaView.controleOrcamentoTable.colunaCredito"));
         orcamentoTable.setColumnAlignment("credito", Table.Align.RIGHT);
         orcamentoTable.setColumnWidth("debito", 80);
-        orcamentoTable.setColumnHeader("debito", PresenterUtils.getMensagensResource().getString("TarefaView.controleOrcamentoTable.colunaDebito"));
+        orcamentoTable.setColumnHeader("debito", GestorPresenter.getMENSAGENS().getString("TarefaView.controleOrcamentoTable.colunaDebito"));
         orcamentoTable.setColumnAlignment("debito", Table.Align.RIGHT);
         orcamentoTable.setColumnWidth("saldo", 80);
-        orcamentoTable.setColumnHeader("saldo", PresenterUtils.getMensagensResource().getString("TarefaView.controleOrcamentoTable.colunaSaldo"));
+        orcamentoTable.setColumnHeader("saldo", GestorPresenter.getMENSAGENS().getString("TarefaView.controleOrcamentoTable.colunaSaldo"));
         orcamentoTable.setColumnAlignment("saldo", Table.Align.RIGHT);
 
         orcamentoTable.setVisibleColumns("dataHoraInclusao", "credito", "debito", "saldo", "observacoes");
         orcamentoTable.setSortContainerPropertyId("dataHoraInclusao");
         orcamentoTable.setSortEnabled(false);
 
-        orcamentoTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("TarefaView.controleOrcamentoTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
-            Button removeButton = new Button(PresenterUtils.getMensagensResource().getString("TarefaView.controleOrcamentoTable.colunaBotaoRemover"));
+        orcamentoTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("TarefaView.controleOrcamentoTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+            Button removeButton = new Button(GestorPresenter.getMENSAGENS().getString("TarefaView.controleOrcamentoTable.colunaBotaoRemover"));
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerRegistroOrcamento((OrcamentoTarefa) itemId);
             });
@@ -1072,33 +1072,33 @@ public class TarefaView extends Window {
                 this.alwaysRecalculateColumnWidths = true;
             }
         };
-        PresenterUtils.configuraExpansaoColunaCodigo(subTarefasTable, PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaCod"));
+        GestorPresenter.configuraExpansaoColunaCodigo(subTarefasTable, GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaCod"));
 
         subTarefasTable.setWidth("100%");
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaCod"), Button.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaCod"), 70);
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaTitulo"), Button.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaTitulo"), 50);
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaNome"), Button.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaNome"), 250);
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaEmpresaFilial"), String.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaEmpresaFilial"), 200);
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaSolicitante"), String.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaSolicitante"), 80);
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaResponsavel"), String.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaResponsavel"), 80);
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaDataInicio"), String.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaDataInicio"), 80);
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaDataFim"), String.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaDataFim"), 80);
-        subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaStatus"), PopupButton.class, "");
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaStatus"), 200);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaCod"), Button.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaCod"), 70);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaTitulo"), Button.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaTitulo"), 50);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaNome"), Button.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaNome"), 250);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaEmpresaFilial"), String.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaEmpresaFilial"), 200);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaSolicitante"), String.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaSolicitante"), 80);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaResponsavel"), String.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaResponsavel"), 80);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaDataInicio"), String.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaDataInicio"), 80);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaDataFim"), String.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaDataFim"), 80);
+        subTarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaStatus"), PopupButton.class, "");
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaStatus"), 200);
         /**
          * COMENTADO: Projeção postergada para v2
          * subTarefasTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaProjecao"),
          * Character.class, "");
          */
-        subTarefasTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaProjecao"), 30);
+        subTarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaProjecao"), 30);
         subTarefasTable.addContainerProperty("[E]", Button.class, "");
         subTarefasTable.setColumnWidth("[E]", 30);
         subTarefasTable.addContainerProperty("[C]", Button.class, "");

@@ -5,7 +5,7 @@ import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
-import com.saax.gestorweb.presenter.PresenterUtils;
+import com.saax.gestorweb.presenter.GestorPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
@@ -189,9 +189,9 @@ public class DashboardView extends VerticalLayout {
         topMenu.setHeight("100%");
         topMenu.setHtmlContentAllowed(true);
 
-        createNewByCategoryMenuItem = topMenu.addItem("<h3>" + PresenterUtils.getMensagensResource().getString("DashboardView.createNewByCategoryMenuItem") + "</h3>", null, null);
+        createNewByCategoryMenuItem = topMenu.addItem("<h3>" + GestorPresenter.getMENSAGENS().getString("DashboardView.createNewByCategoryMenuItem") + "</h3>", null, null);
 
-        createNewByTemplate = createNewByCategoryMenuItem.addItem(PresenterUtils.getMensagensResource().getString("DashboardView.createNewByTemplate"), (MenuBar.MenuItem selectedItem) -> {
+        createNewByTemplate = createNewByCategoryMenuItem.addItem(GestorPresenter.getMENSAGENS().getString("DashboardView.createNewByTemplate"), (MenuBar.MenuItem selectedItem) -> {
             listener.createsNewTaskByTemplate();
         });
 
@@ -209,7 +209,7 @@ public class DashboardView extends VerticalLayout {
 
         // para cada empresa onde o usuário é adm, cria um menu item para
         // configurar a conta
-        for (UsuarioEmpresa usuarioEmpresa : PresenterUtils.getUsuarioLogado().getEmpresas()) {
+        for (UsuarioEmpresa usuarioEmpresa : GestorPresenter.getUsuarioLogado().getEmpresas()) {
             if (usuarioEmpresa.getAtivo() && usuarioEmpresa.getAdministrador()) {
                 config.addItem("Configurar Conta: " + usuarioEmpresa.getEmpresa().getNome(), (MenuBar.MenuItem selectedItem) -> {
                     listener.configContaClicked(usuarioEmpresa.getEmpresa());
@@ -218,7 +218,7 @@ public class DashboardView extends VerticalLayout {
         }
         config.addItem("Config 3", null, null);
 
-        topMenu.addItem("<h3>" + PresenterUtils.getMensagensResource().getString("DashboardView.logoutMenuItem") + "</h3>", null, (MenuBar.MenuItem selectedItem) -> {
+        topMenu.addItem("<h3>" + GestorPresenter.getMENSAGENS().getString("DashboardView.logoutMenuItem") + "</h3>", null, (MenuBar.MenuItem selectedItem) -> {
             listener.logout();
         });
 
@@ -271,11 +271,11 @@ public class DashboardView extends VerticalLayout {
             }
         });
 
-        userAccordion.addTab(assigneeFilterOptionGroup, PresenterUtils.getMensagensResource().getString("DashboardView.assigneesFilterOptionGroup"));
-        userAccordion.addTab(requestorsFilterOptionGroup, PresenterUtils.getMensagensResource().getString("DashboardView.requestorsFilterOptionGroup"));
-        userAccordion.addTab(followersFilterOptionGroup, PresenterUtils.getMensagensResource().getString("DashboardView.followerFilterOptionGroup"));
+        userAccordion.addTab(assigneeFilterOptionGroup, GestorPresenter.getMENSAGENS().getString("DashboardView.assigneesFilterOptionGroup"));
+        userAccordion.addTab(requestorsFilterOptionGroup, GestorPresenter.getMENSAGENS().getString("DashboardView.requestorsFilterOptionGroup"));
+        userAccordion.addTab(followersFilterOptionGroup, GestorPresenter.getMENSAGENS().getString("DashboardView.followerFilterOptionGroup"));
 
-        userFilterPopupButton = new PopupButton(PresenterUtils.getMensagensResource().getString("DashboardView.userFilterPopupButton"));
+        userFilterPopupButton = new PopupButton(GestorPresenter.getMENSAGENS().getString("DashboardView.userFilterPopupButton"));
         userFilterPopupButton.setContent(userAccordion);
 
         autoFilterLeftContainer.addComponent(userFilterPopupButton);
@@ -290,12 +290,12 @@ public class DashboardView extends VerticalLayout {
             }
         });
 
-        companyFilterPopupButton = new PopupButton(PresenterUtils.getMensagensResource().getString("DashboardView.companyFilterPopupButton"));
+        companyFilterPopupButton = new PopupButton(GestorPresenter.getMENSAGENS().getString("DashboardView.companyFilterPopupButton"));
         companyFilterPopupButton.setContent(companyFilterOptionGroup);
         autoFilterLeftContainer.addComponent(companyFilterPopupButton);
 
         // filtro por data fim 
-        endDateFilterPopupButton = new PopupButton(PresenterUtils.getMensagensResource().getString("DashboardView.endDateFilterPopupButton"));
+        endDateFilterPopupButton = new PopupButton(GestorPresenter.getMENSAGENS().getString("DashboardView.endDateFilterPopupButton"));
         endDateFilterDateField = new InlineDateField();
         endDateFilterDateField.addValueChangeListener((Property.ValueChangeEvent event) -> {
             if (endDateFilterDateField.getValue() != null) {
@@ -319,7 +319,7 @@ public class DashboardView extends VerticalLayout {
          *
          * autoFilterLeftContainer.addComponent(forecastFilterButton);
          */
-        switchAndOrFilters = new OptionGroup(PresenterUtils.getMensagensResource().getString("DashboardView.switchAndOrFilters"));
+        switchAndOrFilters = new OptionGroup(GestorPresenter.getMENSAGENS().getString("DashboardView.switchAndOrFilters"));
         switchAndOrFilters.setMultiSelect(false);
         switchAndOrFilters.addStyleName("horizontal");;
         switchAndOrFilters.addValueChangeListener((Property.ValueChangeEvent event) -> {
@@ -331,7 +331,7 @@ public class DashboardView extends VerticalLayout {
         autoFilterLeftContainer.addComponent(switchAndOrFilters);
         switchAndOrFilters.setVisible(false);
 
-        cleanFiltersButton = new Button(PresenterUtils.getMensagensResource().getString("DashboardView.cleanFiltersButton"), (Button.ClickEvent event) -> {
+        cleanFiltersButton = new Button(GestorPresenter.getMENSAGENS().getString("DashboardView.cleanFiltersButton"), (Button.ClickEvent event) -> {
             listener.removerFiltrosPesquisa();
         });
         //cleanFiltersButton.setStyleName("link");
@@ -342,17 +342,17 @@ public class DashboardView extends VerticalLayout {
         autoFilterSearchContainer.setSizeUndefined();
 
         quickSeachTextField = new TextField();
-        quickSeachTextField.setInputPrompt(PresenterUtils.getMensagensResource().getString("DashboardView.quickSeachTextField"));
+        quickSeachTextField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("DashboardView.quickSeachTextField"));
         autoFilterSearchContainer.addComponent(quickSeachTextField);
 
-        advancedSearchButton = new Button(PresenterUtils.getMensagensResource().getString("DashboardView.advancedSearchButton"));
+        advancedSearchButton = new Button(GestorPresenter.getMENSAGENS().getString("DashboardView.advancedSearchButton"));
         advancedSearchButton.setStyleName("link");
         autoFilterSearchContainer.addComponent(advancedSearchButton);
 
         HorizontalLayout autoFilterRightContainer = new HorizontalLayout();
         autoFilterRightContainer.addComponent(autoFilterSearchContainer);
 
-        trashButton = new Button(PresenterUtils.getMensagensResource().getString("DashboardView.trashButton"));
+        trashButton = new Button(GestorPresenter.getMENSAGENS().getString("DashboardView.trashButton"));
         trashButton.addClickListener((ClickEvent event) -> {
             listener.trashButtonPressed();
         });
@@ -403,9 +403,9 @@ public class DashboardView extends VerticalLayout {
         tabSheet = new TabSheet();
         tabSheet.setWidth("100%");
         tabSheet.setHeight("100%");
-        tabSheet.addTab(buildTaskTable(), PresenterUtils.getMensagensResource().getString("DashboardView.taskTab"));
-        tabSheet.addTab(buildTargetTable(), PresenterUtils.getMensagensResource().getString("DashboardView.targetTab"));
-        tabSheet.addTab(new HorizontalLayout(), PresenterUtils.getMensagensResource().getString("DashboardView.publicationsTab"));
+        tabSheet.addTab(buildTaskTable(), GestorPresenter.getMENSAGENS().getString("DashboardView.taskTab"));
+        tabSheet.addTab(buildTargetTable(), GestorPresenter.getMENSAGENS().getString("DashboardView.targetTab"));
+        tabSheet.addTab(new HorizontalLayout(), GestorPresenter.getMENSAGENS().getString("DashboardView.publicationsTab"));
 
         tabSheetContainer.addComponent(tabSheet);
 
@@ -424,40 +424,23 @@ public class DashboardView extends VerticalLayout {
                 this.alwaysRecalculateColumnWidths = true;
             }
         };
-        tarefaTable.setWidth("100%");
+        tarefaTable.setWidth(null);
 
-        PresenterUtils.configuraExpansaoColunaCodigo(tarefaTable, PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.cod"));
+        GestorPresenter.configuraExpansaoColunaCodigo(tarefaTable, GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.cod"));
 
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.cod"), Button.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.cod"), 100);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.title"), Button.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.title"), 100);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.name"), Button.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.name"), 250);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.company"), String.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.company"), 160);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.requestor"), String.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.requestor"), 80);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.assingee"), String.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.assingee"), 80);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.startDate"), String.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.startDate"), 80);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.endDate"), String.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.endDate"), 80);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.state"), PopupButton.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.state"), 200);
-        /**
-         * COMENTADO: Projeção postergada para v2
-         * tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.forecast"),
-         * Character.class, "");
-         */
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.forecast"), 30);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.email"), Button.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.email"), 30);
-        tarefaTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.chat"), Button.class, "");
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.chat"), 30);
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.cod"), Button.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.title"), Button.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.name"), Button.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.company"), String.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.requestor"), String.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.assingee"), String.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.startDate"), String.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.endDate"), String.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.state"), PopupButton.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.email"), Button.class, "");
+        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.chat"), Button.class, "");
 
-        tarefaTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+        tarefaTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button();
             removeButton.addClickListener((ClickEvent event) -> {
                 listener.removerTarefaButtonClicked((Tarefa) itemId);
@@ -468,10 +451,8 @@ public class DashboardView extends VerticalLayout {
 
             return removeButton;
         });
-        tarefaTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.colunaBotaoRemover"), 30);
 
-        tarefaTable.setHeight(null);
-        tarefaTable.setPageLength(15);
+        tarefaTable.setPageLength(5);
         tarefaTable.setSelectable(true);
         tarefaTable.setImmediate(true);
 
@@ -492,34 +473,34 @@ public class DashboardView extends VerticalLayout {
             }
         };
 
-        PresenterUtils.configuraExpansaoColunaCodigo(targetTable, PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.cod"));
+        GestorPresenter.configuraExpansaoColunaCodigo(targetTable, GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.cod"));
         targetTable.setWidth("100%");
 
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.cod"), Button.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.cod"), 100);
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.title"), Button.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.title"), 100);
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.name"), Button.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.name"), 250);
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.company"), String.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.company"), 200);
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.requestor"), String.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.requestor"), 80);
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.assingee"), String.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.assingee"), 80);
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.startDate"), String.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.startDate"), 80);
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.endDate"), String.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.endDate"), 80);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.cod"), Button.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.cod"), 100);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.title"), Button.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.title"), 100);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.name"), Button.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.name"), 250);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.company"), String.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.company"), 200);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.requestor"), String.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.requestor"), 80);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.assingee"), String.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.assingee"), 80);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.startDate"), String.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.startDate"), 80);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.endDate"), String.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.endDate"), 80);
         /**
          * COMENTADO: Projeção postergada para v2
          * targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.forecast"),
          * Character.class, "");
          */
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.forecast"), 30);
-        targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.email"), Button.class, "");
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.email"), 30);
-        targetTable.addGeneratedColumn(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.forecast"), 30);
+        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email"), Button.class, "");
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email"), 30);
+        targetTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button();
             removeButton.addClickListener((ClickEvent event) -> {
                 if (itemId instanceof Meta) {
@@ -538,9 +519,9 @@ public class DashboardView extends VerticalLayout {
 
             return removeButton;
         });
-        targetTable.setColumnWidth(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.colunaBotaoRemover"), 30);
+        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.colunaBotaoRemover"), 30);
 
-        targetTable.setPageLength(0);
+        targetTable.setPageLength(15);
         targetTable.setSelectable(true);
         targetTable.setImmediate(true);
 

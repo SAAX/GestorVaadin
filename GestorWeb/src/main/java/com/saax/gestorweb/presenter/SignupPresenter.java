@@ -573,10 +573,10 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
         if (model.verificaTarefasColigadaRemocao(empresa, idColigadaString)) {
             ConfirmDialog.show(UI.getCurrent(),
-                    PresenterUtils.getMensagensResource().getString("SingupPresenter.validaRemocaoColigada.title"),
-                    PresenterUtils.getMensagensResource().getString("SingupPresenter.validaRemocaoColigada.text"),
-                    PresenterUtils.getMensagensResource().getString("SingupPresenter.validaRemocaoColigada.OKButton"),
-                    PresenterUtils.getMensagensResource().getString("SingupPresenter.validaRemocaoColigada.CancelButton"), (ConfirmDialog dialog) -> {
+                    GestorPresenter.getMENSAGENS().getString("SingupPresenter.validaRemocaoColigada.title"),
+                    GestorPresenter.getMENSAGENS().getString("SingupPresenter.validaRemocaoColigada.text"),
+                    GestorPresenter.getMENSAGENS().getString("SingupPresenter.validaRemocaoColigada.OKButton"),
+                    GestorPresenter.getMENSAGENS().getString("SingupPresenter.validaRemocaoColigada.CancelButton"), (ConfirmDialog dialog) -> {
                         if (dialog.isConfirmed()) {
                             coligadasRemovidasNaEdicao.add(model.getColigada(empresa, idColigadaString));
                             view.getAssociatedTable().removeItem(idColigadaString);

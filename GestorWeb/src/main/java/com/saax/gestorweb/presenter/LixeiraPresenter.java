@@ -72,7 +72,7 @@ public class LixeiraPresenter {
      */
     public void remocaoTarefaConfirmada(Tarefa tarefa) {
 
-        LixeiraModel.removerTarefa(tarefa, PresenterUtils.getUsuarioLogado());
+        LixeiraModel.removerTarefa(tarefa, GestorPresenter.getUsuarioLogado());
 
         fireEventTarefaRemovida(tarefa);
 
@@ -83,8 +83,8 @@ public class LixeiraPresenter {
      * restauradas
      */
     public void aprentarLixeira() {
-        List<Tarefa> listaTarefas = LixeiraModel.listarTarefasRemovidas(PresenterUtils.getUsuarioLogado());
-        List<Meta> listaMetas = LixeiraModel.listarMetasRemovidas(PresenterUtils.getUsuarioLogado());
+        List<Tarefa> listaTarefas = LixeiraModel.listarTarefasRemovidas(GestorPresenter.getUsuarioLogado());
+        List<Meta> listaMetas = LixeiraModel.listarMetasRemovidas(GestorPresenter.getUsuarioLogado());
         view.apresentarLixeira(listaTarefas, listaMetas);
 
     }
@@ -135,7 +135,7 @@ public class LixeiraPresenter {
      * @param tarefa
      */
     public void restaurarTarefaConfirmada(Tarefa tarefa) {
-        LixeiraModel.restaurarTarefa(tarefa, PresenterUtils.getUsuarioLogado());
+        LixeiraModel.restaurarTarefa(tarefa, GestorPresenter.getUsuarioLogado());
         tarefasRestauradas.add(tarefa);
 
     }
@@ -149,7 +149,7 @@ public class LixeiraPresenter {
      * @param meta
      */
     public void restaurarMetaConfirmada(Meta meta) {
-        LixeiraModel.restaurarMeta(meta, PresenterUtils.getUsuarioLogado());
+        LixeiraModel.restaurarMeta(meta, GestorPresenter.getUsuarioLogado());
         metasRestauradas.add(meta);
 
     }
@@ -159,7 +159,7 @@ public class LixeiraPresenter {
     }
 
     public void remocaoMetaConfirmada(Meta meta) {
-        LixeiraModel.removerMeta(meta, PresenterUtils.getUsuarioLogado());
+        LixeiraModel.removerMeta(meta, GestorPresenter.getUsuarioLogado());
 
         fireEventMetaRemovida(meta);
 

@@ -42,7 +42,7 @@ public class PopUpStatusPresenter implements Serializable, PopUpStatusViewListen
     private final transient PopUpStatusView view;
 
     // Referencia ao recurso das mensagens e imagens:
-    private final transient ResourceBundle mensagens = PresenterUtils.getMensagensResource();
+    private final transient ResourceBundle mensagens = GestorPresenter.getMENSAGENS();
 
     private Tarefa tarefa = null;
     private PopupButton statusButton = null;

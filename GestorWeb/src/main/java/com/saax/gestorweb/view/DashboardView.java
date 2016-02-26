@@ -195,14 +195,13 @@ public class DashboardView extends VerticalLayout {
         List<Empresa> empresasAtivasUsuarioLogado = EmpresaModel.
                 listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado());
 
-        //Adiciono a empresa "default"
+        //Adiciono o menu sem empresas como null
         MenuBar.MenuItem empresaDefaultMenuItem = topMenu.addItem(GestorPresenter.getMENSAGENS().
                 getString("DashboardView.createNewByCategoryMenuItem"), null, null);
-        Empresa empresaDefault = new Empresa();
-        mapEmpresasMenuItemCriar.put(empresaDefault, empresaDefaultMenuItem);
+        mapEmpresasMenuItemCriar.put(null, empresaDefaultMenuItem);
 
         //Adiciono "by template" pra empresa default
-        createNewByTemplate = mapEmpresasMenuItemCriar.get(empresaDefault).addItem(
+        createNewByTemplate = mapEmpresasMenuItemCriar.get(null).addItem(
                 GestorPresenter.getMENSAGENS().getString("DashboardView.createNewByTemplate"),
                 (MenuBar.MenuItem selectedItem) -> {
                     listener.createsNewTaskByTemplate();
@@ -525,7 +524,9 @@ public class DashboardView extends VerticalLayout {
          * targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.forecast"),
          * Character.class, "");
          */
-        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.forecast"), 30);
+
+//        Essa linha estava fazendo as metas não serem exibidas na table
+//        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.forecast"), 30);
         targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email"), Button.class, "");
         targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email"), 30);
         targetTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {

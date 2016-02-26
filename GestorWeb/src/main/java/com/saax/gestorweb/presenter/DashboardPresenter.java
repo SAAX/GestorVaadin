@@ -164,7 +164,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         // obtem as hierarquias customizadas
         List<HierarquiaProjeto> hierarquias = DashboardModel.getHierarquiasProjeto();
         List<Empresa> listarEmpresasAtivasUsuarioLogado = EmpresaModel.listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado());
-        
+
         // menu "Criar"
         Map<Empresa, MenuBar.MenuItem> mapEmpresasMenuCriar = view.getMapEmpresasMenuItemCriar();
 
@@ -185,6 +185,20 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
                 }
             }
 
+        }
+
+        //Pra nenhuma empresa, identifiquei o menu com a key null no map
+        for (HierarquiaProjeto hierarquia : hierarquias) {
+            MenuBar.MenuItem menuProjeto = mapEmpresasMenuCriar.get(null).
+                    addItemBefore(hierarquia.getNome(), null, null, view.getCreateNewByTemplate());
+
+            Collections.sort(hierarquia.getCategorias());
+
+            for (HierarquiaProjetoDetalhe categoria : hierarquia.getCategorias()) {
+                menuProjeto.addItem(categoria.getCategoria(), (MenuBar.MenuItem selectedItem) -> {
+                    criarNova(categoria);
+                });
+            }
         }
     }
 
@@ -372,7 +386,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             MetaPresenter presenter = new MetaPresenter(new MetaView());
             presenter.addCallbackListener(this);
             presenter.criarNovaMeta(categoria, empresa);
-            
+
         } else if (categoria.getNivel() == 2) {
             TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
             presenter.addCallBackListener(this);

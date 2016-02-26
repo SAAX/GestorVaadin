@@ -75,11 +75,13 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
      * Cria uma nova meta na categoria informada
      *
      * @param categoria
+     * @param empresa
      */
-    public void criarNovaMeta(HierarquiaProjetoDetalhe categoria) {
+    public void criarNovaMeta(HierarquiaProjetoDetalhe categoria, Empresa empresa) {
 
         Meta meta = MetaModel.criarNovaMeta(categoria, loggedUser);
 
+        meta.setEmpresa(empresa);
         init(meta);
 
         view.getHierarquiaCombo().setEnabled(false);
@@ -245,7 +247,7 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
             List<HierarquiaProjetoDetalhe> tasksCategories = MetaModel.getFirstsTaskCategories(view.getMeta().getCategoria());
 
             // Tells the presenter which is gonna be the Tarefa's category
-            presenter.createTask(view.getMeta(), tasksCategories);
+            presenter.createTask(view.getMeta(), tasksCategories, null);
 
         }
         catch (FieldGroup.CommitException ex) {
@@ -361,7 +363,9 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     @Override
     public void adicionarParticipante(Usuario usuario) {
         if (usuario.equals(view.getResponsavelCombo().getValue()) || usuario.equals(loggedUser)) {
-            Notification.show(mensagens.getString("Notificacao.ParticipanteUsuarioResponsavel"));
+            Notification.show(GestorPresenter.getMENSAGENS().
+                    getString("Notificacao.ParticipanteUsuarioResponsavel"),
+                    Notification.TYPE_WARNING_MESSAGE);
         } else {
             Participante participante = MetaModel.criarParticipante(usuario, view.getMeta());
             view.getParticipantesContainer().addBean(participante);

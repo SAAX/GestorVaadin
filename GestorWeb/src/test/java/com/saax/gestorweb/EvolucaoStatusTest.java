@@ -6,9 +6,7 @@
 package com.saax.gestorweb;
 
 import com.saax.gestorweb.model.TarefaModel;
-import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.PopUpStatusModel;
-import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
@@ -24,9 +22,7 @@ import com.saax.gestorweb.view.PopUpStatusView;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.ResourceBundle;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -81,7 +77,7 @@ public class EvolucaoStatusTest {
 
             // abre o presenter para criação da tarefa
             HierarquiaProjetoDetalhe categoriaDefaultTarefa = TarefaModel.getCategoriaDefaultTarefa();
-            presenter.createTask(categoriaDefaultTarefa);
+            presenter.createTask(categoriaDefaultTarefa, TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
 
             view.getNomeTarefaTextField().setValue(nome);
             view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);

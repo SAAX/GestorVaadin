@@ -106,7 +106,7 @@ public class TarefaTest {
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.createTask(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta, loggedUser.getEmpresas().get(0).getEmpresa());
 
         String nome = "Teste Cadastro Tarefa #1";
         view.getNomeTarefaTextField().setValue(nome);
@@ -147,7 +147,7 @@ public class TarefaTest {
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.createTask(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta, loggedUser.getEmpresas().get(0).getEmpresa());
 
         String nome = "Teste Cadastro Tarefa com Anexo";
         view.getNomeTarefaTextField().setValue(nome);
@@ -200,7 +200,7 @@ public class TarefaTest {
         Usuario usuarioResponsavel = (Usuario) GestorEntityManagerProvider.getEntityManager().createNamedQuery("Usuario.findByLogin").setParameter("login", "rodrigo.ccn2005@gmail.com").getSingleResult();
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.createTask(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta, loggedUser.getEmpresas().get(0).getEmpresa());
 
         String nome = "Teste Cadastro Tarefa #2";
 
@@ -696,7 +696,7 @@ public class TarefaTest {
         Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = model.getCategoriaDefaultTarefa();
-        presenter.createTask(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta, loggedUser.getEmpresas().get(0).getEmpresa());
 
         String nome = "Teste Cadastro Tarefa Com Historico";
         view.getNomeTarefaTextField().setValue(nome);

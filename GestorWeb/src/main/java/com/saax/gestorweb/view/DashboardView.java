@@ -1,12 +1,12 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.EmpresaModel;
+import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.presenter.GestorPresenter;
-import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
@@ -28,7 +28,6 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Tree;
 import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -36,7 +35,9 @@ import com.vaadin.ui.Window;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import org.vaadin.hene.popupbutton.PopupButton;
 
@@ -64,7 +65,7 @@ public class DashboardView extends VerticalLayout {
     private MenuBar topMenu;
     // the menu item "create new <category>...".
     // it's is full filled in the presenter with all proper categories
-    private MenuBar.MenuItem createNewByCategoryMenuItem;
+    private Map<Empresa, MenuBar.MenuItem> mapEmpresasMenuItemCriar;
     // the menu item "create new by template".
     // open a pop-up to choose the template
     private MenuBar.MenuItem createNewByTemplate;
@@ -189,20 +190,47 @@ public class DashboardView extends VerticalLayout {
         topMenu.setHeight("100%");
         topMenu.setHtmlContentAllowed(true);
 
-        createNewByCategoryMenuItem = topMenu.addItem("<h3>" + GestorPresenter.getMENSAGENS().getString("DashboardView.createNewByCategoryMenuItem") + "</h3>", null, null);
+        mapEmpresasMenuItemCriar = new HashMap<>();
 
-        createNewByTemplate = createNewByCategoryMenuItem.addItem(GestorPresenter.getMENSAGENS().getString("DashboardView.createNewByTemplate"), (MenuBar.MenuItem selectedItem) -> {
-            listener.createsNewTaskByTemplate();
-        });
+        List<Empresa> empresasAtivasUsuarioLogado = EmpresaModel.
+                listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado());
+
+        //Adiciono a empresa "default"
+        MenuBar.MenuItem empresaDefaultMenuItem = topMenu.addItem(GestorPresenter.getMENSAGENS().
+                getString("DashboardView.createNewByCategoryMenuItem"), null, null);
+        Empresa empresaDefault = new Empresa();
+        mapEmpresasMenuItemCriar.put(empresaDefault, empresaDefaultMenuItem);
+
+        //Adiciono "by template" pra empresa default
+        createNewByTemplate = mapEmpresasMenuItemCriar.get(empresaDefault).addItem(
+                GestorPresenter.getMENSAGENS().getString("DashboardView.createNewByTemplate"),
+                (MenuBar.MenuItem selectedItem) -> {
+                    listener.createsNewTaskByTemplate();
+                });
+
+        
+        for (Empresa empresa : empresasAtivasUsuarioLogado) {
+
+        //Adiciono pras outras empresas que o usuário está ativo
+            MenuBar.MenuItem empresaMenuItem = topMenu.
+                    addItem("Criar </br> [[" + empresa.getNome() + "]]", null, null);
+            mapEmpresasMenuItemCriar.put(empresa, empresaMenuItem);
+
+            createNewByTemplate = mapEmpresasMenuItemCriar.get(empresa).addItem(
+                    GestorPresenter.getMENSAGENS().getString(
+                            "DashboardView.createNewByTemplate"), (MenuBar.MenuItem selectedItem) -> {
+                        listener.createsNewTaskByTemplate();
+                    });
+        }
 
         /**
          * Postergado para V2
          *
          * MenuBar.MenuItem publicationsMenuItem = topMenu.addItem("<h3>" +
-         * PresenterUtils.getMensagensResource().getString("DashboardView.publicationsMenuItem")
+         * GestorPresenter.getMENSAGENS().getString("DashboardView.publicationsMenuItem")
          * + "</h3>", null, null); MenuBar.MenuItem reportsMenuItem =
          * topMenu.addItem("<h3>" +
-         * PresenterUtils.getMensagensResource().getString("DashboardView.reportsMenuItem")
+         * GestorPresenter.getMENSAGENS().getString("DashboardView.reportsMenuItem")
          * + "</h3>", null, null);
          */
         MenuBar.MenuItem config = topMenu.addItem("<h3>Config</h3>", null, null);
@@ -314,7 +342,7 @@ public class DashboardView extends VerticalLayout {
          * listener.aplicarFiltroPesquisa(); } });
          *
          * forecastFilterButton = new
-         * PopupButton(PresenterUtils.getMensagensResource().getString("DashboardView.forecastFilterButton"));
+         * PopupButton(GestorPresenter.getMENSAGENS().getString("DashboardView.forecastFilterButton"));
          * forecastFilterButton.setContent(forecastFilterOptionGroup);
          *
          * autoFilterLeftContainer.addComponent(forecastFilterButton);
@@ -494,7 +522,7 @@ public class DashboardView extends VerticalLayout {
         targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.endDate"), 80);
         /**
          * COMENTADO: Projeção postergada para v2
-         * targetTable.addContainerProperty(PresenterUtils.getMensagensResource().getString("DashboardView.targetTable.forecast"),
+         * targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.forecast"),
          * Character.class, "");
          */
         targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.forecast"), 30);
@@ -531,7 +559,10 @@ public class DashboardView extends VerticalLayout {
 
     /**
      * Builds the bottom container with its 3 inner components (tasks,
-     * forecasts, invites)
+     * forecasts, invites).
+     *
+     * The containers are populatted on DashboardPresenter.
+     * carregaVisualizacaoInicial();
      *
      * @return the bottom container
      */
@@ -561,13 +592,6 @@ public class DashboardView extends VerticalLayout {
         bottomInvitesContainer.setStyleName("blue");
         bottomInvitesContainer.setWidth("20%");
         bottomContainer.addComponent(bottomInvitesContainer);
-
-        Button conviteButton;
-        for (int i = 0; i < 5; i++) {
-            conviteButton = new Button("Convite  " + (i + 1));
-            conviteButton.setStyleName("v-button-link");
-            bottomInvitesContainer.addComponent(conviteButton);
-        }
 
         return bottomContainer;
     }
@@ -617,8 +641,8 @@ public class DashboardView extends VerticalLayout {
     // ------------------------------------------------------------------------------------------------
 // GETTERS TO EXTERNAL ACCESS
 // ------------------------------------------------------------------------------------------------
-    public MenuBar.MenuItem getCreateNewByCategoryMenuItem() {
-        return createNewByCategoryMenuItem;
+    public Map<Empresa, MenuBar.MenuItem> getMapEmpresasMenuItemCriar() {
+        return mapEmpresasMenuItemCriar;
     }
 
     public TreeTable getTarefaTable() {
@@ -659,6 +683,10 @@ public class DashboardView extends VerticalLayout {
 
     public VerticalLayout getBottomTasksContainer() {
         return bottomTasksContainer;
+    }
+
+    public VerticalLayout getBottomInvitesContainer() {
+        return bottomInvitesContainer;
     }
 
     public InlineDateField getEndDateFilterDateField() {

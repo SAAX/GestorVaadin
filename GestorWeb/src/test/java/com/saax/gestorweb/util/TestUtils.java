@@ -105,7 +105,7 @@ public class TestUtils {
         Usuario loggedUser = TestUtils.getUsuarioLogado();
 
         HierarquiaProjetoDetalhe categoriaDefaultMeta = TarefaModel.getCategoriaDefaultTarefa();
-        presenter.createTask(categoriaDefaultMeta);
+        presenter.createTask(categoriaDefaultMeta, TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
 
         view.getNomeTarefaTextField().setValue(nome);
         view.getPrioridadeCombo().setValue(PrioridadeTarefa.ALTA);
@@ -145,7 +145,7 @@ public class TestUtils {
         MetaView view = new MetaView();
         MetaPresenter presenter = new MetaPresenter(view);
         
-        presenter.criarNovaMeta(categoria);
+        presenter.criarNovaMeta(categoria, TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
         
         view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
         view.getNomeMetaTextField().setValue(nomeEsperado);

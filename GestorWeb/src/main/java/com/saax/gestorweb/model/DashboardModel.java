@@ -127,7 +127,7 @@ public class DashboardModel {
 
         return null;
     }
-
+    
 
     public static List<Tarefa> listarTarefas(Usuario loggedUser) {
         return TarefaModel.listarTarefas(loggedUser);
@@ -135,6 +135,10 @@ public class DashboardModel {
 
     public static List<Tarefa> listarTarefasPrincipais(Usuario loggedUser) {
         return TarefaModel.listarTarefasPrincipais(loggedUser);
+    }
+    
+    public static List<Tarefa> listarTarefasAguardandoAceite(Usuario loggedUser) {
+        return TarefaModel.listarTarefasAguardandoAceite(loggedUser);
     }
 
     public static List<Tarefa> filtrarTarefas(DashboardPresenter.TipoPesquisa tipoPesquisa, List<Usuario> usuariosResponsaveis, List<Usuario> usuariosSolicitantes, List<Usuario> usuariosParticipantes, List<Empresa> empresas, List<FilialEmpresa> filiais, LocalDate dataFim, List<ProjecaoTarefa> projecoes, Usuario loggedUser) {
@@ -153,5 +157,5 @@ public class DashboardModel {
         return TarefaModel.criarNovaTarefaPeloTemplate(template);
 
     }
-
+    
 }

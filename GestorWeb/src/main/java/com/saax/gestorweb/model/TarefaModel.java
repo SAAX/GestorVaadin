@@ -38,7 +38,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -142,7 +141,6 @@ public class TarefaModel {
 
             moverAnexos(tarefa);
 
-
         }
         catch (RuntimeException ex) {
             // Caso a persistencia falhe, efetua rollback no banco
@@ -156,18 +154,19 @@ public class TarefaModel {
         return tarefa;
     }
 
-    private static void moverAnexos(Tarefa tarefa){
+    private static void moverAnexos(Tarefa tarefa) {
         for (Anexo anexo : tarefa.getAnexos()) {
-            if (anexo.getArquivoTemporario() != null){
+            if (anexo.getArquivoTemporario() != null) {
                 moverAnexoTemporario(anexo);
             }
         }
-        if (tarefa.getSubTarefas()!= null && !tarefa.getSubTarefas().isEmpty()){
+        if (tarefa.getSubTarefas() != null && !tarefa.getSubTarefas().isEmpty()) {
             for (Tarefa sub : tarefa.getSubTarefas()) {
                 moverAnexos(sub);
             }
         }
     }
+
     /**
      * Move os arquivos anexos temporários para a pasta oficial, dentro do CNPJ,
      * e do ID Tarefa. <br> <br>
@@ -552,9 +551,13 @@ public class TarefaModel {
             inputValor.setScale(2, RoundingMode.HALF_UP);
             inputValor.doubleValue();
 
+            if (inputValor.doubleValue() <= 0) {
+                throw new IllegalArgumentException("Valor negativo para orçamento.");
+            }
         }
+
         catch (Exception e) {
-            throw new RuntimeException("Não foi possível identificar o valor informado: " + orcamentoTarefa.getInputValor());
+            throw new RuntimeException("Valor inválido para Orçamento: " + orcamentoTarefa.getInputValor());
         }
 
         // se o usuário for o responsavel os valores inputadas são "debito"
@@ -830,7 +833,7 @@ public class TarefaModel {
     }
 
     private static List<Tarefa> obtemTarefasPorUsuarioResponsavel(List<Usuario> usuariosResponsaveis) {
-        
+
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
         List<Tarefa> tarefasUsuarioResponsavel = new ArrayList<>();
         for (Usuario usuarioResponsavel : usuariosResponsaveis) {
@@ -842,7 +845,6 @@ public class TarefaModel {
         return tarefasUsuarioResponsavel;
     }
 
-    
     /**
      * Lista as tarefas que correspondam aos filtros informados
      *
@@ -1005,7 +1007,6 @@ public class TarefaModel {
     }
 
     private static List<Tarefa> filtrarTarefas(List<Tarefa> tarefas, Usuario usuarioLogado) {
-        
 
         List<Tarefa> result = new ArrayList<>();
         for (Tarefa tarefa : tarefas) {
@@ -1052,6 +1053,38 @@ public class TarefaModel {
 
         return tarefas;
 
+    }
+
+    /**
+     * Obtém as tarefas não aceitas pelo usuário logado, ordenadas por data FIM
+     *
+     * @param loggedUser
+     * @return
+     */
+    public static List<Tarefa> listarTarefasAguardandoAceite(Usuario loggedUser) {
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        List<Tarefa> tarefas = new ArrayList<>();
+
+        for (UsuarioEmpresa usuarioEmpresa : loggedUser.getEmpresas()) {
+            if (usuarioEmpresa.getAtivo()) {
+                Empresa empresa = usuarioEmpresa.getEmpresa();
+                Query q = em.createNamedQuery("Tarefa.findTarefasAguardandoAceite")
+                        .setParameter("empresa", empresa)
+                        .setParameter("usuarioSolicitante", loggedUser)
+                        .setParameter("status", StatusTarefa.NAO_INICIADA);
+
+                tarefas.addAll(q.getResultList());
+
+                for (Empresa subEmpresa : empresa.getSubEmpresas()) {
+                    q = em.createNamedQuery("Tarefa.findTarefasAguardandoAceite")
+                            .setParameter("empresa", subEmpresa)
+                            .setParameter("usuarioSolicitante", loggedUser)
+                            .setParameter("status", StatusTarefa.NAO_INICIADA);
+                    tarefas.addAll(q.getResultList());
+                }
+            }
+        }
+        return tarefas;
     }
 
     /**

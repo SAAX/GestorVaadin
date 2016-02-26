@@ -5,9 +5,7 @@
  */
 package com.saax.gestorweb;
 
-import com.saax.gestorweb.model.LoginModel;
 import com.saax.gestorweb.model.MetaModel;
-import com.saax.gestorweb.model.TarefaModel;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjeto;
 import com.saax.gestorweb.model.datamodel.HierarquiaProjetoDetalhe;
 import com.saax.gestorweb.model.datamodel.Meta;
@@ -15,23 +13,17 @@ import com.saax.gestorweb.model.datamodel.PrioridadeTarefa;
 import com.saax.gestorweb.model.datamodel.StatusTarefa;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.TipoTarefa;
-import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.MetaPresenter;
 import com.saax.gestorweb.presenter.TarefaPresenter;
-import com.saax.gestorweb.util.DBConnect;
-import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.PostgresConnection;
 import com.saax.gestorweb.util.TestUtils;
 import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.UI;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.EntityManager;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -106,7 +98,7 @@ public class MetaTest {
             }
         }
         
-        presenter.criarNovaMeta(categoria);
+        presenter.criarNovaMeta(categoria, TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
         
         view.getEmpresaCombo().setValue(TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
         view.getNomeMetaTextField().setValue(nomeEsperado);
@@ -161,7 +153,7 @@ public class MetaTest {
         }
 
         // open the Target Presenter to create a new Target
-        presenter.criarNovaMeta(categoria);
+        presenter.criarNovaMeta(categoria,TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
         Assert.assertEquals(2, view.getEmpresaCombo().getItemIds().size());
 
         // selects a company
@@ -189,7 +181,7 @@ public class MetaTest {
         List<HierarquiaProjetoDetalhe> tasksCategories = model.getFirstsTaskCategories(view.getMeta().getCategoria());
             
         // Tells the presenter which is gonna be the Task's category
-        taskPresenter.createTask(view.getMeta(), tasksCategories);
+        taskPresenter.createTask(view.getMeta(), tasksCategories, TestUtils.getUsuarioLogado().getEmpresas().get(0).getEmpresa());
             
         // fills the required fields of Task
         TarefaView.getNomeTarefaTextField().setValue("Task under a target");

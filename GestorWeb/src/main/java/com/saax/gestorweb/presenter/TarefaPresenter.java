@@ -5,8 +5,6 @@ import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.LixeiraModel;
 import com.saax.gestorweb.model.RecurrencyModel;
 import com.saax.gestorweb.model.TarefaModel;
-import static com.saax.gestorweb.model.TarefaModel.recalculaSaldoApontamentoHoras;
-import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Anexo;
 import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.Empresa;
@@ -55,8 +53,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -124,7 +120,7 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
             tarefaPai.setSubTarefas(new ArrayList<>());
         }
         tarefaPai.getSubTarefas().add(tarefa);
-        view.getChatButton().setVisible(false);
+//        view.getChatButton().setVisible(false);
 
         /**
          * COMENTADO: Projeção postergada para v2
@@ -155,17 +151,20 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
 
     /**
      * Creates a new default Tarefa, with a specific category Just overloaded:
-     * createTask(List) <br>
+     * createTask(List). <br>
      *
+     * If empresa isn't null, it's setted in the task.
      *
      * @param category in wich the task'll be created
+     * @param empresa
      */
-    public void createTask(HierarquiaProjetoDetalhe category) {
+    public void createTask(HierarquiaProjetoDetalhe category, Empresa empresa) {
         // builds a list to use the main method: createTask
         List<HierarquiaProjetoDetalhe> categories = new ArrayList<>();
         categories.add(category);
         // call the main method to create a task
-        createTask(null, categories);
+
+        createTask(null, categories, empresa);
     }
 
     /**
@@ -173,17 +172,23 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
      *
      * @param target the main target to be attached with the new task
      * @param possibleCategories
+     * @param empresa if not null, setted as initial Empresa
      */
-    public void createTask(Meta target, List<HierarquiaProjetoDetalhe> possibleCategories) {
+    public void createTask(Meta target, List<HierarquiaProjetoDetalhe> possibleCategories, Empresa empresa) {
 
         Tarefa tarefa;
 
         // Cria uma nova tarefa com valores default
         tarefa = new Tarefa();
+
         tarefa.setStatus(StatusTarefa.NAO_ACEITA);
-        if (target != null) {
+        if (empresa != null) {
+            tarefa.setEmpresa(empresa);
+        } else if (target != null) {
             tarefa.setEmpresa(target.getEmpresa());
         }
+
+        //Ver com o Rodrigo qual deve deixar
         tarefa.setUsuarioInclusao(GestorPresenter.getUsuarioLogado());
         tarefa.setUsuarioSolicitante(GestorPresenter.getUsuarioLogado());
         tarefa.setDataHoraInclusao(LocalDateTime.now());
@@ -595,7 +600,8 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
 
             presenter.criarNovaSubTarefa(proximasCategorias, tarefa);
 
-        } catch (FieldGroup.CommitException ex) {
+        }
+        catch (FieldGroup.CommitException ex) {
             Notification.show("Preencha os campos obrigatórios da tarefa antes de criar uma sub.", Notification.Type.HUMANIZED_MESSAGE);
         }
     }
@@ -938,7 +944,7 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
         it.getItemProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaStatus")).setValue(GestorPresenter.buildPopUpStatusTarefa(view.getSubTarefasTable(), tarefa, this));
         /**
          * COMENTADO: Projeção postergada para v2
-         * it.getItemProperty(PresenterUtils.getMensagensResource().getString("TarefaView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
+         * it.getItemProperty(GestorPresenter.getMENSAGENS().getString("TarefaView.subTarefasTable.colunaProjecao")).setValue(tarefa.getProjecao().toString().charAt(0));
          */
         it.getItemProperty("[E]").setValue(new Button("E"));
         it.getItemProperty("[C]").setValue(new Button("C"));
@@ -961,17 +967,42 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
     @Override
     public void adicionarParticipante(Tarefa tarefa, Usuario usuario) {
 
+        /*
+        Adicionei o Notification.TYPE_WARNING_MESSAGE ao método Notification.show()
+        pois no default, a notificação sumia ao mover o mouse.
+        Com Notification.TYPE_WARNING_MESSAGE como Type da Notification, 
+        a mensagem é exibida por alguns instantes, independente do movimento do mouse.
+         */
         if (usuario.equals(view.getUsuarioResponsavelCombo().getValue()) || usuario.equals(GestorPresenter.getUsuarioLogado())) {
-            Notification.show(GestorPresenter.getMENSAGENS().getString("Notificacao.ParticipanteUsuarioResponsavel"));
+            Notification.show(GestorPresenter.getMENSAGENS().getString("Notificacao.ParticipanteUsuarioResponsavel"), Notification.TYPE_WARNING_MESSAGE);
         } else {
-            Participante participanteTarefa = TarefaModel.criarParticipante(usuario, tarefa);
-            view.getParticipantesContainer().addBean(participanteTarefa);
+            List<Participante> participantesTarefaList = tarefa.getParticipantes();
 
-            if (tarefa.getParticipantes() == null) {
-                tarefa.setParticipantes(new ArrayList<>());
+            /*Approach necessário para não permitir incluir 
+            várias vezes o mesmo usuario como participante*/
+            boolean repetindoParticipante = false;
+            for (Participante participanteTarefa : participantesTarefaList) {
+                if (participanteTarefa.getUsuarioParticipante().equals(usuario)) {
+                    repetindoParticipante = true;
+                }
             }
 
-            tarefa.getParticipantes().add(participanteTarefa);
+            if (repetindoParticipante) {
+                Notification.show(GestorPresenter.getMENSAGENS().
+                        getString("Notificacao.UsuarioJaParticipa"),
+                        Notification.TYPE_WARNING_MESSAGE);
+            } else {
+
+                Participante participanteTarefa = TarefaModel.criarParticipante(usuario, tarefa);
+                view.getParticipantesContainer().addBean(participanteTarefa);
+
+                if (tarefa.getParticipantes() == null) {
+                    tarefa.setParticipantes(new ArrayList<>());
+                }
+
+                tarefa.getParticipantes().add(participanteTarefa);
+            }
+
         }
 
     }
@@ -1117,9 +1148,11 @@ public class TarefaPresenter implements Serializable, TarefaViewListener, CallBa
     public void removerTarefaButtonClicked(Tarefa tarefa) {
 
         LixeiraPresenter popUpRemocaoTarefaPresenter = new LixeiraPresenter(new LixeiraView());
+
         for (CallBackListener callbackListener : callbackListeneres) {
             popUpRemocaoTarefaPresenter.addTarefaCallBackListener(callbackListener);
         }
+
         popUpRemocaoTarefaPresenter.addTarefaCallBackListener(this);
         popUpRemocaoTarefaPresenter.apresentaConfirmacaoRemocaoTarefa(tarefa);
 

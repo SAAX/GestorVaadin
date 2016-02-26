@@ -42,6 +42,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -161,18 +163,26 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         // obtem as hierarquias customizadas
         List<HierarquiaProjeto> hierarquias = DashboardModel.getHierarquiasProjeto();
-
+        List<Empresa> listarEmpresasAtivasUsuarioLogado = EmpresaModel.listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado());
+        
         // menu "Criar"
-        MenuBar.MenuItem menuCriar = view.getCreateNewByCategoryMenuItem();
+        Map<Empresa, MenuBar.MenuItem> mapEmpresasMenuCriar = view.getMapEmpresasMenuItemCriar();
 
-        // adiciona cada hierarquia customizada
-        for (HierarquiaProjeto hierarquia : hierarquias) {
-            MenuBar.MenuItem menuProjeto = menuCriar.addItemBefore(hierarquia.getNome(), null, null, view.getCreateNewByTemplate());
-            Collections.sort(hierarquia.getCategorias());
-            for (HierarquiaProjetoDetalhe categoria : hierarquia.getCategorias()) {
-                menuProjeto.addItem(categoria.getCategoria(), (MenuBar.MenuItem selectedItem) -> {
-                    criarNova(categoria);
-                });
+        for (Empresa empresa : listarEmpresasAtivasUsuarioLogado) {
+
+            // adiciona cada hierarquia customizada
+            for (HierarquiaProjeto hierarquia : hierarquias) {
+
+                MenuBar.MenuItem menuProjeto = mapEmpresasMenuCriar.get(empresa).
+                        addItemBefore(hierarquia.getNome(), null, null, view.getCreateNewByTemplate());
+
+                Collections.sort(hierarquia.getCategorias());
+
+                for (HierarquiaProjetoDetalhe categoria : hierarquia.getCategorias()) {
+                    menuProjeto.addItem(categoria.getCategoria(), (MenuBar.MenuItem selectedItem) -> {
+                        criarNova(categoria, empresa);
+                    });
+                }
             }
 
         }
@@ -226,10 +236,16 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.state")).setValue(buildPopUpEvolucaoStatusEAndamento(tarefa));
             /**
              * COMENTADO: Projeção postergada para v2
-             * it.getItemProperty(PresenterUtils.getMensagensResource().getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
+             * it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
              */
-            it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.email")).setValue(new Button("E"));
-            it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.chat")).setValue(new Button("C"));
+            it.getItemProperty(GestorPresenter.getMENSAGENS().
+                    getString("DashboardView.taskTable.email")).setValue(new Button("E"));
+
+            it.getItemProperty(GestorPresenter.getMENSAGENS().
+                    getString("DashboardView.taskTable.chat")).
+                    setValue(new Button("Chat", (Button.ClickEvent event) -> {
+                        chatButtonClicked(tarefa);
+                    }));
 
             // se a tarefa possui subs, chama recursivamente
             for (Tarefa subTarefa : tarefa.getSubTarefas()) {
@@ -341,11 +357,26 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         if (categoria.getNivel() == 1) {
             MetaPresenter presenter = new MetaPresenter(new MetaView());
             presenter.addCallbackListener(this);
-            presenter.criarNovaMeta(categoria);
+            presenter.criarNovaMeta(categoria, null);
         } else if (categoria.getNivel() == 2) {
             TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
             presenter.addCallBackListener(this);
-            presenter.createTask(categoria);
+            presenter.createTask(categoria, null);
+        }
+
+    }
+
+    private void criarNova(HierarquiaProjetoDetalhe categoria, Empresa empresa) {
+
+        if (categoria.getNivel() == 1) {
+            MetaPresenter presenter = new MetaPresenter(new MetaView());
+            presenter.addCallbackListener(this);
+            presenter.criarNovaMeta(categoria, empresa);
+            
+        } else if (categoria.getNivel() == 2) {
+            TarefaPresenter presenter = new TarefaPresenter(new TarefaView());
+            presenter.addCallBackListener(this);
+            presenter.createTask(categoria, empresa);
         }
 
     }
@@ -430,6 +461,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         carregarListaMetasUsuarioLogado();
         carregarFiltrosPesquisa();
         carregarListaTarefasPrincipais();
+        carregarConvitesPrincipais();
     }
 
     /**
@@ -504,12 +536,30 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         List<Tarefa> tarefasPrincipais = DashboardModel.listarTarefasPrincipais(GestorPresenter.getUsuarioLogado());
 
         view.getBottomTasksContainer().removeAllComponents();
-        for (int i = 0; i < tarefasPrincipais.size() && i < 5; i++) {
+        for (int i = 0; i < tarefasPrincipais.size(); i++) {
             Tarefa tarefa = tarefasPrincipais.get(i);
 
             Button tarefaButton = GestorPresenter.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome().length() > 25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
             tarefaButton.setStyleName("v-button-link");
             view.getBottomTasksContainer().addComponent(tarefaButton);
+        }
+
+    }
+
+    /**
+     * Carrega o box inferior direito com as principais tarefas a serem aceitas
+     */
+    private void carregarConvitesPrincipais() {
+
+        List<Tarefa> tarefasAguardandoAceite = DashboardModel.listarTarefasAguardandoAceite(GestorPresenter.getUsuarioLogado());
+
+        view.getBottomInvitesContainer().removeAllComponents();
+        for (int i = 0; i < tarefasAguardandoAceite.size(); i++) {
+            Tarefa tarefa = tarefasAguardandoAceite.get(i);
+
+            Button tarefaButton = GestorPresenter.buildButtonEditarTarefa(view.getTarefaTable(), this, tarefa, tarefa.getNome().length() > 25 ? tarefa.getNome().substring(0, 25) : tarefa.getNome());
+            tarefaButton.setStyleName("v-button-link");
+            view.getBottomInvitesContainer().addComponent(tarefaButton);
         }
 
     }
@@ -578,7 +628,8 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             FormatterUtil.formatDate(tarefa.getDataInicio()),
             FormatterUtil.formatDate(tarefa.getDataFim()),
             buildPopUpEvolucaoStatusEAndamento(tarefa),
-            /** Projecao: Contingenciado para V2
+            /**
+             * Projecao: Contingenciado para V2
              * tarefa.getProjecao().toString().charAt(0),
              */
             new Button("E"),

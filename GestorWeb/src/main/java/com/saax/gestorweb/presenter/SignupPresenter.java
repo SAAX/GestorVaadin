@@ -112,7 +112,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             view.getNationalEntityRegistrationCodeTextField().setValue(empresa.getCnpj());
         }
 
-        if (empresa.getEndereco()!=null){
+        if (empresa.getEndereco() != null) {
             Endereco endereco = empresa.getEndereco();
             view.getAdressTextField().setValue(endereco.getLogradouro());
             view.getNumberTextField().setValue(endereco.getNumero());
@@ -121,17 +121,17 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             view.getCityComboBox().setValue(endereco.getCidade());
 
         }
-    
+
         // Coligadas
         for (Empresa coligada : empresa.getSubEmpresas()) {
             incluirColigada(coligada.getNome(), coligada.getCnpj(), coligada.getId().toString());
         }
-        
+
         // Filiais
         for (FilialEmpresa filial : empresa.getFiliais()) {
             incluirFilial(filial.getNome(), filial.getCnpj(), filial.getId().toString());
         }
-        
+
 
         /*
          // Tab 4: Add more users to the company
@@ -183,9 +183,12 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         // checks whether the company (account) informed no longer exists in the record
         char tipoPessoa = '\0';
 
-        if (view.getPersonTypeOptionGroup().getValue() == "Pessoa Física") {
+        System.out.println(view.getPersonTypeOptionGroup().getValue());
+        System.out.println(view.getPersonTypeOptionGroup().getValue().toString());
+
+        if (view.getPersonTypeOptionGroup().getValue().toString().equals("F")) {
             tipoPessoa = 'F';
-        } else if (view.getPersonTypeOptionGroup().getValue() == "Pessoa Jurídica") {
+        } else if (view.getPersonTypeOptionGroup().getValue().toString().equals("J")) {
             tipoPessoa = 'J';
         } else {
             return false;
@@ -381,9 +384,12 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         String cpfCnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
 
         char tipoPessoa = '\0';
-        if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaFisicaCheckBox.label"))) { // @ATENCAO
+
+//        if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaFisicaCheckBox.label"))) { // @ATENCAO
+        if (view.getPersonTypeOptionGroup().getValue().toString().equals("F")) { // @ATENCAO
             tipoPessoa = 'F';
-        } else if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaJuridicaCheckBox.label"))) { // @ATENCAO
+//        } else if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaJuridicaCheckBox.label"))) { // @ATENCAO
+        } else if (view.getPersonTypeOptionGroup().getValue().toString().equals("J")) { // @ATENCAO
             tipoPessoa = 'J';
         } else {
             return null;
@@ -519,7 +525,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         }
 
         //fernando: Precisei comentar pq não há usuário logado até então
-        //GestorSession.setAttribute("loggedUser", empresa.getUsuarioInclusao());
+//        GestorSession.setAttribute("loggedUser", empresa.getUsuarioInclusao());
     }
 
     /**
@@ -577,12 +583,12 @@ public class SignupPresenter implements Serializable, SignupViewListener {
                     GestorPresenter.getMENSAGENS().getString("SingupPresenter.validaRemocaoColigada.text"),
                     GestorPresenter.getMENSAGENS().getString("SingupPresenter.validaRemocaoColigada.OKButton"),
                     GestorPresenter.getMENSAGENS().getString("SingupPresenter.validaRemocaoColigada.CancelButton"), (ConfirmDialog dialog) -> {
-                        if (dialog.isConfirmed()) {
-                            coligadasRemovidasNaEdicao.add(model.getColigada(empresa, idColigadaString));
-                            view.getAssociatedTable().removeItem(idColigadaString);
-                            view.getAssociatedTable().refreshRowCache();
-                        }
-                    });
+                if (dialog.isConfirmed()) {
+                    coligadasRemovidasNaEdicao.add(model.getColigada(empresa, idColigadaString));
+                    view.getAssociatedTable().removeItem(idColigadaString);
+                    view.getAssociatedTable().refreshRowCache();
+                }
+            });
 
         }
 
@@ -637,11 +643,10 @@ public class SignupPresenter implements Serializable, SignupViewListener {
     @Override
     public void incluirFilial(String nomeFilial, String cnpjFilial, String id) {
 
-
         Button removerFiliaisButton = new Button(messages.getString("SignupPresenter.removerButton.label"));
         removerFiliaisButton.setId(nomeFilial);
         removerFiliaisButton.addClickListener((Button.ClickEvent event) -> {
-            String identificadorLinha = event.getButton().getId();            
+            String identificadorLinha = event.getButton().getId();
 
             view.getSubsidiariesTable().removeItem(identificadorLinha);
             view.getSubsidiariesTable().refreshRowCache();
@@ -663,8 +668,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             filiaisAlteradasNaEdicao.add(filial);
 
         }
-        
-        
+
     }
 
     /**

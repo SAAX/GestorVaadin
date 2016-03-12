@@ -18,15 +18,13 @@ import javax.persistence.EntityManager;
  */
 public class EmpresaModel {
 
-    
-    
     /**
      * Obtem a lista de empresas possiveis de seleção para o usuário logado
      *
      * @param loggedUser
      * @return a empresa principal do usuário + as coligadas (se existirem)
      */
-    public static List<Empresa> listarEmpresasAtivasUsuarioLogado(Usuario loggedUser) {
+    public static List<Empresa> listarEmpresasAtivasUsuarioLogado(Usuario loggedUser, boolean subEmpresas) {
 
         List<Empresa> empresas = new ArrayList<>();
 
@@ -34,18 +32,24 @@ public class EmpresaModel {
             if (usuarioEmpresa.getAtivo()) {
                 Empresa empresa = usuarioEmpresa.getEmpresa();
                 empresas.add(empresa);
+                
+                if (subEmpresas) {
+                    for (Empresa subempresa : empresa.getSubEmpresas()) {
+                        if (subempresa.getAtiva()) {
+                            empresas.add(subempresa);
+                        }
 
-                for (Empresa subempresa : empresa.getSubEmpresas()) {
-                    if (subempresa.getAtiva()) {
-                        empresas.add(subempresa);
                     }
-
                 }
 
             }
         }
 
         return empresas;
+    }
+
+    public static List<Empresa> listarEmpresasAtivasUsuarioLogado(Usuario loggedUser) {
+        return listarEmpresasAtivasUsuarioLogado(loggedUser, true);
     }
 
     /**
@@ -119,7 +123,6 @@ public class EmpresaModel {
         return centroCustos;
     }
 
-    
     /**
      * Obtem a lista de usarios ativos da empresa
      *
@@ -135,11 +138,10 @@ public class EmpresaModel {
                 Usuario usuario = usuarioEmpresa.getUsuario();
                 usuarios.add(usuario);
 
-
             }
         }
 
         return usuarios;
     }
-    
+
 }

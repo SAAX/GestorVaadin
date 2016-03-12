@@ -11,6 +11,8 @@ import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.Cipher;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
+import com.saax.gestorweb.util.GestorSession;
+import com.saax.gestorweb.util.SessionAttributesEnum;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
@@ -367,7 +369,15 @@ public class SignupModel {
                 em.remove(coligada);
             }
 
-            em.persist(empresaPrincipal);
+//            Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
+//
+//            for (UsuarioEmpresa ue : loggedUser.getEmpresas()) {
+//                if (!ue.getEmpresa().equals(empresaPrincipal)) {
+//                    em.find(ue.getEmpresa().getClass(), ue.getId());
+//                }
+//            }
+
+            em.merge(empresaPrincipal);
 
             em.getTransaction().commit();
 
@@ -490,6 +500,15 @@ public class SignupModel {
             }
         }
 
+        return null;
+    }
+
+    public UsuarioEmpresa getUsuario(Empresa empresa, String email) {
+        for (UsuarioEmpresa u : empresa.getUsuarios()) {
+            if (u.getUsuario().getLogin().equals(email)) {
+                return u;
+            }
+        }
         return null;
     }
 

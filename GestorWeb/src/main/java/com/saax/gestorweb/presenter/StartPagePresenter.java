@@ -71,7 +71,7 @@ public class StartPagePresenter implements StartPageViewListener, Serializable {
         
        //o presenter liga model e view
         SignupPresenter signupPresenter;
-        signupPresenter = new SignupPresenter(signupModel, signupView);
+        signupPresenter = new SignupPresenter(signupModel, signupView, true);
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(signupView);
         signupPresenter.open();

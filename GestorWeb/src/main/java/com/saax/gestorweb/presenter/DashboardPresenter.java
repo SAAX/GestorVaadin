@@ -106,7 +106,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         //o presenter liga model e view
         SignupPresenter signupPresenter;
-        signupPresenter = new SignupPresenter(signupModel, signupView);
+        signupPresenter = new SignupPresenter(signupModel, signupView, false);
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(signupView);
         signupPresenter.open(empresa);
@@ -163,7 +163,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         // obtem as hierarquias customizadas
         List<HierarquiaProjeto> hierarquias = DashboardModel.getHierarquiasProjeto();
-        List<Empresa> listarEmpresasAtivasUsuarioLogado = EmpresaModel.listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado());
+        List<Empresa> listarEmpresasAtivasUsuarioLogado = EmpresaModel.listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado(), false);
 
         // menu "Criar"
         Map<Empresa, MenuBar.MenuItem> mapEmpresasMenuCriar = view.getMapEmpresasMenuItemCriar();

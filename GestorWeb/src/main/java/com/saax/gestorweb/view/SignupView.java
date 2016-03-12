@@ -465,7 +465,14 @@ public class SignupView extends Window {
 
             @Override
             public void buttonClick(Button.ClickEvent event) {
-                listener.incluirUsuario();
+
+                String identificadorLinha = "TEMP_" + Math.round(Math.random() * 1000000);
+
+                listener.incluirUsuario(getNome(),
+                        getSobrenome(),
+                        getEmailTextField().getValue(),
+                        getUserAdmCheckBox().isEmpty(),
+                        identificadorLinha);
             }
         });
 
@@ -677,6 +684,11 @@ public class SignupView extends Window {
      */
     public OptionGroup getPersonTypeOptionGroup() {
         return personTypeOptionGroup;
+    }
+
+    public char getPersonType() {
+        System.out.println(personTypeOptionGroup.getValue().toString().charAt(7));
+        return personTypeOptionGroup.getValue().toString().charAt(7);
     }
 
     /**

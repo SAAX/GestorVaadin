@@ -1,7 +1,6 @@
 package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.DashboardModel;
 import com.saax.gestorweb.model.EmpresaModel;
 import com.saax.gestorweb.model.MetaModel;
 import com.saax.gestorweb.model.TarefaModel;
@@ -19,7 +18,6 @@ import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.MetaViewListener;
 import com.saax.gestorweb.view.PopUpStatusListener;
 import com.saax.gestorweb.model.LixeiraModel;
-import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
 import com.saax.gestorweb.view.TarefaView;
 import com.vaadin.data.Item;

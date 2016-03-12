@@ -8,7 +8,7 @@ package com.saax.gestorweb.view;
 public interface SignupViewListener {
 
     public void cancelButtonClicked();
-    public void incluirUsuario();
+    public void incluirUsuario(String nome, String sobrenome, String email, Boolean isAdm, String idUsuario);
     public void incluirColigada(String nomeColigada, String cnpjColigada, String id);
     public void incluirFilial(String nomeFilial, String cnpjFilial, String id);
     public void okButtonClicked();

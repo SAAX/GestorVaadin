@@ -192,9 +192,6 @@ public class DashboardView extends VerticalLayout {
 
         mapEmpresasMenuItemCriar = new HashMap<>();
 
-        List<Empresa> empresasAtivasUsuarioLogado = EmpresaModel.
-                listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado());
-
         //Adiciono o menu sem empresas como null
         MenuBar.MenuItem empresaDefaultMenuItem = topMenu.addItem(GestorPresenter.getMENSAGENS().
                 getString("DashboardView.createNewByCategoryMenuItem"), null, null);
@@ -206,13 +203,14 @@ public class DashboardView extends VerticalLayout {
                 (MenuBar.MenuItem selectedItem) -> {
                     listener.createsNewTaskByTemplate();
                 });
+        List<Empresa> empresasAtivasUsuarioLogado = EmpresaModel.
+                listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado(), false);
 
-        
         for (Empresa empresa : empresasAtivasUsuarioLogado) {
 
-        //Adiciono pras outras empresas que o usuário está ativo
+            //Adiciono pras outras empresas que o usuário está ativo
             MenuBar.MenuItem empresaMenuItem = topMenu.
-                    addItem("Criar </br> [[" + empresa.getNome() + "]]", null, null);
+                    addItem(empresa.getNome(), null, null);
             mapEmpresasMenuItemCriar.put(empresa, empresaMenuItem);
 
             createNewByTemplate = mapEmpresasMenuItemCriar.get(empresa).addItem(

@@ -2,12 +2,14 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.SignupModel;
+import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Endereco;
 import com.saax.gestorweb.model.datamodel.Estado;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.SignupView;
@@ -17,11 +19,13 @@ import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -52,7 +56,8 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
     private final Usuario loggedUser;
     private Empresa empresa;
-    private final boolean novoCadastro;
+//    private final boolean novoCadastro;
+    private boolean novoCadastro;
 
     List<Empresa> coligadasRemovidasNaEdicao = new ArrayList<>();
     List<String> coligadasInseridasNaEdicao = new ArrayList<>();
@@ -62,20 +67,24 @@ public class SignupPresenter implements Serializable, SignupViewListener {
     List<String> filiaisInseridasNaEdicao = new ArrayList<>();
     List<FilialEmpresa> filiaisAlteradasNaEdicao = new ArrayList<>();
 
+    List<UsuarioEmpresa> usuariosRemovidosNaEdicao = new ArrayList<>();
+    List<String> usuariosInseridosNaEdicao = new ArrayList<>();
+    List<UsuarioEmpresa> usuariosAlteradosNaEdicao = new ArrayList<>();
+
     /**
      * Creates the presenter linking the Model View
      *
      * @param model
      * @param view
      */
-    public SignupPresenter(SignupModel model, SignupView view) {
+    public SignupPresenter(SignupModel model, SignupView view, boolean isNovoCadastro) {
 
         this.model = model;
         this.view = view;
 
         loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
-        novoCadastro = loggedUser == null;
+        novoCadastro = isNovoCadastro;
 
         view.setListener(this);
 
@@ -132,17 +141,21 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             incluirFilial(filial.getNome(), filial.getCnpj(), filial.getId().toString());
         }
 
-
-        /*
-         // Tab 4: Add more users to the company
-         private TextField userNameTextField;
-         private TextField userSurnameTextField;
-         private TextField emailTextField;
-         private TextField emailConfirmTextField;
-         private Table usersTable;
-         private CheckBox userAdmCheckBox;
-     
-         */
+// Não devo colocar isso senão ele da insert 
+        for (UsuarioEmpresa usuario : empresa.getUsuarios()) {
+            incluirUsuario(usuario.getUsuario().getNome(),
+                    usuario.getUsuario().getSobrenome(),
+                    usuario.getUsuario().getLogin(),
+                    usuario.getAdministrador(),
+                    usuario.getId().toString());
+        }
+        // Tab 4: Add more users to the company
+//         private TextField userNameTextField;
+//         private TextField userSurnameTextField;
+//         private TextField emailTextField;
+//         private TextField emailConfirmTextField;
+//         private Table usersTable;
+//         private CheckBox userAdmCheckBox;
     }
 
     @Override
@@ -161,13 +174,14 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         String login = view.getUserEmailTextField().getValue(); // @TODO: get from view
 
         // Check if the user informed there (login)
-        if (model.verificaLoginExistente(login)) {
+        if (novoCadastro) {
+            if (model.verificaLoginExistente(login)) {
 
-            // Displays an error message indicating that this login (email) already
-            // exists in the system and asks the user if he does not recover your password
-            Notification.show(messages.getString("SignupPresenter.mensagem.loginPreExistente"), Notification.Type.WARNING_MESSAGE);
-
-            return false;
+                // Displays an error message indicating that this login (email) already
+                // exists in the system and asks the user if he does not recover your password
+                Notification.show(messages.getString("SignupPresenter.mensagem.loginPreExistente"), Notification.Type.WARNING_MESSAGE);
+                return false;
+            }
         }
 
         return true;
@@ -183,12 +197,9 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         // checks whether the company (account) informed no longer exists in the record
         char tipoPessoa = '\0';
 
-        System.out.println(view.getPersonTypeOptionGroup().getValue());
-        System.out.println(view.getPersonTypeOptionGroup().getValue().toString());
-
-        if (view.getPersonTypeOptionGroup().getValue().toString().equals("F")) {
+        if (view.getPersonType() == 'F') {
             tipoPessoa = 'F';
-        } else if (view.getPersonTypeOptionGroup().getValue().toString().equals("J")) {
+        } else if (view.getPersonType() == 'J') {
             tipoPessoa = 'J';
         } else {
             return false;
@@ -196,7 +207,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
         String cpf_cnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
 
-        if (model.verificaEmpresaExistente(cpf_cnpj, tipoPessoa)) {
+        if (novoCadastro && model.verificaEmpresaExistente(cpf_cnpj, tipoPessoa)) {
 
             // Displays an error message indicating that this company exists in the system
             Notification.show(messages.getString("SignupPresenter.mensagem.empresaPreExistente"), Notification.Type.WARNING_MESSAGE);
@@ -323,7 +334,8 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             // Validates if the users are not already registered in the system
             String emailUsuario = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.email")).getValue(); // @ATENCAO
             System.out.println("usuario " + emailUsuario);
-            if (model.verificaLoginExistente(emailUsuario)) {
+
+            if (novoCadastro && model.verificaLoginExistente(emailUsuario)) {
 
                 // Displays an error message indicating that this User already exists in the system
                 Notification.show(messages.getString("SignupPresenter.mensagem.usuarioExistente"), Notification.Type.WARNING_MESSAGE);
@@ -359,6 +371,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         // creates/updates the Logged User
         // ---------------------------------------------------------------------
         Usuario usuarioADM;
+
         if (novoCadastro) {
             usuarioADM = model.criarNovoUsuario(
                     view.getNameTextField().getValue(),
@@ -385,14 +398,17 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
         char tipoPessoa = '\0';
 
-//        if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaFisicaCheckBox.label"))) { // @ATENCAO
-        if (view.getPersonTypeOptionGroup().getValue().toString().equals("F")) { // @ATENCAO
-            tipoPessoa = 'F';
-//        } else if (view.getPersonTypeOptionGroup().getValue().equals(messages.getString("SignupView.pessoaJuridicaCheckBox.label"))) { // @ATENCAO
-        } else if (view.getPersonTypeOptionGroup().getValue().toString().equals("J")) { // @ATENCAO
-            tipoPessoa = 'J';
-        } else {
-            return null;
+        switch (view.getPersonType()) {
+            case 'F':
+                // @ATENCAO
+                tipoPessoa = 'F';
+                break;
+            case 'J':
+                // @ATENCAO
+                tipoPessoa = 'J';
+                break;
+            default:
+                return null;
         }
 
         if (novoCadastro) {
@@ -460,20 +476,32 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         // creates a list of users
         // ---------------------------------------------------------------------
         Table usuariosTable = view.getUsersTable();
-        usuariosTable.getItemIds().stream().forEach((itemID) -> {
+//        Collection<?> itemIds = usuariosTable.getItemIds();
 
-            Item linha = usuariosTable.getItem(itemID);
+        for (String usuarioId : usuariosInseridosNaEdicao) {
+
+            Item linha = usuariosTable.getItem(usuarioId);
 
             String nome = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.nome")).getValue();
             String sobreNome = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.sobrenome")).getValue();
             String email = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.email")).getValue();
             boolean administrador = linha.getItemProperty(messages.getString("SignupView.usuariosTable.administrador")).getValue().equals("SIM");
 
-            Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email, usuarioADM);
-            model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador, usuarioADM);
+                Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email, usuarioADM);
+                model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador, usuarioADM);
+        }
 
-        });
-
+//        usuariosTable.getItemIds().stream().forEach((itemID) -> {
+//            Item linha = usuariosTable.getItem(itemID);
+//
+//            String nome = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.nome")).getValue();
+//            String sobreNome = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.sobrenome")).getValue();
+//            String email = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.email")).getValue();
+//            boolean administrador = linha.getItemProperty(messages.getString("SignupView.usuariosTable.administrador")).getValue().equals("SIM");
+//
+//            Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email, usuarioADM);
+//            model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador, usuarioADM);
+//        });
         return empresaPrincipal;
 
     }
@@ -533,16 +561,14 @@ public class SignupPresenter implements Serializable, SignupViewListener {
      * Gets the name, surname and email
      */
     @Override
-    public void incluirUsuario() {
+    public void incluirUsuario(String nomeUsuario, String sobrenomeUsuario, String email, Boolean isAdm, String idUsuario) {
 
-        String nomeUsuario = view.getUserNameTextField().getValue();
-        String sobrenomeUsuario = view.getUserSurnameTextField().getValue();
-        String email = view.getEmailTextField().getValue();
-
+//        String nomeUsuario = view.getUserNameTextField().getValue();
+//        String sobrenomeUsuario = view.getUserSurnameTextField().getValue();
+//        String email = view.getEmailTextField().getValue();
         // Check if User is Administrator or not
-        Boolean usuarioAdm = view.getUserAdmCheckBox().getValue();
         String adm = "";
-        if (usuarioAdm == true) {
+        if (isAdm == true) {
             adm = "SIM";
         } else {
             adm = "NÃO";
@@ -555,11 +581,26 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
             view.getUsersTable().removeItem(nomeUsuarioBotao);
             view.getUsersTable().refreshRowCache();
+            usuariosRemovidosNaEdicao.add(model.getUsuario(empresa, email));
             Notification.show((messages.getString("Notificacao.Sucesso")), (messages.getString("Notificacao.ItemExcluidoSucesso")), Notification.TYPE_HUMANIZED_MESSAGE);// @ATENCAO
 
         });
 
-        view.getUsersTable().addItem(new Object[]{nomeUsuario, sobrenomeUsuario, email, adm, removerUsuarioButton}, nomeUsuario);
+        //copia do outro, mas nao parece estar certo
+        if (idUsuario.startsWith("TEMP")) {
+            usuariosInseridosNaEdicao.add(idUsuario);
+        } else {
+            Usuario usuario = UsuarioModel.findByID(Integer.parseInt(idUsuario));
+            usuario.setNome(nomeUsuario);
+            usuario.setSobrenome(sobrenomeUsuario);
+            usuario.setLogin(email);
+
+            UsuarioEmpresa usuarioEmpresa = model.getUsuario(empresa, email);
+            usuarioEmpresa.setAdministrador(isAdm);
+
+            usuariosAlteradosNaEdicao.add(usuarioEmpresa);
+        }
+        view.getUsersTable().addItem(new Object[]{nomeUsuario, sobrenomeUsuario, email, adm, removerUsuarioButton}, idUsuario);
 
         view.getUserNameTextField().setValue("");
         view.getUserSurnameTextField().setValue("");

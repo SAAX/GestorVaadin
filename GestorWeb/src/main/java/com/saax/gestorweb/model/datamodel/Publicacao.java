@@ -9,8 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -81,8 +79,8 @@ public class Publicacao implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private PublicacaoReferencia referencia;
     
-    @Enumerated(EnumType.STRING)
-    private StatusPublicacao status;
+//    @Enumerated(EnumType.STRING)
+//    private StatusPublicacao status;
     
     @JoinColumn(name = "idpublicacaotipo", referencedColumnName = "idpublicacaotipo")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -261,16 +259,16 @@ public class Publicacao implements Serializable {
     /**
      * @return the status
      */
-    public StatusPublicacao getStatus() {
-        return status;
-    }
+//    public StatusPublicacao getStatus() {
+//        return status;
+//    }
 
     /**
      * @param status the status to set
      */
-    public void setStatus(StatusPublicacao status) {
-        this.status = status;
-    }
+//    public void setStatus(StatusPublicacao status) {
+//        this.status = status;
+//    }
 
     /**
      * @return the tipo

@@ -368,11 +368,11 @@ public class DashboardView extends VerticalLayout {
 
         quickSeachTextField = new TextField();
         quickSeachTextField.setInputPrompt(GestorPresenter.getMENSAGENS().getString("DashboardView.quickSeachTextField"));
-        autoFilterSearchContainer.addComponent(quickSeachTextField);
+//        autoFilterSearchContainer.addComponent(quickSeachTextField);
 
         advancedSearchButton = new Button(GestorPresenter.getMENSAGENS().getString("DashboardView.advancedSearchButton"));
         advancedSearchButton.setStyleName("link");
-        autoFilterSearchContainer.addComponent(advancedSearchButton);
+        //autoFilterSearchContainer.addComponent(advancedSearchButton);
 
         HorizontalLayout autoFilterRightContainer = new HorizontalLayout();
         autoFilterRightContainer.addComponent(autoFilterSearchContainer);
@@ -430,7 +430,7 @@ public class DashboardView extends VerticalLayout {
         tabSheet.setHeight("100%");
         tabSheet.addTab(buildTaskTable(), GestorPresenter.getMENSAGENS().getString("DashboardView.taskTab"));
         tabSheet.addTab(buildTargetTable(), GestorPresenter.getMENSAGENS().getString("DashboardView.targetTab"));
-        tabSheet.addTab(new HorizontalLayout(), GestorPresenter.getMENSAGENS().getString("DashboardView.publicationsTab"));
+//        tabSheet.addTab(new HorizontalLayout(), GestorPresenter.getMENSAGENS().getString("DashboardView.publicationsTab"));
 
         tabSheetContainer.addComponent(tabSheet);
 
@@ -462,7 +462,7 @@ public class DashboardView extends VerticalLayout {
         tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.startDate"), String.class, "");
         tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.endDate"), String.class, "");
         tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.state"), PopupButton.class, "");
-        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.email"), Button.class, "");
+//        tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.email"), Button.class, "");
         tarefaTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.chat"), Button.class, "");
 
         tarefaTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
@@ -525,8 +525,8 @@ public class DashboardView extends VerticalLayout {
 
 //        Essa linha estava fazendo as metas não serem exibidas na table
 //        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.forecast"), 30);
-        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email"), Button.class, "");
-        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email"), 30);
+//        targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email"), Button.class, "");
+//        targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email"), 30);
         targetTable.addGeneratedColumn(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.colunaBotaoRemover"), (Table source, final Object itemId, Object columnId) -> {
             Button removeButton = new Button();
             removeButton.addClickListener((ClickEvent event) -> {

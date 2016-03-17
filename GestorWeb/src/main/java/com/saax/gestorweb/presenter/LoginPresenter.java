@@ -97,13 +97,13 @@ public class LoginPresenter implements Serializable, LoginViewListener {
 
         // verifica se o usuário quer gravar o login na sessão e grava o cookie
         if (view.getLembrarLoginCheckBox().getValue()){
-        
-            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
-            cookieManager.setCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO, view.getLoginTextField().getValue());
+//        
+//            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
+//            cookieManager.setCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO, view.getLoginTextField().getValue());
 
         } else {
-            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
-            cookieManager.destroyCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO);
+//            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
+//            cookieManager.destroyCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO);
         }
 
         view.close();

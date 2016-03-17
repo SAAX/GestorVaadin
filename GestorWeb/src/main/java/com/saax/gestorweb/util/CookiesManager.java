@@ -58,10 +58,10 @@ public class CookiesManager implements Serializable {
         }
 
         if (VaadinService.getCurrentRequest() != null) {
-            cookie.setPath(VaadinService.getCurrentRequest().getContextPath());
-            VaadinService.getCurrentResponse().addCookie(cookie);
+//            cookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+//            VaadinService.getCurrentResponse().addCookie(cookie);
         } else {
-            cookies.add(cookie);
+//            cookies.add(cookie);
         }
 
     }

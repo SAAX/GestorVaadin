@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.vaadin.hene.popupbutton.PopupButton;
 
 /**
@@ -252,8 +251,9 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
              * COMENTADO: Projeção postergada para v2
              * it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
              */
-            it.getItemProperty(GestorPresenter.getMENSAGENS().
-                    getString("DashboardView.taskTable.email")).setValue(new Button("E"));
+            
+//            it.getItemProperty(GestorPresenter.getMENSAGENS().
+//                    getString("DashboardView.taskTable.email")).setValue(new Button("E"));
 
             it.getItemProperty(GestorPresenter.getMENSAGENS().
                     getString("DashboardView.taskTable.chat")).
@@ -285,7 +285,8 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.assingee")).setValue(target.getUsuarioResponsavel().getNome());
         it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.startDate")).setValue(FormatterUtil.formatDate(target.getDataInicio()));
         it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.endDate")).setValue(FormatterUtil.formatDate(target.getDataFim()));
-        it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email")).setValue(new Button("E"));
+//        it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.state")).setValue(target.getStatus());
+//        it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.email")).setValue(new Button("E"));
 
         // se a meta possui tarefas, chama recursivamente
         for (Tarefa subTarefa : target.getTarefas()) {
@@ -646,7 +647,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
              * Projecao: Contingenciado para V2
              * tarefa.getProjecao().toString().charAt(0),
              */
-            new Button("E"),
+//            new Button("E"),
             new Button("Chat", (Button.ClickEvent event) -> {
                 chatButtonClicked(tarefa);
             })
@@ -678,7 +679,8 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             meta.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(meta.getDataInicio()),
             FormatterUtil.formatDate(meta.getDataFim()),
-            new Button("E"),};
+//            new Button("E"),
+        };
 
         view.getTargetTable().addItem(linha, meta);
 
@@ -701,7 +703,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             taskToInsert.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(taskToInsert.getDataInicio()),
             FormatterUtil.formatDate(taskToInsert.getDataFim()),
-            new Button("E"), // new Button("C")
+//            new Button("E"), // new Button("C")
         };
 
         view.getTargetTable().addItem(linha, taskToInsert);

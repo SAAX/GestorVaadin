@@ -586,7 +586,6 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
         });
 
-        //copia do outro, mas nao parece estar certo
         if (idUsuario.startsWith("TEMP")) {
             usuariosInseridosNaEdicao.add(idUsuario);
         } else {

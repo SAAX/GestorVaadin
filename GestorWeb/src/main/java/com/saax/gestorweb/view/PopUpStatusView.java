@@ -1,7 +1,5 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.GestorMDI;
-import com.saax.gestorweb.model.datamodel.ApontamentoTarefa;
 import com.saax.gestorweb.model.datamodel.AvaliacaoMetaTarefa;
 import com.saax.gestorweb.model.datamodel.HistoricoTarefa;
 import com.saax.gestorweb.model.datamodel.ParametroAndamentoTarefa;
@@ -10,7 +8,6 @@ import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.presenter.GestorPresenter;
 import com.saax.gestorweb.util.FormatterUtil;
-import com.saax.gestorweb.util.GestorWebImagens;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -21,7 +18,6 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
@@ -29,12 +25,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.vaadin.teemu.ratingstars.RatingStars;
@@ -830,7 +822,8 @@ public class PopUpStatusView extends CustomComponent {
         Window subWindow = new Window("Informe o novo comentário");
         subWindow.setModal(true);
         subWindow.setWidth("300px");
-        subWindow.setHeight("100px");
+        subWindow.setHeight("250px");
+        subWindow.setResizable(false);  
 
         VerticalLayout subContent = new VerticalLayout();
         subContent.setMargin(true);

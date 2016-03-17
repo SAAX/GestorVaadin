@@ -251,10 +251,9 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
              * COMENTADO: Projeção postergada para v2
              * it.getItemProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.taskTable.forecast")).setValue(tarefa.getProjecao().toString().charAt(0));
              */
-            
+
 //            it.getItemProperty(GestorPresenter.getMENSAGENS().
 //                    getString("DashboardView.taskTable.email")).setValue(new Button("E"));
-
             it.getItemProperty(GestorPresenter.getMENSAGENS().
                     getString("DashboardView.taskTable.chat")).
                     setValue(new Button("Chat", (Button.ClickEvent event) -> {
@@ -550,7 +549,9 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         List<Tarefa> tarefasPrincipais = DashboardModel.listarTarefasPrincipais(GestorPresenter.getUsuarioLogado());
 
-        view.getBottomTasksContainer().removeAllComponents();
+        
+        
+        view.removeComponentsTasksBottomContainer();
         for (int i = 0; i < tarefasPrincipais.size(); i++) {
             Tarefa tarefa = tarefasPrincipais.get(i);
 
@@ -568,7 +569,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         List<Tarefa> tarefasAguardandoAceite = DashboardModel.listarTarefasAguardandoAceite(GestorPresenter.getUsuarioLogado());
 
-        view.getBottomInvitesContainer().removeAllComponents();
+        view.removeComponentsInvitesBottomContainer();
         for (int i = 0; i < tarefasAguardandoAceite.size(); i++) {
             Tarefa tarefa = tarefasAguardandoAceite.get(i);
 
@@ -647,7 +648,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
              * Projecao: Contingenciado para V2
              * tarefa.getProjecao().toString().charAt(0),
              */
-//            new Button("E"),
+            //            new Button("E"),
             new Button("Chat", (Button.ClickEvent event) -> {
                 chatButtonClicked(tarefa);
             })
@@ -678,8 +679,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             meta.getUsuarioSolicitante().getNome(),
             meta.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(meta.getDataInicio()),
-            FormatterUtil.formatDate(meta.getDataFim()),
-//            new Button("E"),
+            FormatterUtil.formatDate(meta.getDataFim()), //            new Button("E"),
         };
 
         view.getTargetTable().addItem(linha, meta);
@@ -702,8 +702,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
             taskToInsert.getUsuarioSolicitante().getNome(),
             taskToInsert.getUsuarioResponsavel().getNome(),
             FormatterUtil.formatDate(taskToInsert.getDataInicio()),
-            FormatterUtil.formatDate(taskToInsert.getDataFim()),
-//            new Button("E"), // new Button("C")
+            FormatterUtil.formatDate(taskToInsert.getDataFim()), //            new Button("E"), // new Button("C")
         };
 
         view.getTargetTable().addItem(linha, taskToInsert);

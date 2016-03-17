@@ -25,6 +25,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.ListSelect;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -114,6 +115,12 @@ public class DashboardView extends VerticalLayout {
     // bottom container
     // ---------------------------------------------------------------------------------------------------
     private HorizontalLayout bottomContainer;
+    private Label labelTasks;
+    private Label labelForecast;
+    private Label labelInvites;
+    private Panel panelTasks;
+    private Panel panelForecast;
+    private Panel panelInvites;
     private VerticalLayout bottomTasksContainer;
     private VerticalLayout bottomForecastsContainer;
     private VerticalLayout bottomInvitesContainer;
@@ -571,15 +578,27 @@ public class DashboardView extends VerticalLayout {
         bottomContainer.setSpacing(true);
         bottomContainer.setWidth("100%");
         bottomContainer.setHeight(null);
+        bottomContainer.setMargin(true);
 
+        //Tasks
         bottomTasksContainer = new VerticalLayout();
-        bottomTasksContainer.setStyleName("blue");
-        bottomTasksContainer.setWidth("20%");
-        bottomContainer.addComponent(bottomTasksContainer);
 
+        panelTasks = new Panel();
+        panelTasks.setHeight("150px");
+        panelTasks.setContent(bottomTasksContainer);
+
+        bottomTasksContainer.setStyleName("blue");
+        bottomContainer.addComponent(panelTasks);
+
+        //Forecast
         bottomForecastsContainer = new VerticalLayout();
-        bottomForecastsContainer.setWidth("20%");
-        bottomContainer.addComponent(bottomForecastsContainer);
+
+        panelForecast = new Panel();
+        panelForecast.setHeight("150px");
+        panelForecast.setContent(bottomForecastsContainer);
+
+        bottomForecastsContainer.addComponent(new Label("Forecast"));
+        bottomContainer.addComponent(panelForecast);
 
         /**
          * COMENTADO: Projeção postergada para v2 Button projecaoButton; for
@@ -587,12 +606,32 @@ public class DashboardView extends VerticalLayout {
          * (i + 1)); projecaoButton.setStyleName("v-button-link");
          * bottomForecastsContainer.addComponent(projecaoButton); }
          */
+        //Invite
         bottomInvitesContainer = new VerticalLayout();
+
+        panelInvites = new Panel();
+        panelInvites.setHeight("150px");
+        panelInvites.setContent(bottomInvitesContainer);
+
         bottomInvitesContainer.setStyleName("blue");
-        bottomInvitesContainer.setWidth("20%");
-        bottomContainer.addComponent(bottomInvitesContainer);
+        bottomContainer.addComponent(panelInvites);
 
         return bottomContainer;
+    }
+
+    public void removeComponentsForecastBottomContainer() {
+        bottomForecastsContainer.removeAllComponents();
+        bottomForecastsContainer.addComponent(new Label("Forecast"));
+    }
+
+    public void removeComponentsTasksBottomContainer() {
+        bottomTasksContainer.removeAllComponents();
+        bottomTasksContainer.addComponent(new Label("Tarefas"));
+    }
+
+    public void removeComponentsInvitesBottomContainer() {
+        bottomInvitesContainer.removeAllComponents();
+        bottomInvitesContainer.addComponent(new Label("Pendente Aceite"));
     }
 
     public void abrirPopUpSelecaoTemplates(List<Tarefa> templates) {

@@ -376,8 +376,13 @@ public class SignupModel {
 //                    em.find(ue.getEmpresa().getClass(), ue.getId());
 //                }
 //            }
+            if (empresaPrincipal.getId() == 0) {
+                em.persist(empresaPrincipal);
 
-            em.merge(empresaPrincipal);
+            } else {
+                em.merge(empresaPrincipal);
+
+            }
 
             em.getTransaction().commit();
 

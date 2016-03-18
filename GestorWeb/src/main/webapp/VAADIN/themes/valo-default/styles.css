@@ -12767,6 +12767,11 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: hidden;
 }
 
+.valo-default .v-treetable {
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
 .valo-default .v-tree-node-no-children {
 	background: none;
 }

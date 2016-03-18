@@ -14,16 +14,15 @@ $v-layout-margin-left: 10px;
 // Import valo after setting the parameters
 @import "../valo/valo";
 
-
 /* This contains all of your theme. */
 /* If somebody wants to extend the theme she will include this mixin. */
 @mixin valo-default {
 
     /* Include all the styles from the reindeer theme */
     @include valo;
+    
 
     // CSS
-  
     .v-tree-node-no-children{
         background: none;
     }

@@ -1,9 +1,8 @@
 package com.saax.gestorweb.view;
 
-import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Meta;
 import com.saax.gestorweb.model.datamodel.Tarefa;
-import java.util.List;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 
 /**
  * Interface com todos os eventos disparados pela View do dashboard
@@ -40,6 +39,6 @@ public interface DashboardViewListenter {
 
     public boolean verificaPermissaoAcessoRemocaoMeta(Meta meta);
 
-    public void configContaClicked(Empresa empresa);
+    public void configContaClicked(UsuarioEmpresa usuarioEmpresa);
 
 }

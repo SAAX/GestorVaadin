@@ -147,7 +147,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
                     usuario.getUsuario().getSobrenome(),
                     usuario.getUsuario().getLogin(),
                     usuario.getAdministrador(),
-                    usuario.getId().toString());
+                    usuario.getUsuario().getId().toString());
         }
         // Tab 4: Add more users to the company
 //         private TextField userNameTextField;
@@ -487,8 +487,8 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             String email = (String) linha.getItemProperty(messages.getString("SignupView.usuariosTable.email")).getValue();
             boolean administrador = linha.getItemProperty(messages.getString("SignupView.usuariosTable.administrador")).getValue().equals("SIM");
 
-                Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email, usuarioADM);
-                model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador, usuarioADM);
+            Usuario usuario = model.criarNovoUsuario(nome, sobreNome, email, usuarioADM);
+            model.relacionarUsuarioEmpresa(usuario, empresaPrincipal, administrador, usuarioADM);
         }
 
 //        usuariosTable.getItemIds().stream().forEach((itemID) -> {

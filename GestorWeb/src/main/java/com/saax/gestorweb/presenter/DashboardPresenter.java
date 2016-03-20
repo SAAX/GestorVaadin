@@ -21,6 +21,7 @@ import com.saax.gestorweb.view.DashboardView;
 import com.saax.gestorweb.view.DashboardViewListenter;
 import com.vaadin.data.Item;
 import com.saax.gestorweb.model.datamodel.RecurrencySet;
+import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.view.MetaView;
 import com.saax.gestorweb.view.ChatView;
 import com.saax.gestorweb.view.LixeiraView;
@@ -97,18 +98,18 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
     }
 
     @Override
-    public void configContaClicked(Empresa empresa) {
+    public void configContaClicked(UsuarioEmpresa usuarioEmpresa) {
 
         //Cria o pop up para registrar a conta (model e viw)
         SignupModel signupModel = new SignupModel();
-        SignupView signupView = new SignupView();
-
+        
+        SignupView signupView = new SignupView(usuarioEmpresa.getAdministrador());
         //o presenter liga model e view
         SignupPresenter signupPresenter;
         signupPresenter = new SignupPresenter(signupModel, signupView, false);
         //adiciona a visualização à UI
         UI.getCurrent().addWindow(signupView);
-        signupPresenter.open(empresa);
+        signupPresenter.open(usuarioEmpresa.getEmpresa());
     }
 
     // enumeracao do tipo de pesquisa

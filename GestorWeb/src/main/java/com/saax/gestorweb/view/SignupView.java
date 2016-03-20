@@ -85,7 +85,7 @@ public class SignupView extends Window {
      * Creates the pop-up login with fields for username and password
      *
      */
-    public SignupView() {
+    public SignupView(boolean isUsuarioAdm) {
         super();
 
         setCaption(messages.getString("SignupView.titulo"));
@@ -99,7 +99,7 @@ public class SignupView extends Window {
         setContent(container);
 
         // Add: visual components
-        container.addComponent(buildTabPanel());
+        container.addComponent(buildTabPanel(isUsuarioAdm));
 
         // Buttons Bar
         HorizontalLayout barraBotoes = buildBarraBotoes();
@@ -142,7 +142,7 @@ public class SignupView extends Window {
      * 3. Registration of the company (account) <br>
      * 4. Later add more users to the company <br>
      */
-    private TabSheet buildTabPanel() {
+    private TabSheet buildTabPanel(boolean isUsuarioAdm) {
 
         TabSheet tabSheet = new TabSheet();
 
@@ -150,6 +150,11 @@ public class SignupView extends Window {
         //tabSheet.addTab(buildAba2Billing(), messages.getString("SignupView.tabPanel.aba2.titulo"));
         tabSheet.addTab(buildAba3CadastroEmpresas(), getMessages().getString("SignupView.tabPanel.aba3.titulo"));
         tabSheet.addTab(buildAba4UsuarioEmpresa(), getMessages().getString("SignupView.tabPanel.aba4.titulo"));
+
+        if (!isUsuarioAdm) {
+            tabSheet.getTab(1).setEnabled(false); //2
+            tabSheet.getTab(2).setEnabled(false); //3
+        }
 
         return tabSheet;
     }

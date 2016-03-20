@@ -242,14 +242,16 @@ public class DashboardView extends VerticalLayout {
         // para cada empresa onde o usuário é adm, cria um menu item para
         // configurar a conta
         for (UsuarioEmpresa usuarioEmpresa : GestorPresenter.getUsuarioLogado().getEmpresas()) {
-            if (usuarioEmpresa.getAtivo() && usuarioEmpresa.getAdministrador()) {
-                config.addItem("Configurar Conta: " + usuarioEmpresa.getEmpresa().getNome(), (MenuBar.MenuItem selectedItem) -> {
-                    listener.configContaClicked(usuarioEmpresa.getEmpresa());
-                });
+            if (usuarioEmpresa.getAtivo()) {
+
+                config.addItem(usuarioEmpresa.getAdministrador()
+                        ? usuarioEmpresa.getEmpresa().getNome()
+                        : usuarioEmpresa.getUsuario().getNome(), (MenuBar.MenuItem selectedItem) -> {
+                            listener.configContaClicked(usuarioEmpresa);
+                        });
             }
         }
-        config.addItem("Config 3", null, null);
-
+        
         topMenu.addItem("<h3>" + GestorPresenter.getMENSAGENS().getString("DashboardView.logoutMenuItem") + "</h3>", null, (MenuBar.MenuItem selectedItem) -> {
             listener.logout();
         });

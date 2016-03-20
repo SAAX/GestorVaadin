@@ -67,7 +67,7 @@ public class StartPagePresenter implements StartPageViewListener, Serializable {
         
         //Cria o pop up para registrar a conta (model e viw)
         SignupModel signupModel = new SignupModel();
-        SignupView signupView = new SignupView();
+        SignupView signupView = new SignupView(true);
         
        //o presenter liga model e view
         SignupPresenter signupPresenter;

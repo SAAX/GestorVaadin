@@ -59,6 +59,8 @@ public class LoginView extends Window {
         container.setMargin(true);
         setContent(container);
         
+        container.setSpacing(true);
+        
         // Adicionar: componentes visuais
         
         // text field: Login

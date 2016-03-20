@@ -161,15 +161,16 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
     private void adicionarHierarquiasProjeto() {
 
         // obtem as hierarquias customizadas
-        List<HierarquiaProjeto> hierarquias = DashboardModel.getHierarquiasProjeto();
         List<Empresa> listarEmpresasAtivasUsuarioLogado = EmpresaModel.listarEmpresasAtivasUsuarioLogado(GestorPresenter.getUsuarioLogado(), false);
 
         // menu "Criar"
         Map<Empresa, MenuBar.MenuItem> mapEmpresasMenuCriar = view.getMapEmpresasMenuItemCriar();
 
+        // adiciona cada hierarquia customizada
         for (Empresa empresa : listarEmpresasAtivasUsuarioLogado) {
 
-            // adiciona cada hierarquia customizada
+            List<HierarquiaProjeto> hierarquias = DashboardModel.getHierarquiasProjeto(empresa);
+
             for (HierarquiaProjeto hierarquia : hierarquias) {
 
                 MenuBar.MenuItem menuProjeto = mapEmpresasMenuCriar.get(empresa).
@@ -187,7 +188,7 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
         }
 
         //Pra nenhuma empresa, identifiquei o menu com a key null no map
-        for (HierarquiaProjeto hierarquia : hierarquias) {
+        for (HierarquiaProjeto hierarquia : DashboardModel.getHierarquiasProjeto(null)) {
             MenuBar.MenuItem menuProjeto = mapEmpresasMenuCriar.get(null).
                     addItemBefore(hierarquia.getNome(), null, null, view.getCreateNewByTemplate());
 
@@ -549,8 +550,6 @@ public class DashboardPresenter implements DashboardViewListenter, CallBackListe
 
         List<Tarefa> tarefasPrincipais = DashboardModel.listarTarefasPrincipais(GestorPresenter.getUsuarioLogado());
 
-        
-        
         view.removeComponentsTasksBottomContainer();
         for (int i = 0; i < tarefasPrincipais.size(); i++) {
             Tarefa tarefa = tarefasPrincipais.get(i);

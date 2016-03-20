@@ -55,15 +55,14 @@ public class DashboardModel {
         return templates;
     }
 
-    
-    
     /**
      * Obtem as hierarquias que podem ser selecionadas pelo usuário (até nível
      * 2)
      *
+     * @param empresa
      * @return
      */
-    public static List<HierarquiaProjeto> getHierarquiasProjeto() {
+    public static List<HierarquiaProjeto> getHierarquiasProjeto(Empresa empresa) {
 
         EntityManager em = GestorEntityManagerProvider.getEntityManager();
 
@@ -72,14 +71,16 @@ public class DashboardModel {
                 .getResultList();
 
         // Obtem as hiearquias da empresa do usuário logad
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
         List<HierarquiaProjeto> hierarquiasEmpresa = em.createNamedQuery("HierarquiaProjeto.findByEmpresa")
-                .setParameter("empresa", loggedUser.getEmpresas().get(0).getEmpresa())
+                .setParameter("empresa", empresa)
                 .getResultList();
 
         List<HierarquiaProjeto> hierarquiasCadastradas = new ArrayList<>();
-        hierarquiasCadastradas.addAll(hierarquiasGenericas);
-        hierarquiasCadastradas.addAll(hierarquiasEmpresa);
+        if (empresa == null) {
+            hierarquiasCadastradas.addAll(hierarquiasGenericas);
+        } else {
+            hierarquiasCadastradas.addAll(hierarquiasEmpresa);
+        }
 
         List<HierarquiaProjeto> hierarquiasParaSelecao = new ArrayList<>();
 
@@ -127,7 +128,6 @@ public class DashboardModel {
 
         return null;
     }
-    
 
     public static List<Tarefa> listarTarefas(Usuario loggedUser) {
         return TarefaModel.listarTarefas(loggedUser);
@@ -136,7 +136,7 @@ public class DashboardModel {
     public static List<Tarefa> listarTarefasPrincipais(Usuario loggedUser) {
         return TarefaModel.listarTarefasPrincipais(loggedUser);
     }
-    
+
     public static List<Tarefa> listarTarefasAguardandoAceite(Usuario loggedUser) {
         return TarefaModel.listarTarefasAguardandoAceite(loggedUser);
     }
@@ -157,5 +157,5 @@ public class DashboardModel {
         return TarefaModel.criarNovaTarefaPeloTemplate(template);
 
     }
-    
+
 }

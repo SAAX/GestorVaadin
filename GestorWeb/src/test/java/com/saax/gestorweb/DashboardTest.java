@@ -87,7 +87,7 @@ public class DashboardTest {
     @Test
     public void getHierarquiasProjetoTest() {
 
-        List<HierarquiaProjeto> l = DashboardModel.getHierarquiasProjeto();
+        List<HierarquiaProjeto> l = DashboardModel.getHierarquiasProjeto(null);
 
         Assert.assertFalse("l está vazio", l.isEmpty());
 

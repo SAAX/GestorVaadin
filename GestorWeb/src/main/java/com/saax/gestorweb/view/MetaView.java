@@ -52,7 +52,6 @@ import org.vaadin.hene.popupbutton.PopupButton;
  */
 public class MetaView extends Window implements Serializable {
 
-
     // Presenter (listener)
     private MetaViewListener listener;
 
@@ -68,7 +67,7 @@ public class MetaView extends Window implements Serializable {
     private Button addTaskButton;
     private Button forecast​Button;
     private Button removerMetaButton;
-    
+
     // -----------------------------------------------------------------------------------
     // Bean Biding
     // -----------------------------------------------------------------------------------
@@ -249,7 +248,7 @@ public class MetaView extends Window implements Serializable {
 
         removerMetaButton.setIcon(FontAwesome.TRASH_O);
         topButtonsBar.addComponent(removerMetaButton);
-        
+
 //       Projeção será inserida na V2           
 //        forecast​Button = new Button("[Projeção]", (Button.ClickEvent event) -> {
 //            listener.forecastButtonClickedd();
@@ -390,13 +389,13 @@ public class MetaView extends Window implements Serializable {
         containerTabelaTarefas = new Panel();
         containerTabelaTarefas.setSizeFull();
 
-        tarefasTable = new TreeTable(){
+        tarefasTable = new TreeTable() {
             {
                 this.alwaysRecalculateColumnWidths = true;
             }
         };
         GestorPresenter.configuraExpansaoColunaCodigo(tarefasTable, GestorPresenter.getMENSAGENS().getString("CadastroMetaView.tarefasTable.colunaCod"));
-        
+
         containerTabelaTarefas.setContent(tarefasTable);
         tarefasTable.setSizeFull();
 
@@ -420,7 +419,7 @@ public class MetaView extends Window implements Serializable {
         tarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("CadastroMetaView.tarefasTable.colunaStatus"), 200);
         tarefasTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("CadastroMetaView.tarefasTable.colunaProjecao"), Character.class, "");
         tarefasTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("CadastroMetaView.tarefasTable.colunaProjecao"), 30);
-        
+
         tarefasTable.addContainerProperty("[E]", Button.class, "");
         tarefasTable.setColumnWidth("[E]", 30);
         tarefasTable.addContainerProperty("[C]", Button.class, "");
@@ -543,15 +542,16 @@ public class MetaView extends Window implements Serializable {
                 setValidatorsVisible(true);
                 metaFieldGroup.commit();
                 listener.gravarButtonClicked();
-            } catch (RuntimeException ex) {
+            }
+            catch (RuntimeException ex) {
                 Notification notification = new Notification("Erro", (ex.getMessage() == null ? GestorPresenter.getMENSAGENS().getString("ErrorUtils.errogenerico") : ex.getMessage()),
                         Notification.Type.WARNING_MESSAGE, true);
 
-                
                 notification.show(Page.getCurrent());
                 Logger.getLogger(TarefaView.class.getName()).log(Level.WARNING, null, ex);
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
 
                 ErrorUtils.showComponentErrors(this.metaFieldGroup.getFields());
                 Logger.getLogger(TarefaView.class.getName()).log(Level.WARNING, null, ex);
@@ -742,7 +742,5 @@ public class MetaView extends Window implements Serializable {
     public Button getRemoverMetaButton() {
         return removerMetaButton;
     }
-    
-    
 
 }

@@ -82,7 +82,9 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
         meta.setEmpresa(empresa);
         init(meta);
 
-        view.getHierarquiaCombo().setEnabled(false);
+        //bug do combo de hierarquia
+        empresaSelecionada(empresa);
+        //view.getHierarquiaCombo().setEnabled(false);
 
     }
 
@@ -163,10 +165,10 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
     @Override
     public void empresaSelecionada(Empresa empresaSelecionada) {
 
-        Empresa empresaAnterior = view.getMeta().getEmpresa();
-
+        //Empresa empresaAnterior = view.getMeta().getEmpresa();
         boolean empresaSendoDeSelecionada = (empresaSelecionada == null);
-        boolean empresaSendoAlterada = (empresaSelecionada != null) && (!empresaSelecionada.equals(empresaAnterior));
+        //boolean empresaSendoAlterada = (empresaSelecionada != null) && (!empresaSelecionada.equals(empresaAnterior));
+        boolean empresaSendoAlterada = true;
 
         view.getMeta().setEmpresa(empresaSelecionada);
 
@@ -190,7 +192,6 @@ public class MetaPresenter implements Serializable, CallBackListener, MetaViewLi
             GestorPresenter.carregaComboDepartamento(view.getDepartamentoCombo(), empresaSelecionada);
             GestorPresenter.carregaComboCentroCusto(view.getCentroCustoCombo(), empresaSelecionada);
             GestorPresenter.carregaComboCategoria(view.getHierarquiaCombo(), empresaSelecionada, 1);
-          
 
         }
 

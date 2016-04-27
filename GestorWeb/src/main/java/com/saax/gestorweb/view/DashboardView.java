@@ -237,7 +237,7 @@ public class DashboardView extends VerticalLayout {
          * GestorPresenter.getMENSAGENS().getString("DashboardView.reportsMenuItem")
          * + "</h3>", null, null);
          */
-        MenuBar.MenuItem config = topMenu.addItem("<h3>Config</h3>", null, null);
+        MenuBar.MenuItem config = topMenu.addItem("<h3>Dados</h3>", null, null);
 
         // para cada empresa onde o usuário é adm, cria um menu item para
         // configurar a conta

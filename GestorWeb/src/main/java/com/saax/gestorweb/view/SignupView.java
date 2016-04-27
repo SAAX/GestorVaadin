@@ -10,6 +10,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TabSheet;
@@ -231,9 +232,19 @@ public class SignupView extends Window {
         containerAba3.setMargin(true);
         containerAba3.setSpacing(true);
 
-        HorizontalLayout containerHorizontal1 = new HorizontalLayout();
-        containerHorizontal1.setSpacing(true);
-        containerAba3.addComponent(containerHorizontal1);
+        HorizontalLayout containerHorizontaLabelNome = new HorizontalLayout();
+        containerHorizontaLabelNome.setSpacing(true);
+        containerAba3.addComponent(containerHorizontaLabelNome);
+        
+        Label labelNome = new Label("Nome");
+        containerHorizontaLabelNome.addComponent(labelNome);
+        companyNameTextField = new TextField();
+        containerHorizontaLabelNome.addComponent(companyNameTextField);
+        containerHorizontaLabelNome.setComponentAlignment(labelNome, Alignment.MIDDLE_CENTER);
+        companyNameTextField.setInputPrompt(getMessages().getString("SignupView.razaoSocialTextField.label"));
+        companyNameTextField.setWidth("272px");
+        companyNameTextField.addValidator(new StringLengthValidator(messages.getString("SignupView.razaoSocialTextField.erro.RazaoSocialNaoInformada"), 1, 100, false));
+        companyNameTextField.setValidationVisible(false);
 
         setPersonTypeOptionGroup(new OptionGroup());
         personTypeOptionGroup.addItem("Pessoa Física");
@@ -241,88 +252,20 @@ public class SignupView extends Window {
         personTypeOptionGroup.addValueChangeListener((Property.ValueChangeEvent event) -> {
             //listener.personTypeSelected(event.getProperty().getValue());
         });
+        
+        HorizontalLayout containerHorizontal1 = new HorizontalLayout();
+        containerHorizontal1.setSpacing(true);
+        containerAba3.addComponent(containerHorizontal1);
+        
         containerHorizontal1.addComponent(personTypeOptionGroup);
-
-        setCompanyNameTextField(new TextField());
-        containerAba3.addComponent(getCompanyNameTextField());
-        getCompanyNameTextField().setInputPrompt(getMessages().getString("SignupView.razaoSocialTextField.label"));
-        companyNameTextField.setWidth("300px");
-        getCompanyNameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.razaoSocialTextField.erro.RazaoSocialNaoInformada"), 1, 100, false));
-        companyNameTextField.setValidationVisible(false);
-
-        setFancyNameTextField(new TextField());
-        containerAba3.addComponent(getFancyNameTextField());
-        getFancyNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeFantasiaTextField.label"));
-        fancyNameTextField.setWidth("300px");
-        getFancyNameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.nomeFantasiaTextField.erro.NomeFantasiaNaoInformado"), 1, 100, false));
-        fancyNameTextField.setValidationVisible(false);
-
         setNationalEntityRegistrationCodeTextField(new TextField());
         containerHorizontal1.addComponent(getNationalEntityRegistrationCodeTextField());
+        containerHorizontal1.setComponentAlignment(personTypeOptionGroup, Alignment.MIDDLE_CENTER);
         getNationalEntityRegistrationCodeTextField().setInputPrompt(getMessages().getString("SignupView.cnpjCpfTextField.label"));
         nationalEntityRegistrationCodeTextField.setWidth("180px");
+        nationalEntityRegistrationCodeTextField.setValidationVisible(true);
 
-        nationalEntityRegistrationCodeTextField.setValidationVisible(false);
-
-        //getNationalEntityRegistrationCodeTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.cnpjCpfTextField.erro.cnpjCpfNaoInformado"),1, 100, false));
-        HorizontalLayout containerHorizontal = new HorizontalLayout();
-        containerHorizontal.setSpacing(true);
-        containerAba3.addComponent(containerHorizontal);
-
-        setAdressTextField(new TextField());
-        containerHorizontal.addComponent(getAdressTextField());
-        getAdressTextField().setInputPrompt(getMessages().getString("SignupView.logradouroTextField.label"));
-        adressTextField.setWidth("300px");
-        adressTextField.setValidationVisible(false);
-        getAdressTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.logradouroTextField.erro.logradouroNaoInformado"), 1, 100, false));
-
-        setNumberTextField(new TextField());
-        containerHorizontal.addComponent(getNumberTextField());
-        getNumberTextField().setInputPrompt(getMessages().getString("SignupView.numeroTextField.label"));
-        numberTextField.setWidth("100px");
-        numberTextField.setValidationVisible(false);
-        getNumberTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.numeroTextField.erro.numeroNaoInformado"), 1, 100, false));
-
-        HorizontalLayout containerHorizontal2 = new HorizontalLayout();
-        containerHorizontal2.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
-        containerAba3.addComponent(containerHorizontal2); // adiciona o container de datas no superior
-
-        setComplementTextField(new TextField());
-        containerHorizontal2.addComponent(getComplementTextField());
-        getComplementTextField().setInputPrompt(getMessages().getString("SignupView.complementoTextField.label"));
-        complementTextField.setWidth("300px");
-        complementTextField.setValidationVisible(false);
-        getNumberTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.numeroTextField.erro.numeroNaoInformado"), 1, 100, false));
-
-        setNeighborhoodTextField(new TextField());
-        containerHorizontal2.addComponent(getNeighborhoodTextField());
-        getNeighborhoodTextField().setInputPrompt(getMessages().getString("SignupView.bairroTextField.label"));
-        neighborhoodTextField.setWidth("100px");
-        neighborhoodTextField.setValidationVisible(false);
-        getNeighborhoodTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.bairroTextField.erro.bairroNaoInformado"), 1, 100, false));
-
-        setStateComboBox(new ComboBox());
-        containerAba3.addComponent(getStateComboBox());
-        getStateComboBox().setInputPrompt(getMessages().getString("SignupView.estadoComboBox.label"));
-        stateComboBox.setWidth("300px");
-        stateComboBox.addValueChangeListener(new Property.ValueChangeListener() {
-
-            @Override
-            public void valueChange(Property.ValueChangeEvent event) {
-                listener.estadoSelecionado();
-            }
-        });
-
-        setCityComboBox(new ComboBox());
-        containerAba3.addComponent(getCityComboBox());
-        getCityComboBox().setInputPrompt(getMessages().getString("SignupView.cidadeComboBox.label"));
-
-        cityComboBox.setWidth("300px");
-
-        setZipCodeTextField(new TextField());
-        containerAba3.addComponent(getZipCodeTextField());
-        getZipCodeTextField().setInputPrompt(getMessages().getString("SignupView.cepTextField.label"));
-        zipCodeTextField.setWidth("300px");
+        
 
         TabSheet tabSheetColigadas = new TabSheet();
 

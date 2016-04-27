@@ -92,7 +92,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
     public void open() {
         // Load the state combos
-        carregaComboEstado();
+//        carregaComboEstado();
 
     }
 
@@ -111,7 +111,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         view.removerPassword();
 
         // campos da empresa
-        view.getFancyNameTextField().setValue(empresa.getNome());
+//        view.getFancyNameTextField().setValue(empresa.getNome());
         view.getCompanyNameTextField().setValue(empresa.getNome());
         if (empresa.getTipoPessoa() == 'F') {
             view.getPersonTypeOptionGroup().setValue(messages.getString("SignupView.pessoaFisicaCheckBox.label"));
@@ -121,15 +121,15 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             view.getNationalEntityRegistrationCodeTextField().setValue(empresa.getCnpj());
         }
 
-        if (empresa.getEndereco() != null) {
-            Endereco endereco = empresa.getEndereco();
-            view.getAdressTextField().setValue(endereco.getLogradouro());
-            view.getNumberTextField().setValue(endereco.getNumero());
-            view.getComplementTextField().setValue(endereco.getComplemento());
-            view.getZipCodeTextField().setValue(endereco.getCep());
-            view.getCityComboBox().setValue(endereco.getCidade());
-
-        }
+//        if (empresa.getEndereco() != null) {
+//            Endereco endereco = empresa.getEndereco();
+//            view.getAdressTextField().setValue(endereco.getLogradouro());
+//            view.getNumberTextField().setValue(endereco.getNumero());
+//            view.getComplementTextField().setValue(endereco.getComplemento());
+//            view.getZipCodeTextField().setValue(endereco.getCep());
+//            view.getCityComboBox().setValue(endereco.getCidade());
+//
+//        }
 
         // Coligadas
         for (Empresa coligada : empresa.getSubEmpresas()) {

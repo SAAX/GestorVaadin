@@ -795,7 +795,7 @@ public class TarefaView extends Window {
             @Override
             protected String formatPropertyValue(Object rowId,
                     Object colId, Property property) {
-
+ 
                 if (property.getType() == LocalDateTime.class) {
 
                     return FormatterUtil.formatDateTime((LocalDateTime) property.getValue());

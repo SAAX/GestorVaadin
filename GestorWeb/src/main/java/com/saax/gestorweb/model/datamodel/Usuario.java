@@ -25,8 +25,9 @@ import javax.validation.constraints.Size;
 
 /**
  * Entity bean da tabela Usuario com as namequerys configuradas.<br><br>
- * 
- * O objetivo desta entidade e armazenar os Usuarios para controle de acesso<br><br>
+ *
+ * O objetivo desta entidade e armazenar os Usuarios para controle de
+ * acesso<br><br>
  *
  * @author rodrigo
  */
@@ -37,7 +38,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Usuario.findById", query = "SELECT u FROM Usuario u WHERE u.id = :id"),
     @NamedQuery(name = "Usuario.findByNome", query = "SELECT u FROM Usuario u WHERE u.nome = :nome"),
     @NamedQuery(name = "Usuario.findByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login"),
-    @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha")})
+    @NamedQuery(name = "Usuario.findBySenha", query = "SELECT u FROM Usuario u WHERE u.senha = :senha"),
+    @NamedQuery(name = "Usuario.findPrimeiroLoginByLogin", query = "SELECT u FROM Usuario u WHERE u.login = :login AND u.primeiroLogin = TRUE")})
 public class Usuario implements Serializable {
 
     @Transient
@@ -47,7 +49,6 @@ public class Usuario implements Serializable {
         globalID = GlobalIdMgr.instance().getID(getId(), this.getClass());
         return globalID;
     }
-    
 
     private static final long serialVersionUID = 1L;
 
@@ -56,119 +57,121 @@ public class Usuario implements Serializable {
     @Basic(optional = false)
     @Column(name = "idusuario")
     private Integer id;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "nome")
     private String nome;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "sobrenome")
     private String sobrenome;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "login")
-    
+
     private String login;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 32)
     @Column(name = "senha")
     private String senha;
-    
+
+    @Basic(optional = true)
+    @NotNull
+    @Column(name = "primeiroLogin")
+    private Boolean primeiroLogin;
+
     @Column(name = "datahorainclusao")
     @Convert(converter = LocalDateTimePersistenceConverter.class)
     private LocalDateTime dataHoraInclusao;
 
     private transient Empresa empresaAtiva;
-        
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "usuario")
     private List<UsuarioEmpresa> empresas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioResponsavel")
     private Collection<Meta> metasSobResponsabilidade;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioSolicitante")
     private Collection<Meta> metasSolicitadas;
 
-    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<FavoritosTarefaMeta> favoritosIncluidos;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<CentroCusto> centrosCustoIncluidos;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<Endereco> enderecosIncluidos;
-    
+
     @OneToMany(mappedBy = "usuarioInclusao")
     private List<Tarefa> tarefasIncluidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioSolicitante")
     private List<Tarefa> tarefasSolicitadas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioResponsavel")
     private List<Tarefa> tarefasSobResponsabilidade;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<Participante> paricipacoesIncluidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioParticipante")
     private List<Participante> tarefasParticipantes;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<FilialCliente> filiaisClientesIncluidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<FilialEmpresa> filiaisEmpresaIncluidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<AvaliacaoMetaTarefa> avaliacoesIncluidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioAvaliador")
     private List<AvaliacaoMetaTarefa> avaliacoesSubmetidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioAvaliado")
     private List<AvaliacaoMetaTarefa> avaliacoesRecebidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<OrcamentoTarefa> orcamentosIncluidos;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<ApontamentoTarefa> apontamentosIncluidos;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<Departamento> departamentosIncluidos;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuario")
     private List<HistoricoTarefa> historicosTarefa;
-    
+
     @OneToMany(mappedBy = "usuarioInclusao")
     private List<Usuario> usuariosIncluidos;
-    
+
     @JoinColumn(name = "idusuarioinclusao", referencedColumnName = "idusuario")
     @ManyToOne
     private Usuario usuarioInclusao;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<Empresa> empresasIncluidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<EmpresaCliente> empresasClienteIncluidas;
-    
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "usuarioInclusao")
     private List<Anexo> anexosTarefaIncluidos;
-    
-    
+
     public Usuario() {
     }
-    
 
     public Usuario(Integer idusuario) {
         this.id = idusuario;
@@ -197,7 +200,7 @@ public class Usuario implements Serializable {
     public void setSobrenome(String sobrenome) {
         this.sobrenome = sobrenome;
     }
-    
+
     public String getLogin() {
         return login;
     }
@@ -227,12 +230,14 @@ public class Usuario implements Serializable {
             return false;
         }
         Usuario other = (Usuario) object;
-        if ( this == other) return true;
+        if (this == other) {
+            return true;
+        }
 
         // se o ID estiver setado, compara por ele
-        if ( this.getId() != null) {
+        if (this.getId() != null) {
             return !((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id)));
-            
+
         } else {
             return false;
         }
@@ -258,7 +263,6 @@ public class Usuario implements Serializable {
     public void setMetasSobResponsabilidade(Collection<Meta> metasSobResponsabilidade) {
         this.metasSobResponsabilidade = metasSobResponsabilidade;
     }
-
 
     public List<FavoritosTarefaMeta> getFavoritosIncluidos() {
         return favoritosIncluidos;
@@ -403,8 +407,7 @@ public class Usuario implements Serializable {
     public void setUsuarioInclusao(Usuario usuarioInclusao) {
         this.usuarioInclusao = usuarioInclusao;
     }
-    
-    
+
     public List<Empresa> getEmpresasIncluidas() {
         return empresasIncluidas;
     }
@@ -453,7 +456,12 @@ public class Usuario implements Serializable {
         this.dataHoraInclusao = dataHoraInclusao;
     }
 
-    
-    
-    
+    public Boolean getPrimeiroLogin() {
+        return primeiroLogin;
+    }
+
+    public void setPrimeiroLogin(Boolean primeiroLogin) {
+        this.primeiroLogin = primeiroLogin;
+    }
+
 }

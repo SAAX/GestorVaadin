@@ -9,5 +9,5 @@ public interface LoginViewListener {
 
     void loginButtonClicked();
     void loginPopUpAberto();
-    
+    void confirmaSenhaButtonClicked();
 }

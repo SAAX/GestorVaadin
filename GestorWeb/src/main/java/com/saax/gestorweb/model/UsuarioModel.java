@@ -3,10 +3,9 @@ package com.saax.gestorweb.model;
 import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
+import com.saax.gestorweb.util.Cipher;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
 
-import com.saax.gestorweb.util.GestorSession;
-import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,8 +20,7 @@ import javax.persistence.EntityManager;
 public class UsuarioModel {
 
     /**
-     * Obtém o relacionamento entre um usuário e uma empresa 
-     * A empresa informada
+     * Obtém o relacionamento entre um usuário e uma empresa A empresa informada
      * pode ser coligada a uma matriz
      *
      * @param usuario
@@ -48,12 +46,10 @@ public class UsuarioModel {
      * @return
      */
     public static List<Usuario> listarUsuariosEmpresa(Empresa empresa) {
-        
-        if (empresa == null){
+
+        if (empresa == null) {
             return new ArrayList<>();
         }
-        
-        Usuario loggedUser = (Usuario) GestorSession.getAttribute(SessionAttributesEnum.USUARIO_LOGADO);
 
         List<Usuario> usuarios = new ArrayList<>();
 
@@ -62,7 +58,7 @@ public class UsuarioModel {
                 usuarios.add(usuarioEmpresa.getUsuario());
             }
         }
-        
+
         return usuarios;
     }
 
@@ -102,4 +98,42 @@ public class UsuarioModel {
 
     }
 
+    /**
+     * Altera a senha de um usuário, dado seu Login
+     *
+     * @param login
+     * @param passwd
+     */
+    public static void alteraSenhaUsuario(String login, String passwd) {
+
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+
+        Usuario usuario = null;
+
+        System.err.println("Alteração de senha\n\n usuario:" + login + "\tsenha:" + passwd);
+
+        try {
+            usuario = (Usuario) em.createNamedQuery("Usuario.findByLogin")
+                    .setParameter("login", login)
+                    .getSingleResult();
+
+            String senhaCriptografada = new Cipher().md5Sum(passwd);
+
+            usuario.setSenha(senhaCriptografada);
+            usuario.setPrimeiroLogin(false);
+
+            if (!em.getTransaction().isActive()) {
+                em.getTransaction().begin();
+            }
+
+            em.merge(usuario);
+            em.getTransaction().commit();
+
+        }
+        catch (Exception e) {
+
+            Logger.getLogger(LoginModel.class.getName()).log(Level.SEVERE, "", e);
+
+        }
+    }
 }

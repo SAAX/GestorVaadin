@@ -2,6 +2,7 @@ package com.saax.gestorweb.presenter;
 
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.LoginModel;
+import com.saax.gestorweb.model.UsuarioModel;
 import com.saax.gestorweb.model.datamodel.Tarefa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.util.Cipher;
@@ -40,14 +41,14 @@ public class LoginPresenter implements Serializable, LoginViewListener {
         this.view = view;
 
         view.setListener(this);
-        
+
         loginPopUpAberto();
 
     }
 
     /**
-     * Evento disparado ao ser acionado o botão para efetuar o login 
-     * Obtém o login e senha e autentica usando metodos do model
+     * Evento disparado ao ser acionado o botão para efetuar o login Obtém o
+     * login e senha e autentica usando metodos do model
      */
     @Override
     public void loginButtonClicked() {
@@ -56,11 +57,12 @@ public class LoginPresenter implements Serializable, LoginViewListener {
         String senha = view.getSenhaTextField().getValue();
 
         try {
-            
+
             // chama as validações adicionadas na criação dos campos
             view.validate();
 
-        } catch (InvalidValueException e) {
+        }
+        catch (InvalidValueException e) {
             Logger.getLogger(LoginModel.class.getName()).log(Level.INFO, "Falha na validação de login", e);
             return;
         }
@@ -70,33 +72,36 @@ public class LoginPresenter implements Serializable, LoginViewListener {
             view.apresentaErroUsuarioNaoExiste();
             return;
         }
-        
+
         Usuario u = LoginModel.getUsuario(login);
 
-        
         // criptografa a senha informada, para comparação
         String senhaCriptografada;
         try {
             senhaCriptografada = new Cipher().md5Sum(senha);
-        } catch (NoSuchAlgorithmException ex) {
+        }
+        catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(LoginModel.class.getName()).log(Level.SEVERE, "Não encontrado algorítimo MD5", ex);
-            return ;
+            return;
         }
 
         // verifica se a senha corresponde corretamente a senha cadastrada
         if (!senhaCriptografada.equals(u.getSenha())) {
             view.apresentaErroSenhaInvalida();
-            return ;
+            return;
+        }
+
+        if (LoginModel.verificaPrimeiroLogin(login)) {
+            view.apresentaConfirmacaoSenha();
+            return;
         }
 
         // LOGIN BEM SUCEDIDO!
-        
         // Configura o usuáio logado na seção
-        GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO,u);
-        
+        GestorSession.setAttribute(SessionAttributesEnum.USUARIO_LOGADO, u);
 
         // verifica se o usuário quer gravar o login na sessão e grava o cookie
-        if (view.getLembrarLoginCheckBox().getValue()){
+        if (view.getLembrarLoginCheckBox().getValue()) {
 //        
 //            CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
 //            cookieManager.setCookie(CookiesManager.GestorWebCookieEnum.NOME_USUARIO, view.getLoginTextField().getValue());
@@ -108,11 +113,11 @@ public class LoginPresenter implements Serializable, LoginViewListener {
 
         view.close();
 
-        if (taskToOpenWhenSucess != null){
-            ((GestorMDI) UI.getCurrent()).carregarDashBoard(taskToOpenWhenSucess);        
+        if (taskToOpenWhenSucess != null) {
+            ((GestorMDI) UI.getCurrent()).carregarDashBoard(taskToOpenWhenSucess);
         } else {
-            ((GestorMDI) UI.getCurrent()).carregarDashBoard();        
-            
+            ((GestorMDI) UI.getCurrent()).carregarDashBoard();
+
         }
 
     }
@@ -122,12 +127,12 @@ public class LoginPresenter implements Serializable, LoginViewListener {
      */
     @Override
     public void loginPopUpAberto() {
-        
+
         // verifica se o usuário já tem o login gravado em cookie
         CookiesManager cookieManager = (CookiesManager) GestorSession.getAttribute(SessionAttributesEnum.COOKIES_MANAGER);
         String login = cookieManager.getCookieValue(CookiesManager.GestorWebCookieEnum.NOME_USUARIO);
-        
-        if (login!=null){
+
+        if (login != null) {
             view.setLogin(login);
             view.setLembrarSessao(true);
         }
@@ -135,6 +140,21 @@ public class LoginPresenter implements Serializable, LoginViewListener {
 
     public void openTaskOnSucessLogin(Tarefa taskToOpenWhenSucess) {
         this.taskToOpenWhenSucess = taskToOpenWhenSucess;
+    }
+
+    @Override
+    public void confirmaSenhaButtonClicked() {
+        String login = view.getLoginTextField().getValue();
+        String passwd = view.getSenhaField().getValue();
+        String confirmPasswd = view.getConfirmacaoSenhaField().getValue();
+
+        if (!passwd.equals(confirmPasswd)) {
+            view.apresentaErroSenhasNaoCorrespondem();
+            return;
+        }
+
+        UsuarioModel.alteraSenhaUsuario(login, passwd);
+        UI.getCurrent().removeWindow(view.getSubWindowConfirmacaoSenha());
     }
 
 }

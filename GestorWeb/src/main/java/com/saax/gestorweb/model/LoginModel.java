@@ -1,11 +1,7 @@
 package com.saax.gestorweb.model;
 
-import com.saax.gestorweb.model.datamodel.Empresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
-import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.saax.gestorweb.util.GestorSession;
-import com.saax.gestorweb.util.SessionAttributesEnum;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,8 +14,7 @@ import javax.persistence.EntityManager;
  *
  * @author Rodrigo
  */
-public  class LoginModel {
-
+public class LoginModel {
 
     /**
      * Verifica se um usuario está cadastrado pelo seu login
@@ -39,7 +34,8 @@ public  class LoginModel {
 
             return (!usuarios.isEmpty());
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 
             Logger.getLogger(LoginModel.class.getName()).log(Level.SEVERE, "", e);
 
@@ -47,6 +43,32 @@ public  class LoginModel {
 
         return null;
 
+    }
+
+    /**
+     * Verifica se é o primeiro login do usuário, para fazer a confirmação da
+     * senha
+     *
+     * @param login
+     * @return
+     */
+    public static Boolean verificaPrimeiroLogin(String login) {
+        List<Usuario> usuarios = null;
+        EntityManager em = GestorEntityManagerProvider.getEntityManager();
+        
+        try {
+            usuarios = em.createNamedQuery("Usuario.findPrimeiroLoginByLogin")
+                    .setParameter("login", login)
+                    .getResultList();
+
+            return (!usuarios.isEmpty());
+        }
+        catch (Exception e) {
+
+            Logger.getLogger(LoginModel.class.getName()).log(Level.SEVERE, "", e);
+
+        }
+        return null;
     }
 
     /**
@@ -58,7 +80,6 @@ public  class LoginModel {
     public static Usuario getUsuario(String login) {
 
         return UsuarioModel.findByLogin(login);
-        
 
     }
 

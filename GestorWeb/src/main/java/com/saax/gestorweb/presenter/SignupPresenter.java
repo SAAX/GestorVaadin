@@ -3,14 +3,10 @@ package com.saax.gestorweb.presenter;
 import com.saax.gestorweb.GestorMDI;
 import com.saax.gestorweb.model.SignupModel;
 import com.saax.gestorweb.model.UsuarioModel;
-import com.saax.gestorweb.model.datamodel.Cidade;
 import com.saax.gestorweb.model.datamodel.Empresa;
-import com.saax.gestorweb.model.datamodel.Endereco;
-import com.saax.gestorweb.model.datamodel.Estado;
 import com.saax.gestorweb.model.datamodel.FilialEmpresa;
 import com.saax.gestorweb.model.datamodel.Usuario;
 import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
-import com.saax.gestorweb.util.GestorEntityManagerProvider;
 import com.saax.gestorweb.util.GestorWebImagens;
 import com.saax.gestorweb.view.SignupView;
 import com.saax.gestorweb.view.SignupViewListener;
@@ -18,21 +14,17 @@ import com.vaadin.data.Item;
 import com.saax.gestorweb.util.GestorSession;
 import com.saax.gestorweb.util.SessionAttributesEnum;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.UI;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.vaadin.dialogs.ConfirmDialog;
 
@@ -56,8 +48,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
     private final Usuario loggedUser;
     private Empresa empresa;
-//    private final boolean novoCadastro;
-    private boolean novoCadastro;
+    private final boolean novoCadastro;
 
     List<Empresa> coligadasRemovidasNaEdicao = new ArrayList<>();
     List<String> coligadasInseridasNaEdicao = new ArrayList<>();
@@ -76,6 +67,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
      *
      * @param model
      * @param view
+     * @param isNovoCadastro
      */
     public SignupPresenter(SignupModel model, SignupView view, boolean isNovoCadastro) {
 
@@ -111,7 +103,6 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         view.removerPassword();
 
         // campos da empresa
-//        view.getFancyNameTextField().setValue(empresa.getNome());
         view.getCompanyNameTextField().setValue(empresa.getNome());
         if (empresa.getTipoPessoa() == 'F') {
             view.getPersonTypeOptionGroup().setValue(messages.getString("SignupView.pessoaFisicaCheckBox.label"));
@@ -120,16 +111,6 @@ public class SignupPresenter implements Serializable, SignupViewListener {
             view.getPersonTypeOptionGroup().setValue(messages.getString("SignupView.pessoaJuridicaCheckBox.label"));
             view.getNationalEntityRegistrationCodeTextField().setValue(empresa.getCnpj());
         }
-
-//        if (empresa.getEndereco() != null) {
-//            Endereco endereco = empresa.getEndereco();
-//            view.getAdressTextField().setValue(endereco.getLogradouro());
-//            view.getNumberTextField().setValue(endereco.getNumero());
-//            view.getComplementTextField().setValue(endereco.getComplemento());
-//            view.getZipCodeTextField().setValue(endereco.getCep());
-//            view.getCityComboBox().setValue(endereco.getCidade());
-//
-//        }
 
         // Coligadas
         for (Empresa coligada : empresa.getSubEmpresas()) {
@@ -149,13 +130,6 @@ public class SignupPresenter implements Serializable, SignupViewListener {
                     usuario.getAdministrador(),
                     usuario.getUsuario().getId().toString());
         }
-        // Tab 4: Add more users to the company
-//         private TextField userNameTextField;
-//         private TextField userSurnameTextField;
-//         private TextField emailTextField;
-//         private TextField emailConfirmTextField;
-//         private Table usersTable;
-//         private CheckBox userAdmCheckBox;
     }
 
     @Override
@@ -182,6 +156,14 @@ public class SignupPresenter implements Serializable, SignupViewListener {
                 Notification.show(messages.getString("SignupPresenter.mensagem.loginPreExistente"), Notification.Type.WARNING_MESSAGE);
                 return false;
             }
+
+            if (!view.getConfirmationPasswordTextField().getValue().equals(
+                    view.getPasswordTextField().getValue())) {
+
+                Notification.show(messages.getString("SignupPresenter.mensagem.senhasDivergentes"), Notification.Type.WARNING_MESSAGE);
+
+            }
+
         }
 
         return true;
@@ -392,7 +374,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         // ---------------------------------------------------------------------
         // creates the main company
         // ---------------------------------------------------------------------
-        String nomeFantasia = view.getFancyNameTextField().getValue();
+//        String nomeFantasia = view.getFancyNameTextField().getValue();
         String razaosocial = view.getCompanyNameTextField().getValue();
         String cpfCnpj = view.getNationalEntityRegistrationCodeTextField().getValue();
 
@@ -412,28 +394,27 @@ public class SignupPresenter implements Serializable, SignupViewListener {
         }
 
         if (novoCadastro) {
-            empresaPrincipal = model.criarNovaEmpresa(nomeFantasia, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
+            empresaPrincipal = model.criarNovaEmpresa(razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
 
         } else {
-            empresaPrincipal = model.atualizarEmpresa(empresa, nomeFantasia, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
-
+            empresaPrincipal = model.atualizarEmpresa(empresa, razaosocial, cpfCnpj, tipoPessoa, usuarioADM);
         }
-
-        String logradouro = view.getAdressTextField().getValue();
-        String numero = view.getNumberTextField().getValue();
-        String complemento = view.getComplementTextField().getValue();
-        String cep = view.getZipCodeTextField().getValue();
-        Cidade cidade = (Cidade) view.getCityComboBox().getValue();
-        if (StringUtils.isNotBlank(logradouro)) {
-
-            if (novoCadastro) {
-                Endereco endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade, usuarioADM);
-                model.relacionarEmpresaEndereco(empresaPrincipal, endereco);
-            } else {
-                Endereco endereco = model.atualizarEndereco(empresa.getEndereco(), logradouro, numero, complemento, cep, cidade, usuarioADM);
-                empresa.setEndereco(endereco);
-            }
-        }
+//
+//        String logradouro = view.getAdressTextField().getValue();
+//        String numero = view.getNumberTextField().getValue();
+//        String complemento = view.getComplementTextField().getValue();
+//        String cep = view.getZipCodeTextField().getValue();
+//        Cidade cidade = (Cidade) view.getCityComboBox().getValue();
+//        if (StringUtils.isNotBlank(logradouro)) {
+//
+//            if (novoCadastro) {
+//                Endereco endereco = model.criarEndereco(logradouro, numero, complemento, cep, cidade, usuarioADM);
+//                model.relacionarEmpresaEndereco(empresaPrincipal, endereco);
+//            } else {
+//                Endereco endereco = model.atualizarEndereco(empresa.getEndereco(), logradouro, numero, complemento, cep, cidade, usuarioADM);
+//                empresa.setEndereco(endereco);
+//            }
+//        }
 
         if (novoCadastro) {
             model.relacionarUsuarioEmpresa(usuarioADM, empresaPrincipal, empresa == null, usuarioADM);
@@ -568,7 +549,7 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 //        String email = view.getEmailTextField().getValue();
         // Check if User is Administrator or not
         String adm = "";
-        if (isAdm == true) {
+        if (isAdm) {
             adm = "SIM";
         } else {
             adm = "NÃO";
@@ -711,49 +692,9 @@ public class SignupPresenter implements Serializable, SignupViewListener {
 
     }
 
-    /**
-     * Event fired when clicked the button to select the state of the Company be
-     * registered
-     *
-     */
-    private void carregaComboEstado() {
-
-        ComboBox estadoCombo = view.getStateComboBox();
-
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-
-        List<Estado> estados = em.createNamedQuery("Estado.findAll").getResultList();
-
-        for (Estado estado : estados) {
-
-            estadoCombo.addItem(estado);
-            estadoCombo.setItemCaption(estado, estado.getUf());
-
-        }
-    }
-
-    /**
-     * Event fired after being selected the company's state to be registered and
-     * carries the comboBox with belonging to this state cities
-     */
     @Override
     public void estadoSelecionado() {
-
-        EntityManager em = GestorEntityManagerProvider.getEntityManager();
-
-        ComboBox cidadeCombo = view.getCityComboBox();
-
-        cidadeCombo.removeAllItems();
-
-        List<Cidade> cidades = em.createNamedQuery("Cidade.findByEstado")
-                .setParameter("estado", view.getStateComboBox().getValue())
-                .getResultList();
-
-        for (Cidade cidade : cidades) {
-            cidadeCombo.addItem(cidade);
-            cidadeCombo.setItemCaption(cidade, cidade.getNome());
-        }
-
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

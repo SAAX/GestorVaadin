@@ -8,7 +8,6 @@ import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
@@ -47,21 +46,14 @@ public class SignupView extends Window {
     private TextField userEmailTextField;
     private TextField confirmeUserEmailTextField;
     private PasswordField passwordTextField;
+    private PasswordField confirmationPasswordTextField;
     private CheckBox acceptTermsCheckBox;
 
     // Tab 2: billing data (will be done in the future)
     // Tab 3: Data companies and subsidiaries
     private TextField companyNameTextField;
-    private TextField fancyNameTextField;
     private OptionGroup personTypeOptionGroup;
     private TextField nationalEntityRegistrationCodeTextField;
-    private TextField adressTextField;
-    private TextField numberTextField;
-    private TextField complementTextField;
-    private TextField neighborhoodTextField;
-    private ComboBox cityComboBox;
-    private ComboBox stateComboBox;
-    private TextField zipCodeTextField;
 
     // Tab 4: Add more users to the company
     private TextField userNameTextField;
@@ -85,6 +77,7 @@ public class SignupView extends Window {
     /**
      * Creates the pop-up login with fields for username and password
      *
+     * @param isUsuarioAdm
      */
     public SignupView(boolean isUsuarioAdm) {
         super();
@@ -159,57 +152,90 @@ public class SignupView extends Window {
 
         return tabSheet;
     }
+    private final Label labelNome = new Label("Nome");
+    private final Label labelSobrenome = new Label("Sobrenome");
+    private final Label labelEmail = new Label("E-mail");
+    private final Label labelConfirmEmail = new Label("Confirma E-mail");
+    private final Label labelPasswd = new Label("Senha");
+    private final Label labelConfirmPasswd = new Label("Confirma Senha");
+
+    private final VerticalLayout containerLabel = new VerticalLayout();
 
     /**
      * Creates and returns to first. tab with the fields for User registration
      *
      * @return User registration tab
      */
-    private VerticalLayout buildAba1CadastroUsuario() {
+    private HorizontalLayout buildAba1CadastroUsuario() {
 
-        VerticalLayout containerAba1 = new VerticalLayout();
-        containerAba1.setMargin(true);
-        containerAba1.setSpacing(true);
+        HorizontalLayout containerPrincipal = new HorizontalLayout();
+        containerPrincipal.setSizeUndefined();
+
+        VerticalLayout containerComponents = new VerticalLayout();
+        containerComponents.setMargin(true);
+        containerComponents.setSpacing(true);
+
+        containerLabel.setSizeFull();
+        containerLabel.setMargin(true);
+
+        containerLabel.addComponent(labelNome);
+        containerLabel.addComponent(labelSobrenome);
+        containerLabel.addComponent(labelEmail);
+        containerLabel.addComponent(labelConfirmEmail);
+        containerLabel.addComponent(labelPasswd);
+        containerLabel.addComponent(labelConfirmPasswd);
 
         setNameTextField(new TextField());
-        containerAba1.addComponent(getNameTextField());
-        getNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeTextField.label"));
+        nameTextField.setInputPrompt(getMessages().getString("SignupView.nomeTextField.label"));
         nameTextField.setWidth("300px");
         nameTextField.setValidationVisible(false);
-        getNameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.nomeTextField.erro.nomeNaoInformado"), 1, 100, false));
+        nameTextField.addValidator(new StringLengthValidator(messages.getString("SignupView.nomeTextField.erro.nomeNaoInformado"), 1, 100, false));
+        containerComponents.addComponent(nameTextField);
 
-        setSurnameTextField(new TextField());
-        containerAba1.addComponent(getSurnameTextField());
-        getSurnameTextField().setInputPrompt(getMessages().getString("SignupView.sobrenomeTextField.label"));
+        surnameTextField = new TextField();
+        surnameTextField.setInputPrompt(getMessages().getString("SignupView.sobrenomeTextField.label"));
         surnameTextField.setWidth("300px");
         surnameTextField.setValidationVisible(false);
-        getSurnameTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.sobrenomeTextField.erro.nomeNaoInformado"), 1, 100, false));
+        surnameTextField.addValidator(new StringLengthValidator(messages.getString("SignupView.sobrenomeTextField.erro.nomeNaoInformado"), 1, 100, false));
+        containerComponents.addComponent(surnameTextField);
 
-        setUserEmailTextField(new TextField());
-        containerAba1.addComponent(getUserEmailTextField());
-        getUserEmailTextField().setInputPrompt(getMessages().getString("SignupView.emailTextField.label"));
+        userEmailTextField = new TextField();
+        userEmailTextField.setInputPrompt(getMessages().getString("SignupView.emailTextField.label"));
         userEmailTextField.setWidth("300px");
         userEmailTextField.setValidationVisible(false);
-        getUserEmailTextField().addValidator(new EmailValidator(messages.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
+        userEmailTextField.addValidator(new EmailValidator(messages.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
+        containerComponents.addComponent(userEmailTextField);
 
-        setConfirmeUserEmailTextField(new TextField());
-        containerAba1.addComponent(getConfirmeUserEmailTextField());
-        getConfirmeUserEmailTextField().setInputPrompt(getMessages().getString("SignupView.confirmaEmailTextField.label"));
+        confirmeUserEmailTextField = new TextField();
+        containerComponents.addComponent(getConfirmeUserEmailTextField());
+        confirmeUserEmailTextField.setInputPrompt(getMessages().getString("SignupView.confirmaEmailTextField.label"));
         confirmeUserEmailTextField.setWidth("300px");
         confirmeUserEmailTextField.setValidationVisible(false);
-        getConfirmeUserEmailTextField().addValidator(new EmailValidator(messages.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
+        confirmeUserEmailTextField.addValidator(new EmailValidator(messages.getString("SignupView.emailUsuarioTextField.erro.emailNaoInformado")));
+        containerComponents.addComponent(confirmeUserEmailTextField);
 
-        setPasswordTextField(new PasswordField());
-        containerAba1.addComponent(getPasswordTextField());
-        getPasswordTextField().setInputPrompt(getMessages().getString("SignupView.senhaTextField.label"));
+        passwordTextField = new PasswordField();
+        containerComponents.addComponent(getPasswordTextField());
+        passwordTextField.setInputPrompt(getMessages().getString("SignupView.senhaTextField.label"));
         passwordTextField.setValidationVisible(false);
-        getPasswordTextField().addValidator(new StringLengthValidator(messages.getString("SignupView.senhaTextField.erro.nomeNaoInformado"), 1, 100, false));
+        passwordTextField.addValidator(new StringLengthValidator(messages.getString("SignupView.senhaTextField.erro.nomeNaoInformado"), 1, 100, false));
+        containerComponents.addComponent(passwordTextField);
+
+        confirmationPasswordTextField = new PasswordField();
+        containerComponents.addComponent(getConfirmationPasswordTextField());
+        confirmationPasswordTextField.setInputPrompt(getMessages().getString("SignupView.senhaTextField.label"));
+        confirmationPasswordTextField.setValidationVisible(false);
+        confirmationPasswordTextField.addValidator(new StringLengthValidator(messages.getString("SignupView.senhaTextField.erro.nomeNaoInformado"), 1, 100, false));
+        containerComponents.addComponent(confirmationPasswordTextField);
 
         setAcceptTermsCheckBox(new CheckBox(getMessages().getString("SignupView.aceitaTermosCheckBox.label")));
-        containerAba1.addComponent(getAcceptTermsCheckBox());
+        containerComponents.addComponent(getAcceptTermsCheckBox());
         acceptTermsCheckBox.setValidationVisible(false);
 
-        return containerAba1;
+        containerPrincipal.addComponent(containerLabel);
+        containerPrincipal.addComponent(containerComponents);
+
+        return containerPrincipal;
     }
 
     /**
@@ -235,7 +261,7 @@ public class SignupView extends Window {
         HorizontalLayout containerHorizontaLabelNome = new HorizontalLayout();
         containerHorizontaLabelNome.setSpacing(true);
         containerAba3.addComponent(containerHorizontaLabelNome);
-        
+
         Label labelNome = new Label("Nome");
         containerHorizontaLabelNome.addComponent(labelNome);
         companyNameTextField = new TextField();
@@ -252,11 +278,11 @@ public class SignupView extends Window {
         personTypeOptionGroup.addValueChangeListener((Property.ValueChangeEvent event) -> {
             //listener.personTypeSelected(event.getProperty().getValue());
         });
-        
+
         HorizontalLayout containerHorizontal1 = new HorizontalLayout();
         containerHorizontal1.setSpacing(true);
         containerAba3.addComponent(containerHorizontal1);
-        
+
         containerHorizontal1.addComponent(personTypeOptionGroup);
         setNationalEntityRegistrationCodeTextField(new TextField());
         containerHorizontal1.addComponent(getNationalEntityRegistrationCodeTextField());
@@ -264,8 +290,6 @@ public class SignupView extends Window {
         getNationalEntityRegistrationCodeTextField().setInputPrompt(getMessages().getString("SignupView.cnpjCpfTextField.label"));
         nationalEntityRegistrationCodeTextField.setWidth("180px");
         nationalEntityRegistrationCodeTextField.setValidationVisible(true);
-
-        
 
         TabSheet tabSheetColigadas = new TabSheet();
 
@@ -382,32 +406,32 @@ public class SignupView extends Window {
         containerAba4.setMargin(true);
         containerAba4.setSpacing(true);
 
-        setUserNameTextField(new TextField());
-        containerAba4.addComponent(getUserNameTextField());
-        getUserNameTextField().setInputPrompt(getMessages().getString("SignupView.nomeTextField.label"));
+        userNameTextField = new TextField();
+        containerAba4.addComponent(userNameTextField);
+        userNameTextField.setInputPrompt(getMessages().getString("SignupView.nomeTextField.label"));
         userNameTextField.setWidth("300px");
 
-        setUserSurnameTextField(new TextField());
-        containerAba4.addComponent(getUserSurnameTextField());
-        getUserSurnameTextField().setInputPrompt(getMessages().getString("SignupView.sobrenomeTextField.label"));
+        userSurnameTextField = new TextField();
+        containerAba4.addComponent(userSurnameTextField);
+        userSurnameTextField.setInputPrompt(getMessages().getString("SignupView.sobrenomeTextField.label"));
         userSurnameTextField.setWidth("300px");
 
-        setEmailTextField(new TextField());
-        containerAba4.addComponent(getEmailTextField());
-        getEmailTextField().setInputPrompt(getMessages().getString("SignupView.emailTextField.label"));
+        emailTextField = new TextField();
+        containerAba4.addComponent(emailTextField);
+        emailTextField.setInputPrompt(getMessages().getString("SignupView.emailTextField.label"));
         emailTextField.setWidth("300px");
 
-        setEmailConfirmTextField(new TextField());
-        containerAba4.addComponent(getEmailConfirmTextField());
-        getEmailConfirmTextField().setInputPrompt(getMessages().getString("SignupView.confirmaEmailTextField.label"));
+        emailConfirmTextField = new TextField();
+        containerAba4.addComponent(emailConfirmTextField);
+        emailConfirmTextField.setInputPrompt(getMessages().getString("SignupView.confirmaEmailTextField.label"));
         emailConfirmTextField.setWidth("300px");
 
         HorizontalLayout containerHorizontal = new HorizontalLayout();
         containerHorizontal.setSpacing(true); // coloca um espaÃ§amento entre os elementos internos (30px)
         containerAba4.addComponent(containerHorizontal); // adiciona o container de datas no superior
 
-        setUserAdmCheckBox(new CheckBox(getMessages().getString("SignupView.usuarioAdmCheckBox.label")));
-        containerHorizontal.addComponent(getUserAdmCheckBox());
+        userAdmCheckBox = new CheckBox(getMessages().getString("SignupView.usuarioAdmCheckBox.label"));
+        containerHorizontal.addComponent(userAdmCheckBox);
 
         final Button adicionarUsuarioButton = new Button(getMessages().getString("SignupView.adicionarUsuarioButton.label"), new Button.ClickListener() {
 
@@ -416,10 +440,10 @@ public class SignupView extends Window {
 
                 String identificadorLinha = "TEMP_" + Math.round(Math.random() * 1000000);
 
-                listener.incluirUsuario(getNome(),
-                        getSobrenome(),
+                listener.incluirUsuario(getUserNameTextField().getValue(),
+                        getUserSurnameTextField().getValue(),
                         getEmailTextField().getValue(),
-                        getUserAdmCheckBox().isEmpty(),
+                        !getUserAdmCheckBox().isEmpty(),
                         identificadorLinha);
             }
         });
@@ -544,6 +568,20 @@ public class SignupView extends Window {
     }
 
     /**
+     * @return the passwordTextField
+     */
+    public PasswordField getConfirmationPasswordTextField() {
+        return confirmationPasswordTextField;
+    }
+
+    /**
+     * @param confirmationPasswordTextField
+     */
+    public void setConfirmationPasswordTextField(PasswordField confirmationPasswordTextField) {
+        this.confirmationPasswordTextField = confirmationPasswordTextField;
+    }
+
+    /**
      * @return the usersTable
      */
     public Table getUsersTable() {
@@ -614,20 +652,6 @@ public class SignupView extends Window {
     }
 
     /**
-     * @return the fancyNameTextField
-     */
-    public TextField getFancyNameTextField() {
-        return fancyNameTextField;
-    }
-
-    /**
-     * @param fancyNameTextField the fancyNameTextField to set
-     */
-    public void setFancyNameTextField(TextField fancyNameTextField) {
-        this.fancyNameTextField = fancyNameTextField;
-    }
-
-    /**
      * @return the personTypeOptionGroup
      */
     public OptionGroup getPersonTypeOptionGroup() {
@@ -658,104 +682,6 @@ public class SignupView extends Window {
      */
     public void setNationalEntityRegistrationCodeTextField(TextField cnpjTextField) {
         this.nationalEntityRegistrationCodeTextField = cnpjTextField;
-    }
-
-    /**
-     * @return the enderecoTextField
-     */
-    public TextField getAdressTextField() {
-        return adressTextField;
-    }
-
-    /**
-     * @param enderecoTextField the enderecoTextField to set
-     */
-    public void setAdressTextField(TextField enderecoTextField) {
-        this.adressTextField = enderecoTextField;
-    }
-
-    /**
-     * @return the numberTextField
-     */
-    public TextField getNumberTextField() {
-        return numberTextField;
-    }
-
-    /**
-     * @param numberTextField the enderecoTextField to set
-     */
-    public void setNumberTextField(TextField numberTextField) {
-        this.numberTextField = numberTextField;
-    }
-
-    /**
-     * @return the complementTextField
-     */
-    public TextField getComplementTextField() {
-        return complementTextField;
-    }
-
-    /**
-     * @param complementTextField the enderecoTextField to set
-     */
-    public void setComplementTextField(TextField complementTextField) {
-        this.complementTextField = complementTextField;
-    }
-
-    /**
-     * @return the neighborhoodTextField
-     */
-    public TextField getNeighborhoodTextField() {
-        return neighborhoodTextField;
-    }
-
-    /**
-     * @param neighborhoodTextField the enderecoTextField to set
-     */
-    public void setNeighborhoodTextField(TextField neighborhoodTextField) {
-        this.neighborhoodTextField = neighborhoodTextField;
-    }
-
-    /**
-     * @return the cityComboBox
-     */
-    public ComboBox getCityComboBox() {
-        return cityComboBox;
-    }
-
-    /**
-     * @param cityComboBox the cityComboBox to set
-     */
-    public void setCityComboBox(ComboBox cityComboBox) {
-        this.cityComboBox = cityComboBox;
-    }
-
-    /**
-     * @return the stateComboBox
-     */
-    public ComboBox getStateComboBox() {
-        return stateComboBox;
-    }
-
-    /**
-     * @param stateComboBox the cityComboBox to set
-     */
-    public void setStateComboBox(ComboBox stateComboBox) {
-        this.stateComboBox = stateComboBox;
-    }
-
-    /**
-     * @return the zipCodeTextField
-     */
-    public TextField getZipCodeTextField() {
-        return zipCodeTextField;
-    }
-
-    /**
-     * @param zipCodeTextField the zipCodeTextField to set
-     */
-    public void setZipCodeTextField(TextField zipCodeTextField) {
-        this.zipCodeTextField = zipCodeTextField;
     }
 
     /**
@@ -909,6 +835,7 @@ public class SignupView extends Window {
         userEmailTextField.setValidationVisible(true);
         confirmeUserEmailTextField.setValidationVisible(true);
         passwordTextField.setValidationVisible(true);
+        confirmationPasswordTextField.setValidationVisible(true);
         acceptTermsCheckBox.setValidationVisible(true);
 
         nameTextField.validate();
@@ -919,28 +846,12 @@ public class SignupView extends Window {
         acceptTermsCheckBox.validate();
 
         companyNameTextField.setValidationVisible(true);
-        fancyNameTextField.setValidationVisible(true);
         personTypeOptionGroup.setValidationVisible(true);
         nationalEntityRegistrationCodeTextField.setValidationVisible(true);
-        adressTextField.setValidationVisible(true);
-        numberTextField.setValidationVisible(true);
-        complementTextField.setValidationVisible(true);
-        neighborhoodTextField.setValidationVisible(true);
-        cityComboBox.setValidationVisible(true);
-        stateComboBox.setValidationVisible(true);
-        zipCodeTextField.setValidationVisible(true);
 
         companyNameTextField.validate();
-        fancyNameTextField.validate();
         personTypeOptionGroup.validate();
         nationalEntityRegistrationCodeTextField.validate();
-        adressTextField.validate();
-        numberTextField.validate();
-        complementTextField.validate();
-        neighborhoodTextField.validate();
-        cityComboBox.validate();
-        stateComboBox.validate();
-        zipCodeTextField.validate();
 
     }
 
@@ -948,6 +859,12 @@ public class SignupView extends Window {
 
         getPasswordTextField().removeAllValidators();
         getPasswordTextField().setVisible(false);
+
+        getConfirmationPasswordTextField().removeAllValidators();
+        getConfirmationPasswordTextField().setVisible(false);
+
+        containerLabel.removeComponent(labelPasswd);
+        containerLabel.removeComponent(labelConfirmPasswd);
 
     }
 

@@ -84,7 +84,6 @@ public class Usuario implements Serializable {
     private String senha;
 
     @Basic(optional = true)
-    @NotNull
     @Column(name = "primeiroLogin")
     private Boolean primeiroLogin;
 

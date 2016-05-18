@@ -11,17 +11,18 @@ import com.saax.gestorweb.model.datamodel.UsuarioEmpresa;
 import com.saax.gestorweb.util.Cipher;
 import com.saax.gestorweb.util.FormatterUtil;
 import com.saax.gestorweb.util.GestorEntityManagerProvider;
-import com.saax.gestorweb.util.GestorSession;
-import com.saax.gestorweb.util.SessionAttributesEnum;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -228,19 +229,18 @@ public class SignupModel {
      *
      * @return nova empresa criada
      */
-    public Empresa criarNovaEmpresa(String nomeFantasia, String razaosocial, String cnpjCpf, char tipoPessoa, Usuario usuarioADM) {
+    public Empresa criarNovaEmpresa(String razaosocial, String cnpjCpf, char tipoPessoa, Usuario usuarioADM) {
         Empresa empresa = new Empresa();
         empresa.setUsuarioInclusao(usuarioADM);
         empresa.setDataHoraInclusao(LocalDateTime.now());
-        empresa = atualizarEmpresa(empresa, nomeFantasia, razaosocial, cnpjCpf, tipoPessoa, usuarioADM);
+        empresa = atualizarEmpresa(empresa, razaosocial, cnpjCpf, tipoPessoa, usuarioADM);
 
         return empresa;
 
     }
 
     public Empresa atualizarEmpresa(Empresa empresa,
-            String nomeFantasia, String razaosocial, String cpfCnpj, char tipoPessoa, Usuario usuarioADM) {
-        empresa.setNome(nomeFantasia);
+            String razaosocial, String cpfCnpj, char tipoPessoa, Usuario usuarioADM) {
         empresa.setRazaoSocial(razaosocial);
 
         if (tipoPessoa == 'F') {
@@ -381,7 +381,6 @@ public class SignupModel {
 
             } else {
                 em.merge(empresaPrincipal);
-
             }
 
             em.getTransaction().commit();
@@ -395,7 +394,6 @@ public class SignupModel {
         }
 
         return empresaPrincipal;
-
     }
 
     /**

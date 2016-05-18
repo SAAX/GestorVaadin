@@ -251,7 +251,7 @@ public class DashboardView extends VerticalLayout {
                         });
             }
         }
-        
+
         topMenu.addItem("<h3>" + GestorPresenter.getMENSAGENS().getString("DashboardView.logoutMenuItem") + "</h3>", null, (MenuBar.MenuItem selectedItem) -> {
             listener.logout();
         });
@@ -508,7 +508,6 @@ public class DashboardView extends VerticalLayout {
         };
 
         GestorPresenter.configuraExpansaoColunaCodigo(targetTable, GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.cod"));
-        targetTable.setWidth("100%");
 
         targetTable.addContainerProperty(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.cod"), Button.class, "");
         targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.cod"), 100);
@@ -557,7 +556,7 @@ public class DashboardView extends VerticalLayout {
         });
         targetTable.setColumnWidth(GestorPresenter.getMENSAGENS().getString("DashboardView.targetTable.colunaBotaoRemover"), 30);
 
-        targetTable.setPageLength(15);
+        targetTable.setPageLength(5);
         targetTable.setSelectable(true);
         targetTable.setImmediate(true);
 

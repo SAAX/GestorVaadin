@@ -66,22 +66,6 @@ CREATE TABLE Cidade (
 );
 
 
--- Endereco
--- Tabela criada para armazenar todos os enderecos
-CREATE TABLE Endereco (
-	idEndereco SERIAL NOT NULL PRIMARY KEY,
-        logradouro CHARACTER VARYING (255) NOT NULL ,
-        numero CHARACTER VARYING (10) NOT NULL ,
-        complemento CHARACTER VARYING (20) NOT NULL ,
-        cep CHARACTER (10) NOT NULL ,
-        idCidade BIGINT NOT NULL,
-	idUsuarioInclusao INTEGER NOT NULL,
-    	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
-        FOREIGN KEY (idCidade) REFERENCES Cidade(idCidade)
-        
-);
-
 -- Empresa
 -- Empresa que adquiriu o software: cliente da Saax
 CREATE TABLE Empresa (
@@ -93,12 +77,10 @@ CREATE TABLE Empresa (
 	cnpj CHARACTER (18),
 	cpf CHARACTER (14),
 	ativa BOOLEAN NOT NULL,
-	idEndereco BIGINT,
 	idUsuarioInclusao INTEGER NOT NULL,
     	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
         FOREIGN KEY (idEmpresaPrincipal) REFERENCES Empresa(idEmpresa),	
-        FOREIGN KEY (idEndereco) REFERENCES Endereco(idEndereco),	
 	UNIQUE (razaoSocial),
 	UNIQUE (cnpj),
 	UNIQUE (cpf)
@@ -131,12 +113,10 @@ CREATE TABLE EmpresaCliente (
 	cnpj CHARACTER (18),
 	cpf CHARACTER (14),
 	ativa BOOLEAN NOT NULL,
-	idEndereco BIGINT,
 	idUsuarioInclusao INTEGER NOT NULL,
     	dataHoraInclusao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     	FOREIGN KEY (idUsuarioInclusao) REFERENCES Usuario(idUsuario),
 	FOREIGN KEY (idEmpresa) REFERENCES Empresa(idEmpresa),	
-	FOREIGN KEY (idEndereco) REFERENCES Endereco(idEndereco),	
 	UNIQUE (nome, idEmpresa),
 	UNIQUE (razaosocial, idEmpresa),
 	UNIQUE (cnpj, idEmpresa),
